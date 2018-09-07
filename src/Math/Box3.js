@@ -14,7 +14,7 @@ import {
 class Box3 {
     constructor(p0 = undefined, p1 = undefined) {
         if (p0 instanceof Float32Array) {
-            this.setFromFloat32Array(p0);
+            this.__data = x;
             return;
         }
         if (p0 instanceof Vec3) {
@@ -27,6 +27,23 @@ class Box3 {
         } else {
             this.p1 = new Vec3(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY);
         }
+    }
+
+    get p0() {
+        return Vec3.createFromFloat32Buffer(this.__data, 0);
+    }
+
+    set p0(val) {
+        this.p0.setFromOther(val)
+    }
+
+
+    get p1() {
+        return Vec3.createFromFloat32Buffer(this.__data, 3);
+    }
+
+    set p1(val) {
+        this.p1.setFromOther(val)
     }
 
     set(p0, p1) {
@@ -130,6 +147,19 @@ class Box3 {
 
     static sizeInBytes(){
         return 24;
+    }
+
+    static createFromFloat32Buffer(buffer, offset = 0) {
+        return new Box3(new Float32Array(buffer, offset * 4, 6)); // 4 bytes per 32bit float
+    }
+
+    // Returns an Box3 that is bound to a portion of the given typed array.
+    static createFromFloat32Array(array, offset = 0) {
+        return new Box3(array.subarray(offset * 4, 6));
+    }
+
+    static numFloat32Elements() {
+        return 6;
     }
 
     //////////////////////////////////////////
