@@ -12,6 +12,8 @@ class ListParameter extends Parameter {
     constructor(name, dataType) {
         super(name, []);
         this.__dataType = dataType;
+        this.__elemCleanerFns = [];
+        this.elementValueChanged = new Signal();
         this.elementAdded = new Signal();
         this.elementRemoved = new Signal();
     }
@@ -50,7 +52,6 @@ class ListParameter extends Parameter {
         // this.setValue(this.__value)
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementRemoved.emit(elem, index);
-        // this.valueChanged.emit(ValueSetMode.USER_SETVALUE);
     }
 
     insertElement(index, elem) {
@@ -60,7 +61,25 @@ class ListParameter extends Parameter {
         // this.setValue(this.__value);
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementAdded.emit(elem, index);
-        // this.valueChanged.emit(ValueSetMode.USER_SETVALUE);
+    }
+
+    getElementValue(index, mode) {
+        return this.__value[index];
+    }
+
+    setElementValue(value, index, mode) {
+        this.__value[index] = value;
+        if(mode != ValueSetMode.OPERATOR_SETVALUE)
+            this.elementValueChanged.emit(mode, index);
+    }
+
+    // TODO: one day support having only a single element dirty
+    setElementDirty(index, cleaner) {
+        if(!this.__elemCleanerFns)
+            this.__elemCleanerFns[index] = [cleaner];
+        else
+            this.__elemCleanerFns[index].push(cleaner);
+        this.elementValueChanged.emit(ValueSetMode.OPERATOR_DIRTIED, index);
     }
 
     clone() {

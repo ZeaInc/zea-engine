@@ -46,10 +46,10 @@ class GeomItem extends TreeItem {
         this.__geomOffsetXfoParam = this.addParameter(new XfoParameter('geomOffsetXfo'));
         this.__geomXfoParam = this.addParameter(new XfoParameter('geomXfo'));
 
-        let _cleanGeomXfo = (xfo)=>{
+        let _cleanGeomXfo = ()=>{
             return this.getGlobalXfo().multiply(this.__geomOffsetXfoParam.getValue());
         }
-        this.__globalXfoParam.valueChanged.connect((changeType)=>{
+        this.__globalXfoParam.elementValueChanged.connect((changeType, index)=>{
             this.__geomXfoParam.setDirty(_cleanGeomXfo);
         });
         this.__geomOffsetXfoParam.valueChanged.connect((changeType)=>{

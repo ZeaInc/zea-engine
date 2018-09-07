@@ -19,12 +19,16 @@ class RefCounted {
     addRef(referer) {
         if(!referer)
             throw("Error in RefCounted.addRef: Must provide a referer");
-        // console.log(this.constructor.name + " addRef:" + referer.constructor.name);
-        if(this.__refs.indexOf(referer) == -1) {
-            this.__refs.push(referer);
-            return true;
+
+        this.__refs.push(referer);
+        return this.__refs.length-1;
+    }
+
+    removeRefByIndex(index) {
+        this.__refs.splice(index, 1);
+        if(this.__refs.length == 0){
+            this.destroy();
         }
-        return false;
     }
 
     removeRef(referer) {

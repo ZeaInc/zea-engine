@@ -19,8 +19,8 @@ import {
 
 
 const ItemFlags = {
-    USER_EDITED: 1<<1,
-    IGNORE_BBOX: 1<<2
+    USER_EDITED: 1 << 1,
+    IGNORE_BBOX: 1 << 2
 };
 
 class BaseItem extends ParameterOwner {
@@ -32,7 +32,14 @@ class BaseItem extends ParameterOwner {
         if (name == undefined)
             name = this.constructor.name;
         this.__name = name;
-        this.__path = [name];
+        this.__id = id;
+        this.__owners = [];
+        this.__paths = [
+            [name]
+        ];
+        this.__parentToPathIndex = [];
+        this.__pathToParentIndex = [];
+
         this.__ownerItem = undefined; // TODO: will create a circular ref. Figure out and use weak refs
         this.__flags = 0;
 
@@ -40,10 +47,12 @@ class BaseItem extends ParameterOwner {
 
         this.nameChanged = new Signal();
         this.ownerChanged = new Signal();
+        this.pathAdded = new Signal();
+        this.pathRemoved = new Signal();
         this.flagsChanged = new Signal();
 
         this.parameterValueChanged.connect((param, mode) => {
-            if(mode==ValueSetMode.USER_SETVALUE){
+            if (mode == ValueSetMode.USER_SETVALUE) {
                 this.setFlag(ItemFlags.USER_EDITED);
             }
         });
@@ -71,22 +80,15 @@ class BaseItem extends ParameterOwner {
 
     setName(name) {
         this.__name = name;
-        this.__updatePath();
+        // this.__updatePath();
         this.nameChanged.emit(name);
     }
 
-    __updatePath() {
-        if (this.__ownerItem == undefined)
-            this.__path = [this.__name];
-        else {
-            this.__path = this.__ownerItem.getPath().slice();
-            this.__path.push(this.__name);
-        }
+    getId() {
+        return this.__id;
     }
 
-    getPath() {
-        return this.__path;
-    }
+
 
     //////////////////////////////////////////
     // Flags
@@ -105,16 +107,16 @@ class BaseItem extends ParameterOwner {
     // Path Traversial
 
     resolvePath(path, index) {
-        if (index == path.length){
+        if (index == path.length) {
             return this;
         }
-        if(path[index] == '>' && path.lenth == index + 2) {
-            return this.getParameter(path[index+1]); 
+        if (path[index] == '>' && path.lenth == index + 2) {
+            return this.getParameter(path[index + 1]);
         }
-        
+
         // Maybe the name is a parameter name.
         const param = this.getParameter(path[index]);
-        if(param) {
+        if (param) {
             return param;
         }
         throw ("Invalid path:" + path + " member not found");
@@ -124,25 +126,56 @@ class BaseItem extends ParameterOwner {
     //////////////////////////////////////////
     // Owner Item
 
-    getOwner() {
-        // return this.__private.get('ownerItem');
-        return this.__ownerItem;
+    getOwner(index = 0) {
+        return this.getRefer(index);
     }
 
-    setOwner(ownerItem) {
-        // this.__private.set(ownerItem, ownerItem);
-        if(this.__ownerItem !== ownerItem){
-            if(this.__ownerItem){
-                this.removeRef(this.__ownerItem);
-            }
-            this.__ownerItem = ownerItem;
-            if(this.__ownerItem){
-                this.addRef(this.__ownerItem);
-            }
-            this.__updatePath();
-            // Notify:
-            this.ownerChanged.emit();
+    addOwner(ownerItem) {
+        const ownerIndex = this.__ownerRefIds.length;
+        this.addRef(ownerItem);
+        const ownerIndex = this.__owners.length();
+        this.__owners.push(ownerItem)
+
+        const parentPaths = ownerItem.getPaths();
+        this.__parentToPathIndex.push(this.__paths.length)
+        this.__parentToPathIndex.push(parentPaths.length)
+        for(let i=0; i<parentPaths.length; i++) {
+            this.__addPath(ownerIndex, i);
         }
+        ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
+        return ownerIndex;
+    }
+
+    removeOwner(parentItem) {
+        return this.removeRef(parentItem);
+    }
+
+    //////////////////////////////////////////
+    // Path
+    __addPath(parentIndex, parentPathIndex) {
+        const newPath = this.__owners.getPath(parentPathIndex).slice();
+        newPath.push(this.__id);
+        const pathIndex = this.__paths.length;
+        this.__pathToParentIndex[pathIndex] = parentIndex;
+        this.__paths.push(newPath);
+        this.pathAdded.emit(pathIndex)
+    }
+
+    // __updatePath(index = 0) {
+    //     if (this.__ownerItem == undefined)
+    //         this.__paths[index] = [this.__name];
+    //     else {
+    //         this.__paths[index] = this.__ownerItem.getPath().slice();
+    //         this.__paths[index].push(this.__name);
+    //     }
+    // }
+
+    getPaths() {
+        return this.__paths;
+    }
+
+    getPath(index=0) {
+        return this.__paths[index];
     }
 
     //////////////////////////////////////////
@@ -167,7 +200,7 @@ class BaseItem extends ParameterOwner {
 
     toJSON(context) {
         const j = super.toJSON(context);
-        if(j) {
+        if (j) {
             j.name = this.__name;
             j.type = this.constructor.name;
         }
@@ -175,7 +208,7 @@ class BaseItem extends ParameterOwner {
     }
 
     fromJSON(j, context) {
-        if(j.name)
+        if (j.name)
             this.__name = j.name;
         super.fromJSON(j, context);
         // Note: JSON data is only used to store user edits, so 
