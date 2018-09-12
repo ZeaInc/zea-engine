@@ -89,8 +89,6 @@ class VLAAsset extends AssetItem {
   // Persistence
 
   readBinary(reader, context) {
-    if(!context) 
-      context = {};
     context.assetItem = this;
 
     let numGeomsFiles = reader.loadUInt32();
@@ -133,7 +131,9 @@ class VLAAsset extends AssetItem {
     resourceLoader.loadResource(fileId,
       (entries) => {
         const treeData = entries[Object.keys(entries)[0]];
-        numGeomsFiles = this.readBinary(new BinReader(treeData.buffer, 0, SystemDesc.isMobileDevice));
+        numGeomsFiles = this.readBinary(new BinReader(treeData.buffer, 0, SystemDesc.isMobileDevice), {
+          dataversion: 1
+        });
         resourceLoader.freeData(treeData.buffer);
 
         onDone();

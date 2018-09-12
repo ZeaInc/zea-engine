@@ -226,7 +226,7 @@ class TreeItem extends BaseItem {
             return;
         }
 
-        const _setGlobalXfoDirty = (parentItemIndex, parentPathIndex) {
+        const _setGlobalXfoDirty = (parentItemIndex, parentPathIndex)=>{
             const cleanGlobalXfo = () => {
                 const parentXfo = this.getParentItem(parentItemIndex).getGlobalXfo(parentPathIndex);
                 const localXfo = this.__localXfoParam.getElementValue(parentItemIndex);
@@ -713,6 +713,17 @@ class TreeItem extends BaseItem {
             const toc = reader.loadUInt32Array(numChildren);
             for (let i = 0; i < numChildren; i++) {
                 reader.seek(toc[i]); // Reset the pointer to the start of the item data.
+                if(context.dataversion >= 2) {
+                    // Check if the item has already been loaded. 
+                    // If so, then we simply add the item as a child.
+                    const id = reader.loadStr();
+                    if(id in context.loadedItems) {
+                        const childItem = context.loadedItems[id];
+                        this.addChild(childItem, false, false);
+                        continue;
+                    }
+                }
+
                 const childType = reader.loadStr();
                 // const childName = reader.loadStr();
                 const childItem = sgFactory.constructClass(childType);

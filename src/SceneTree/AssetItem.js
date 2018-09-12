@@ -54,6 +54,9 @@ class AssetItem extends TreeItem {
 
     readBinary(reader, context={}) {
         context.assetItem = this;
+        context.resolvePath = this.resolvePath.bind(this);
+        context.loadedItems = {};
+
         super.readBinary(reader, context);
     }
     
