@@ -116,6 +116,7 @@ class GLCollector {
         this.__renderer = renderer;
         this.__drawItems = [undefined];
         this.__drawItemsIndexFreeList = [];
+        this.__numPaths = 0;
         this.__geoms = [];
 
         this.__newItemsAdded = false;
@@ -260,6 +261,7 @@ class GLCollector {
             index = this.__drawItems.length;
             this.__drawItems.push(null);
         }
+        this.__numPaths += geomItem.getNumPaths();
         this.__dirtyItemIndices.push(index);
 
         let gldrawItem = new GLDrawItem(this.__renderer.gl, geomItem, glgeom, index, flags);
@@ -401,9 +403,9 @@ class GLCollector {
 
     //////////////////////////////////////////////////
     // Data Uploading
-    __populateTransformDataArray(gldrawItem, index, dataArray) {
+    __populateTransformDataArray(gldrawItem, index, geomItemPathIndex, dataArray) {
 
-        const mat4 = gldrawItem.getGeomItem().getGeomXfo().toMat4();
+        const mat4 = gldrawItem.getGeomItem().getGeomXfo(geomItemPathIndex).toMat4();
         const lightmapCoordsOffset = gldrawItem.getGeomItem().getLightmapCoordsOffset();
 
         const stride = 16; // The number of floats per draw item.
@@ -434,7 +436,7 @@ class GLCollector {
             for (let i = 0; i < len; i++){
                 const drawItem = this.__drawItems[this.__dirtyItemIndices[i]];
                 if(drawItem){
-                    drawItem.updateGeomMatrix();
+                    drawItem.updateGeomMatries();
                 }
             }
             this.__dirtyItemIndices = [];
@@ -477,6 +479,8 @@ class GLCollector {
             let indexEnd = indexStart + 1;
             for (let j = i + 1; j < this.__dirtyItemIndices.length; j++) {
                 const index = this.__dirtyItemIndices[j];
+                const gldrawItem = this.__drawItems[indexStart];
+                const subIndices = gldrawItem.getDirtySubIndices();
                 if (Math.floor((index * pixelsPerItem) / size) != yoffset) {
                     break;
                 }

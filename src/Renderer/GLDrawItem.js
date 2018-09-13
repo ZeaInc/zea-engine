@@ -30,12 +30,15 @@ class GLDrawItem {
         this.updateVisibility = this.updateVisibility.bind(this);
         this.destroy = this.destroy.bind(this);
 
+        this.__dirtySubIndices = [];
+        this.modelMatrixArray = [];
         if (!gl.floatTexturesSupported) {
-            this.updateXfo = (geomXfo) => {
-                this.updateGeomMatrix();
+            this.updateXfo = (index, mode) => {
+                this.__dirtySubIndices.push(index)
             };
         } else {
-            this.updateXfo = (geomXfo) => {
+            this.updateXfo = (index, mode) => {
+                this.__dirtySubIndices.push(index)
                 this.transformChanged.emit();
             };
         }
@@ -70,6 +73,10 @@ class GLDrawItem {
 
     getGLGeom() {
         return this.glGeom;
+    }
+
+    getDirtySubIndices() {
+        return this.__dirtySubIndices;
     }
 
     getVisible() {
@@ -125,13 +132,15 @@ class GLDrawItem {
         this.updateVisibility();
     }
 
-    updateGeomMatrix() {
+    updateGeomMatries() {
         // Pull on the GeomXfo param. This will trigger the lazy evaluation of the operators in the scene.
-        this.modelMatrixArray = this.geomItem.getGeomXfo().toMat4().asArray();
+        for (let index of this.__dirtySubIndices) {
+            this.modelMatrixArray[index] = this.geomItem.getGeomXfo().toMat4().asArray();
+        }
     }
 
-    getGeomMatrixArray() {
-        return this.modelMatrixArray;
+    getGeomMatrixArray(index) {
+        return this.modelMatrixArray[index];
     }
 
     bind(renderstate) {
@@ -173,7 +182,7 @@ class GLDrawItem {
                 }
             }
         }
-        
+
         return true;
     }
 

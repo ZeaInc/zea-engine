@@ -70,7 +70,7 @@ class ListParameter extends Parameter {
     setElementValue(value, index, mode) {
         this.__value[index] = value;
         if(mode != ValueSetMode.OPERATOR_SETVALUE)
-            this.elementValueChanged.emit(mode, index);
+            this.elementValueChanged.emit(index, mode);
     }
 
     // TODO: one day support having only a single element dirty

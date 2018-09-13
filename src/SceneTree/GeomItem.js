@@ -49,14 +49,14 @@ class GeomItem extends TreeItem {
         let _cleanGeomXfo = ()=>{
             return this.getGlobalXfo().multiply(this.__geomOffsetXfoParam.getValue());
         }
-        this.__globalXfoParam.elementValueChanged.connect((changeType, index)=>{
+        this.__globalXfoParam.elementValueChanged.connect((index, changeType)=>{
             this.__geomXfoParam.setDirty(_cleanGeomXfo);
         });
         this.__geomOffsetXfoParam.valueChanged.connect((changeType)=>{
             this.__geomXfoParam.setDirty(_cleanGeomXfo);
         });
 
-        this.geomXfoChanged = this.__geomXfoParam.valueChanged;
+        this.geomXfoChanged = this.__geomXfoParam.elementValueChanged;
         // this.materialAssigned = new Signal();
         // this.geomAssigned = new Signal();
         this.materialAssigned = this.__materialParam.valueChanged;
