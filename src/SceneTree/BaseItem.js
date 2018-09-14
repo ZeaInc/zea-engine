@@ -218,26 +218,12 @@ class BaseItem extends ParameterOwner {
     }
 
     readBinary(reader, context) {
-
-        if(context.dataversion >= 2) {
-            const id = reader.loadStr();
-
-            if(id in  context.loadedItems) {
-                throw("Item already loaded:" + id)
-            }
-            this.__id = id;
-        }
+        context.loadedItems[reader.pos()] = this;
 
         const type = reader.loadStr();
 
         this.setName(reader.loadStr());
 
-        if(context.dataversion < 2) {
-            // Note: not globally unique, but unique to the parent item 
-            this.__id = hashStr(this.__name);
-        }
-        
-        context.loadedItems[this.__id] = this;
 
         // Note: parameters follow name...
         super.readBinary(reader, context);

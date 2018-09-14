@@ -700,17 +700,13 @@ class TreeItem extends BaseItem {
 
             const toc = reader.loadUInt32Array(numChildren);
             for (let i = 0; i < numChildren; i++) {
-                reader.seek(toc[i]); // Reset the pointer to the start of the item data.
-                if(context.dataversion >= 2) {
-                    // Check if the item has already been loaded. 
-                    // If so, then we simply add the item as a child.
-                    const id = reader.loadStr();
-                    if(id in context.loadedItems) {
-                        const childItem = context.loadedItems[id];
-                        this.addChild(childItem, false, false);
-                        continue;
-                    }
+                if(toc[i] in context.loadedItems) {
+                    const childItem = context.loadedItems[toc[i]];
+                    this.addChild(childItem, false, false);
+                    continue;
                 }
+
+                reader.seek(toc[i]); // Reset the pointer to the start of the item data.
 
                 const childType = reader.loadStr();
                 // const childName = reader.loadStr();
@@ -720,6 +716,7 @@ class TreeItem extends BaseItem {
                     console.warn("Unable to construct child:" + childName + " of type:" + childType);
                     continue;
                 }
+                
                 reader.seek(toc[i]); // Reset the pointer to the start of the item data.
                 childItem.readBinary(reader, context);
                 this.addChild(childItem, false, false);
