@@ -1,77 +1,40 @@
 import {
     JSON_stringify_fixedPrecision
 } from './Common.js';
-import {
-    Vec3
-} from './Vec3.js';
-import {
-    Mat4
-} from './Mat4.js';
-import {
-    Quat
-} from './Quat.js';
-import {
-    typeRegistry
-} from './TypeRegistry.js';
+import { Vec3 } from './Vec3.js';
+import { Mat4 } from './Mat4.js';
+import { Quat } from './Quat.js';
+import { typeRegistry } from './TypeRegistry.js';
 
-const sc_helper = new Vec3(1, 1, 1);
+const sc_helper = new Vec3(1,1,1);
 
 class Xfo {
     constructor(tr = undefined, ori = undefined, sc = undefined) {
 
         if (tr instanceof Float32Array) {
-            this.__data = x;
+            this.setFromFloat32Array(tr);
             return;
-        } 
-
-        this.__data = new Float32Array(10);
-
+        }
         if (tr instanceof Vec3) {
             this.tr = tr;
         } else if (tr instanceof Quat && ori == undefined && sc == undefined) {
-            this.ori = tr; // Xfo constructor with just a Quat.
-            this.sc.set(1, 1, 1);
+            this.tr = new Vec3();
+            this.ori = tr;// Xfo constructor with just a Quat.
+            this.sc = new Vec3(1, 1, 1);
             return;
         } else {
             this.tr = new Vec3();
         }
-
         if (ori instanceof Quat) {
             this.ori = ori;
         } else {
             this.ori = new Quat();
         }
-
         if (sc instanceof Vec3) {
             this.sc = sc;
         } else {
-            this.sc.set(1, 1, 1);
+            this.sc = new Vec3(1, 1, 1);
         }
-    }
-
-
-    get tr() {
-        return Vec3.createFromFloat32Buffer(this.__data, 0);
-    }
-
-    set tr(val) {
-        this.tr.setFromOther(val)
-    }
-
-    get ori() {
-        return Quat.createFromFloat32Buffer(this.__data, 3);
-    }
-
-    set ori(val) {
-        this.ori.setFromOther(val)
-    }
-
-    get sc() {
-        return Vec3.createFromFloat32Buffer(this.__data, 7);
-    }
-
-    set sc(val) {
-        this.sc.setFromOther(val)
     }
 
     set(tr, ori, sc = undefined) {
@@ -79,10 +42,6 @@ class Xfo {
         this.ori = ori;
         if (sc instanceof Vec3)
             this.sc = sc;
-    }
-
-    setFromOther(xfo) {
-        this.__data.set(xfo.__data)
     }
 
     isIdentity() {
@@ -109,6 +68,10 @@ class Xfo {
                 console.warn('Xfo.multiply: Cannot multiply to xfos with non-uniform scaling without causing shearing. Use Mat44s instead.');
             }
         }
+
+        // const sc_rot = this.ori.inverse();
+        // const rotated_unit = xfo.ori.rotateVec3(sc_helper);
+        // const rotated_sc = this.ori.inverse().rotateVec3(xfo.sc).multiply(rotated_unit);
 
         const result = new Xfo(
             this.tr.add(this.ori.rotateVec3(this.sc.multiply(xfo.tr))),
@@ -148,25 +111,33 @@ class Xfo {
 
 
     setFromFloat32Array(float32array) {
-        if (float32array.length == 7) {
-            this.__data.set(float32array)
-            this.sc.set(1, 1, 1);
+        if(float32array.length == 7){
+            this.tr = new Vec3(float32array.buffer, float32array.byteOffset);
+            this.ori = new Quat(float32array.buffer, float32array.byteOffset+12);
+            this.sc = new Vec3(1, 1, 1);
             return;
         }
-        if (float32array.length == 8) {
-            this.__data.set(float32array.subarray(0, 7))
+        if(float32array.length == 8){
+            this.tr = new Vec3(float32array.buffer, float32array.byteOffset);
+            this.ori = new Quat(float32array.buffer, float32array.byteOffset+12);
             const scl = float32array[7];
-            this.sc.set(scl, scl, scl);
+            this.sc = new Vec3(scl, scl, scl);
             return;
         }
-        if (float32array.length == 10) {
-            this.__data.set(float32array)
+        if(float32array.length == 10){
+            this.tr = new Vec3(float32array.buffer, float32array.byteOffset);
+            this.ori = new Quat(float32array.buffer, float32array.byteOffset+12);
+            this.sc = new Vec3(float32array.buffer, float32array.byteOffset+21);
             return;
         }
     }
 
     clone() {
-        return new Xfo(this.__data.slice(0, 8))
+        return new Xfo(
+            this.tr.clone(),
+            this.ori.clone(),
+            this.sc.clone()
+        );
     }
 
     //////////////////////////////////////////
@@ -174,26 +145,6 @@ class Xfo {
 
     static create(...args) {
         return new Xfo(...args);
-    }
-
-
-    static createFromJSON(json) {
-        let result = new Xfo();
-        result.fromJSON(json);
-        return result;
-    }
-
-    static createFromFloat32Buffer(buffer, offset = 0) {
-        return new Xfo(new Float32Array(buffer, offset * 4, 10)); // 4 bytes per 32bit float
-    }
-
-    // Returns an Xfo that is bound to a portion of the given typed array.
-    static createFromFloat32Array(array, offset = 0) {
-        return new Xfo(array.subarray(offset * 4, 10));
-    }
-
-    static numFloat32Elements() {
-        return 10;
     }
 
     /////////////////////////////
@@ -205,7 +156,7 @@ class Xfo {
             tr: this.tr.toJSON(),
             ori: this.ori.toJSON()
         };
-        if (!this.sc.is111())
+        if(!this.sc.is111())
             j.sc = this.sc.toJSON();
         return j;
     }
@@ -213,7 +164,7 @@ class Xfo {
     fromJSON(j) {
         this.tr.fromJSON(j.tr);
         this.ori.fromJSON(j.ori);
-        if (j.sc) {
+        if(j.sc){
             this.sc.fromJSON(j.sc);
         }
     }
