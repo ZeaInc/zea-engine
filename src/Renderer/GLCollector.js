@@ -28,8 +28,8 @@ import {
     GLMaterial
 } from './GLMaterial.js';
 import {
-    GLDrawItem
-} from './GLDrawItem.js';
+    GLGeomItem
+} from './GLGeomItem.js';
 import {
     GLDrawItemSet
 } from './GLDrawItemSet.js';
@@ -86,8 +86,7 @@ class GLMaterialDrawItemSets {
 
             this.drawCount += drawItemSet.drawCount;
             drawItemSet.drawCountChanged.connect(this.__drawCountChanged);
-        }
-        else {
+        } else {
             console.warn("drawItemSet already added to GLMaterialDrawItemSets")
         }
     }
@@ -114,9 +113,10 @@ class GLMaterialDrawItemSets {
 class GLCollector {
     constructor(renderer) {
         this.__renderer = renderer;
-        this.__drawItems = [undefined];
+        this.__glGeomItems = [undefined];
+        this.__drawItemToGLGeomItem = [];
         this.__drawItemsIndexFreeList = [];
-        this.__numPaths = 0;
+        this.__numDrawItems = 0;
         this.__geoms = [];
 
         this.__newItemsAdded = false;
@@ -181,7 +181,7 @@ class GLCollector {
         if (material.getShaderName() in this.__glshadermaterials) {
             glshaderMaterials = this.__glshadermaterials[material.getShaderName()];
         } else {
-            let shader = sgFactory.constructClass(material.getShaderName(), this.__renderer.gl);
+            const shader = sgFactory.constructClass(material.getShaderName(), this.__renderer.gl);
             if (!shader)
                 return;
             glshaderMaterials = new GLShaderMaterials(shader);
@@ -199,11 +199,11 @@ class GLCollector {
             return glmaterialDrawItemSets;
         }
 
-        let glshaderMaterials = this.getShaderMaterials(material);
+        const glshaderMaterials = this.getShaderMaterials(material);
         if (!glshaderMaterials)
             return;
 
-        let glmaterial = new GLMaterial(this.__renderer.gl, material, glshaderMaterials.getGLShader());
+        const glmaterial = new GLMaterial(this.__renderer.gl, material, glshaderMaterials.getGLShader());
         glmaterial.updated.connect(() => {
             this.__renderer.requestRedraw();
         });
@@ -245,50 +245,53 @@ class GLCollector {
         return glgeom;
     };
 
+
     addGeomItem(geomItem) {
-        let glmaterialDrawItemSets = this.addMaterial(geomItem.getMaterial());
+        const glmaterialDrawItemSets = this.addMaterial(geomItem.getMaterial());
         if (!glmaterialDrawItemSets)
             return;
-        let glgeom = this.addGeom(geomItem.getGeometry());
+        const glgeom = this.addGeom(geomItem.getGeometry());
 
-
-        let flags = 1;
-        let index;
-        // Use recycled indices if there are any available...
-        if (this.__drawItemsIndexFreeList.length > 0) {
-            index = this.__drawItemsIndexFreeList.pop();
-        } else {
-            index = this.__drawItems.length;
-            this.__drawItems.push(null);
+        const geomItemIndex = this.__glGeomItems.length;
+        const addDrawItem = (pathIndex) => {
+            let drawItemIndex;
+            // Use recycled indices if there are any available...
+            if (this.__drawItemsIndexFreeList.length > 0) {
+                drawItemIndex = this.__drawItemsIndexFreeList.pop();
+            } else {
+                drawItemIndex = this.__numDrawItems;
+                this.__numDrawItems++;
+            }
+            this.__dirtyItemIndices.push(drawItemIndex);
+            this.__drawItemToGLGeomItem[drawItemIndex] = [geomItemIndex, pathIndex];
+            this.__renderer.requestRedraw();
+            return drawItemIndex;
         }
-        this.__numPaths += geomItem.getNumPaths();
-        this.__dirtyItemIndices.push(index);
 
-        let gldrawItem = new GLDrawItem(this.__renderer.gl, geomItem, glgeom, index, flags);
+        const releaseDrawItem = (drawItemIndex) => {
+            this.__drawItemsIndexFreeList.push(drawItemIndex)
+            this.__renderer.requestRedraw();
+        }
+
+        const dirtyDrawItem = (drawItemIndex) => {
+            this.__dirtyItemIndices.push(drawItemIndex);
+            this.__renderer.requestRedraw();
+        }
+
+        const gldrawItem = new GLGeomItem(this.__renderer.gl, geomItem, glgeom, {
+            addDrawItem: this.__addDrawItem.bind(this),
+            releaseDrawItem: this.__releaseDrawItem.bind(this)
+            dirtyDrawItem: this.__dirtyDrawItem.bind(this)
+        });
         geomItem.setMetadata('gldrawItem', gldrawItem);
 
         gldrawItem.updated.connect(() => {
             this.__renderer.requestRedraw();
         });
 
-        this.__drawItems[index] = gldrawItem;
+        this.__glGeomItems.push(gldrawItem);
 
-        // Null the entry in the array. 
-        // Note: we never remove the item, because
-        // the DrawItem stores its index in the array,
-        // and so cannot be moved.
-        gldrawItem.destructing.connect(() => {
-            this.removeDrawItem(gldrawItem);
-            this.__renderer.requestRedraw();
-        });
-
-        gldrawItem.transformChanged.connect(() => {
-            this.__dirtyItemIndices.push(index);
-            // this.__updateItemInstanceData(index, gldrawItem);
-            this.__renderer.requestRedraw();
-        });
-
-        let addDrawItemToGLMaterialDrawItemSet = () => {
+        const addDrawItemToGLMaterialDrawItemSet = () => {
             let drawItemSet = glmaterialDrawItemSets.findDrawItemSet(glgeom);
             if (!drawItemSet) {
                 drawItemSet = new GLDrawItemSet(this.__renderer.gl, glgeom);
@@ -433,9 +436,9 @@ class GLCollector {
         if (!gl.floatTexturesSupported) {
             // Pull on the GeomXfo params. This will trigger the lazy evaluation of the operators in the scene.
             const len = this.__dirtyItemIndices.length;
-            for (let i = 0; i < len; i++){
+            for (let i = 0; i < len; i++) {
                 const drawItem = this.__drawItems[this.__dirtyItemIndices[i]];
-                if(drawItem){
+                if (drawItem) {
                     drawItem.updateGeomMatries();
                 }
             }
@@ -479,8 +482,6 @@ class GLCollector {
             let indexEnd = indexStart + 1;
             for (let j = i + 1; j < this.__dirtyItemIndices.length; j++) {
                 const index = this.__dirtyItemIndices[j];
-                const gldrawItem = this.__drawItems[indexStart];
-                const subIndices = gldrawItem.getDirtySubIndices();
                 if (Math.floor((index * pixelsPerItem) / size) != yoffset) {
                     break;
                 }
@@ -526,8 +527,8 @@ class GLCollector {
         if (this.__dirtyItemIndices.length == 0)
             return;
         this.uploadDrawItems();
-        
-        if(this.__newItemsAdded) {
+
+        if (this.__newItemsAdded) {
             this.renderTreeUpdated.emit();
             this.__newItemsAdded = false;
         }

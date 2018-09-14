@@ -8,8 +8,8 @@ import {
 import '../SceneTree/GeomItem.js';
 
 // This class abstracts the rendering of a collection of geometries to screen.
-class GLDrawItem {
-    constructor(gl, geomItem, glGeom, id, flags = null) {
+class GLGeomItem {
+    constructor(gl, geomItem, glGeom, callbacks ) {
         this.gl = gl;
         this.geomItem = geomItem;
         this.glGeom = glGeom;
@@ -27,43 +27,59 @@ class GLDrawItem {
         this.destructing = new Signal();
         this.visibilityChanged = new Signal();
 
-        this.updateVisibility = this.updateVisibility.bind(this);
-        this.destroy = this.destroy.bind(this);
 
-        this.__dirtySubIndices = [];
-        this.modelMatrixArray = [];
-        if (!gl.floatTexturesSupported) {
-            this.updateXfo = (index, mode) => {
-                this.__dirtySubIndices.push(index)
-            };
-        } else {
-            this.updateXfo = (index, mode) => {
-                this.__dirtySubIndices.push(index)
-                this.transformChanged.emit();
-            };
+        /////////////////////////////////////////////
+        // Draw Item Indices.
+        this.__callbacks = callbacks
+        this.__drawItemIndices = [];
+        for(let i=0; i<this.geomItem.getNumPaths(); i++) {
+            this.__drawItemIndices.push(this.__callbacks.addDrawItem())
+        }
+        this.geomItem.pathAdded.connect((pathIndex)=>{
+            this.__drawItemIndices.splice(pathIndex, 0, this.__callbacks.addDrawItem());
+        }
+        this.geomItem.pathRemoved.connect((pathIndex)=>{
+            this.__callbacks.releaseDrawItem(this.__drawItemIndices[pathIndex])
+            this.__drawItemIndices.splice(index, 1);
         }
 
-        this.updateSelection = (val) => {
+        this.modelMatrixArray = [];
+        const updateXfo = (index, mode) => {
+            this.__callbacks.dirtyDrawItem(this.__drawItemIndices[index])
+        };
+
+        const updateSelection = (val) => {
             if (val)
                 this.highlight();
             else
                 this.unhighlight();
         }
 
-        this.geomItem.geomXfoChanged.connect(this.updateXfo);
+        this.updateVisibility = this.updateVisibility.bind(this);
+        this.geomItem.geomXfoChanged.connect(updateXfo);
         this.geomItem.visibilityChanged.connect(this.updateVisibility);
-        this.geomItem.selectedChanged.connect(this.updateSelection);
-        this.geomItem.destructing.connect(this.destroy);
+        this.geomItem.selectedChanged.connect(updateSelection);
+        this.geomItem.destructing.connect(destroy);
 
-        this.glGeom.updated.connect(() => {
-            this.updated.emit();
-        });
+        this.glGeom.updated.connect(() => this.updated.emit() );
 
 
+        const destroy = () => {
 
-        let lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset();
-        let materialId = 0;
-        let geomId = 0;
+            for(let i=0; i<this.__drawItemIndices.length; i++) {
+                this.__callbacks.releaseDrawItem(this.__drawItemIndices[i])
+            }
+
+            this.geomItem.visibilityChanged.disconnect(this.updateVisibility);
+            this.geomItem.globalXfoChanged.disconnect(updateXfo);
+            this.geomItem.selectedChanged.disconnect(updateSelection);
+            this.geomItem.destructing.disconnect(destroy);
+            this.destructing.emit(this);
+        }
+
+        const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset();
+        const materialId = 0;
+        const geomId = 0;
         this.geomData = [lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId];
     }
 
@@ -187,16 +203,9 @@ class GLDrawItem {
     }
 
 
-    destroy() {
-        this.geomItem.visibilityChanged.disconnect(this.updateVisibility);
-        this.geomItem.globalXfoChanged.disconnect(this.updateXfo);
-        this.geomItem.selectedChanged.disconnect(this.updateSelection);
-        this.geomItem.destructing.disconnect(this.destroy);
-        this.destructing.emit(this);
-    }
 };
 
 export {
-    GLDrawItem
+    GLGeomItem
 };
-// export default GLDrawItem;
+// export default GLGeomItem;
