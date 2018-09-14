@@ -162,23 +162,23 @@ class FilePathParameter extends Parameter {
         if (j.value) {
             if (j.value.indexOf('.') > 0) {
                 this.setFilepath(j.value, ValueSetMode.DATA_LOAD)
+                return;
             } else {
                 if (resourceLoader.resourceAvailable(j.value)) {
                     this.setValue(j.value, ValueSetMode.DATA_LOAD);
-                }
-                else {
-                    const resourceId = resourceLoader.resolveFilePathToId(j.filepath);
-                    if (!resourceId) {
-                        console.warn("Resource unavailable:" + j.filepath);
-                    } else {
-                        this.setValue(resourceId, ValueSetMode.DATA_LOAD);
-                    }
+                    return;
                 }
             }
         }
-        // Note: JSON data is only used to store user edits, so 
-        // parameters loaed from JSON are considered user edited.
-        this.__flags |= ParamFlags.USER_EDITED;
+        if (j.filepath) {
+            const resourceId = resourceLoader.resolveFilePathToId(j.filepath);
+            if (!resourceId) {
+                console.warn("Resource unavailable:" + j.filepath);
+            } else {
+                this.setValue(resourceId, ValueSetMode.DATA_LOAD);
+                return;
+            }
+        }
     }
 
 

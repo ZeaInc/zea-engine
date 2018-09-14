@@ -148,15 +148,23 @@ class ResourceLoader {
       }
       url = base+resourcePath
     }
-    const parent = this.resolveFilePathToId(parts.join('/'))
+    let parentId;
+    const tmp = {};
+    for(let part of parts) {
+      const key = hashStr(part);
+      if(!(key in this.__resources)) {
+          this.__resources[key] = { name: part, type: 'folder', parent: parentId };
+          tmp[key] = this.__resources[key]
+      }
+      parentId = key;
+    }
 
-    const resource = { name: filename, url, parent };
+    const resource = { name: filename, url, parent: parentId };
     const key = hashStr(filename);
     this.__resources[key] = resource;
 
-
-    const tmp = {};
     tmp[key] = resource
+
     this.__buildTree(tmp)
     this.__applyCallbacks(tmp);
   }

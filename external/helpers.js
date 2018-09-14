@@ -103,7 +103,7 @@ const addResourceURL = (resources, path, url)=>{
         if(parts[0] == '.')
             parts.shift();
         else if(parts[0] == '..'){
-            item = item.substring(3);
+            // item = item.substring(3);
             const baseparts = base.split('/');
             baseparts.pop();
             baseparts.pop();

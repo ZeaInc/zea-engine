@@ -9,15 +9,17 @@ import {
     ResourceLoader
 } from '../ResourceLoader.js';
 import {
-    FileImage
-} from './FileImage.js';
+    VLHImage
+} from './VLHImage.js';
 
 
 class Lightmap extends RefCounted {
-    constructor(resourceName, atlasSize, stream) {
+    constructor(filepath, asset, stream) {
         super();
-        this.atlasSize = atlasSize;
-        this.image = new FileImage(undefined, resourceName, {stream});
+        this.atlasSize = asset.getLightmapSize();
+        this.image = new VLHImage("Lightmap", {stream});
+        this.image.getParameter("FilePath").setValue(filepath)
+        this.image.setHDRTint(asset.getParameter("LightmapTint").getValue())
         this.__stream = stream;
     }
 
@@ -32,13 +34,14 @@ class Lightmap extends RefCounted {
         return this.__stream
     }
 
-    loadResource(resourceName) {
-        this.image.loadResource(resourceName);
+    loadResource(filepath) {
+        this.image.loadResource(filepath);
     }
 
     fromJSON(j, context) {
         this.__atlasSize = j.atlasSize;
     }
+
 };
 
 class LightmapMixer extends RefCounted {

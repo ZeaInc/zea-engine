@@ -74,7 +74,7 @@ class GLBillboardsPass extends GLPass {
 
         const image = billboard.getParameter('image').getValue();
         if(!image) {
-            billboard.getParameter('image').valueChanged.connect(()=> addBillboard(billboard) );
+            billboard.getParameter('image').valueChanged.connect(()=> this.addBillboard(billboard) );
             return;
         }
         const index = this.__billboards.length;

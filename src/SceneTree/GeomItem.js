@@ -41,8 +41,7 @@ class GeomItem extends TreeItem {
         this.__geomParam.valueChanged.connect(this._setBoundingBoxDirty.bind(this));
         this.__geomParam.boundingBoxDirtied.connect(this._setBoundingBoxDirty.bind(this));
 
-        // this.__lightmapCoordsParam = this.addParameter(new Vec2Parameter('lightmapCoords'));
-        this.__lightmapCoords = new Vec2();
+        this.__lightmapCoordOffset = new Vec2();
         this.__geomOffsetXfoParam = this.addParameter(new XfoParameter('geomOffsetXfo'));
         this.__geomXfoParam = this.addParameter(new XfoParameter('geomXfo'));
 
@@ -149,18 +148,14 @@ class GeomItem extends TreeItem {
     }
 
     getLightmapCoordsOffset() {
-        // return this.__lightmapCoordsParam.getValue();
-        return this.__lightmapCoords;
+        return this.__lightmapCoordOffset;
     }
 
     // The root asset item pushes its offset to the geom items in the
     // tree. This offsets the light cooords for each geom.
     applyAssetLightmapSettings(lightmapName, offset) {
         this.__lightmap = lightmapName;
-        // const coords = this.__lightmapCoordsParam.getValue();
-        // coords.addInPlace(offset);
-        // this.__lightmapCoordsParam.setValue(coords);
-        this.__lightmapCoords.addInPlace(offset);
+        this.__lightmapCoordOffset.addInPlace(offset);
     }
 
     /////////////////////////////
@@ -173,11 +168,14 @@ class GeomItem extends TreeItem {
 
     fromJSON(json, context) {
         super.fromJSON(json, context);
+        context.numGeomItems++;
     }
 
     readBinary(reader, context) {
         super.readBinary(reader, context);
 
+        context.numGeomItems++;
+        
         this.__lightmapName = context.assetItem.getName();
 
         const itemflags = reader.loadUInt8();
@@ -221,8 +219,7 @@ class GeomItem extends TreeItem {
             this.setMaterial(context.assetItem.getMaterialLibrary().getMaterial('Default'));
         }
 
-        // this.__lightmapCoordsParam.setValue(reader.loadFloat32Vec2());
-        this.__lightmapCoord = reader.loadFloat32Vec2();
+        this.__lightmapCoordOffset = reader.loadFloat32Vec2();
     }
 
 

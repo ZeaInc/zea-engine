@@ -1,6 +1,7 @@
 
 import {
-  Vec2
+  Vec2,
+  Color
 } from '../Math';
 import {
   Signal
@@ -8,6 +9,10 @@ import {
 import {
   SystemDesc
 } from '../BrowserDetection.js';
+import {
+    FilePathParameter,
+    ColorParameter
+} from './Parameters';
 import {
   AssetItem
 } from './AssetItem.js';
@@ -49,7 +54,7 @@ class VLAAsset extends AssetItem {
     this.geomsLoaded.setToggled(false);
     this.loaded.setToggled(false);
 
-    this.__datafileParam = this.addParameter(new Visualive.FilePathParameter('DataFilePath'));
+    this.__datafileParam = this.addParameter(new FilePathParameter('DataFilePath'));
     this.__datafileParam.valueChanged.connect((mode) => {
       this.geomsLoaded.setToggled(false);
       this.loadDataFile(()=>{
@@ -60,6 +65,9 @@ class VLAAsset extends AssetItem {
           this.loaded.emit();
       });
     });
+
+
+    this.addParameter(new ColorParameter('LightmapTint', new Color(1,1,1,1)));
   }
 
   getGeometryLibrary() {
@@ -73,6 +81,7 @@ class VLAAsset extends AssetItem {
   getLightmapSize() {
     return this.__atlasSize;
   }
+
   // Note: the atlas can be used for more than just lightmaps.
   getAtlasSize() {
     return this.__atlasSize;

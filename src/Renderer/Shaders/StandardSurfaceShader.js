@@ -166,6 +166,7 @@ uniform bool EmissiveStrengthTexConnected;
 
 #ifdef ENABLE_ES3
 out vec4 fragColor;
+
 #endif
 
 void main(void) {
@@ -173,8 +174,8 @@ void main(void) {
     MaterialParams material;
 
 #ifndef ENABLE_TEXTURES
-    material.baseColor      = BaseColor.rgb;
-    float emission      = EmissiveStrength;
+    material.BaseColor      = BaseColor.rgb;
+    float emission          = EmissiveStrength;
 
 #ifdef ENABLE_SPECULAR
     material.roughness     = Roughness;
@@ -289,7 +290,7 @@ void main(void) {
         // It also has direct relation to IOR so we need to dial one or the other
         // For simplicity sake, we don't need to touch this value as metalic can dictate it
         // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
-        paramDescs.push({ name: 'Reflectance', defaultValue: 0.025 } );
+        paramDescs.push({ name: 'Reflectance', defaultValue: 0.1 } );
         return paramDescs;
     }
 };

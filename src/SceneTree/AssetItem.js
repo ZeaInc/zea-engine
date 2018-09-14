@@ -1,4 +1,3 @@
-
 import {
     Signal
 } from '../Utilities';
@@ -15,7 +14,7 @@ import {
     sgFactory
 } from './SGFactory.js';
 
-const dataLoaders = {};
+const assetLoaders = {};
 
 class AssetItem extends TreeItem {
     constructor(name) {
@@ -23,52 +22,67 @@ class AssetItem extends TreeItem {
 
         this.loaded = new Signal(true);
         // Assets that are generated inline can be considered loaded
+        // (e.g. the ground plane). So we set loaded to true, unless a file is specified.
         this.loaded.setToggled(true);
 
 
         const fileParam = this.addParameter(new FilePathParameter('FilePath'));
-        fileParam.valueChanged.connect(()=>{
+        fileParam.valueChanged.connect(() => {
             const filePath = fileParam.getValue()
             const url = fileParam.getURL();
             this.loaded.setToggled(false);
-            this.geomsLoaded.setToggled(false);
             loadTextfile(url,
                 (data) => {
                     const j = JSON.parse(data);
-                    this.fromJSON(j, { assetItem: this }, ()=>{
-                        if(!this.loaded.isToggled())
-                            this.loaded.emit();
+                    let asynccount = 0;
+                    this.fromJSON(j, {
+                        assetItem: this,
+                        incAsyncCount: ()=>{
+                            asynccount++;
+                        },
+                        decAsyncCount: ()=>{
+                            asynccount--;
+                            if(asynccount == 0) {
+                                this.loaded.emit();
+                            }
+                        }
                     });
-
+                    if(asynccount == 0)
+                        this.loaded.emit();
                 }
             );
         });
     }
 
-    getLoader(){
+    getLoader() {
         return this.__loader;
     }
 
     //////////////////////////////////////////
     // Persistence
 
-    readBinary(reader, context={}) {
+    readBinary(reader, context = {}) {
         context.assetItem = this;
         context.resolvePath = this.resolvePath.bind(this);
         context.loadedItems = {};
 
+        context.numTreeItems = 0;
+        context.numGeomItems = 0;
+        
         super.readBinary(reader, context);
+
+        // console.log("numTreeItems:", context.numTreeItems, " numGeomItems:", context.numGeomItems)
     }
-    
+
     toJSON(context) {
-        if(!context) 
+        if (!context)
             context = {};
 
         context.makeRelative = (path) => {
             const assetPath = this.getPath();
             const start = path.slice(0, assetPath.length);
-            for(let i=0; i<start.length; i++) {
-                if(start[i] != assetPath[i]) {
+            for (let i = 0; i < start.length; i++) {
+                if (start[i] != assetPath[i]) {
                     console.warn("Param Path is not relative to the asset. May not be able to be resolved at load time:" + path);
                     return path;
                 }
@@ -81,19 +95,23 @@ class AssetItem extends TreeItem {
     }
 
     fromJSON(j, context, onDone) {
-        if(!context) 
+        if (!context)
             context = {};
+        
+        context.assetItem = this;
+        context.numTreeItems = 0;
+        context.numGeomItems = 0;
 
         context.assetItem = this;
         context.resolvePath = this.resolvePath.bind(this);
 
         // Avoid loading the FilePAth as we are already loading json data.
-        if(j.params && j.params.FilePath) {
-          delete j.params.FilePath;
+        if (j.params && j.params.FilePath) {
+            delete j.params.FilePath;
         }
 
         super.fromJSON(j, context);
-        if(onDone)
+        if (onDone)
             onDone();
     }
 
@@ -101,26 +119,39 @@ class AssetItem extends TreeItem {
     // Static Methods
 
 
-    static registerDataLoader(ext, cls){
-        const regExt = (ext)=>{
+    static registerDataLoader(ext, cls) {
+        const regExt = (ext) => {
             ext = ext.toLowerCase();
-            if(!dataLoaders[ext])
-                dataLoaders[ext] = [];
+            if (!assetLoaders[ext])
+                assetLoaders[ext] = [];
             else {
-                console.warn("overriding loader for ext:" + ext + ". Prev loader:" + dataLoaders[ext] + ". New loader:" + cls);
+                console.warn("overriding loader for ext:" + ext + ". Prev loader:" + assetLoaders[ext] + ". New loader:" + cls);
             }
-            dataLoaders[ext].push(cls);
+            assetLoaders[ext].push(cls);
         }
 
-        if(Array.isArray(ext)){
-            for(let e of ext)
+        if (Array.isArray(ext)) {
+            for (let e of ext)
                 regExt(e);
-        }
-        else {
+        } else {
             regExt(ext);
         }
     }
+
+    static constructLoader(file) {
+        for(let exts of assetLoaders) {
+            if((new RegExp('\\.('+exts+')$', "i")).test(file.name)){
+                const loader = new assetLoaders[exts]();
+                if(loader) {
+                    loader.getParameter('FilePath').setValue(file.id);
+                    return loader;
+                }
+            }
+        }
+    }
 };
+
+sgFactory.registerClass('AssetItem', AssetItem);
 
 export {
     AssetItem
