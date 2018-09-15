@@ -3,14 +3,16 @@
     const scene = new Visualive.Scene(resources);
 
     // const envMapName = "Assets/hdri_sky_02_sample" + (Visualive.SystemDesc.isMobileDevice ? 2 : 0) + ".vlh";
-    const envMap = new Visualive.EnvMap("envMa", "Assets/HDR_041_Path_Ref.vlenv");
+    const envMap = new Visualive.EnvMap("envMa");
+    envMap.getParameter('FilePath').setValue("Assets/HDR_041_Path_Ref.vlenv");
     // const envMap =  new Visualive.FileImage(envMapName);
     scene.setEnvMap(envMap);
+    scene.getCamera().setPositionAndTarget(0, new Visualive.Vec3(-20,-20,10), new Visualive.Vec3(10,10,0));
 
     const addMeshShape = (name, shape, pos, mat)=>{
         const geomItem = new Visualive.GeomItem(name, shape, mat);
-        geomItem.setLocalXfo(new Visualive.Xfo(pos));
         scene.getRoot().addChild(geomItem);
+        geomItem.setLocalXfo(0, new Visualive.Xfo(pos));
     }
     for(let i=0; i<10; i++){
         for(let j=0; j<10; j++){
@@ -25,7 +27,6 @@
     
     const renderer = new Visualive.GLVisualiveRenderer(domElement);
     renderer.exposure = 1.0;
-    renderer.getViewport().getCamera().setPositionAndTarget(new Visualive.Vec3(-20,-20,10), new Visualive.Vec3(10,10,0));
     
     renderer.setScene(scene);
     renderer.frameAll();

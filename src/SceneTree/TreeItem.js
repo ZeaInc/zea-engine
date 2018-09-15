@@ -213,14 +213,14 @@ class TreeItem extends BaseItem {
     }
 
     getLocalXfo(parentIndex) {
-        if (pathIndex == undefined)
-            throw ("pathIndex must be specified")
+        if (parentIndex == undefined)
+            throw ("parentIndex must be specified")
         return this.__localXfoParam.getElementValue(parentIndex);
     }
 
     setLocalXfo(parentIndex, xfo) {
-        if (pathIndex == undefined)
-            throw ("pathIndex must be specified")
+        if (parentIndex == undefined)
+            throw ("parentIndex must be specified")
         this.__localXfoParam.setElementValue(parentIndex, xfo);
     }
 
@@ -331,8 +331,8 @@ class TreeItem extends BaseItem {
         return this.getBoundingBox();
     }
 
-    getBoundingBox() {
-        return this.__boundingBoxParam.getValue();
+    getBoundingBox(index=0) {
+        return this.__boundingBoxParam.getElementValue(index);
     }
 
     _cleanBoundingBox(pathIndex, bbox) {

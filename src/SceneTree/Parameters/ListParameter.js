@@ -74,9 +74,9 @@ class ListParameter extends Parameter {
         let fns = this.__elemCleanerFns[index];
         this.__elemCleanerFns[index] = [];
         for (let fn of fns) {
-            const res = fn(index, this.__value);
+            const res = fn(index, this.__value[index]);
             if(res != undefined) 
-                this.__value = res;
+                this.__value[index] = res;
         }
     }
 
