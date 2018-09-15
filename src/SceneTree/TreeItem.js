@@ -101,8 +101,8 @@ class TreeItem extends BaseItem {
                 const parentIndex = this.__pathToParentIndex[pathIndex];
                 const _cleanLocalXfo = () => {
                     const globalXfo = this.__globalXfoParam.getElementValue(parentIndex);
-                    if (this.__ownerItem !== undefined)
-                        this.__localXfoParam.setElementValue(parentIndex, this.__ownerItem.getGlobalXfo(parentIndex).inverse().multiply(globalXfo));
+                    if (this.__owners[parentIndex] !== undefined)
+                        this.__localXfoParam.setElementValue(parentIndex, this.__owners[parentIndex].getGlobalXfo(parentIndex).inverse().multiply(globalXfo));
                     else
                         this.__localXfoParam.setElementValue(parentIndex, globalXfo);
                 }
@@ -162,8 +162,8 @@ class TreeItem extends BaseItem {
         // }
         this.__localXfoParam.insertElement(ownerIndex, new Xfo())
 
-        if (this.__ownerItem) {
-            this.__ownerItem.globalXfoChanged.connect((index, mode) => this._setGlobalXfoDirty(ownerIndex, index));
+        if (this.__owners[ownerIndex]) {
+            this.__owners[ownerIndex].globalXfoChanged.connect((index, mode) => this._setGlobalXfoDirty(ownerIndex, index));
         }
     }
 
@@ -395,8 +395,8 @@ class TreeItem extends BaseItem {
         childItem.setInheritedVisiblity(this.getVisible());
         childItem.setSelectable(this.getSelectable(), true);
 
-        childItem.boundingChanged.connect(this._setBoundingBoxDirty);
-        childItem.visibilityChanged.connect(this._setBoundingBoxDirty);
+        childItem.boundingChanged.connect((pathIndex) => this._setBoundingBoxDirty(-1));
+        childItem.visibilityChanged.connect((pathIndex) => this._setBoundingBoxDirty(-1));
         childItem.flagsChanged.connect(this._childFlagsChanged.bind(this));
 
         // Propagate mouse event up ths tree.
@@ -525,7 +525,7 @@ class TreeItem extends BaseItem {
         if (path[index] == '.')
             index++;
         else if (path[index] == '..') {
-            return this.__ownerItem.resolvePath(path, index + 1);
+            return this.__owners[parentIndex].resolvePath(path, index + 1);
         }
 
         if (index == path.length) {

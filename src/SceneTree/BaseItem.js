@@ -37,8 +37,6 @@ class BaseItem extends ParameterOwner {
         this.__paths = [];
         this.__parentToPathIndex = [];
         this.__pathToParentIndex = [];
-
-        this.__ownerItem = undefined; // TODO: will create a circular ref. Figure out and use weak refs
         this.__flags = 0;
 
         this.__metaData = new Map();
@@ -54,6 +52,9 @@ class BaseItem extends ParameterOwner {
                 this.setFlag(ItemFlags.USER_EDITED);
             }
         });
+
+        // this.__addOwnerIndex(0);
+        // this.__addPathIndex(0);
     }
 
     destroy() {

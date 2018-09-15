@@ -53,7 +53,6 @@ class Root extends TreeItem {
         ]
         this.__addOwnerIndex(0);
         this.__addPathIndex(0);
-
     }
 }
 
