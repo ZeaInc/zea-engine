@@ -98,13 +98,14 @@ class TreeItem extends BaseItem {
 
         this.__globalXfoParam.elementValueChanged.connect((pathIndex, mode) => {
             if (mode == ValueSetMode.USER_SETVALUE) {
-                const parentIndex = this.__pathToParentIndex[pathIndex];
+                const parentIndex = this.__pathToParentIndex[pathIndex][0];
+                const parentPathIndex = this.__pathToParentIndex[pathIndex][1];
                 const _cleanLocalXfo = () => {
                     const globalXfo = this.__globalXfoParam.getElementValue(parentIndex);
                     if (this.__owners[parentIndex] == undefined)
                         return globalXfo;
                     else
-                        return this.__owners[parentIndex].getGlobalXfo(parentIndex).inverse().multiply(globalXfo);
+                        return this.__owners[parentIndex].getGlobalXfo(parentPathIndex).inverse().multiply(globalXfo);
                 }
                 // Note: both global and local cannot be dirty at the same time
                 // because we need one clean to compute the other. If the global
@@ -385,7 +386,9 @@ class TreeItem extends BaseItem {
         //         newLocalXfos.push(this.getGlobalXfo(i).inverse().multiply(childItem.getGlobalXfo()));
         // }
         this.__childItems.splice(index, 0, childItem);
-        childItem.addOwner(this);
+
+        // Note: this index is the indes this item holds in the childs owner array.
+        const ownerIndex = childItem.addOwner(this);
 
         // if (maintainXfo)
         //     childItem.setLocalXfo(newLocalXfo);
@@ -401,9 +404,19 @@ class TreeItem extends BaseItem {
         childItem.flagsChanged.connect(this._childFlagsChanged.bind(this));
 
         // Propagate mouse event up ths tree.
-        childItem.mouseDown.connect(this.onMouseDown);
-        childItem.mouseUp.connect(this.onMouseUp);
-        childItem.mouseMove.connect(this.onMouseMove);
+        // Modity the 3rd arg to specify which path the event is propagating up.
+        childItem.mouseDown.connect((e, i, p) => {
+            if (p[0] == ownerIndex)
+                this.mouseDown.emit(e, i, this.__pathToParentIndex[p[1]])
+        });
+        childItem.mouseUp.connect((e, i, p) => {
+            if (p[0] == ownerIndex)
+                this.mouseUp.emit(e, i, this.__pathToParentIndex[p[1]])
+        });
+        childItem.mouseMove.connect((e, i, p) => {
+            if (p[0] == ownerIndex)
+                this.mouseMove.emit(e, i, this.__pathToParentIndex[p[1]])
+        });
 
         this._setBoundingBoxDirty(-1);
         this.childAdded.emit(childItem, index);
@@ -445,9 +458,9 @@ class TreeItem extends BaseItem {
         childItem.visibilityChanged.disconnect(this._setBoundingBoxDirty);
 
         // Propagate mouse event up ths tree.
-        childItem.mouseDown.disconnect(this.onMouseDown);
-        childItem.mouseUp.disconnect(this.onMouseUp);
-        childItem.mouseMove.disconnect(this.onMouseMove);
+        // childItem.mouseDown.disconnect(this.onMouseDown);
+        // childItem.mouseUp.disconnect(this.onMouseUp);
+        // childItem.mouseMove.disconnect(this.onMouseMove);
 
         this.childRemoved.emit(childItem, index);
 
@@ -584,18 +597,18 @@ class TreeItem extends BaseItem {
     /////////////////////////
     // Events
 
-    onMouseDown(mousePos, event) {
-        this.mouseDown.emit(mousePos, event);
+    onMouseDown(event, intersectionData) {
+        this.mouseDown.emit(event, intersectionData, this.__pathToParentIndex[intersectionData.pathIndex]);
         return false;
     }
 
-    onMouseUp(mousePos, event) {
-        this.mouseUp.emit(mousePos, event);
+    onMouseUp(event, intersectionData) {
+        this.mouseUp.emit(event, intersectionData, this.__pathToParentIndex[intersectionData.pathIndex]);
         return false;
     }
 
-    onMouseMove(mousePos, event) {
-        this.mouseMove.emit(mousePos, event);
+    onMouseMove(event, intersectionData) {
+        this.mouseMove.emit(event, intersectionData, this.__pathToParentIndex[intersectionData.pathIndex]);
         return false;
     }
 

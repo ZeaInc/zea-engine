@@ -160,7 +160,7 @@ class BaseItem extends ParameterOwner {
         const newPath = this.__owners[ownerIndex].getPath(parentPathIndex).slice();
         newPath.push(this.__name);
         const pathIndex = this.__paths.length;
-        this.__pathToParentIndex[pathIndex] = ownerIndex;
+        this.__pathToParentIndex[pathIndex] = [ownerIndex, parentPathIndex];
         this.__parentToPathIndices[ownerIndex].push(pathIndex);
         this.__paths.push(newPath);
         this.__addPathIndex(pathIndex)
