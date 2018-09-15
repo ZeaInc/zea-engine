@@ -16,8 +16,14 @@
     const sphereGeomItem = new Visualive.GeomItem('sphere', sphere, material1);
     cuboidGeomItem.addChild(sphereGeomItem);
     cuboidGeomItem.addChild(sphereGeomItem);
+    cuboidGeomItem.addChild(sphereGeomItem);
     sphereGeomItem.setLocalXfo(0, new Visualive.Xfo(new Visualive.Vec3(-2, 0, 3)));
-    sphereGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(5, 0, 0)));
+    sphereGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(3, 0, 2)));
+    sphereGeomItem.setLocalXfo(2, new Visualive.Xfo(new Visualive.Vec3(0, 0, 4)));
+
+
+    scene.getRoot().addChild(cuboidGeomItem);
+    cuboidGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(8, 0, 0)));
     
     // for(let i=0; i<10; i++){
     //     for(let j=0; j<10; j++){

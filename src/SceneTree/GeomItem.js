@@ -50,7 +50,7 @@ class GeomItem extends TreeItem {
             return this.getGlobalXfo(pathIndex).multiply(this.__geomOffsetXfoParam.getValue());
         }
         this.__globalXfoParam.elementValueChanged.connect((index, changeType)=>{
-            this.__geomXfoParam.setElementDirty(index, () => _cleanGeomXfo(index));
+            this.__geomXfoParam.setElementDirty(index, _cleanGeomXfo);
         });
         this.__geomOffsetXfoParam.valueChanged.connect((changeType)=>{
             this.__geomXfoParam.setDirty(()=>_cleanGeomXfo(-1));

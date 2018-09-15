@@ -55,7 +55,7 @@ class GLShaderMaterials {
     }
 
     removeMaterialDrawItemSets(glmaterialDrawItemSets) {
-        let index = this.glmaterialDrawItemSets.indexOf(glmaterialDrawItemSets);
+        const index = this.glmaterialDrawItemSets.indexOf(glmaterialDrawItemSets);
         this.glmaterialDrawItemSets.splice(index, 1);
     }
 
@@ -92,7 +92,7 @@ class GLMaterialDrawItemSets {
     }
 
     removeDrawItemSet(drawItemSet) {
-        let index = this.drawItemSets.indexOf(drawItemSet);
+        const index = this.drawItemSets.indexOf(drawItemSet);
         this.drawItemSets.splice(index, 1);
         drawItemSet.drawCountChanged.disconnect(this.__drawCountChanged);
     }
@@ -265,6 +265,7 @@ class GLCollector {
                 drawItemIndex = this.__numDrawItems;
                 this.__numDrawItems++;
             }
+            
             this.__dirtyItemIndices.push(drawItemIndex);
             this.__drawItemToGLGeomItem[drawItemIndex] = [geomItemIndex, pathIndex];
             this.__renderer.requestRedraw();
@@ -319,11 +320,15 @@ class GLCollector {
 
     addTreeItem(treeItem) {
 
+        if(treeItem.getMetadata('visisted') == true)
+            return;
+
+
         for (let fn of this.__sceneItemFilters) {
-            let rargs = {
+            const rargs = {
                 continueInSubTree: true
             };
-            let handled = fn(treeItem, rargs);
+            const handled = fn(treeItem, rargs);
             if (handled) {
                 if (!rargs.continueInSubTree)
                     return;
@@ -338,6 +343,7 @@ class GLCollector {
 
         treeItem.childAdded.connect(this.__childAdded);
         treeItem.destructing.connect(this.__treeItemDestructing);
+        treeItem.setMetadata('visisted', true);
     }
 
     __childAdded(child) {
@@ -368,7 +374,7 @@ class GLCollector {
 
     getGeomItemAndPathIndex(drawItemIndex) {
         const drawItemIndices = this.__drawItemToGLGeomItem[drawItemIndex];
-        return { geomItem: this.__glGeomItems[drawItemIndices[0]], pathIndex: drawItemIndices[0] };
+        return { geomItem: this.__glGeomItems[drawItemIndices[0]].geomItem, pathIndex: drawItemIndices[0] };
     };
 
     //////////////////////////////////////////////////

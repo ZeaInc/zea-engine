@@ -44,6 +44,12 @@ class Xfo {
             this.sc = sc;
     }
 
+    setFromOther(other) {
+        this.tr = other.tr;
+        this.ori = other.ori;
+        this.sc = other.sc;
+    }
+
     isIdentity() {
         return this.tr.isNull() && this.ori.isIdentity() && this.sc.is111();
     }

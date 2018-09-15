@@ -771,6 +771,10 @@ class GLRenderer {
     }
 
     drawSceneSelectedGeoms(renderstate){
+
+        if (this.__collector.newItemsReadyForLoading())
+            this.__collector.finalize();
+        
         for(let key in this.__passes) {
             const passSet = this.__passes[key];
             for(let pass of passSet) {
@@ -780,6 +784,10 @@ class GLRenderer {
         }
     }
     drawSceneGeomData(renderstate){
+
+        if (this.__collector.newItemsReadyForLoading())
+            this.__collector.finalize();
+
         for(let key in this.__passes) {
             const passSet = this.__passes[key];
             for(let pass of passSet) {

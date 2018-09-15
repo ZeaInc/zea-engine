@@ -36,6 +36,7 @@ class BaseItem extends ParameterOwner {
         this.__owners = [];
         this.__paths = [];
         this.__parentToPathIndex = [];
+        this.__parentToPathIndices = [];
         this.__pathToParentIndex = [];
         this.__flags = 0;
 
@@ -132,6 +133,8 @@ class BaseItem extends ParameterOwner {
 
         const parentPaths = ownerItem.getPaths();
         this.__parentToPathIndex.push(this.__paths.length)
+
+        this.__parentToPathIndices[ownerIndex] = [];
         for(let i=0; i<parentPaths.length; i++) {
             this.__addPath(ownerIndex, i);
         }
@@ -153,11 +156,12 @@ class BaseItem extends ParameterOwner {
 
     }
 
-    __addPath(parentIndex, parentPathIndex) {
-        const newPath = this.__owners[parentIndex].getPath(parentPathIndex).slice();
+    __addPath(ownerIndex, parentPathIndex) {
+        const newPath = this.__owners[ownerIndex].getPath(parentPathIndex).slice();
         newPath.push(this.__name);
         const pathIndex = this.__paths.length;
-        this.__pathToParentIndex[pathIndex] = parentIndex;
+        this.__pathToParentIndex[pathIndex] = ownerIndex;
+        this.__parentToPathIndices[ownerIndex].push(pathIndex);
         this.__paths.push(newPath);
         this.__addPathIndex(pathIndex)
         this.pathAdded.emit(pathIndex)

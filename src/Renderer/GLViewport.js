@@ -387,13 +387,11 @@ class GLViewport extends BaseViewport {
             if (geomItemAndDist) {
                 const mouseRay = this.calcRayFromScreenPos(screenPos);
                 const intersectionPos = mouseRay.start.add(mouseRay.dir.scale(geomItemAndDist.dist));
-                return {
-                    screenPos,
-                    mouseRay: mouseRay,
-                    intersectionPos,
-                    geomItem: geomItemAndDist.geomItem,
-                    dist: geomItemAndDist.dist
-                };
+
+                geomItemAndDist.screenPos = screenPos;
+                geomItemAndDist.mouseRay = mouseRay;
+                geomItemAndDist.intersectionPos = intersectionPos;
+                return geomItemAndDist;
             }
         }
     }

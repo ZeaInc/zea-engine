@@ -43,6 +43,7 @@ class GLGeomItem {
         }
 
         this.geomItem.pathAdded.connect((pathIndex)=>{
+            console.log('pathAdded')
             const drawItemIndex = this.__callbacks.allocDrawItemIndex(pathIndex);
             this.__drawItemIndices.splice(pathIndex, 0, drawItemIndex);
 
