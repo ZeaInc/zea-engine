@@ -63,12 +63,10 @@ class GLOverlayPass extends GLPass {
             dist = Math.decode16BitFloatFrom2xUInt8([geomData[2], geomData[3]]);
         }
 
-        const drawItem = this.__collector.getDrawItem(itemId);
-        if (drawItem) {
-            return { 
-                geomItem: drawItem.getGeomItem(),
-                dist
-            } 
+        const geomItemAndPathIndex = this.__collector.getGeomItemAndPathIndex(itemId);
+        if (geomItemAndPathIndex) {
+            geomItemAndPathIndex.dist = dist;
+            return geomItemAndPathIndex;
         }
     }
 

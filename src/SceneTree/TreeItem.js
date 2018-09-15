@@ -16,7 +16,8 @@ import {
     NumberParameter,
     ColorParameter,
     Vec2Parameter,
-    XfoParameter
+    XfoParameter,
+    ListParameter
 } from './Parameters';
 import {
     ItemFlags,
@@ -89,14 +90,17 @@ class TreeItem extends BaseItem {
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
 
-        this.__localXfoParam.valueChanged.connect(this._setGlobalXfoDirty);
-        this.__localXfoParam.elementValueChanged.connect(this._setGlobalXfoDirty);
+        this.__localXfoParam.valueChanged.connect(() => this._setGlobalXfoDirty(-1, -1));
+        this.__localXfoParam.elementValueChanged.connect((parentIndex, mode) => {
+            if (mode == ValueSetMode.USER_SETVALUE) 
+                this._setGlobalXfoDirty(parentIndex, -1, mode)
+        });
 
-        this.__globalXfoParam.elementValueChanged.connect((mode, pathIndex) => {
+        this.__globalXfoParam.elementValueChanged.connect((pathIndex, mode) => {
             if (mode == ValueSetMode.USER_SETVALUE) {
+                const parentIndex = this.__pathToParentIndex[pathIndex];
                 const _cleanLocalXfo = () => {
-                    const parentIndex = this.__pathToParentIndex[pathIndex];
-                    const globalXfo = this.__globalXfoParam.getValue(parentIndex);
+                    const globalXfo = this.__globalXfoParam.getElementValue(parentIndex);
                     if (this.__ownerItem !== undefined)
                         this.__localXfoParam.setElementValue(parentIndex, this.__ownerItem.getGlobalXfo(parentIndex).inverse().multiply(globalXfo));
                     else
@@ -106,9 +110,9 @@ class TreeItem extends BaseItem {
                 // because we need one clean to compute the other. If the global
                 // Xfo is explicitly set, then it is now clean, so we can make local
                 // dirty. 
-                this.__localXfoParam.setDirty(_cleanLocalXfo);
+                this.__localXfoParam.setElementDirty(parentIndex, _cleanLocalXfo);
             }
-            this._setBoundingBoxDirty();
+            this._setBoundingBoxDirty(pathIndex);
         });
 
         this.__visibleParam.valueChanged.connect((mode) => {
@@ -121,7 +125,7 @@ class TreeItem extends BaseItem {
         this.selectedChanged = this.__selectedParam.valueChanged;
         this.localXfoChanged = this.__localXfoParam.elementValueChanged;
         this.globalXfoChanged = this.__globalXfoParam.elementValueChanged;
-        this.boundingChanged = this.__boundingBoxParam.valueChanged;
+        this.boundingChanged = this.__boundingBoxParam.elementValueChanged;
     }
 
     destroy() {
@@ -147,22 +151,28 @@ class TreeItem extends BaseItem {
     //////////////////////////////////////////
     // Parent Item
 
-    addOwner(parentItem) {
+    __addOwnerIndex(ownerIndex){
 
-        const ownerIndex = super.addOwner(parentItem);
-
-        const parentglobalXfo = parentItem.getGlobalXfo();
-        const currglobalXfo = this.getGlobalXfo();
-        const newLocalXfo = currglobalXfo.inverse().multiply(parentglobalXfo)
-        this.__localXfoParam.insertElement(newLocalXfo, ownerIndex)
+        // const parentPaths = parentItem.getPaths();
+        // const start = this.__parentToPathIndex[ownerIndex];
+        // for(let i=0; i<parentPaths.length; i++) {
+        //     const parentglobalXfo = parentItem.getGlobalXfo(i);
+        //     const currglobalXfo = this.getGlobalXfo();
+        //     const newLocalXfo = currglobalXfo.inverse().multiply(parentglobalXfo)
+        // }
+        this.__localXfoParam.insertElement(ownerIndex, new Xfo())
 
         if (this.__ownerItem) {
-            this.__ownerItem.globalXfoChanged.connect((mode, index) => this._setGlobalXfoDirty(ownerIndex, index));
+            this.__ownerItem.globalXfoChanged.connect((index, mode) => this._setGlobalXfoDirty(ownerIndex, index));
         }
     }
 
-    removeOwner(parentItem) {
+    addOwner(parentItem) {
 
+        const ownerIndex = super.addOwner(parentItem);
+    }
+
+    removeOwner(parentItem) {
 
         const parentItemIndex = super.removeOwner(parentItem);
         parentItem.globalXfoChanged.disconnect(this._setGlobalXfoDirty);
@@ -171,11 +181,10 @@ class TreeItem extends BaseItem {
             this._setGlobalXfoDirty(i);
     }
 
-    __addPath(parentIndex, parentPathIndex) {
-        super.__addPath(parentItem);
-        const globalXfoIndex = this.__parentToPathIndex[parentIndex] + parentPathIndex;
-
-        this.__globalXfoParam.insertElement(new Xfo(), globalXfoIndex)
+    __addPathIndex(pathIndex) {
+        super.__addPathIndex(pathIndex);
+        this.__globalXfoParam.insertElement(pathIndex, new Xfo())
+        this.__boundingBoxParam.insertElement(pathIndex, new Box3())
     }
 
     // __updatePath() {
@@ -203,50 +212,67 @@ class TreeItem extends BaseItem {
         throw (("setter is deprectated. Please use 'setGlobalXfo'"));
     }
 
-    getLocalXfo() {
-        return this.__localXfoParam.getValue();
+    getLocalXfo(parentIndex) {
+        if (pathIndex == undefined)
+            throw ("pathIndex must be specified")
+        return this.__localXfoParam.getElementValue(parentIndex);
     }
 
-    setLocalXfo(xfo) {
-        this.__localXfoParam.setValue(xfo);
+    setLocalXfo(parentIndex, xfo) {
+        if (pathIndex == undefined)
+            throw ("pathIndex must be specified")
+        this.__localXfoParam.setElementValue(parentIndex, xfo);
     }
 
-    getGlobalXfo(mode) {
-        return this.__globalXfoParam.getValue(mode);
+    getGlobalXfo(pathIndex, mode) {
+        if (pathIndex == undefined)
+            throw ("pathIndex must be specified")
+        return this.__globalXfoParam.getElementValue(pathIndex, mode);
     }
 
-    setGlobalXfo(xfo, mode) {
-        this.__globalXfoParam.setValue(xfo, mode);
+    setGlobalXfo(pathIndex, xfo, mode) {
+        if (pathIndex == undefined)
+            throw ("pathIndex must be specified")
+        this.__globalXfoParam.setElementValue(pathIndex, xfo, mode);
     }
 
 
-    _setGlobalXfoDirty(parentItemIndex = 0, parentPathIndex = -1) {
+    _setGlobalXfoDirty(parentItemIndex = 0, parentPathIndex = -1, mode) {
         if (this.__parentToPathIndex.length == 0) {
-            this.__globalXfoParam.setElementDirty(()=>this.__localXfoParam.getValue(0));
+            // this.__globalXfoParam.setElementDirty(()=>this.__localXfoParam.getValue(0));
             return;
         }
 
-        const _setGlobalXfoDirty = (parentItemIndex, parentPathIndex)=>{
+        const _setGlobalXfoDirty = (parentItemIndex, parentPathIndex) => {
             const cleanGlobalXfo = () => {
-                const parentXfo = this.getParentItem(parentItemIndex).getGlobalXfo(parentPathIndex);
+                const parentXfo = this.getOwner(parentItemIndex).getGlobalXfo(parentPathIndex);
                 const localXfo = this.__localXfoParam.getElementValue(parentItemIndex);
 
                 // Each parent can have 1-many paths.
                 // The __parentToPathIndex stores the start and count of each parents paths in this
                 // items totale paths. For each path we store a global xfo.
-                const globalXfoIndex = this.__parentToPathIndex[parentItemIndex * 2] + parentPathIndex;
+                const globalXfoIndex = this.__parentToPathIndex[parentItemIndex] + parentPathIndex;
                 this.__globalXfoParam.setElementValue(globalXfoIndex, parentXfo.multiply(localXfo));
             }
-            this.__globalXfoParam.setElementDirty(cleanGlobalXfo);
+            const pathIndex = this.__parentToPathIndex[parentItemIndex] + parentPathIndex;
+            this.__globalXfoParam.setElementDirty(pathIndex, cleanGlobalXfo);
         }
-        if (parentPathIndex == -1) {
-            const count = this.__parentToPathIndex[(parentItemIndex * 2) + 1]
-            for (let i = 0; i < count; i++) {
-                _setGlobalXfoDirty(parentItemIndex, i);
+        if (parentItemIndex == -1) {
+            for(let i=0; i<this.__owners.length; i++) {
+                const count = this.__owners[i].getNumPaths()
+                for (let j = 0; j < count; j++) {
+                    _setGlobalXfoDirty(i, j);
+                }
             }
-        }
-        else {
-            _setGlobalXfoDirty(parentItemIndex, parentPathIndex);
+        } else {
+            if (parentPathIndex == -1) {
+                const count = this.__owners[parentItemIndex].getNumPaths()
+                for (let i = 0; i < count; i++) {
+                    _setGlobalXfoDirty(parentItemIndex, i);
+                }
+            } else {
+                _setGlobalXfoDirty(parentItemIndex, parentPathIndex);
+            }
         }
     }
 
@@ -309,7 +335,7 @@ class TreeItem extends BaseItem {
         return this.__boundingBoxParam.getValue();
     }
 
-    _cleanBoundingBox(bbox) {
+    _cleanBoundingBox(pathIndex, bbox) {
         bbox.reset();
         for (let childItem of this.__childItems) {
             if (childItem.getVisible() && !childItem.testFlag(ItemFlags.IGNORE_BBOX))
@@ -318,8 +344,15 @@ class TreeItem extends BaseItem {
         return bbox;
     }
 
-    _setBoundingBoxDirty() {
-        this.__boundingBoxParam.setDirty(this._cleanBoundingBox);
+    _setBoundingBoxDirty(index) {
+        if (index == -1) {
+            for(let i=0; i<this.getNumPaths(); i++) {
+                this.__boundingBoxParam.setElementDirty(i, this._cleanBoundingBox);
+            }
+        }
+        else {
+            this.__boundingBoxParam.setElementDirty(index, this._cleanBoundingBox);
+        }
     }
 
     _childFlagsChanged(flags) {
@@ -338,21 +371,23 @@ class TreeItem extends BaseItem {
         return this.__childItems.length;
     }
 
-    insertChild(childItem, index, maintainXfo = true, checkCollisions = true) {
+    insertChild(childItem, index) {
 
-        if (checkCollisions && this.getChildByName(childItem.getName()) !== null)
-            throw ("Item '" + childItem.getName() + "' is already a child of :" + this.getPath());
+        // if (checkCollisions && this.getChildByName(childItem.getName()) !== null)
+        //     throw ("Item '" + childItem.getName() + "' is already a child of :" + this.getPath());
         if (!(childItem instanceof TreeItem))
             throw ("Object is is not a tree item :" + childItem.constructor.name);
 
-        let newLocalXfo;
-        if (maintainXfo)
-            newLocalXfo = this.getGlobalXfo().inverse().multiply(childItem.getGlobalXfo());
+        // let newLocalXfos = [];
+        // if (maintainXfo) {
+        //     for(let i=0; i<this.__pathToParentIndex.length; i++)
+        //         newLocalXfos.push(this.getGlobalXfo(i).inverse().multiply(childItem.getGlobalXfo()));
+        // }
         this.__childItems.splice(index, 0, childItem);
-        childItem.setOwner(this);
+        childItem.addOwner(this);
 
-        if (maintainXfo)
-            childItem.setLocalXfo(newLocalXfo);
+        // if (maintainXfo)
+        //     childItem.setLocalXfo(newLocalXfo);
 
         if (childItem.testFlag(ItemFlags.USER_EDITED))
             this.setFlag(ItemFlags.USER_EDITED)
@@ -369,14 +404,14 @@ class TreeItem extends BaseItem {
         childItem.mouseUp.connect(this.onMouseUp);
         childItem.mouseMove.connect(this.onMouseMove);
 
-        this._setBoundingBoxDirty();
+        this._setBoundingBoxDirty(-1);
         this.childAdded.emit(childItem, index);
 
         return childItem;
     }
 
-    addChild(childItem, maintainXfo = true, checkCollisions = true) {
-        return this.insertChild(childItem, this.__childItems.length, maintainXfo, checkCollisions);
+    addChild(childItem) {
+        return this.insertChild(childItem, this.__childItems.length);
     }
 
     getChild(index) {
@@ -417,7 +452,7 @@ class TreeItem extends BaseItem {
 
         if (destroy)
             childItem.destroy();
-        this._setBoundingBoxDirty();
+        this._setBoundingBoxDirty(-1);
     }
 
     removeChildByHandle(childItem, destroy = true) {
@@ -432,7 +467,7 @@ class TreeItem extends BaseItem {
             for (let childItem of this.__childItems)
                 childItem.destroy();
         this.__childItems = [];
-        this._setBoundingBoxDirty();
+        this._setBoundingBoxDirty(-1);
     }
 
     indexOfChild(childItem) {
@@ -600,7 +635,7 @@ class TreeItem extends BaseItem {
 
     fromJSON(j, context) {
         super.fromJSON(j, context);
-        
+
         context.numTreeItems++;
 
         // Note: JSON data is only used to store user edits, so 
@@ -700,7 +735,7 @@ class TreeItem extends BaseItem {
 
             const toc = reader.loadUInt32Array(numChildren);
             for (let i = 0; i < numChildren; i++) {
-                if(toc[i] in context.loadedItems) {
+                if (toc[i] in context.loadedItems) {
                     const childItem = context.loadedItems[toc[i]];
                     this.addChild(childItem, false, false);
                     continue;
@@ -716,7 +751,7 @@ class TreeItem extends BaseItem {
                     console.warn("Unable to construct child:" + childName + " of type:" + childType);
                     continue;
                 }
-                
+
                 reader.seek(toc[i]); // Reset the pointer to the start of the item data.
                 childItem.readBinary(reader, context);
                 this.addChild(childItem, false, false);

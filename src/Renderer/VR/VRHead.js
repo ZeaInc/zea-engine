@@ -10,7 +10,7 @@ import {
     Material 
 } from '../../SceneTree';
 import { GLMesh } from '../GLMesh.js';
-import { GLDrawItem } from '../GLDrawItem.js';
+import { GLGeomItem } from '../GLGeomItem.js';
 import { Gizmo } from '../Gizmos/Gizmo.js';
 
 class VRHead extends Gizmo {
@@ -41,10 +41,10 @@ class VRHead extends Gizmo {
         // this.__geomItem0.addChild(this.__geomItem1);
 
         // let geomglGeom = new GLMesh(gl, geom);
-        // this.__geomglDrawItem0 = new GLDrawItem(gl, this.__geomItem0, geomglGeom);
+        // this.__geomglDrawItem0 = new GLGeomItem(gl, this.__geomItem0, geomglGeom);
         // this.__addDrawItem(this.__geomglDrawItem0);
 
-        // this.__geomglDrawItem1 = new GLDrawItem(gl, this.__geomItem1, geomglGeom);
+        // this.__geomglDrawItem1 = new GLGeomItem(gl, this.__geomItem1, geomglGeom);
         // this.__addDrawItem(this.__geomglDrawItem1);
         // this.__geomglDrawItem1.color = new Color(1, 1, 0);
 

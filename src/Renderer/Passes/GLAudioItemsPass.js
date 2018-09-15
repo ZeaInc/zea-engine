@@ -104,7 +104,7 @@ class GLAudioItemsPass extends GLPass {
             connectVLParamToAudioNode('coneOuterGain');
 
 
-            const updatePannerNodePosition = () => {
+            const updatePannerNodePosition = (pathIndex) => {
 
                 // Note: the new audio params are reccomended to be used, but cause audio stutter.
                 // ITs as if when we set the value, it is set for only a brief moment in time, and
@@ -115,9 +115,9 @@ class GLAudioItemsPass extends GLPass {
 
                 let xfo;
                 if(treeItem instanceof GeomItem)
-                    xfo = treeItem.getGeomXfo();
+                    xfo = treeItem.getGeomXfo(pathIndex);
                 else
-                    xfo = treeItem.getGlobalXfo();
+                    xfo = treeItem.getGlobalXfo(pathIndex);
                 // if (panner.positionX) {
                 //     // panner.positionX.setTargetAtTime(xfo.tr.x, audioCtx.currentTime);
                 //     // panner.positionY.setTargetAtTime(xfo.tr.y, audioCtx.currentTime);
@@ -145,8 +145,8 @@ class GLAudioItemsPass extends GLPass {
                 // setVelocity()
             }
             updatePannerNodePosition();
-            treeItem.globalXfoChanged.connect((changeType) => {
-                updatePannerNodePosition();
+            treeItem.globalXfoChanged.connect((pathIndex, changeType) => {
+                updatePannerNodePosition(pathIndex);
             });
         }
 

@@ -2,6 +2,7 @@ import {
     Signal
 } from '../../Utilities';
 import {
+    ValueGetMode,
     ValueSetMode,
     ParamFlags,
     Parameter
@@ -18,11 +19,11 @@ class ListParameter extends Parameter {
         this.elementRemoved = new Signal();
     }
 
-    __filter(item){
+    __filter(item) {
         return true;
     }
 
-    getCount(){
+    getCount() {
         return this.__value.length;
     }
 
@@ -31,17 +32,18 @@ class ListParameter extends Parameter {
     }
 
     addElement(elem) {
-        if(elem == undefined)
+        if (elem == undefined)
             elem = new this.__dataType()
         else {
-            if(!this.__filter(elem))
+            if (!this.__filter(elem))
                 return;
         }
 
         this.__value.push(elem)
+        this.__elemCleanerFns.push([]);
         // this.setValue(this.__value);
         this.__flags |= ParamFlags.USER_EDITED;
-        this.elementAdded.emit(elem, this.__value.length-1);
+        this.elementAdded.emit(elem, this.__value.length - 1);
         // this.valueChanged.emit(ValueSetMode.USER_SETVALUE);
         return elem;
     }
@@ -49,37 +51,65 @@ class ListParameter extends Parameter {
     removeElement(index) {
         const elem = this.__value[index];
         this.__value.splice(index, 1)
+        this.__elemCleanerFns.splice(index, 1);
         // this.setValue(this.__value)
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementRemoved.emit(elem, index);
     }
 
     insertElement(index, elem) {
-        if(!this.__filter(elem))
+        if (!this.__filter(elem))
             return;
         this.__value.splice(index, 0, elem);
+        this.__elemCleanerFns.splice(index, 0, []);
         // this.setValue(this.__value);
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementAdded.emit(elem, index);
     }
 
-    getElementValue(index, mode) {
+    _cleanElementValue(index){
+        // Clean the param before we start evaluating the connected op.
+        // this is so that operators can read from the current value
+        // to compute the next.
+        let fns = this.__elemCleanerFns[index];
+        this.__elemCleanerFns[index] = [];
+        for (let fn of fns) {
+            const res = fn(index, this.__value);
+            if(res != undefined) 
+                this.__value = res;
+        }
+    }
+
+
+    getElementValue(index, mode = ValueSetMode.USER_SETVALUE) {
+        if(index == undefined) {
+            throw("index not provided")
+        }
+        if(mode == ValueGetMode.NORMAL && this.__elemCleanerFns[index].length > 0)
+            this._cleanElementValue(index);
         return this.__value[index];
     }
 
-    setElementValue(value, index, mode) {
+    setElementValue(index, value, mode = ValueSetMode.USER_SETVALUE) {
+        if(index == undefined) {
+            throw("index not provided")
+        }
         this.__value[index] = value;
-        if(mode != ValueSetMode.OPERATOR_SETVALUE)
+        if (mode != ValueSetMode.OPERATOR_SETVALUE)
             this.elementValueChanged.emit(index, mode);
     }
 
     // TODO: one day support having only a single element dirty
     setElementDirty(index, cleaner) {
-        if(!this.__elemCleanerFns)
-            this.__elemCleanerFns[index] = [cleaner];
-        else
-            this.__elemCleanerFns[index].push(cleaner);
-        this.elementValueChanged.emit(ValueSetMode.OPERATOR_DIRTIED, index);
+        if(index == undefined) {
+            throw("index not provided")
+        }
+        
+        if(this.__elemCleanerFns[index].indexOf(cleaner) != -1)
+            return false;
+        this.__elemCleanerFns[index].push(cleaner);
+        if(this.__elemCleanerFns[index].length == 1)
+            this.elementValueChanged.emit(index, ValueSetMode.OPERATOR_DIRTIED);
     }
 
     clone() {
@@ -95,10 +125,10 @@ class ListParameter extends Parameter {
     // Persistence
 
     toJSON(context) {
-        if((this.__flags&ParamFlags.USER_EDITED) == 0)
+        if ((this.__flags & ParamFlags.USER_EDITED) == 0)
             return;
         const items = [];
-        for(let p of this.__value) 
+        for (let p of this.__value)
             items.push(p.toJSON(context));
         return {
             items
@@ -106,7 +136,7 @@ class ListParameter extends Parameter {
     }
 
     fromJSON(j, context) {
-        if(j.items == undefined){
+        if (j.items == undefined) {
             console.warn("Invalid Parameter JSON");
             return;
         }
@@ -114,19 +144,19 @@ class ListParameter extends Parameter {
         // parameters loaed from JSON are considered user edited.
         this.__flags |= ParamFlags.USER_EDITED;
 
-        for(let i=0; i<j.items.length; i++) {
+        for (let i = 0; i < j.items.length; i++) {
             const elem = new this.__dataType()
             elem.fromJSON(j.items[i], context);
             this.__value.push(elem)
-            this.elementAdded.emit(elem, this.__value.length-1);
+            this.elementAdded.emit(elem, this.__value.length - 1);
         }
         this.valueChanged.emit(ValueSetMode.DATA_LOAD);
     }
 
 
-    destroy(){
-        for(let i=0; i<this.__value.length; i++) {
-            if(this.__value[i] instanceof Parameter)
+    destroy() {
+        for (let i = 0; i < this.__value.length; i++) {
+            if (this.__value[i] instanceof Parameter)
                 this.__value[i].destroy();
             this.removeElement(i);
         }

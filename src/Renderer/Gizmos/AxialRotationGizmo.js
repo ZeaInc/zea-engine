@@ -3,7 +3,7 @@ import { Cylinder } from '../../SceneTree/Geometry/Shapes/Cylinder';
 import { TreeItem } from '../../SceneTree/TreeItem'
 import { GeomItem } from '../../SceneTree/GeomItem'
 import { GLMesh } from '../GLMesh.js';
-import { GLDrawItem } from '../GLDrawItem.js';
+import { GLGeomItem } from '../GLGeomItem.js';
 import { Gizmo } from './Gizmo.js';
 
 class AxialRotationGizmo extends Gizmo {
@@ -19,7 +19,7 @@ class AxialRotationGizmo extends Gizmo {
         let geom = new Cylinder(1.0, 0.04, 32, 2, false)
         let geomItem = new GeomItem('circle', geom);
         let geomglGeom = new GLMesh(gl, geom);
-        let geomglGeomItem = new GLDrawItem(gl, geomItem, geomglGeom);
+        let geomglGeomItem = new GLGeomItem(gl, geomItem, geomglGeom);
         this.__treeItem.addChild(geomItem);
 
         this.__addDrawItem(geomglGeomItem);
@@ -29,7 +29,7 @@ class AxialRotationGizmo extends Gizmo {
         let proxyGeom = new Cylinder(1.0, 0.2, 32, 2, false)
         let proxyGeomItem = new GeomItem('proxy', proxyGeom);
         let proxyGeomglGeom = new GLMesh(gl, proxyGeom);
-        let proxyGeomglGeomItem = new GLDrawItem(gl, proxyGeomItem, proxyGeomglGeom);
+        let proxyGeomglGeomItem = new GLGeomItem(gl, proxyGeomItem, proxyGeomglGeom);
         this.__treeItem.addChild(proxyGeomItem);
 
         // this.__addDrawItem(proxyGeomglGeomItem);

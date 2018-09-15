@@ -37,7 +37,7 @@ class TreeItemParameter extends Parameter {
         return this.__filterFn;
     }
 
-    __treeItemGlobalXfoChanged(mode){
+    __treeItemGlobalXfoChanged(pathIndex, mode){
         this.treeItemGlobalXfoChanged.emit(mode);
     }
 

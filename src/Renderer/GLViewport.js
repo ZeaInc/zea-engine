@@ -100,7 +100,7 @@ class GLViewport extends BaseViewport {
         this.__outlineColor = new Color("#03E3AC")
         this.quad = new GLMesh(gl,  new Plane(1, 1));
 
-        this.setCamera(new Camera('Default'));
+        // this.setCamera(new Camera('Default'));
 
         this.__manipulators = {};
         this.__manipModeStack = ['highlighting'];
@@ -146,7 +146,7 @@ class GLViewport extends BaseViewport {
             this.updated.emit();
             this.viewChanged.emit({
                 interfaceType: 'CameraAndPointer',
-                viewXfo: this.__camera.getGlobalXfo()
+                viewXfo: this.__camera.getGlobalXfo(0)
             });
         });
         // this.__camera.clippingRangesChanged.connect(()=>{
@@ -201,11 +201,11 @@ class GLViewport extends BaseViewport {
     }
 
     getCameraMatrix() {
-        return this.__camera.getGlobalXfo().toMat4();
+        return this.__camera.getGlobalXfo(0).toMat4();
     }
 
     getViewMatrix() {
-        return this.__camera.getViewMatrix();
+        return this.__camera.getViewMatrix(0);
     }
 
     getProjectionMatrix() {
@@ -318,7 +318,7 @@ class GLViewport extends BaseViewport {
     }
 
     __initRenderState(renderstate) {
-        renderstate.viewXfo = this.__camera.getGlobalXfo();
+        renderstate.viewXfo = this.__camera.getGlobalXfo(0);
         renderstate.viewMatrix = this.getViewMatrix();
         renderstate.cameraMatrix = renderstate.viewXfo.toMat4();
         renderstate.projectionMatrix = this.getProjectionMatrix();
@@ -400,31 +400,31 @@ class GLViewport extends BaseViewport {
 
     getGeomItemsInRect(tl, br) {
         if (this.__geomDataBufferFbo) {
-            let gl = this.__renderer.gl;
+            const gl = this.__renderer.gl;
             gl.finish();
             // Allocate a pixel block.
-            let rectBottom = (this.__height - br[1]);
-            let rectLeft = tl.x;
-            let rectWidth = (br.x - tl.x);
-            let rectHeight = (br.y - tl.y);
-            let numPixels = rectWidth * rectHeight;
-            let pixels = new Uint8Array(4 * numPixels);
+            const rectBottom = (this.__height - br[1]);
+            const rectLeft = tl.x;
+            const rectWidth = (br.x - tl.x);
+            const rectHeight = (br.y - tl.y);
+            const numPixels = rectWidth * rectHeight;
+            const pixels = new Uint8Array(4 * numPixels);
 
             this.__geomDataBufferFbo.bind();
             gl.readPixels(rectLeft, rectBottom, rectWidth, rectHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-            let drawItems = new Set();
+            const items = new Set();
             for (let i = 0; i < numPixels; i++) {
-                let pid = i * 4;
+                const pid = i * 4;
                 if (pixels[pid + 0] == 0) // Only keep Geoms. (filter out Gizmos)
                     continue;
                 // Merge the 2 last 8bit values to make a 16bit integer index value
-                let id = pixels[pid + 0] + (pixels[pid + 1] * 255);
-                let drawItem = this.__renderer.getDrawItem(id);
-                drawItems.add(drawItem);
+                const id = pixels[pid + 0] + (pixels[pid + 1] * 255);
+                const res = this.__renderer.getGeomItemAndPathIndex(id);
+                items.add(res);
             }
-            return drawItems;
+            return items;
         }
     }
 
@@ -547,16 +547,13 @@ class GLViewport extends BaseViewport {
                 this.__renderer.getScene().getSelectionManager().clearSelection();
             case 'add-selection':
                 this.__renderer.suspendDrawing();
-                let geomData = this.getGeomDataAtPos(mouseUpPos);
+                const geomData = this.getGeomDataAtPos(mouseUpPos);
                 if (geomData != undefined && geomData.flags == 1) {
-                    let drawItem = this.__renderer.getDrawItem(geomData.id);
-                    if (drawItem) {
-                        let selectionManager = this.__renderer.getScene().getSelectionManager();
-                        if (event.ctrlKey)
-                            selectionManager.deselectGeom(drawItem.geomItem);
-                        else
-                            selectionManager.selectGeom(drawItem.geomItem, !event.shiftKey);
-                    }
+                    const selectionManager = this.__renderer.getScene().getSelectionManager();
+                    if (event.ctrlKey)
+                        selectionManager.deselectGeom(geomData.geomItem);
+                    else
+                        selectionManager.selectGeom(geomData.geomItem, !event.shiftKey);
                 }
                 this.__renderer.resumeDrawing();
                 this.deactivateManipulator();
@@ -567,9 +564,9 @@ class GLViewport extends BaseViewport {
                 // Rectangular selection. 
                 this.__renderer.suspendDrawing();
                 this.__selectionRect.setVisible(false);
-                let tl = new Vec2(Math.min(this.__mouseDownPos.x, mouseUpPos.x), Math.min(this.__mouseDownPos.y, mouseUpPos.y));
-                let br = new Vec2(Math.max(this.__mouseDownPos.x, mouseUpPos.x), Math.max(this.__mouseDownPos.y, mouseUpPos.y));
-                let drawItems = this.getGeomItemsInRect(tl, br);
+                const tl = new Vec2(Math.min(this.__mouseDownPos.x, mouseUpPos.x), Math.min(this.__mouseDownPos.y, mouseUpPos.y));
+                const br = new Vec2(Math.max(this.__mouseDownPos.x, mouseUpPos.x), Math.max(this.__mouseDownPos.y, mouseUpPos.y));
+                const drawItems = this.getGeomItemsInRect(tl, br);
                 if (drawItems.size > 0) {
                     let selectedItems = new Set();
                     for (let drawItem of drawItems) {

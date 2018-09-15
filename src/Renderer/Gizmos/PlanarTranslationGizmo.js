@@ -4,7 +4,7 @@ import { Cuboid } from '../../SceneTree/Geometry/Shapes/Cuboid';
 import { TreeItem } from '../../SceneTree/TreeItem';
 import { GeomItem } from '../../SceneTree/GeomItem';
 import { GLMesh } from '../GLMesh.js';
-import { GLDrawItem } from '../GLDrawItem.js';
+import { GLGeomItem } from '../GLGeomItem.js';
 import { Gizmo } from './Gizmo.js';
 
 class PlanarTranslationGizmo extends Gizmo {
@@ -20,7 +20,7 @@ class PlanarTranslationGizmo extends Gizmo {
         geom.moveVertices(new Vec3(0.5,0.0,0.5));
         let geomItem = new GeomItem('tail', geom);
         let geomglGeom = new GLMesh(gl, geom);
-        let geomglGeomItem = new GLDrawItem(gl, geomItem, geomglGeom);
+        let geomglGeomItem = new GLGeomItem(gl, geomItem, geomglGeom);
 
         this.__treeItem.addChild(geomItem);
 

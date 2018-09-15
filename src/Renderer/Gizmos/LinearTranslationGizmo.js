@@ -4,7 +4,7 @@ import { Cone } from '../../SceneTree/Geometry/Shapes/Cone';
 import { TreeItem } from '../../SceneTree/TreeItem';
 import { GeomItem } from '../../SceneTree/GeomItem';
 import { GLMesh } from '../GLMesh.js';
-import { GLDrawItem } from '../GLDrawItem.js';
+import { GLGeomItem } from '../GLGeomItem.js';
 import { Gizmo } from './Gizmo.js';
 
 class LinearTranslationGizmo extends Gizmo {
@@ -20,7 +20,7 @@ class LinearTranslationGizmo extends Gizmo {
         tailGeom.moveVertices(new Vec3(0,0.7,0));
         let tailGeomItem = new GeomItem('tail', tailGeom);
         let tailGeomglGeom = new GLMesh(gl, tailGeom);
-        let tailGeomglDrawItem = new GLDrawItem(gl, tailGeomItem, tailGeomglGeom);
+        let tailGeomglDrawItem = new GLGeomItem(gl, tailGeomItem, tailGeomglGeom);
 
         this.__treeItem.addChild(tailGeomItem);
 
@@ -28,7 +28,7 @@ class LinearTranslationGizmo extends Gizmo {
         headGeom.moveVertices(new Vec3(0,1.10,0));
         let headGeomItem = new GeomItem('head', headGeom);
         let headGeomglGeom = new GLMesh(gl, headGeom);
-        let headGeomglDrawItem = new GLDrawItem(gl, headGeomItem, headGeomglGeom);
+        let headGeomglDrawItem = new GLGeomItem(gl, headGeomItem, headGeomglGeom);
 
         this.__treeItem.addChild(headGeomItem);
 
@@ -40,7 +40,7 @@ class LinearTranslationGizmo extends Gizmo {
         proxyGeom.moveVertices(new Vec3(0,0.65,0));
         let proxyGeomItem = new GeomItem('proxy', proxyGeom);
         let proxyGeomglGeom = new GLMesh(gl, proxyGeom);
-        let proxyGeomglDrawItem = new GLDrawItem(gl, proxyGeomItem, proxyGeomglGeom);
+        let proxyGeomglDrawItem = new GLGeomItem(gl, proxyGeomItem, proxyGeomglGeom);
 
         this.__treeItem.addChild(proxyGeomItem);
 

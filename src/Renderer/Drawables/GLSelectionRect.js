@@ -1,9 +1,9 @@
 import { Rect } from '../../SceneTree/Geometry/Shapes/Rect';
 import { GLLines } from '../GLLines.js';
-import { GLDrawItem } from '../GLDrawItem.js';
+import { GLGeomItem } from '../GLGeomItem.js';
 import { GeomItem } from '../../SceneTree/GeomItem';
 
-class GLSelectionRect extends GLDrawItem {
+class GLSelectionRect extends GLGeomItem {
     constructor(gl) {
        let selectionRect = new Rect('selectionRect', 0.5, 0.5);
         let selectionRectGeomItem = new GeomItem('selectionRect', selectionRect);

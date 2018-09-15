@@ -13,9 +13,7 @@ class GLGeomItem {
         this.gl = gl;
         this.geomItem = geomItem;
         this.glGeom = glGeom;
-        this.id = id;
-        this.flags = flags;
-        this.visible = this.geomItem.getVisible();
+        this.visible = true;//this.geomItem.getVisible();
         this.culled = false;
 
         this.color = geomItem.color ? geomItem.color : new Color(1, 0, 0, 1);
@@ -25,41 +23,54 @@ class GLGeomItem {
         this.transformChanged = new Signal();
         this.updated = new Signal();
         this.destructing = new Signal();
-        this.visibilityChanged = new Signal();
+        this.drawItemsChanged = new Signal();
 
 
         /////////////////////////////////////////////
         // Draw Item Indices.
         this.__callbacks = callbacks
         this.__drawItemIndices = [];
+        this.__drawItemIndexToPathIndex = {};
+        this.__geomDatas = [];
+        const materialId = 0;
+        const geomId = 0;
         for(let i=0; i<this.geomItem.getNumPaths(); i++) {
-            this.__drawItemIndices.push(this.__callbacks.addDrawItem())
+            const drawItemIndex = this.__callbacks.allocDrawItemIndex(i);
+            this.__drawItemIndices.push(drawItemIndex);
+
+            const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset(i);
+            this.__geomDatas.push([lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId]);
         }
+
         this.geomItem.pathAdded.connect((pathIndex)=>{
-            this.__drawItemIndices.splice(pathIndex, 0, this.__callbacks.addDrawItem());
-        }
+            const drawItemIndex = this.__callbacks.allocDrawItemIndex(pathIndex);
+            this.__drawItemIndices.splice(pathIndex, 0, drawItemIndex);
+
+            const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset(pathIndex);
+            this.__geomDatas.splice(pathIndex, 0, [lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId]);
+        });
         this.geomItem.pathRemoved.connect((pathIndex)=>{
-            this.__callbacks.releaseDrawItem(this.__drawItemIndices[pathIndex])
-            this.__drawItemIndices.splice(index, 1);
-        }
+            this.__callbacks.releaseDrawItemIndex(this.__drawItemIndices[pathIndex])
+            this.__drawItemIndices.splice(pathIndex, 1);
+            this.__geomDatas.splice(pathIndex, 1);
+        })
 
         this.modelMatrixArray = [];
         const updateXfo = (index, mode) => {
             this.__callbacks.dirtyDrawItem(this.__drawItemIndices[index])
         };
-
-        const updateSelection = (val) => {
-            if (val)
-                this.highlight();
-            else
-                this.unhighlight();
-        }
-
-        this.updateVisibility = this.updateVisibility.bind(this);
         this.geomItem.geomXfoChanged.connect(updateXfo);
-        this.geomItem.visibilityChanged.connect(this.updateVisibility);
-        this.geomItem.selectedChanged.connect(updateSelection);
-        this.geomItem.destructing.connect(destroy);
+
+        // const updateSelection = (val) => {
+        //     if (val)
+        //         this.highlight();
+        //     else
+        //         this.unhighlight();
+        // }
+
+        // this.updateVisibility = this.updateVisibility.bind(this);
+        // this.geomItem.visibilityChanged.connect(this.updateVisibility);
+        // this.geomItem.selectedChanged.connect(updateSelection);
 
         this.glGeom.updated.connect(() => this.updated.emit() );
 
@@ -67,7 +78,7 @@ class GLGeomItem {
         const destroy = () => {
 
             for(let i=0; i<this.__drawItemIndices.length; i++) {
-                this.__callbacks.releaseDrawItem(this.__drawItemIndices[i])
+                this.__callbacks.releaseDrawItemIndex(this.__drawItemIndices[i])
             }
 
             this.geomItem.visibilityChanged.disconnect(this.updateVisibility);
@@ -76,11 +87,7 @@ class GLGeomItem {
             this.geomItem.destructing.disconnect(destroy);
             this.destructing.emit(this);
         }
-
-        const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset();
-        const materialId = 0;
-        const geomId = 0;
-        this.geomData = [lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId];
+        this.geomItem.destructing.connect(destroy);
     }
 
     getGeomItem() {
@@ -91,46 +98,16 @@ class GLGeomItem {
         return this.glGeom;
     }
 
-    getDirtySubIndices() {
-        return this.__dirtySubIndices;
+    getDrawItemCount() {
+        return this.__drawItemIndices.length;
+    }
+
+    getDrawItemIndices() {
+        return this.__drawItemIndices;
     }
 
     getVisible() {
         return this.geomItem.getVisible();
-    }
-
-    // isInverted(){
-    //     return this.inverted;
-    // }
-
-    // TODO: this system isn't super nice.
-    // Maybe all GeomItems should be assigned a color. (Currently only GizmoITem has a color)
-    getColor() {
-        return this.color;
-    }
-
-    setColor(val) {
-        this.color = val;
-    }
-
-    getId() {
-        return this.id;
-    }
-
-    getFlags() {
-        return this.flags;
-    }
-
-    highlight() {
-        this.wireColor = [1.0, 1.0, 1.0, 1.0];
-        // Note: not connnected
-        //this.updated.emit();
-    }
-
-    unhighlight() {
-        this.wireColor = [0.2, 0.2, 0.2, 1.0];
-        // Note: not connnected
-        //this.updated.emit();
     }
 
     updateVisibility() {
@@ -138,7 +115,7 @@ class GLGeomItem {
         let visible = geomVisible && !this.culled;
         if (this.visible != visible) {
             this.visible = visible;
-            this.visibilityChanged.emit(visible);
+            this.drawItemsChanged.emit();
             this.updated.emit();
         }
     }
@@ -148,18 +125,11 @@ class GLGeomItem {
         this.updateVisibility();
     }
 
-    updateGeomMatries() {
-        // Pull on the GeomXfo param. This will trigger the lazy evaluation of the operators in the scene.
-        for (let index of this.__dirtySubIndices) {
-            this.modelMatrixArray[index] = this.geomItem.getGeomXfo().toMat4().asArray();
-        }
+    updateGeomMatrix(pathIndex) {
+        this.modelMatrixArray[pathIndex] = this.geomItem.getGeomXfo(pathIndex).toMat4().asArray();
     }
 
-    getGeomMatrixArray(index) {
-        return this.modelMatrixArray[index];
-    }
-
-    bind(renderstate) {
+    bind(renderstate, pathIndex) {
 
         const gl = this.gl;
         const unifs = renderstate.unifs;
@@ -167,7 +137,7 @@ class GLGeomItem {
         if (!gl.floatTexturesSupported) {
             let modelMatrixunif = unifs.modelMatrix;
             if (modelMatrixunif) {
-                gl.uniformMatrix4fv(modelMatrixunif.location, false, this.modelMatrixArray);
+                gl.uniformMatrix4fv(modelMatrixunif.location, false, this.modelMatrixArray[pathIndex]);
             }
             let drawItemDataunif = unifs.drawItemData;
             if (drawItemDataunif) {
@@ -175,14 +145,14 @@ class GLGeomItem {
             }
         }
 
-        let unif = unifs.transformIndex;
+        const unif = unifs.transformIndex;
         if (unif) {
-            gl.uniform1i(unif.location, this.id);
+            gl.uniform1i(unif.location, this.__drawItemIndices[pathIndex]);
         }
 
         if (renderstate.lightmaps && unifs.lightmap) {
             if (renderstate.boundLightmap != this.lightmapName) {
-                let gllightmap = renderstate.lightmaps[this.lightmapName];
+                const gllightmap = renderstate.lightmaps[this.lightmapName];
                 if (gllightmap && gllightmap.glimage.isLoaded()) {
                     gllightmap.glimage.bindToUniform(renderstate, unifs.lightmap);
                     gl.uniform2fv(unifs.lightmapSize.location, gllightmap.atlasSize.asArray());

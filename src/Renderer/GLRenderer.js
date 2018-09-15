@@ -1,9 +1,4 @@
 import {
-    Vec3,
-    Xfo,
-    Color
-} from '../Math';
-import {
     Signal
 } from '../Utilities';
 import {
@@ -13,13 +8,6 @@ import {
     onResize
 } from '../external/onResize.js';
 import {
-    TreeItem,
-    GeomItem,
-    Lines,
-    Mesh,
-    Grid,
-    Material,
-    ValueSetMode,
     resourceLoader
 } from '../SceneTree';
 import {
@@ -39,23 +27,8 @@ import {
     GLViewport
 } from './GLViewport.js';
 import {
-    GLMesh
-} from './GLMesh.js';
-import {
-    GLLines
-} from './GLLines.js';
-import {
     GLTexture2D
 } from './GLTexture2D.js';
-import {
-    GLShader
-} from './GLShader.js';
-import {
-    GLMaterial
-} from './GLMaterial.js';
-import {
-    GLDrawItem
-} from './GLDrawItem.js';
 import {
     VRViewport
 } from './VR/VRViewport.js';
@@ -186,44 +159,6 @@ class GLRenderer {
         return this.__collector;
     }
 
-    setupGrid(gridSize, gridColor, resolution, lineThickness) {
-        this.__gridTreeItem = new TreeItem('GridTreeItem');
-
-        const gridMaterial = new Material('gridMaterial', 'LinesShader');
-        gridMaterial.getParameter('Color').setValue(gridColor, ValueSetMode.DATA_LOAD);
-        const grid = new Grid(gridSize, gridSize, resolution, resolution, true);
-        this.__gridTreeItem.addChild(new GeomItem('GridItem', grid, gridMaterial));
-
-        const axisLine = new Lines();
-        axisLine.setNumVertices(2);
-        axisLine.setNumSegments(1);
-        axisLine.setSegment(0, 0, 1);
-        axisLine.getVertex(0).set(gridSize * -0.5, 0.0, 0.0);
-        axisLine.getVertex(1).set(gridSize * 0.5, 0.0, 0.0);
-
-        const gridXAxisMaterial = new Material('gridXAxisMaterial', 'LinesShader');
-        gridXAxisMaterial.getParameter('Color').setValue(new Color(gridColor.luminance(), 0, 0), ValueSetMode.DATA_LOAD);
-        this.__gridTreeItem.addChild(new GeomItem('xAxisLineItem', axisLine, gridXAxisMaterial));
-
-        const gridZAxisMaterial = new Material('gridZAxisMaterial', 'LinesShader');
-        gridZAxisMaterial.getParameter('Color').setValue(new Color(0, gridColor.luminance(), 0), ValueSetMode.DATA_LOAD);
-        const geomOffset = new Xfo();
-        geomOffset.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), Math.PI * 0.5);
-        const zAxisLineItem = new GeomItem('zAxisLineItem', axisLine, gridZAxisMaterial);
-        zAxisLineItem.setGeomOffsetXfo(geomOffset);
-        this.__gridTreeItem.addChild(zAxisLineItem);
-
-        this.__gridTreeItem.setSelectable(false, true);
-        this.__collector.addTreeItem(this.__gridTreeItem);
-
-        return this.__gridTreeItem;
-    }
-
-    toggleDrawGrid() {
-        this.__gridItem.visible = !this.__gridItem.visible;
-        this.requestRedraw();
-    }
-
     ////////////////////////////////////////
     // Scene
 
@@ -239,6 +174,10 @@ class GLRenderer {
             this.__gizmoContext.setSelectionManager(scene.getSelectionManager());
 
         this.__scene.getRoot().treeItemGlobalXfoChanged.connect(this.treeItemGlobalXfoChanged.emit);
+
+        const camera = scene.getRoot().getChildByName('Camera')
+        if(camera)
+            this.__viewports[0].setCamera(camera)
 
         if (this.supportsVR())
             this.__setupVRViewport();
@@ -272,6 +211,7 @@ class GLRenderer {
         vp.actionOccuring.connect((data) => {
             this.actionOccuring.emit(data);
         });
+
 
         this.__viewports.push(vp);
         return vp;

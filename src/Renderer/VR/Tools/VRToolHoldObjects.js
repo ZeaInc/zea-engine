@@ -152,11 +152,7 @@ class VRToolHoldObjects extends VRTool {
         this.__geomDataBufferFbo.unbind();
 
         let geomItemId = Math.round(pixels[0]);
-        let result = renderer.getCollector().getDrawItem(geomItemId);
-        if(result){
-            return result.getGeomItem();
-        }
-        return undefined;
+        return renderer.getCollector().getGeomItemAndPathIndex(geomItemId);
     }
 
     computeGrabXfo(refs){

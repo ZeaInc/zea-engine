@@ -56,7 +56,7 @@ class SetCameraPosisionAndTarget extends StateAction {
             let step = 0;
             const steps = Math.round(interpTime * updateFrequency);
             let modifyingCameraXfo = false;
-            const onCameraChanged = ()=>{
+            const onCameraChanged = (pathIndex, mode)=>{
                 if(!modifyingCameraXfo) {
                     settingCameraDirection = false;
                 }

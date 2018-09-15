@@ -12,31 +12,36 @@ class GLTransparentGeomsPass extends GLPass {
     init(gl, collector, passIndex) {
         super.init(gl, collector, passIndex);
 
-        this.transparentItems = [];
+        this.drawItems = [];
         this.visibleItems = [];
         this.prevSortCameraPos = new Vec3(999,999,999);
         this.resort = false;
     }
 
 
-    __addDrawItem(glshader, glmaterial, glGeom, drawItem){
-        const item = {
-            glshader,
-            glmaterial,
-            glGeom,
-            drawItem
+    __addDrawItem(glshader, glmaterial, glGeom, glgeomitem){
+
+        const indices = [];
+
+        for(let i=0; i<glgeomitem.geomItem.getNumPaths(); i++) {
+            indices.push(this.drawItems.length);
+            this.drawItems.push({
+                glshader,
+                glmaterial,
+                glGeom,
+                glgeomitem,
+                pathIndex: i
+            });
         }
-        if(drawItem.getVisible())
-            this.transparentItems.push(item);
-        drawItem.visibilityChanged.connect((visible)=>{
-            if(visible) 
-                this.transparentItems.push(item);
-            else {
-                const index = this.transparentItems.indexOf(item);
-                this.transparentItems.splice(index, 1);
-            }
+        glgeomitem.drawItemsChanged.connect((added, removed)=>{
+            // if(visible) 
+            //     this.drawItems.push(item);
+            // else {
+            //     const index = this.drawItems.indexOf(item);
+            //     this.drawItems.splice(index, 1);
+            // }
         });
-        drawItem.getGeomItem().geomXfoChanged.connect(()=>{
+        glgeomitem.getGeomItem().geomXfoChanged.connect((pathIndex)=>{
             this.resort = true;
         });
     }
@@ -46,7 +51,7 @@ class GLTransparentGeomsPass extends GLPass {
     filterRenderTree() {
         let allglshaderMaterials = this.__collector.getGLShaderMaterials();
 
-        this.transparentItems = [];
+        this.drawItems = [];
         for (let glshaderkey in allglshaderMaterials) {
             let glshaderMaterials = allglshaderMaterials[glshaderkey];
             if (!glshaderMaterials.glshader.isTransparent())
@@ -59,8 +64,8 @@ class GLTransparentGeomsPass extends GLPass {
                 for (let gldrawitemset of gldrawitemsets) {
                     // Now we must unpack the drawItemSet into individual draw items.
                     const glGeom = gldrawitemset.glgeom;
-                    for (let drawItem of gldrawitemset.drawItems) {
-                        this.__addDrawItem(glshader, glmaterial, glGeom, drawItem);
+                    for (let glgeomitem of gldrawitemset.glgeomitems) {
+                        this.__addDrawItem(glshader, glmaterial, glGeom, glgeomitem);
                     }
                 }
             }
@@ -70,9 +75,10 @@ class GLTransparentGeomsPass extends GLPass {
     }
 
     sortItems(viewPos) {
-        for (let transparentItem of this.transparentItems)
-            transparentItem.dist = transparentItem.drawItem.geomItem.getGeomXfo().tr.distanceTo(viewPos);
-        this.transparentItems.sort((a, b) => (a.dist > b.dist) ? -1 : ((a.dist < b.dist) ? 1 : 0));
+        for (let drawItem of this.drawItems) {
+            drawItem.dist = drawItem.glgeomitem.geomItem.getGeomXfo(drawItem.pathIndex).tr.distanceTo(viewPos);
+        }
+        this.drawItems.sort((a, b) => (a.dist > b.dist) ? -1 : ((a.dist < b.dist) ? 1 : 0));
         this.prevSortCameraPos = viewPos;
         this.resort = false;
     }
@@ -82,8 +88,8 @@ class GLTransparentGeomsPass extends GLPass {
         let currentglShader;
         let currentglMaterial;
         let currentglGeom;
-        for (let transparentItem of this.transparentItems) {
-            const drawItem = transparentItem.drawItem;
+        for (let transparentItem of this.drawItems) {
+            const glgeomitem = transparentItem.glgeomitem;
 
             if (currentglShader != transparentItem.glshader) {
                 // Some passes, like the depth pass, bind custom uniforms.
@@ -106,7 +112,7 @@ class GLTransparentGeomsPass extends GLPass {
                 }
             }
 
-            if (drawItem.bind(renderstate)) {
+            if (glgeomitem.bind(renderstate, transparentItem.pathIndex)) {
                 // Specify an non-instanced draw to the shader
                 if (renderstate.unifs.instancedDraw) {
                     gl.uniform1i(renderstate.unifs.instancedDraw.location, 0);
@@ -121,7 +127,7 @@ class GLTransparentGeomsPass extends GLPass {
     }
 
     draw(renderstate) {
-        if(this.transparentItems.length ==0)
+        if(this.drawItems.length ==0)
             return;
         
         const gl = this.__gl;

@@ -141,7 +141,7 @@ class Group extends TreeItem {
             this.mouseMove.emit(mousePos, event);
             this.mouseMoveOnItem.emit(mousePos, event, item);
         });
-        item.globalXfoChanged.connect((mode)=>{
+        item.globalXfoChanged.connect((pathIndex, mode)=>{
             if(mode == ValueSetMode.USER_SETVALUE)
                 this.__initialXfos[index] = item.getGlobalXfo();
         });

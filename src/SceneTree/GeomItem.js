@@ -8,7 +8,8 @@ import {
     NumberParameter,
     ColorParameter,
     Vec2Parameter,
-    XfoParameter
+    XfoParameter,
+    ListParameter
 } from './Parameters';
 
 import {
@@ -38,12 +39,12 @@ class GeomItem extends TreeItem {
 
         this.__materialParam = this.addParameter(new MaterialParameter('material'));
         this.__geomParam = this.addParameter(new GeometryParameter('geometry'));
-        this.__geomParam.valueChanged.connect(this._setBoundingBoxDirty.bind(this));
-        this.__geomParam.boundingBoxDirtied.connect(this._setBoundingBoxDirty.bind(this));
+        this.__geomParam.valueChanged.connect((mode)=> this._setBoundingBoxDirty(-1));
+        this.__geomParam.boundingBoxDirtied.connect((mode)=> this._setBoundingBoxDirty(-1));
 
         this.__lightmapCoordOffset = new Vec2();
         this.__geomOffsetXfoParam = this.addParameter(new XfoParameter('geomOffsetXfo'));
-        this.__geomXfoParam = this.addParameter(new XfoParameter('geomXfo'));
+        this.__geomXfoParam = this.addParameter(new ListParameter('geomXfo', Xfo));
 
         let _cleanGeomXfo = ()=>{
             return this.getGlobalXfo().multiply(this.__geomOffsetXfoParam.getValue());
@@ -84,6 +85,12 @@ class GeomItem extends TreeItem {
         cloned.__lightmapName = this.__lightmapName;
     }
 
+
+    __addPathIndex(pathIndex) {
+        super.__addPathIndex(pathIndex);
+        this.__geomXfoParam.insertElement(pathIndex, new Xfo())
+    }
+
     //////////////////////////////////////////
     // Geometry
 
@@ -115,11 +122,11 @@ class GeomItem extends TreeItem {
         this.__materialParam.setValue(material, mode);
     }
 
-    _cleanBoundingBox(bbox) {
-        bbox = super._cleanBoundingBox(bbox);
+    _cleanBoundingBox(pathIndex, bbox) {
+        bbox = super._cleanBoundingBox(pathIndex, bbox);
         const geom = this.getGeometry();
         if (geom) {
-            bbox.addBox3(geom.boundingBox, this.getGeomXfo());
+            bbox.addBox3(geom.boundingBox, this.getGeomXfo(pathIndex));
         }
         return bbox;
     }
@@ -135,8 +142,8 @@ class GeomItem extends TreeItem {
         this.__geomOffsetXfoParam.setValue(xfo);
     }
 
-    getGeomXfo() {
-        return this.__geomXfoParam.getValue();
+    getGeomXfo(index, mode) {
+        return this.__geomXfoParam.getElementValue(index, mode);
     }
 
 

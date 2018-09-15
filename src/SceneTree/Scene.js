@@ -2,6 +2,9 @@ import {
     SystemDesc
 } from '../BrowserDetection.js';
 import {
+    Vec3,
+    Color,
+    Xfo,
     JSON_stringify_fixedPrecision
 } from '../Math';
 import {
@@ -11,14 +14,24 @@ import {
     TreeItem
 } from './TreeItem.js';
 import {
+    Camera
+} from './Camera.js';
+import {
     AssetItem
 } from './AssetItem.js';
 import {
     Sphere
 } from './Geometry/Shapes/Sphere.js';
 import {
+    Material
+} from './Material.js';
+import {
     GeomItem
 } from './GeomItem.js';
+import {
+    Lines,
+    Grid
+} from './Geometry';
 import {
     SelectionManager
 } from './SelectionManager.js';
@@ -32,15 +45,28 @@ import {
 } from './Images';
 
 
+class Root extends TreeItem {
+    constructor() {
+        super('root')
+        this.__paths = [
+            ['root']
+        ]
+        this.__addOwnerIndex(0);
+        this.__addPathIndex(0);
+
+    }
+}
+
 class Scene {
     constructor(resources) {
 
-        if(resources) {
+        if (resources) {
             resourceLoader.setResources(resources);
         }
-        
+
         this.cameras = [];
-        this.__root = new TreeItem('root');
+        this.__root = new Root();
+        this.__root.addChild(new Camera('Camera'));
         this.__assets = [];
 
         // Env map used for background and reflections.
@@ -114,7 +140,7 @@ class Scene {
     }
 
     setEnvMapName(envMapName) {
-        if(envMapName.endsWith('.vlh'))
+        if (envMapName.endsWith('.vlh'))
             envMapName = envMapName.splice(0, envMapName.length = 4);
         const envMap = new EnvMap(envMapName + this.__envmapLOD + ".vlh", resourceLoader);
         this.setEnvMap(envMap);
@@ -138,6 +164,46 @@ class Scene {
         return this.cameras[index];
     }
 
+
+    //////////////////////////////////
+    // Lightmaps
+    getCamera() {
+        return this.__root.getChildByName('Camera')
+    }
+
+    setupGrid(gridSize, gridColor, resolution, lineThickness) {
+        const gridTreeItem = new TreeItem('Grid');
+
+        const gridMaterial = new Material('gridMaterial', 'LinesShader');
+        gridMaterial.getParameter('Color').setValue(gridColor);
+        const grid = new Grid(gridSize, gridSize, resolution, resolution, true);
+        gridTreeItem.addChild(new GeomItem('GridItem', grid, gridMaterial));
+
+        const axisLine = new Lines();
+        axisLine.setNumVertices(2);
+        axisLine.setNumSegments(1);
+        axisLine.setSegment(0, 0, 1);
+        axisLine.getVertex(0).set(gridSize * -0.5, 0.0, 0.0);
+        axisLine.getVertex(1).set(gridSize * 0.5, 0.0, 0.0);
+
+        const gridXAxisMaterial = new Material('gridXAxisMaterial', 'LinesShader');
+        gridXAxisMaterial.getParameter('Color').setValue(new Color(gridColor.luminance(), 0, 0));
+        gridTreeItem.addChild(new GeomItem('xAxisLineItem', axisLine, gridXAxisMaterial));
+
+        const gridZAxisMaterial = new Material('gridZAxisMaterial', 'LinesShader');
+        gridZAxisMaterial.getParameter('Color').setValue(new Color(0, gridColor.luminance(), 0));
+        const geomOffset = new Xfo();
+        geomOffset.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), Math.PI * 0.5);
+        const zAxisLineItem = new GeomItem('zAxisLineItem', axisLine, gridZAxisMaterial);
+        zAxisLineItem.setGeomOffsetXfo(geomOffset);
+        gridTreeItem.addChild(zAxisLineItem);
+
+        gridTreeItem.setSelectable(false, true);
+
+        this.__root.addChild(gridTreeItem);
+
+        return gridTreeItem;
+    }
     //////////////////////////////////
     // Lightmaps
 
@@ -237,10 +303,10 @@ class Scene {
 
     fromJSON(json, context) {
 
-        if(j.envMap) {
-          const envMap = new EnvMap('envMap', resourceLoader);
-          envMap.fromJSON(j.envMap);
-          this.setEnvMap(envMap);
+        if (j.envMap) {
+            const envMap = new EnvMap('envMap', resourceLoader);
+            envMap.fromJSON(j.envMap);
+            this.setEnvMap(envMap);
         }
 
     }

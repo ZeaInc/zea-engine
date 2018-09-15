@@ -10,13 +10,12 @@ class GLDrawItemSet {
     constructor(gl, glgeom) {
         this.gl = gl;
         this.glgeom = glgeom;
-        this.drawItems = [];
+        this.glgeomitems = [];
         this.instancedIdsArray = null;
         this.instancedIdsBuffer = null;
         this.instancedIdsBufferDirty = true;
         this.drawCount = 0; // The number of visible drawn geoms.
         // this.inverted = false;
-        this.lightmapName = undefined;
 
         this.drawCountChanged = new Signal();
     }
@@ -25,61 +24,40 @@ class GLDrawItemSet {
         return this.glgeom;
     }
 
-    getGLDrawItemCount() {
-        return this.drawItems.length;
-    }
-
-    getGLDrawItem(index) {
-        return this.drawItems[index];
-    }
-
     //  Note: used by patternade to iterate over times.
     getGLDrawItems() {
-        return this.drawItems;
+        return this.glgeomitems;
     }
 
     // isInverted() {
     //     return this.inverted;
     // }
 
-    getLightmapName() {
-        return this.lightmapName;
-    }
 
-    addDrawItem(gldrawItem) {
-        let index = this.drawItems.length;
-        this.drawItems.push(gldrawItem);
-        if (gldrawItem.visible) {
-            this.drawCount++;
-            this.drawCountChanged.emit(1);
+    addGLGeomItem(glgeomitem) {
+        let index = this.glgeomitems.length;
+        this.glgeomitems.push(glgeomitem);
+        if (glgeomitem.visible) {
+            let drawItemCount = glgeomitem.getDrawItemCount()
+            this.drawCount += drawItemCount;
+            this.drawCountChanged.emit(drawItemCount);
         }
 
-        if (this.drawItems.length == 1) {
-            // this.inverted = gldrawItem.isInverted();
-            this.lightmapName = gldrawItem.getGeomItem().getLightmapName();
+        if (this.glgeomitems.length == 1) {
+            // this.inverted = glgeomitem.isInverted();
+            this.lightmapName = glgeomitem.getGeomItem().getLightmapName();
         }
 
-        gldrawItem.visibilityChanged.connect((visible) => {
-            if (visible) {
-                this.drawCount++;
-                this.drawCountChanged.emit(1);
-            } else {
-                this.drawCount--;
-                this.drawCountChanged.emit(-1);
-            }
+        // TODO: per-path visibility.
+        glgeomitem.drawItemsChanged.connect((added, removed) => {
+            const change = (added - removed)
+            this.drawCount += change;
+            this.drawCountChanged.emit(change);
             this.instancedIdsBufferDirty = true;
         });
 
-        gldrawItem.destructing.connect(() => {
-            this.drawItems.splice(index, 1);
-            if (gldrawItem.visible) {
-                this.drawCount--;
-                this.drawCountChanged.emit(-1);
-            }
-            if (this.drawItems.length == 0) {
-                // Destroy??
-            }
-            this.instancedIdsBufferDirty = true;
+        glgeomitem.destructing.connect(() => {
+            this.glgeomitems.splice(index, 1);
         });
 
         this.instancedIdsBufferDirty = true;
@@ -90,7 +68,7 @@ class GLDrawItemSet {
     // Instance Ids
     genBuffers() {
         const gl = this.gl;
-        this.instancedIdsArray = new Float32Array(this.drawItems.length);
+        this.instancedIdsArray = new Float32Array(this.drawCount);
         this.instancedIdsBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.instancedIdsBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, this.instancedIdsArray, gl.STATIC_DRAW);
@@ -102,17 +80,18 @@ class GLDrawItemSet {
     updateInstanceIDsBuffer() {
         const gl = this.gl;
         if (!gl.floatTexturesSupported) {
-            this.visibleItems = [];
-            for (let i = 0; i < this.drawItems.length; i++) {
-                if (this.drawItems[i].visible) {
-                    this.visibleItems.push(i);
-                    this.lastVisible = i;
+            this.drawnItems = [];
+            for (let i = 0; i < this.glgeomitems.length; i++) {
+                const drawItemIndices = this.glgeomitems[i].getDrawItemIndices();
+                for (let drawItemIndex of drawItemIndices) {
+                    this.drawnItems.push(drawItemIndex);
+                    this.lastVisible = drawItemIndex;
                 }
             }
             this.instancedIdsBufferDirty = false;
             return;
         }
-        if (this.instancedIdsBuffer && this.drawItems.length != this.instancedIdsArray.length) {
+        if (this.instancedIdsBuffer && this.glgeomitems.length != this.instancedIdsArray.length) {
             this.gl.deleteBuffer(this.instancedIdsBuffer);
             this.instancedIdsBuffer = null;
         }
@@ -124,9 +103,10 @@ class GLDrawItemSet {
         // Note: the draw count can be less than the number of instances
         // we re-use the same buffer and simply invoke fewer draw calls.
         let offset = 0;
-        for (let i = 0; i < this.drawItems.length; i++) {
-            if (this.drawItems[i].visible) {
-                this.instancedIdsArray[offset] = this.drawItems[i].getId();
+        for (let i = 0; i < this.glgeomitems.length; i++) {
+            const drawItemIndices = this.glgeomitems[i].getDrawItemIndices();
+            for (let drawItemIndex of drawItemIndices) {
+                this.instancedIdsArray[offset] = drawItemIndex;
                 offset++;
                 this.lastVisible = i;
             }
@@ -149,7 +129,7 @@ class GLDrawItemSet {
         const gl = this.gl;
         const unifs = renderstate.unifs;
         this.glgeom.bind(renderstate, extrAttrBuffers);
-        if (this.drawItems[index].bind(renderstate)) {
+        if (this.glgeomitems[index].bind(renderstate)) {
             // Specify an non-instanced draw to the shader
             if (renderstate.unifs.instancedDraw) {
                 gl.uniform1i(renderstate.unifs.instancedDraw.location, 0);
@@ -201,26 +181,32 @@ class GLDrawItemSet {
         // renderstate.drawCount+=this.drawCount;
         // The set has a transform id stored in the texture.
         // Each set as at least one transform, but might have many...
-        if (!renderstate.glgeom.renderableInstanced()) {
-            // return;
-            if (this.drawItems[this.lastVisible].bind(renderstate)) {
-                // console.log("draw:"+ this.drawItems[this.lastVisible].getId());
-                // Specify an non-instanced draw to the shader
-                if (renderstate.unifs.instancedDraw) {
-                    gl.uniform1i(renderstate.unifs.instancedDraw.location, 0);
-                    gl.disableVertexAttribArray(renderstate.attrs.instancedIds.location);
-                }
-                this.glgeom.draw(renderstate);
-            }
-            return;
-        }
-        // return;
+        // if (!renderstate.glgeom.renderableInstanced()) {
+        //     // return;
+        //     if (this.glgeomitems[this.lastVisible].bind(renderstate)) {
+        //         // console.log("draw:"+ this.glgeomitems[this.lastVisible].getId());
+        //         // Specify an non-instanced draw to the shader
+        //         if (renderstate.unifs.instancedDraw) {
+        //             gl.uniform1i(renderstate.unifs.instancedDraw.location, 0);
+        //             gl.disableVertexAttribArray(renderstate.attrs.instancedIds.location);
+        //         }
+        //         this.glgeom.draw(renderstate);
+        //     }
+        //     return;
+        // }
+        // // return;
 
-        if (!gl.floatTexturesSupported || !gl.drawElementsInstanced) {
-            const len = this.visibleItems.length;
-            for (let i = 0; i < len; i++) {
-                this.drawItems[i].bind(renderstate);
-                this.glgeom.draw(renderstate);
+        if (!gl.floatTexturesSupported || !gl.drawElementsInstanced || !renderstate.glgeom.renderableInstanced()) {
+            if (renderstate.unifs.instancedDraw) {
+                gl.uniform1i(renderstate.unifs.instancedDraw.location, 0);
+                gl.disableVertexAttribArray(renderstate.attrs.instancedIds.location);
+            }
+            for (let i = 0; i < this.glgeomitems.length; i++) {
+                const drawItemIndices = this.glgeomitems[i].getDrawItemIndices();
+                for (let i=0; i < drawItemIndices; i++) {
+                    this.glgeomitems[i].bind(renderstate, i);
+                    this.glgeom.draw(renderstate);
+                }
             }
         } else {
             // console.log("draw:"+ this.instancedIdsArray);

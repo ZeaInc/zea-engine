@@ -24,9 +24,6 @@ import {
     GLMesh
 } from '../GLMesh.js';
 import {
-    GLDrawItem
-} from '../GLDrawItem.js';
-import {
     Gizmo
 } from '../Gizmos/Gizmo.js';
 

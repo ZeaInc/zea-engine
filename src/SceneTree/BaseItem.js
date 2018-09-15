@@ -33,11 +33,8 @@ class BaseItem extends ParameterOwner {
         if (name == undefined)
             name = this.constructor.name;
         this.__name = name;
-        this.__id = id;
         this.__owners = [];
-        this.__paths = [
-            [name]
-        ];
+        this.__paths = [];
         this.__parentToPathIndex = [];
         this.__pathToParentIndex = [];
 
@@ -85,12 +82,6 @@ class BaseItem extends ParameterOwner {
         this.nameChanged.emit(name);
     }
 
-    getId() {
-        return this.__id;
-    }
-
-
-
     //////////////////////////////////////////
     // Flags
 
@@ -132,14 +123,14 @@ class BaseItem extends ParameterOwner {
     }
 
     addOwner(ownerItem) {
-        const ownerIndex = this.__ownerRefIds.length;
         this.addRef(ownerItem);
-        const ownerIndex = this.__owners.length();
-        this.__owners.push(ownerItem)
+        const ownerIndex = this.__owners.length;
+        this.__owners.push(ownerItem);
+
+        this.__addOwnerIndex(ownerIndex)
 
         const parentPaths = ownerItem.getPaths();
         this.__parentToPathIndex.push(this.__paths.length)
-        this.__parentToPathIndex.push(parentPaths.length)
         for(let i=0; i<parentPaths.length; i++) {
             this.__addPath(ownerIndex, i);
         }
@@ -153,12 +144,21 @@ class BaseItem extends ParameterOwner {
 
     //////////////////////////////////////////
     // Path
+    __generatePath(childIndex) {
+
+    }
+
+    __addPathIndex(pathIndex) {
+
+    }
+
     __addPath(parentIndex, parentPathIndex) {
-        const newPath = this.__owners.getPath(parentPathIndex).slice();
-        newPath.push(this.__id);
+        const newPath = this.__owners[parentIndex].getPath(parentPathIndex).slice();
+        newPath.push(this.__name);
         const pathIndex = this.__paths.length;
         this.__pathToParentIndex[pathIndex] = parentIndex;
         this.__paths.push(newPath);
+        this.__addPathIndex(pathIndex)
         this.pathAdded.emit(pathIndex)
     }
 
@@ -170,6 +170,10 @@ class BaseItem extends ParameterOwner {
     //         this.__paths[index].push(this.__name);
     //     }
     // }
+
+    getNumPaths() {
+        return this.__paths.length;
+    }
 
     getPaths() {
         return this.__paths;

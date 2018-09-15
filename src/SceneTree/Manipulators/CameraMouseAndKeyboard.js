@@ -58,7 +58,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
         const orbitRate = this.__orbitRateParam.getValue();
 
         if (this.__keyboardMovement) {
-            const globalXfo = viewport.getCamera().getGlobalXfo();
+            const globalXfo = viewport.getCamera().getGlobalXfo(0);
             this.__mouseDownCameraXfo = globalXfo.clone();
             this.__mouseDownZaxis = globalXfo.ori.getZaxis();
             const targetOffset = this.__mouseDownZaxis.scale(-focalDistance);
@@ -82,9 +82,9 @@ class CameraMouseAndKeyboard extends ParameterOwner {
             // TODO: debug this potential regression. we now use the generic method which emits a signal.
             // Avoid generating a signal because we have an animation frame occuring.
             // see: onKeyPressed
-            viewport.getCamera().setGlobalXfo(globalXfo);
+            viewport.getCamera().setGlobalXfo(0, globalXfo);
         } else {
-            viewport.getCamera().setGlobalXfo(globalXfo);
+            viewport.getCamera().setGlobalXfo(0, globalXfo);
         }
     }
 
@@ -93,7 +93,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
         const orbitRate = this.__orbitRateParam.getValue();
 
         if (this.__keyboardMovement) {
-            const globalXfo = viewport.getCamera().getGlobalXfo();
+            const globalXfo = viewport.getCamera().getGlobalXfo(0);
             this.__mouseDownCameraXfo = globalXfo.clone();
             this.__mouseDownZaxis = globalXfo.ori.getZaxis();
             const targetOffset = this.__mouseDownZaxis.scale(-focalDistance);
@@ -119,9 +119,9 @@ class CameraMouseAndKeyboard extends ParameterOwner {
             // TODO: debug this potential regression. we now use the generic method which emits a signal.
             // Avoid generating a signal because we have an animation frame occuring.
             // see: onKeyPressed
-            viewport.getCamera().setGlobalXfo(globalXfo);
+            viewport.getCamera().setGlobalXfo(0, globalXfo);
         } else {
-            viewport.getCamera().setGlobalXfo(globalXfo);
+            viewport.getCamera().setGlobalXfo(0, globalXfo);
         }
     }
 
@@ -137,14 +137,14 @@ class CameraMouseAndKeyboard extends ParameterOwner {
         delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
         delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight));
 
-        viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
+        viewport.getCamera().setGlobalXfo(0, this.__mouseDownCameraXfo.multiply(delta));
     }
 
     dolly(dragVec, viewport) {
         const dollyDist = dragVec.x * this.__dollySpeedParam.getValue();
         const delta = new Xfo();
         delta.tr.set(0, 0, dollyDist);
-        viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
+        viewport.getCamera().setGlobalXfo(0, this.__mouseDownCameraXfo.multiply(delta));
     }
 
     panAndZoom(panDelta, dragDist, viewport) {
@@ -164,16 +164,16 @@ class CameraMouseAndKeyboard extends ParameterOwner {
         const zoomDist = dragDist * focalDistance;
         viewport.getCamera().setFocalDistance(this.__mouseDownFocalDist + zoomDist);
         delta.tr.z += zoomDist;
-        viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
+        viewport.getCamera().setGlobalXfo(0, this.__mouseDownCameraXfo.multiply(delta));
     }
 
     initDrag(viewport) {
         const focalDistance = viewport.getCamera().getFocalDistance();
         this.__mouseDragDelta.set(0, 0);
-        this.__mouseDownCameraXfo = viewport.getCamera().getGlobalXfo().clone();
-        this.__mouseDownZaxis = viewport.getCamera().getGlobalXfo().ori.getZaxis();
+        this.__mouseDownCameraXfo = viewport.getCamera().getGlobalXfo(0).clone();
+        this.__mouseDownZaxis = viewport.getCamera().getGlobalXfo(0).ori.getZaxis();
         const targetOffset = this.__mouseDownZaxis.scale(-focalDistance);
-        this.__mouseDownCameraTarget = viewport.getCamera().getGlobalXfo().tr.add(targetOffset);
+        this.__mouseDownCameraTarget = viewport.getCamera().getGlobalXfo(0).tr.add(targetOffset);
         this.__mouseDownFocalDist = focalDistance;
     }
 
@@ -239,18 +239,18 @@ class CameraMouseAndKeyboard extends ParameterOwner {
         const focalDistance = viewport.getCamera().getFocalDistance();
         const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
         const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance;
-        const xfo = viewport.getCamera().getGlobalXfo();
+        const xfo = viewport.getCamera().getGlobalXfo(0);
         xfo.tr.addInPlace(xfo.ori.getZaxis().scale(zoomDist));
         if (this.__defaultManipulationState == 'orbit')
             viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
-        viewport.getCamera().setGlobalXfo(xfo);
+        viewport.getCamera().setGlobalXfo(0, xfo);
         this.movementFinished.emit();
     }
 
     __integrateVelocityChange(velChange, viewport) {
         const delta = new Xfo();
         delta.tr = this.__velocity.normalize().scale(this.__maxVel);
-        viewport.getCamera().setGlobalXfo(viewport.getCamera().getGlobalXfo().multiply(delta));
+        viewport.getCamera().setGlobalXfo(0, viewport.getCamera().getGlobalXfo(0).multiply(delta));
     }
 
     onKeyPressed(key, event, viewport) {
