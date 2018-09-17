@@ -39,21 +39,19 @@ class GeomItem extends TreeItem {
 
         this.__materialParam = this.addParameter(new MaterialParameter('material'));
         this.__geomParam = this.addParameter(new GeometryParameter('geometry'));
-        this.__geomParam.valueChanged.connect((mode)=> this._setBoundingBoxDirty(-1));
-        this.__geomParam.boundingBoxDirtied.connect((mode)=> this._setBoundingBoxDirty(-1));
+        this.__geomParam.valueChanged.connect((mode) => this._setBoundingBoxDirty(-1));
+        this.__geomParam.boundingBoxDirtied.connect((mode) => this._setBoundingBoxDirty(-1));
 
         this.__lightmapCoordOffset = new Vec2();
         this.__geomOffsetXfoParam = this.addParameter(new XfoParameter('geomOffsetXfo'));
         this.__geomXfoParam = this.addParameter(new ListParameter('geomXfo', Xfo));
 
-        let _cleanGeomXfo = (pathIndex)=>{
-            return this.getGlobalXfo(pathIndex).multiply(this.__geomOffsetXfoParam.getValue());
-        }
-        this.__globalXfoParam.elementValueChanged.connect((index, changeType)=>{
-            this.__geomXfoParam.setElementDirty(index, _cleanGeomXfo);
+
+        this.__globalXfoParam.elementValueChanged.connect((index, changeType) => {
+            this.__geomXfoParam.setElementDirty(index, this._cleanGeomXfo.bind(this));
         });
-        this.__geomOffsetXfoParam.valueChanged.connect((changeType)=>{
-            this.__geomXfoParam.setDirty(()=>_cleanGeomXfo(-1));
+        this.__geomOffsetXfoParam.valueChanged.connect((changeType) => {
+            this.__geomXfoParam.setDirty(() => this._cleanGeomXfo(-1));
         });
 
         this.geomXfoChanged = this.__geomXfoParam.elementValueChanged;
@@ -85,10 +83,23 @@ class GeomItem extends TreeItem {
         cloned.__lightmapName = this.__lightmapName;
     }
 
+    //////////////////////////////////////////
+    // Ownership
+
+    setOwnerAtIndex(ownerIndex, ownerItem, addChild = true) {
+        super.setOwnerAtIndex(ownerIndex, ownerItem);
+    }
 
     __addPathIndex(pathIndex) {
-        super.__addPathIndex(pathIndex);
         this.__geomXfoParam.insertElement(pathIndex, new Xfo())
+
+        super.__addPathIndex(pathIndex);
+    }
+
+    __addPath(ownerIndex, parentPathIndex) {
+        const pathIndex = super.__addPath(ownerIndex, parentPathIndex);
+        this.__geomXfoParam.setElementDirty(pathIndex, this._cleanGeomXfo.bind(this));
+        return pathIndex;
     }
 
     //////////////////////////////////////////
@@ -133,7 +144,11 @@ class GeomItem extends TreeItem {
 
     //////////////////////////////////////////
     // Xfos
-    
+
+    _cleanGeomXfo(pathIndex) {
+        return this.getGlobalXfo(pathIndex).multiply(this.__geomOffsetXfoParam.getValue());
+    }
+
     getGeomOffsetXfo() {
         return this.__geomOffsetXfoParam.getValue();
     }
@@ -182,7 +197,7 @@ class GeomItem extends TreeItem {
         super.readBinary(reader, context);
 
         context.numGeomItems++;
-        
+
         this.__lightmapName = context.assetItem.getName();
 
         const itemflags = reader.loadUInt8();
@@ -205,9 +220,9 @@ class GeomItem extends TreeItem {
         // Note: to save space, some values are skipped if they are identity values 
         const geomOffsetXfoFlag = 1 << 2;
         if (itemflags & geomOffsetXfoFlag) {
-            this.__geomOffsetXfoParam.setValue(new Xfo( reader.loadFloat32Vec3(),
-                                                        reader.loadFloat32Quat(),
-                                                        reader.loadFloat32Vec3()))
+            this.__geomOffsetXfoParam.setValue(new Xfo(reader.loadFloat32Vec3(),
+                reader.loadFloat32Quat(),
+                reader.loadFloat32Vec3()))
         }
 
         const materialFlag = 1 << 3;
@@ -220,8 +235,7 @@ class GeomItem extends TreeItem {
                 material = materialLibrary.getMaterial('Default');
             }
             this.setMaterial(material);
-        }
-        else {
+        } else {
             // Force nodes to have a material so we can see them.
             this.setMaterial(context.assetItem.getMaterialLibrary().getMaterial('Default'));
         }

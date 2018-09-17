@@ -51,10 +51,12 @@ class Root extends TreeItem {
         this.__paths = [
             ['root']
         ]
-        this.__addOwnerIndex(0);
-        this.__addPathIndex(0);
+        this.addOwnerIndex(0);
+        this.__addPath(0, -1);
     }
 }
+
+const defaultGridColor = new Color(.53, .53, .53);
 
 class Scene {
     constructor(resources) {
@@ -170,7 +172,7 @@ class Scene {
         return this.__root.getChildByName('Camera')
     }
 
-    setupGrid(gridSize, gridColor, resolution, lineThickness) {
+    setupGrid(gridSize=5, resolution=50, gridColor=defaultGridColor) {
         const gridTreeItem = new TreeItem('Grid');
 
         const gridMaterial = new Material('gridMaterial', 'LinesShader');

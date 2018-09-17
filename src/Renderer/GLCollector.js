@@ -374,7 +374,7 @@ class GLCollector {
 
     getGeomItemAndPathIndex(drawItemIndex) {
         const drawItemIndices = this.__drawItemToGLGeomItem[drawItemIndex];
-        return { geomItem: this.__glGeomItems[drawItemIndices[0]].geomItem, pathIndex: drawItemIndices[0] };
+        return { geomItem: this.__glGeomItems[drawItemIndices[0]].geomItem, pathIndex: drawItemIndices[1] };
     };
 
     //////////////////////////////////////////////////

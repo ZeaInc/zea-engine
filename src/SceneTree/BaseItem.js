@@ -34,8 +34,7 @@ class BaseItem extends ParameterOwner {
             name = this.constructor.name;
         this.__name = name;
         this.__owners = [];
-        this.__paths = [];
-        this.__parentToPathIndex = [];
+        this.__numPaths = 0;
         this.__parentToPathIndices = [];
         this.__pathToParentIndex = [];
         this.__flags = 0;
@@ -98,6 +97,79 @@ class BaseItem extends ParameterOwner {
 
 
     //////////////////////////////////////////
+    // Owner Item
+
+    getOwner(index = 0) {
+        return this.getRefer(index);
+    }
+
+    addOwnerIndex() {
+        const ownerIndex = this.__owners.length;
+        this.__owners.push(null);
+        this.__parentToPathIndices[ownerIndex] = [];
+        return ownerIndex;
+    }
+
+    setOwnerAtIndex(ownerIndex, ownerItem) {
+        this.addRef(ownerItem);
+        this.__owners[ownerIndex] = ownerItem;
+        this.__parentToPathIndices[ownerIndex] = [];
+
+        const numParentPaths = ownerItem.getNumPaths();
+        for(let i=0; i<numParentPaths; i++) {
+            this.__addPath(ownerIndex, i);
+        }
+        ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
+    }
+
+    addOwner(ownerItem) {
+        const ownerIndex = this.addOwnerIndex();
+        this.setOwnerAtIndex(ownerIndex, ownerItem);
+        return ownerIndex;
+    }
+
+    removeOwner(ownerIndex) {
+        return this.removeRef(this.__owners[ownerIndex]);
+    }
+
+    getOwnerIndicesAtPath(pathIndex){
+        return this.__pathToParentIndex[pathIndex];
+    }
+
+    //////////////////////////////////////////
+    // Path
+    __generatePath(childIndex) {
+
+    }
+
+    __addPathIndex(pathIndex) {
+
+    }
+
+    __addPath(ownerIndex, parentPathIndex) {
+        const pathIndex = this.__numPaths;
+        this.__pathToParentIndex[pathIndex] = { ownerIndex, parentPathIndex };
+        this.__parentToPathIndices[ownerIndex].push(pathIndex);
+        this.__numPaths++;
+        this.__addPathIndex(pathIndex)
+        this.pathAdded.emit(pathIndex)
+        return pathIndex;
+    }
+
+    getNumPaths() {
+        return this.__numPaths;
+    }
+
+    getPaths() {
+        return this.__paths;
+    }
+
+    getPath(index=0) {
+        return this.__paths[index];
+    }
+
+
+    //////////////////////////////////////////
     // Path Traversial
 
     resolvePath(path, index) {
@@ -114,78 +186,6 @@ class BaseItem extends ParameterOwner {
             return param;
         }
         throw ("Invalid path:" + path + " member not found");
-    }
-
-
-    //////////////////////////////////////////
-    // Owner Item
-
-    getOwner(index = 0) {
-        return this.getRefer(index);
-    }
-
-    addOwner(ownerItem) {
-        this.addRef(ownerItem);
-        const ownerIndex = this.__owners.length;
-        this.__owners.push(ownerItem);
-
-        this.__addOwnerIndex(ownerIndex)
-
-        const parentPaths = ownerItem.getPaths();
-        this.__parentToPathIndex.push(this.__paths.length)
-
-        this.__parentToPathIndices[ownerIndex] = [];
-        for(let i=0; i<parentPaths.length; i++) {
-            this.__addPath(ownerIndex, i);
-        }
-        ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
-        return ownerIndex;
-    }
-
-    removeOwner(parentItem) {
-        return this.removeRef(parentItem);
-    }
-
-    //////////////////////////////////////////
-    // Path
-    __generatePath(childIndex) {
-
-    }
-
-    __addPathIndex(pathIndex) {
-
-    }
-
-    __addPath(ownerIndex, parentPathIndex) {
-        const newPath = this.__owners[ownerIndex].getPath(parentPathIndex).slice();
-        newPath.push(this.__name);
-        const pathIndex = this.__paths.length;
-        this.__pathToParentIndex[pathIndex] = [ownerIndex, parentPathIndex];
-        this.__parentToPathIndices[ownerIndex].push(pathIndex);
-        this.__paths.push(newPath);
-        this.__addPathIndex(pathIndex)
-        this.pathAdded.emit(pathIndex)
-    }
-
-    // __updatePath(index = 0) {
-    //     if (this.__ownerItem == undefined)
-    //         this.__paths[index] = [this.__name];
-    //     else {
-    //         this.__paths[index] = this.__ownerItem.getPath().slice();
-    //         this.__paths[index].push(this.__name);
-    //     }
-    // }
-
-    getNumPaths() {
-        return this.__paths.length;
-    }
-
-    getPaths() {
-        return this.__paths;
-    }
-
-    getPath(index=0) {
-        return this.__paths[index];
     }
 
     //////////////////////////////////////////
