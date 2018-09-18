@@ -26,6 +26,12 @@ import {
 
 class VLHImage extends BaseImage {
     constructor(name, params = {}) {
+
+        let filepath;
+        if (name.lastIndexOf('.') != -1) {
+            filepath = name;
+            name = name.substring(name.lastIndexOf('/')+1, name.lastIndexOf('.'));
+        }
         super(name, params);
         
         this.__loaded = false;
@@ -35,7 +41,7 @@ class VLHImage extends BaseImage {
         this.__stream = 'stream' in params ? params['stream'] : false;
         this.type = 'FLOAT';
 
-        const fileParam = this.addParameter(new FilePathParameter('FilePath', 'vlh'));
+        const fileParam = this.addParameter(new FilePathParameter('FilePath'));
         fileParam.valueChanged.connect(()=>{
             this.loaded.untoggle();
 
@@ -56,6 +62,10 @@ class VLHImage extends BaseImage {
             const file = fileParam.getFile();
             this.__loadVLH(fileId, file);
         });
+
+        if(filepath) {
+            this.getParameter('FilePath').setFilepath(filepath);
+        }
     }
 
     getDOMElement(){
@@ -69,9 +79,7 @@ class VLHImage extends BaseImage {
     __decodeData(entries) {
         const ldr = entries.ldr;
         const cdm = entries.cdm;
-        const samples = entries.samples;
 
-        
         /////////////////////////////////
         // Parse the data.
         const blob = new Blob([ldr.buffer]);

@@ -46,9 +46,10 @@ class FileImage extends BaseImage {
         if(filePath.constructor == Object){
             params = filePath;
         }
-        if(name && resourceLoader.resourceAvailable(name)) {
-            filePath = name;
-            name = undefined;
+        let filepath;
+        if (name.lastIndexOf('.') != -1) {
+            filepath = name;
+            name = name.substring(name.lastIndexOf('/')+1, name.lastIndexOf('.'));
         }
 
         super(name, params);

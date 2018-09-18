@@ -27,9 +27,8 @@ import {
 class EnvMap extends VLHImage {
     constructor(name, params = {}) {
         super(name, params);
-
-        this.getParameter('FilePath').setSupportedExts('vlenv');
     }
+
     __decodeData(entries) {
         super.__decodeData(entries);
 
