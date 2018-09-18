@@ -89,6 +89,11 @@
         console.log("Mouse Down on Root: pathIndex :", intersectionData);
     });
     renderer.getViewport().mouseDownOnGeom.connect((event, geomItem, intersectionData)=>{
-        console.log("Mouse Down on Geom:" + geomItem.getName() + " pathIndex :" + intersectionData.pathIndex);
+        const path = geomItem.getPath(intersectionData.pathIndex)
+        console.log("Mouse Down on Geom:", geomItem.getName(), " path :", path);
+
+        const resolvedItem = scene.getRoot().resolvePath(path, 1);
+        if(resolvedItem !== geomItem)
+            console.warn("getPath/resolvePath not working");
     });
 });

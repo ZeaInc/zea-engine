@@ -1,7 +1,7 @@
 import chai from 'chai';
 import {
     Xfo
-} from '../../lib/Visualive-0.0.5.js';
+} from '../../lib/Visualive.js';
 
 chai.expect();
 const expect = chai.expect;

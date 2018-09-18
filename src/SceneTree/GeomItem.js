@@ -134,7 +134,7 @@ class GeomItem extends TreeItem {
     }
 
     _cleanBoundingBox(pathIndex, bbox) {
-        bbox = super._cleanBoundingBox(pathIndex, bbox);
+        super._cleanBoundingBox(pathIndex, bbox);
         const geom = this.getGeometry();
         if (geom) {
             bbox.addBox3(geom.boundingBox, this.getGeomXfo(pathIndex));

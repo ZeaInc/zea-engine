@@ -48,9 +48,6 @@ import {
 class Root extends TreeItem {
     constructor() {
         super('root')
-        this.__paths = [
-            ['root']
-        ]
         this.addOwnerIndex(0);
         this.__addPath(0, -1);
     }
