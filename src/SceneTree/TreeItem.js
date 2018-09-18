@@ -380,7 +380,7 @@ class TreeItem extends BaseItem {
         return bbox;
     }
 
-    _setBoundingBoxDirty(pathIndex) {
+    _setBoundingBoxDirty(pathIndex=-1) {
         if (pathIndex == -1) {
             for (let i = 0; i < this.getNumPaths(); i++) {
                 this.__boundingBoxParam.setElementDirty(i, this._cleanBoundingBox);
@@ -650,8 +650,8 @@ class TreeItem extends BaseItem {
     traverse(callback) {
         const __c = (treeItem) => {
             const children = treeItem.getChildren();
-            for (let childItemData of children) {
-                __t(childItemData.childItem);
+            for (let childItem of children) {
+                __t(childItem);
             }
         }
         const __t = (treeItem) => {

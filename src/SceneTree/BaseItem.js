@@ -121,17 +121,25 @@ class BaseItem extends ParameterOwner {
         this.__owners[ownerIndex] = { ownerItem, childIndexWithinOwner };
         this.__parentToPathIndices[ownerIndex] = [];
 
-        const numParentPaths = ownerItem.getNumPaths();
-        for(let i=0; i<numParentPaths; i++) {
-            this.__addPath(ownerIndex, i);
+        // TODO: add Owner interface to MaterialLibrary, GeomLibrary
+        if(ownerItem.getNumPaths) {
+            const numParentPaths = ownerItem.getNumPaths();
+            for(let i=0; i<numParentPaths; i++) {
+                this.__addPath(ownerIndex, i);
+            }
+            ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
         }
-        ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
     }
 
     addOwner(ownerItem) {
         const ownerIndex = this.addOwnerIndex();
         this.setOwnerAtIndex(ownerIndex, ownerItem);
         return ownerIndex;
+    }
+
+    // For backwards compatiblity...
+    setOwner(ownerItem){
+        return this.addOwner(ownerItem);
     }
 
     removeOwner(ownerIndex) {
