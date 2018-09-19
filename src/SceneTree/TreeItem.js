@@ -167,6 +167,7 @@ class TreeItem extends BaseItem {
         if (ownerItem && childIndexWithinOwner == undefined) {
             childIndexWithinOwner = ownerItem.addChild(this, ownerIndex);
         }
+        console.log("setOwnerAtIndex:", childIndexWithinOwner)
         super.setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner);
         if (ownerItem) {
             ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
@@ -425,7 +426,7 @@ class TreeItem extends BaseItem {
         // Note: this index is the index this item holds in the child's owner array.
         if (childsOwnerIndex == undefined) {
             childsOwnerIndex = childItem.addOwnerIndex();
-            childItem.setOwnerAtIndex(childsOwnerIndex, this, false);
+            childItem.setOwnerAtIndex(childsOwnerIndex, this, index);
         }
 
         this.__childItems.splice(index, 0, {
@@ -791,52 +792,74 @@ class TreeItem extends BaseItem {
 
         context.numTreeItems++;
 
-        let itemflags = reader.loadUInt8();
-
+        const itemflags = reader.loadUInt8();
         const visibilityFlag = 1 << 1;
         // this.setVisible(itemflags&visibilityFlag);
-
         //this.setVisible(j.visibility);
         // Note: to save space, some values are skipped if they are identity values 
         const localXfoFlag = 1 << 2;
-        if (itemflags & localXfoFlag) {
-            let xfo = new Xfo();
-            xfo.tr = reader.loadFloat32Vec3();
-            xfo.ori = reader.loadFloat32Quat();
-            xfo.sc.set(reader.loadFloat32());
-            // console.log(this.getPath() + " TreeItem:" + xfo.toString());
-            this.__localXfoParam.setValue(xfo, Visualive.ValueSetMode.DATA_LOAD);
-        }
-
         const bboxFlag = 1 << 3;
-        if (itemflags & bboxFlag)
-            this.__boundingBoxParam.setValue(new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()), Visualive.ValueSetMode.DATA_LOAD);
 
-        const numChildren = reader.loadUInt32();
-        if (numChildren > 0) {
+        if(context.binfileversion < 2) {
 
-            const toc = reader.loadUInt32Array(numChildren);
-            for (let i = 0; i < numChildren; i++) {
-                if (toc[i] in context.loadedItems) {
-                    const childItem = context.loadedItems[toc[i]];
+            if (itemflags & localXfoFlag) {
+                const xfo = new Xfo();
+                xfo.tr = reader.loadFloat32Vec3();
+                xfo.ori = reader.loadFloat32Quat();
+                xfo.sc.set(reader.loadFloat32());
+                // console.log(this.getPath() + " TreeItem:" + xfo.toString());
+                this.__localXfoParam.setValue(xfo, Visualive.ValueSetMode.DATA_LOAD);
+            }
+
+            if (itemflags & bboxFlag)
+                this.__boundingBoxParam.setValue(new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()), Visualive.ValueSetMode.DATA_LOAD);
+
+            const numChildren = reader.loadUInt32();
+            if (numChildren > 0) {
+
+                const toc = reader.loadUInt32Array(numChildren);
+                for (let i = 0; i < numChildren; i++) {
+                    reader.seek(toc[i]); // Reset the pointer to the start of the item data.
+
+                    const childType = reader.loadStr();
+                    // const childName = reader.loadStr();
+                    const childItem = sgFactory.constructClass(childType);
+                    if (!childItem) {
+                        const childName = reader.loadStr();
+                        console.warn("Unable to construct child:" + childName + " of type:" + childType);
+                        continue;
+                    }
+
+                    reader.seek(toc[i]); // Reset the pointer to the start of the item data.
+                    childItem.readBinary(reader, context);
                     this.addChild(childItem, false, false);
-                    continue;
                 }
+            }
+        }
+        else {
+            const numOwners = reader.loadUInt32();
+            const toc = reader.loadUInt32Array(numOwners);
 
-                reader.seek(toc[i]); // Reset the pointer to the start of the item data.
+            for (let i = 0; i < numOwners; i++) {
+                if (toc[i] in context.loadedItems) {
+                    const ownerIndex = this.addOwnerIndex();
 
-                const childType = reader.loadStr();
-                // const childName = reader.loadStr();
-                const childItem = sgFactory.constructClass(childType);
-                if (!childItem) {
-                    const childName = reader.loadStr();
-                    console.warn("Unable to construct child:" + childName + " of type:" + childType);
-                    continue;
+                    if (itemflags & localXfoFlag) {
+                        const xfo = new Xfo();
+                        xfo.tr = reader.loadFloat32Vec3();
+                        xfo.ori = reader.loadFloat32Quat();
+                        xfo.sc.set(reader.loadFloat32());
+                        // console.log(this.getPath() + " TreeItem:" + xfo.toString());
+                        this.__localXfoParam.setElementValue(ownerIndex, xfo, Visualive.ValueSetMode.DATA_LOAD);
+                    }
+                    // if (itemflags & bboxFlag) {
+                    //     const bbox = new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3());
+                    //     this.__boundingBoxParam.setElementValue(ownerIndex, bbox, Visualive.ValueSetMode.DATA_LOAD);
+                    // }
+
+                    const ownerItem = context.loadedItems[toc[i]];
+                    this.setOwnerAtIndex(ownerIndex, ownerItem);
                 }
-
-                reader.seek(toc[i]); // Reset the pointer to the start of the item data.
-                childItem.readBinary(reader, context);
-                this.addChild(childItem, false, false);
             }
         }
     }

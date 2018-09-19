@@ -58,8 +58,7 @@ class GLVisualiveRenderer extends GLRenderer {
 
         /////////////////////////
         // Renderer Setup
-        this.__exposure = 0.0;
-        this.__exposureRange = options.exposureRange ? options.exposureRange : [-5, 10];
+        this.__exposure = 1.0;
         this.__tonemap = true;
         this.__gamma = 2.2;
         this.__antialiase = false;
@@ -369,7 +368,7 @@ class GLVisualiveRenderer extends GLRenderer {
         renderstate.debugLightmaps = this.__debugLightmaps;
         renderstate.planeDist = this._planeDist;
         renderstate.planeNormal = this.__cutPlaneNormal;
-        renderstate.exposure = Math.pow(2, this.__exposure);
+        renderstate.exposure = this.__exposure;//Math.pow(2, this.__exposure);
         renderstate.shaderopts = this.__preproc;
 
         if (this.__displayEnvironment)
