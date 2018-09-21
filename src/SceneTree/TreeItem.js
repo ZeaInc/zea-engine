@@ -87,6 +87,10 @@ class TreeItem extends BaseItem {
         this._setGlobalXfoDirty = this._setGlobalXfoDirty.bind(this);
         this._cleanBoundingBox = this._cleanBoundingBox.bind(this);
         this._setBoundingBoxDirty = this._setBoundingBoxDirty.bind(this);
+        this._cleanGlobalXfo = this._cleanGlobalXfo.bind(this);
+        this._cleanBoundingBox = this._cleanBoundingBox.bind(this);
+        this._childFlagsChanged = this._childFlagsChanged.bind(this)
+
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -167,7 +171,6 @@ class TreeItem extends BaseItem {
         if (ownerItem && childIndexWithinOwner == undefined) {
             childIndexWithinOwner = ownerItem.addChild(this, ownerIndex);
         }
-        console.log("setOwnerAtIndex:", childIndexWithinOwner)
         super.setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner);
         if (ownerItem) {
             ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
@@ -193,8 +196,8 @@ class TreeItem extends BaseItem {
 
     __addPath(ownerIndex, parentPathIndex) {
         const pathIndex = super.__addPath(ownerIndex, parentPathIndex);
-        this.__globalXfoParam.setElementDirty(pathIndex, this._cleanGlobalXfo.bind(this));
-        this.__boundingBoxParam.setElementDirty(pathIndex, this._cleanBoundingBox.bind(this));
+        this.__globalXfoParam.setElementDirty(pathIndex, this._cleanGlobalXfo);
+        // this.__boundingBoxParam.setElementDirty(pathIndex, this._cleanBoundingBox);
 
         // Push paths to children, or let children listen to signals?
         // for (let child of this.__childItems) {
@@ -238,25 +241,25 @@ class TreeItem extends BaseItem {
     }
 
     getLocalXfo(parentIndex, mode) {
-        if (parentIndex == undefined)
+        if (parentIndex == undefined || parentIndex instanceof Xfo)
             throw ("parentIndex must be specified")
         return this.__localXfoParam.getElementValue(parentIndex, mode);
     }
 
     setLocalXfo(parentIndex, xfo, mode) {
-        if (parentIndex == undefined)
+        if (parentIndex == undefined || parentIndex instanceof Xfo)
             throw ("parentIndex must be specified")
         this.__localXfoParam.setElementValue(parentIndex, xfo, mode);
     }
 
     getGlobalXfo(pathIndex, mode) {
-        if (pathIndex == undefined)
+        if (pathIndex == undefined || pathIndex instanceof Xfo)
             throw ("pathIndex must be specified")
         return this.__globalXfoParam.getElementValue(pathIndex, mode);
     }
 
     setGlobalXfo(pathIndex, xfo, mode) {
-        if (pathIndex == undefined)
+        if (pathIndex == undefined || pathIndex instanceof Xfo)
             throw ("pathIndex must be specified")
         this.__globalXfoParam.setElementValue(pathIndex, xfo, mode);
     }
@@ -286,7 +289,7 @@ class TreeItem extends BaseItem {
 
         const _setGlobalXfoDirty = (parentItemIndex, parentPathIndex) => {
             const pathIndex = this.__parentToPathIndices[parentItemIndex][parentPathIndex]
-            this.__globalXfoParam.setElementDirty(pathIndex, this._cleanGlobalXfo.bind(this));
+            this.__globalXfoParam.setElementDirty(pathIndex, this._cleanGlobalXfo);
         }
 
         if (parentItemIndex == -1) {
@@ -462,7 +465,7 @@ class TreeItem extends BaseItem {
         //         this._setBoundingBoxDirty(parentPathIndex)
         // });
 
-        childItem.flagsChanged.connect(this._childFlagsChanged.bind(this));
+        childItem.flagsChanged.connect(this._childFlagsChanged);
 
         // Propagate mouse event up ths tree.
         // Modity the 3rd arg to specify which path the event is propagating up.
@@ -648,7 +651,8 @@ class TreeItem extends BaseItem {
 
     // Traverse the tree structure from this point down
     // and fire the callback for each visited item
-    traverse(callback) {
+    traverse(callback, visitEachItemOnlyOnce=true) {
+        const visited = [];
         const __c = (treeItem) => {
             const children = treeItem.getChildren();
             for (let childItem of children) {
@@ -656,11 +660,14 @@ class TreeItem extends BaseItem {
             }
         }
         const __t = (treeItem) => {
+            if(visited.lastIndexOf(treeItem) != -1)
+                return;
+            visited.push(treeItem)
             if (callback(treeItem) == false)
                 return false;
             __c(treeItem);
         }
-        __c(this);
+        __t(this);
     }
     /////////////////////////
     // Events
@@ -800,7 +807,7 @@ class TreeItem extends BaseItem {
         const localXfoFlag = 1 << 2;
         const bboxFlag = 1 << 3;
 
-        if(context.binfileversion < 2) {
+        if(context.treefileversion < 2) {
 
             if (itemflags & localXfoFlag) {
                 const xfo = new Xfo();
@@ -838,28 +845,38 @@ class TreeItem extends BaseItem {
         }
         else {
             const numOwners = reader.loadUInt32();
-            const toc = reader.loadUInt32Array(numOwners);
 
             for (let i = 0; i < numOwners; i++) {
-                if (toc[i] in context.loadedItems) {
-                    const ownerIndex = this.addOwnerIndex();
+                const ownerAddr = reader.loadUInt32();
 
-                    if (itemflags & localXfoFlag) {
-                        const xfo = new Xfo();
-                        xfo.tr = reader.loadFloat32Vec3();
-                        xfo.ori = reader.loadFloat32Quat();
-                        xfo.sc.set(reader.loadFloat32());
-                        // console.log(this.getPath() + " TreeItem:" + xfo.toString());
-                        this.__localXfoParam.setElementValue(ownerIndex, xfo, Visualive.ValueSetMode.DATA_LOAD);
-                    }
-                    // if (itemflags & bboxFlag) {
-                    //     const bbox = new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3());
-                    //     this.__boundingBoxParam.setElementValue(ownerIndex, bbox, Visualive.ValueSetMode.DATA_LOAD);
-                    // }
+                const ownerIndex = this.addOwnerIndex();
 
-                    const ownerItem = context.loadedItems[toc[i]];
-                    this.setOwnerAtIndex(ownerIndex, ownerItem);
+                if (itemflags & localXfoFlag) {
+                    const xfo = new Xfo();
+                    xfo.tr = reader.loadFloat32Vec3();
+                    xfo.ori = reader.loadFloat32Quat();
+                    xfo.sc.set(reader.loadFloat32());
+                    // console.log(this.getPath() + " TreeItem:" + xfo.toString());
+                    this.__localXfoParam.setElementValue(ownerIndex, xfo, Visualive.ValueSetMode.DATA_LOAD);
                 }
+
+                if(ownerAddr == 0) {
+                    console.log("ownerAddr:", ownerAddr)
+                    this.__freeOwnerIndices.push(ownerIndex);
+                    continue;
+                }
+                if (!(ownerAddr in context.loadedItems)) {
+                    this.__freeOwnerIndices.push(ownerIndex);
+                    console.warn("Owner not found in file:" + ownerAddr);
+                    continue;
+                }
+                // if (itemflags & bboxFlag) {
+                //     const bbox = new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3());
+                //     this.__boundingBoxParam.setElementValue(ownerIndex, bbox, Visualive.ValueSetMode.DATA_LOAD);
+                // }
+
+                const ownerItem = context.loadedItems[ownerAddr];
+                this.setOwnerAtIndex(ownerIndex, ownerItem);
             }
         }
     }

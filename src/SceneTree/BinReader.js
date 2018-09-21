@@ -7,16 +7,19 @@ import {
     Box3
 } from '../Math';
 
+import {
+  SystemDesc
+} from '../BrowserDetection.js';
+
 class BinReader {
-    constructor(data, byteOffset = 0, isMobileDevice = true) {
+    constructor(data, byteOffset = 0) {
         this.__data = data;
         this.__byteOffset = byteOffset;
         this.__dataView = new DataView(this.__data);
-        this.__isMobileDevice = isMobileDevice;
     }
 
     get isMobileDevice() {
-        return this.__isMobileDevice;
+        return SystemDesc.isMobileDevice;
     }
 
     get data() {
@@ -104,7 +107,7 @@ class BinReader {
             return new Uint16Array();
         this.readPadd(2);
         let result;
-        if (this.__isMobileDevice) {
+        if (SystemDesc.isMobileDevice) {
             result = new Uint16Array(size);
             for (let i = 0; i < size; i++) {
                 result[i] = this.__dataView.getUint16(this.__byteOffset, true);
@@ -125,7 +128,7 @@ class BinReader {
             return new Uint32Array();
         this.readPadd(4);
         let result;
-        if (this.__isMobileDevice) {
+        if (SystemDesc.isMobileDevice) {
             result = new Uint32Array(size);
             for (let i = 0; i < size; i++) {
                 result[i] = this.__dataView.getUint32(this.__byteOffset, true);
@@ -146,7 +149,7 @@ class BinReader {
             return new Float32Array();
         this.readPadd(4);
         let result;
-        if (this.__isMobileDevice) {
+        if (SystemDesc.isMobileDevice) {
             result = new Float32Array(size);
             for (let i = 0; i < size; i++) {
                 result[i] = this.__dataView.getFloat32(this.__byteOffset, true);
