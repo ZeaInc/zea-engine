@@ -47,11 +47,14 @@ class GeomItem extends TreeItem {
         this.__geomXfoParam = this.addParameter(new ListParameter('geomXfo', Xfo));
 
 
+        this._cleanGeomXfo = this._cleanGeomXfo.bind(this);
+        this._cleanGeomXfos = this._cleanGeomXfos.bind(this);
+
         this.__globalXfoParam.elementValueChanged.connect((index, changeType) => {
-            this.__geomXfoParam.setElementDirty(index, this._cleanGeomXfo.bind(this));
+            this.__geomXfoParam.setElementDirty(index, this._cleanGeomXfo);
         });
         this.__geomOffsetXfoParam.valueChanged.connect((changeType) => {
-            this.__geomXfoParam.setDirty(() => this._cleanGeomXfo(-1));
+            this.__geomXfoParam.setDirty(this._cleanGeomXfos);
         });
 
         this.geomXfoChanged = this.__geomXfoParam.elementValueChanged;
@@ -61,6 +64,7 @@ class GeomItem extends TreeItem {
         this.geomAssigned = this.__geomParam.valueChanged;
 
 
+        this.__geomXfoParam.setDirty(this._cleanGeomXfos);
 
         if (geom)
             this.setGeometry(geom);
@@ -98,7 +102,7 @@ class GeomItem extends TreeItem {
 
     __addPath(ownerIndex, parentPathIndex) {
         const pathIndex = super.__addPath(ownerIndex, parentPathIndex);
-        this.__geomXfoParam.setElementDirty(pathIndex, this._cleanGeomXfo.bind(this));
+        // this.__geomXfoParam.setElementDirty(pathIndex, this._cleanGeomXfo.bind(this));
         return pathIndex;
     }
 
@@ -147,6 +151,12 @@ class GeomItem extends TreeItem {
 
     _cleanGeomXfo(pathIndex) {
         return this.getGlobalXfo(pathIndex).multiply(this.__geomOffsetXfoParam.getValue());
+    }
+    _cleanGeomXfos(geomXfos) {
+        let pathIndex = this.__numPaths;
+        while(pathIndex--) {
+            geomXfos[pathIndex] = this.getGlobalXfo(pathIndex).multiply(this.__geomOffsetXfoParam.getValue());
+        }
     }
 
     getGeomOffsetXfo() {

@@ -127,7 +127,7 @@ class BaseItem extends ParameterOwner {
             for(let i=0; i<numParentPaths; i++) {
                 this.__addPath(ownerIndex, i);
             }
-            ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
+            // ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
         }
     }
 

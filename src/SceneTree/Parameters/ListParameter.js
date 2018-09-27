@@ -40,7 +40,7 @@ class ListParameter extends Parameter {
         }
 
         this.__value.push(elem)
-        this.__elemCleanerFns.push([]);
+        // this.__elemCleanerFns.push([]);
         // this.setValue(this.__value);
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementAdded.emit(elem, this.__value.length - 1);
@@ -51,7 +51,7 @@ class ListParameter extends Parameter {
     removeElement(index) {
         const elem = this.__value[index];
         this.__value.splice(index, 1)
-        this.__elemCleanerFns.splice(index, 1);
+        // this.__elemCleanerFns.splice(index, 1);
         // this.setValue(this.__value)
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementRemoved.emit(elem, index);
@@ -61,7 +61,7 @@ class ListParameter extends Parameter {
         if (!this.__filter(elem))
             return;
         this.__value.splice(index, 0, elem);
-        this.__elemCleanerFns.splice(index, 0, []);
+        // this.__elemCleanerFns.splice(index, 0, []);
         // this.setValue(this.__value);
         this.__flags |= ParamFlags.USER_EDITED;
         this.elementAdded.emit(elem, index);
@@ -72,7 +72,7 @@ class ListParameter extends Parameter {
         // this is so that operators can read from the current value
         // to compute the next.
         let fns = this.__elemCleanerFns[index];
-        this.__elemCleanerFns[index] = [];
+        this.__elemCleanerFns[index] = null;
         for (let fn of fns) {
             const res = fn(index, this.__value[index]);
             if(res != undefined) 
@@ -85,8 +85,12 @@ class ListParameter extends Parameter {
         if(index == undefined) {
             throw("index not provided")
         }
-        if(mode == ValueGetMode.NORMAL && this.__elemCleanerFns[index].length > 0)
-            this._cleanElementValue(index);
+        if(mode == ValueGetMode.NORMAL){
+            if(super.isDirty())
+                this._clean();
+            if(this.__elemCleanerFns[index])
+                this._cleanElementValue(index);
+        } 
         return this.__value[index];
     }
 
@@ -104,8 +108,10 @@ class ListParameter extends Parameter {
         if(index == undefined) {
             throw("index not provided")
         }
-        
-        if(this.__elemCleanerFns[index].indexOf(cleaner) != -1)
+        if(!this.__elemCleanerFns[index]) {
+            this.__elemCleanerFns[index] = [];
+        }
+        else if(this.__elemCleanerFns[index].indexOf(cleaner) != -1)
             return false;
         this.__elemCleanerFns[index].push(cleaner);
         if(this.__elemCleanerFns[index].length == 1)

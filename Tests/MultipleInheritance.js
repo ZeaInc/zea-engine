@@ -1,4 +1,4 @@
-﻿testingHarness.registerTest('MultipleInheritance', (domElement, resources) => {
+﻿const setupMultipleInheritance = (domElement, resources, cb) => {
 
     const scene = new Visualive.Scene(resources);
     scene.getCamera().setPositionAndTarget(0, new Visualive.Vec3(-20, -20, 10), new Visualive.Vec3(10, 10, 0));
@@ -14,67 +14,7 @@
     const cuboidGeomItem = new Visualive.GeomItem('cuboid', cuboid, material2);
     const leafGeomItem = new Visualive.GeomItem('smallcuboid', smallcuboid, material1);
 
-    {
-        // cuboidGeomItem.addChild(leafGeomItem);
-        // cuboidGeomItem.addChild(leafGeomItem);
-        // cuboidGeomItem.addChild(leafGeomItem);
-        // leafGeomItem.setLocalXfo(0, new Visualive.Xfo(new Visualive.Vec3(-2, 0, 3)));
-        // leafGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(3, 0, 2)));
-        // leafGeomItem.setLocalXfo(2, new Visualive.Xfo(new Visualive.Vec3(0, 0, 4)));
-
-        // scene.getRoot().addChild(cuboidGeomItem);
-        // cuboidGeomItem.setLocalXfo(0, new Visualive.Xfo(new Visualive.Vec3(-4, 0, 0)));
-
-        // scene.getRoot().addChild(cuboidGeomItem);
-        // cuboidGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(4, 0, 0)));
-    }
-    {
-        // let idx;
-        // idx = leafGeomItem.addOwner(cuboidGeomItem); leafGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(-2, 0, 3)));
-        // idx = leafGeomItem.addOwner(cuboidGeomItem); leafGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(3, 0, 3)));
-        // idx = leafGeomItem.addOwner(cuboidGeomItem); leafGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(0, 0, 4)));
-
-        // idx = cuboidGeomItem.addOwnerIndex(); cuboidGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(-4, 0, 0))); cuboidGeomItem.setOwnerAtIndex(idx, scene.getRoot()); 
-        // idx = cuboidGeomItem.addOwnerIndex(); cuboidGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(4, 0, 0))); cuboidGeomItem.setOwnerAtIndex(idx, scene.getRoot()); 
-    }
-
-    {
-        const gridSize = 4;
-        const gridSpread = 0.5;
-        for (let i = 0; i < (gridSize * gridSize * gridSize); i++) {
-            const idx = leafGeomItem.addOwner(cuboidGeomItem); 
-            leafGeomItem.setLocalXfo(idx, 
-                new Visualive.Xfo(
-                    new Visualive.Vec3(
-                            (i % gridSize) * gridSpread, 
-                            (Math.floor(i / gridSize) % gridSize) * gridSpread, 
-                            Math.floor(i / (gridSize * gridSize)) * gridSpread
-                        )
-                    )
-                );
-        }
-
-        const times = []
-        const start = performance.now();
-        {
-            const gridSize = 10;
-            const gridSpread = 6;
-            for (let i = 0; i < (gridSize * gridSize); i++) {
-                const start = performance.now();
-                const idx = cuboidGeomItem.addOwnerIndex();
-                cuboidGeomItem.setLocalXfo(idx, 
-                    new Visualive.Xfo(
-                        new Visualive.Vec3((i % gridSize) * gridSpread, Math.floor(i / gridSize) * gridSpread, 0)
-                        )
-                    );
-                cuboidGeomItem.setOwnerAtIndex(idx, scene.getRoot());
-
-                times.push((performance.now()-start))
-            }
-        }
-        console.log("times:", times)
-        console.log("total:", (performance.now()-start))
-    }
+    cb({ root:scene.getRoot(), cuboidGeomItem, leafGeomItem });
 
     const renderer = new Visualive.GLVisualiveRenderer(domElement);
     renderer.exposure = 1.0;
@@ -96,4 +36,77 @@
         if(resolvedItem !== geomItem)
             console.warn("getPath/resolvePath not working");
     });
+};
+testingHarness.registerTest('MultipleInheritance_BasicScene', (domElement, resources) => {
+
+    setupMultipleInheritance(domElement, resources, (data)=>{
+        data.cuboidGeomItem.addChild(data.leafGeomItem);
+        data.cuboidGeomItem.addChild(data.leafGeomItem);
+        data.cuboidGeomItem.addChild(data.leafGeomItem);
+        data.leafGeomItem.setLocalXfo(0, new Visualive.Xfo(new Visualive.Vec3(-2, 0, 3)));
+        data.leafGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(3, 0, 2)));
+        data.leafGeomItem.setLocalXfo(2, new Visualive.Xfo(new Visualive.Vec3(0, 0, 4)));
+
+        data.root.addChild(data.cuboidGeomItem);
+        data.cuboidGeomItem.setLocalXfo(0, new Visualive.Xfo(new Visualive.Vec3(-4, 0, 0)));
+
+        data.root.addChild(data.cuboidGeomItem);
+        data.cuboidGeomItem.setLocalXfo(1, new Visualive.Xfo(new Visualive.Vec3(4, 0, 0)));
+    });
+});
+
+testingHarness.registerTest('MultipleInheritance_addOwnerIndex', (domElement, resources) => {
+
+    setupMultipleInheritance(domElement, resources, (data)=>{
+        let idx;
+        idx = data.leafGeomItem.addOwner(data.cuboidGeomItem); data.leafGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(-2, 0, 3)));
+        idx = data.leafGeomItem.addOwner(data.cuboidGeomItem); data.leafGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(3, 0, 3)));
+        idx = data.leafGeomItem.addOwner(data.cuboidGeomItem); data.leafGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(0, 0, 4)));
+
+        idx = data.cuboidGeomItem.addOwnerIndex(); data.cuboidGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(-4, 0, 0))); data.cuboidGeomItem.setOwnerAtIndex(idx, data.root); 
+        idx = data.cuboidGeomItem.addOwnerIndex(); data.cuboidGeomItem.setLocalXfo(idx, new Visualive.Xfo(new Visualive.Vec3(4, 0, 0))); data.cuboidGeomItem.setOwnerAtIndex(idx, data.root); 
+    
+    });
+});
+
+testingHarness.registerTest('MultipleInheritance_BigScene', (domElement, resources) => {
+
+    setupMultipleInheritance(domElement, resources, (data)=>{
+        const gridSize = 4;
+        const gridSpread = 0.5;
+        for (let i = 0; i < (gridSize * gridSize * gridSize); i++) {
+            const idx = data.leafGeomItem.addOwner(data.cuboidGeomItem); 
+            data.leafGeomItem.setLocalXfo(idx, 
+                new Visualive.Xfo(
+                    new Visualive.Vec3(
+                            (i % gridSize) * gridSpread, 
+                            (Math.floor(i / gridSize) % gridSize) * gridSpread, 
+                            Math.floor(i / (gridSize * gridSize)) * gridSpread
+                        )
+                    )
+                );
+        }
+
+        const times = []
+        const start = performance.now();
+        {
+            const gridSize = 10;
+            const gridSpread = 6;
+            for (let i = 0; i < (gridSize * gridSize); i++) {
+                const start = performance.now();
+                const idx = data.cuboidGeomItem.addOwnerIndex();
+                data.cuboidGeomItem.setLocalXfo(idx, 
+                    new Visualive.Xfo(
+                        new Visualive.Vec3((i % gridSize) * gridSpread, Math.floor(i / gridSize) * gridSpread, 0)
+                        )
+                    );
+                data.cuboidGeomItem.setOwnerAtIndex(idx, data.root);
+
+                times.push((performance.now()-start))
+            }
+        }
+        console.log("times:", times)
+        console.log("total:", (performance.now()-start))
+    });
+
 });

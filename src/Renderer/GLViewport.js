@@ -465,7 +465,7 @@ class GLViewport extends BaseViewport {
                     // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
                     // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getMaterial().name);
                     this.__mouseDownGeom = intersectionData.geomItem;
-                    this.__mouseDownGeom.onMouseDown(event, intersectionData);
+                    this.__mouseDownGeom.onMouseDown(event, intersectionData, intersectionData.pathIndex);
                     if(event.vleStopPropagation == true)
                         return true;
 
