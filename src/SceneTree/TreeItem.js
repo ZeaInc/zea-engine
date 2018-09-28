@@ -129,7 +129,7 @@ class TreeItem extends BaseItem {
 
         this.__visibleParam.valueChanged.connect((mode) => {
             const visibile = this.getVisible();
-            for (let childItem of this.__childItems)
+            for (let childItem of this.getChildren())
                 childItem.setInheritedVisiblity(visibile);
         });
 
@@ -359,7 +359,7 @@ class TreeItem extends BaseItem {
             this.__inheritedVisiblity = val;
             const visibile = this.getVisible();
             if (prev != visibile) {
-                for (let childItem of this.__childItems)
+                for (let childItem of this.getChildren())
                     childItem.setInheritedVisiblity(visibile);
                 this.visibilityChanged.emit(visibile);
             }
@@ -883,7 +883,8 @@ class TreeItem extends BaseItem {
         else {
             const numOwners = reader.loadUInt32();
 
-            // console.log("numOwners:" + numOwners);
+            if(numOwners > 1)
+                console.log("numOwners:" + numOwners);
             for (let i = 0; i < numOwners; i++) {
                 const ownerAddr = reader.loadUInt32();
                 if(ownerAddr == 0 || !(ownerAddr in context.loadedItems)) {
