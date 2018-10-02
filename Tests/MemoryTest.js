@@ -71,3 +71,19 @@ testingHarness.registerTest('MemoryTest_Float32ArraysContiguous', (domElement, r
   // Results: Chrome spikes to 1.09 Gigs of Ram. Settling down to 1.02Gigs after a minute.
   // Takes ~11 Ms.
 });
+
+testingHarness.registerTest('MemoryTest_GeomItemsArray', (domElement, resources) => {
+  const start = performance.now();
+  window.data = [];
+  const rootItem = new Visualive.TreeItem();
+
+  const count = 50000
+  rootItem.__freeOwnerIndices.push(rootItem.addOwnerIndex(0));
+  rootItem.__addPathIndex(0);
+  for(let i=0; i<count; i++) {
+    rootItem.addChild(new Visualive.GeomItem("Geom"+i))
+  }
+  document.body.appendChild(document.createTextNode("Done 'MemoryTest_GeomItemsArray':" + (performance.now() - start)));
+  // Results: Chrome spikes to 2.34 Gigs of Ram. Settling down to 2.3Gigs after a minute.
+  // Takes ~2038 Ms.
+});
