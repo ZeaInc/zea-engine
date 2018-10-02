@@ -72,7 +72,7 @@ testingHarness.registerTest('ExplodedParts', (domElement, resources)=> {
     {
 
         const objAsset = new Visualive.AssetItem('PartA');
-        objAsset.getParameter('DataFilePath').setFilePath("/Assets/ExplodePartA.obj");
+        objAsset.getParameter('DataFilePath').setFilepath("/Assets/ExplodePartA.obj");
         objAsset.getParameter('splitObjects').setValue(false);
         objAsset.getParameter('splitGroupsIntoObjects').setValue(false);
         objAsset.getParameter('loadMtlFile').setValue(false);
@@ -86,7 +86,7 @@ testingHarness.registerTest('ExplodedParts', (domElement, resources)=> {
 
     {
         const objAsset = new Visualive.AssetItem('PartB');
-        objAsset.getParameter('DataFilePath').setFilePath("/Assets/ExplodePartB.obj");
+        objAsset.getParameter('DataFilePath').setFilepath("/Assets/ExplodePartB.obj");
         objAsset.getParameter('splitObjects').setValue(false);
         objAsset.getParameter('splitGroupsIntoObjects').setValue(false);
         objAsset.getParameter('loadMtlFile').setValue(false);

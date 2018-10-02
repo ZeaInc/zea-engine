@@ -7,7 +7,21 @@ import {
     GeomItem
 } from '../../SceneTree';
 
-const audioCtx = new AudioContext();
+
+const AudioContext = window.AudioContext // Default
+    || window.webkitAudioContext // Safari and old versions of Chrome
+    || false; 
+
+let audioCtx;
+if (AudioContext) {
+    // Do whatever you want using the Web Audio API
+    audioCtx = new AudioContext;
+    // ...
+} else {
+    // Web Audio API is not supported
+    // Alert the user
+    alert("Sorry, but the Web Audio API is not supported by your browser. Please, consider upgrading to the latest version or downloading Google Chrome or Mozilla Firefox");
+}
 
 class GLAudioItemsPass extends GLPass {
     constructor() {
@@ -18,6 +32,9 @@ class GLAudioItemsPass extends GLPass {
     
     init(gl, collector, passIndex) {
         super.init(gl, collector, passIndex);
+
+        if(!audioCtx)
+            return;
 
         collector.registerSceneItemFilter((treeItem, rargs)=>{
             if (treeItem instanceof AudioItem) {

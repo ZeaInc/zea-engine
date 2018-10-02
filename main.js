@@ -25,6 +25,14 @@
     return curr;
   }
 
+  function resolveURL(filePath, resources) {
+    const parts = filePath.split('/');
+    const filename = parts.pop();
+    return Object.values(resources).find((resource)=>{
+      return resource.name == filename
+    })
+  }
+
   function loadScript(url, callback) {
     let script = document.createElement("script");
     script.onload = function() {

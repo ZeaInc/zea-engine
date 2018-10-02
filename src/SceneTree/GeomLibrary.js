@@ -48,7 +48,7 @@ class GeomLibrary {
     }
 
     __constructWorker() {
-        let worker = new GeomParserWorker();
+        const worker = new GeomParserWorker();
         worker.onmessage = (event) => {
             this.__recieveGeomDatas(
                 event.data.key,

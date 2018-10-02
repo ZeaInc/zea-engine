@@ -61,17 +61,18 @@ class StateMachine extends BaseItem {
         this.__currentState = this.__states[name];
         this.__currentState.activate();
 
-        if(addToHistory) {
-            const vars = getUrlVars();
-            vars['stateId'] = name;
-            let str = '?';
-            for(let key in vars) {
-                if(str != '?')
-                    str += '&'
-                str += key+'='+vars[key];
-            }
-            window.history.pushState({stateName:name}, "State:"+name, str);
-        }
+        // this turned out to be really anoying.
+        // if(addToHistory) {
+        //     const vars = getUrlVars();
+        //     vars['stateId'] = name;
+        //     let str = '?';
+        //     for(let key in vars) {
+        //         if(str != '?')
+        //             str += '&'
+        //         str += key+'='+vars[key];
+        //     }
+        //     window.history.pushState({stateName:name}, "State:"+name, str);
+        // }
     }
 
     getActiveState() {

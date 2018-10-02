@@ -19,7 +19,7 @@ testingHarness.registerTest('PositionalAudio', (domElement, resources)=> {
         geomItem.setLocalXfo(xfo);
 
         const audioItem = new Visualive.AudioItem(name+'Audio');
-        audioItem.getParameter('FilePath').setFilePath(filePath);
+        audioItem.getParameter('FilePath').setFilepath(filePath);
         // audioItem.getParameter('Gain').setValue(15.0);
         audioItem.getParameter('Autoplay').setValue(true);
         audioItem.play();

@@ -109,6 +109,7 @@ class GLViewport extends BaseViewport {
 
         this.resize(width, height);
         // this.createOffscreenFbo();
+
         this.createSelectedGeomsFbo();
     }
 
@@ -273,7 +274,7 @@ class GLViewport extends BaseViewport {
     ////////////////////////////
     // SelectedGeomsBuffer
 
-    createSelectedGeomsFbo(floatGeomBuffer) {
+    createSelectedGeomsFbo() {
         let gl = this.__renderer.gl;
         this.__selectedGeomsBuffer = new GLTexture2D(gl, {
             type: 'UNSIGNED_BYTE',

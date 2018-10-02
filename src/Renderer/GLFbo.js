@@ -1,9 +1,16 @@
 
+import {
+    SystemDesc
+} from '../BrowserDetection.js';
 import '../Math';
 
 // This class abstracts the rendering of a collection of geometries to screen.
 class GLFbo {
     constructor(gl, colorTexture, createDepthTexture = false) {
+        if(SystemDesc.isIOSDevice && (colorTexture.getType() == 'FLOAT' || colorTexture.getType() == 'HALF_FLOAT')) {
+            console.error("IOS devices are unable to render to float textures.")
+        }
+
         this.__gl = gl;
         this.__colorTexture = colorTexture;
         this.__createDepthTexture = createDepthTexture;
@@ -192,7 +199,7 @@ class GLFbo {
                 gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
             else
                 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-            console.warn("Error creating Fbo width:" + this.width + ", height:" + this.height);
+            console.warn("Error creating Fbo width:", this.width, ", height:", this.height, " Texture Type:", this.__colorTexture.getType());
             switch(check){
             case gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
                 throw ("The attachment types are mismatched or not all framebuffer attachment points are framebuffer attachment complete.");

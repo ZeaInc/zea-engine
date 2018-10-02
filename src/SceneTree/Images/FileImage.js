@@ -47,7 +47,7 @@ class FileImage extends BaseImage {
             params = filePath;
         }
         let filepath;
-        if (name.lastIndexOf('.') != -1) {
+        if (name != undefined && name.lastIndexOf('.') != -1) {
             filepath = name;
             name = name.substring(name.lastIndexOf('/')+1, name.lastIndexOf('.'));
         }

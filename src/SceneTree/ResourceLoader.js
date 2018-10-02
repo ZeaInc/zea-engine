@@ -10,8 +10,8 @@ import {
 } from '../Utilities';
 
 
-const asyncLoading = true;
-const ResourceLoaderWorker = require("worker-loader?inline!./ResourceLoaderWorker.js");
+// const asyncLoading = true;
+const ResourceLoaderWorker = require("worker-loader?inline!./ResourceLoader/ResourceLoaderWorker.js");
 // For synchronous loading, uncomment these lines.
 // import {
 //     ResourceLoaderWorker_onmessage
@@ -65,11 +65,8 @@ class ResourceLoader {
     this.__resourcesTreeEntities = { };
     this.__resourcesTree = { children: {} };
 
-    if(asyncLoading){
-      this.__workers = [];
-      this.__constructWorkers();
-      this.__nextWorker = 0;
-    }
+    this.__workers = [];
+    this.__nextWorker = 0;
   }
 
   getRootFolder(){
@@ -179,22 +176,40 @@ class ResourceLoader {
     // worker.terminate();
   }
 
-  __constructWorkers() {
-    let __constructWorker = ()=>{
-      let worker = new ResourceLoaderWorker();
-      worker.onmessage = (event) => {
-        if(event.data.type == 'loaded') {
-          this.addWorkDone(event.data.name, 1); // loading done...
-        }
-        else if(event.data.type == 'finished') {
-          this.__onFinishedReceiveFileData(event.data);
-        }
-      };
-      return worker;
+  __getWorker() {
+    const __constructWorker = ()=>{
+      return new Promise((resolve) => {
+        const worker = new ResourceLoaderWorker();
+        // const worker = new Worker(this.__resourceLoaderFile.url);
+        worker.onmessage = (evt) => {
+          if (evt.data.type === 'WASM_LOADED') {
+            resolve(worker);
+          }
+          else if (evt.data.type === 'FINISHED') {
+            const data = event.data;
+
+            // const file = this.__resources[event.data.resourceId]
+            // const text = [
+            //   '==================== unrarWebworker.js ====================',
+            //   `Filename: ${file.name}`,
+            //   '------------------------------------------------------',
+            // ];
+            // for(const file in data.entries) {
+            //   text.push(`${file}:${data.entries[file].byteLength}`);
+            // }
+            // console.log(text.join('\n'))
+
+            this.addWorkDone(event.data.resourceId, 1); // loading done...
+            this.__onFinishedReceiveFileData(event.data);
+          }
+        };
+      });
     }
-    for(let i=0; i<3; i++){
-      this.__workers.push(__constructWorker());
-    }
+
+    this.__nextWorker = (this.__nextWorker+1)%3;
+    if(this.__workers[this.__nextWorker] == undefined)
+      this.__workers[this.__nextWorker] = __constructWorker();
+    return this.__workers[this.__nextWorker];
   }
 
   __terminateWorkers() {
@@ -261,13 +276,13 @@ class ResourceLoader {
   }
 
   // Add work to the total work pile... We never know how big the pile will get.
-  addWork(name, amount){
+  addWork(resourceId, amount){
     this.__totalWork += amount;
     this.progressIncremented.emit((this.__doneWork / this.__totalWork) * 100);
   }
 
   //Add work to the 'done' pile. The done pile should eventually match the total pile.
-  addWorkDone(name, amount){
+  addWorkDone(resourceId, amount){
     this.__doneWork += amount;
     this.progressIncremented.emit((this.__doneWork / this.__totalWork) * 100);
     if(this.__doneWork > this.__totalWork) {
@@ -285,20 +300,13 @@ class ResourceLoader {
       throw("Invalid resource Id:'"+ resourceId + "' not found in Resources:" + JSON.stringify(this.__resources, null, 2));
     }
 
-    this.loadURL(file.id, file.url, callback, addLoadWork)
+    this.loadURL(resourceId, file.url, callback, addLoadWork)
   }
 
-  loadURL(name, url, callback, addLoadWork=true) {
-
-    // If the loader was suspended, resume. 
-    if(asyncLoading) {
-      if(this.__workers.length == 0){
-        this.__constructWorkers();
-      }
-    }
+  loadURL(resourceId, url, callback, addLoadWork=true) {
 
     if(addLoadWork){ 
-      this.addWork(name, 3);// Add work in 2 chunks. Loading, unpacking, parsing.
+      this.addWork(resourceId, 3);// Add work in 2 chunks. Loading, unpacking, parsing.
     }
     else{
       // the work for loading and parsing the work is already registered..
@@ -307,44 +315,30 @@ class ResourceLoader {
       // toal number of files in the stream.
     }
 
-    if(!(name in this.__callbacks))
-      this.__callbacks[name] = [];
-    this.__callbacks[name].push(callback);
+    if(!(resourceId in this.__callbacks))
+      this.__callbacks[resourceId] = [];
+    this.__callbacks[resourceId].push(callback);
 
-    ///////////////////////////////////////////////
-    if(asyncLoading) {
-      this.__workers[this.__nextWorker].postMessage({
-        name,
+    this.__getWorker().then((worker)=>{
+      worker.postMessage({
+        resourceId,
         url
       });
-      this.__nextWorker = (this.__nextWorker+1)%this.__workers.length;
-    }
-    else {
-      ///////////////////////////////////////////////
-      ResourceLoaderWorker_onmessage({
-        name,
-        url
-      },()=>{
-        this.addWorkDone(name, 1); // loading done...
-      }, (result, transferables)=>{
-        if(result.type == 'finished')
-          this.__onFinishedReceiveFileData(result);
-      });
-    }
+    })
   }
 
   __onFinishedReceiveFileData(fileData) {
-    const name = fileData.name;
-    this.addWorkDone(name, 1); // unpacking done...
-    const callbacks = this.__callbacks[name];
+    const resourceId = fileData.resourceId;
+    this.addWorkDone(resourceId, 1); // unpacking done...
+    const callbacks = this.__callbacks[resourceId];
     if(callbacks) {
       for(let callback of callbacks){
         callback(fileData.entries);
       }
-      delete this.__callbacks[name];
+      delete this.__callbacks[resourceId];
     }
-    this.loaded.emit(name);
-    this.addWorkDone(name, 1); // parsing done...
+    this.loaded.emit(resourceId);
+    this.addWorkDone(resourceId, 1); // parsing done...
 
   }
 
