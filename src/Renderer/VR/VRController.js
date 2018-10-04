@@ -55,7 +55,7 @@ class VRController extends Gizmo {
             Material:Material #27
             */
 
-            vrstage.getTreeItem().addChild(this.__treeItem);
+            this.__vrstage.getTreeItem().addChild(this.__treeItem);
 
             const sphere = new Sphere(0.015);
             this.__sphereGeomItem = new GeomItem('VRControllerTip', sphere, this.__mat);
@@ -63,12 +63,11 @@ class VRController extends Gizmo {
             this.__treeItem.addChild(this.__sphereGeomItem);
 
 
-            const asset = vrstage.getAsset();
+            const asset = this.__vrstage.getAsset();
             if(asset) {
                 asset.loaded.connect((entries) => {
-                    const controllerTree = asset.getChildByName('HTC_Vive_Controller');//.clone();
-                    const idx = controllerTree.getNumOwners();
-                    this.__treeItem.addChild(controllerTree);
+                    const controllerTree = asset.getChildByName('HTC_Vive_Controller');
+                    const idx = this.__treeItem.addChild(controllerTree);
                     controllerTree.setLocalXfo(idx, new Xfo(new Vec3(0, -0.035, 0.01), new Quat({ setFromAxisAndAngle: [new Vec3(0, 1, 0), Math.PI] })));
                 });
             }

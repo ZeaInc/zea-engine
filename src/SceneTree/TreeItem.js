@@ -166,42 +166,28 @@ class TreeItem extends BaseItem {
     //////////////////////////////////////////
     // Parent Item
 
-    __addNewOwnerIndex(ownerIndex) {
+    addOwnerIndex(ownerIndex) {
         this.__localXfoParam.insertElement(ownerIndex, new Xfo())
     }
 
-    addOwner(ownerItem, addChild=true) {
+    addOwner(ownerItem) {
         const ownerIndex = super.addOwner(ownerItem);
-        if (ownerItem && addChild) {
-            ownerItem.addChild(this, ownerIndex);
+        if (ownerItem) {
+            ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
+                this._setGlobalXfoDirty(ownerIndex, parentPathIndex)
+            });
         }
-        // if (ownerItem) {
-        //     ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
-        //         this._setGlobalXfoDirty(ownerIndex, parentPathIndex)
-        //     });
-        // }
         return ownerIndex;
     }
 
-    // setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
-    //     if (ownerItem && childIndexWithinOwner == undefined) {
-    //         childIndexWithinOwner = ownerItem.addChild(this, ownerIndex);
-    //     }
-    //     super.setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner);
-    //     // if (ownerItem) {
-    //     //     ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
-    //     //         this._setGlobalXfoDirty(ownerIndex, parentPathIndex)
-    //     //     });
-    //     // }
-    // }
-
     removeOwner(ownerItem) {
-
         const ownerItemIndex = super.removeOwner(ownerItem);
-        ownerItem.globalXfoChanged.disconnect(this._setGlobalXfoDirty);
+        // ownerItem.globalXfoChanged.disconnect(this._setGlobalXfoDirty);
 
-        for (let i = ownerItemIndex; i < this.__ownerRefIds.length; i++)
-            this._setGlobalXfoDirty(i);
+        // for (let i = ownerItemIndex; i < this.__ownerRefIds.length; i++)
+        //     this._setGlobalXfoDirty(i);
+
+        return ownerItemIndex;
     }
 
     __addPathIndex(pathIndex) {
@@ -226,7 +212,7 @@ class TreeItem extends BaseItem {
     getPath(pathIndex) {
         if(!Number.isInteger(pathIndex))
             throw("Path Index must be a number.")
-        if (!this.__pathToParentIndex[ownerIndex])
+        if (!this.__pathToParentIndex[pathIndex])
             throw("Invalid Path Index.")
         const {
             ownerIndex,
@@ -261,25 +247,25 @@ class TreeItem extends BaseItem {
     }
 
     getLocalXfo(parentIndex, mode) {
-        if (parentIndex == undefined || parentIndex instanceof Xfo)
-            throw ("parentIndex must be specified")
+        if(!Number.isInteger(parentIndex))
+            throw ("parentIndex must be a number")
         return this.__localXfoParam.getElementValue(parentIndex, mode);
     }
 
     setLocalXfo(parentIndex, xfo, mode) {
-        if (parentIndex == undefined || parentIndex instanceof Xfo)
-            throw ("parentIndex must be specified")
+        if(!Number.isInteger(parentIndex))
+            throw ("parentIndex must be a number")
         this.__localXfoParam.setElementValue(parentIndex, xfo, mode);
     }
 
     getGlobalXfo(pathIndex, mode) {
-        if (pathIndex == undefined || pathIndex instanceof Xfo)
+        if(!Number.isInteger(pathIndex))
             throw ("pathIndex must be specified")
         return this.__globalXfoParam.getElementValue(pathIndex, mode);
     }
 
     setGlobalXfo(pathIndex, xfo, mode) {
-        if (pathIndex == undefined || pathIndex instanceof Xfo)
+        if(!Number.isInteger(pathIndex))
             throw ("pathIndex must be specified")
         this.__globalXfoParam.setElementValue(pathIndex, xfo, mode);
     }
@@ -864,7 +850,6 @@ class TreeItem extends BaseItem {
         if(context.treefileversion < 2) {
             if(this.getNumOwners() == 0) {
                 this.__freeOwnerIndices.push(this.addOwner(null));
-                this.__freePathIndices.push(this.__addPath(0, -1));
             }
 
             if (itemflags & localXfoFlag) {
@@ -918,7 +903,7 @@ class TreeItem extends BaseItem {
                 }
 
                 const ownerItem = context.loadedItems[ownerAddr];
-                const ownerIndex = this.addOwner(ownerItem);
+                const ownerIndex = ownerItem.addChild(this);
                 if (itemflags & localXfoFlag) {
                     const xfo = new Xfo();
                     xfo.tr = reader.loadFloat32Vec3();

@@ -48,21 +48,25 @@ class GLGeomItem {
         }
 
         this.geomItem.pathAdded.connect((pathIndex)=>{
-            console.log('pathAdded')
             const drawItemIndex = this.__callbacks.allocDrawItemIndex(pathIndex);
             this.__drawItemIndices.splice(pathIndex, 0, drawItemIndex);
 
             const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset(pathIndex);
             this.__geomDatas.splice(pathIndex, 0, [lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId]);
+
+            this.drawItemsChanged.emit(1, 0);
         });
         this.geomItem.pathRemoved.connect((pathIndex)=>{
             this.__callbacks.releaseDrawItemIndex(this.__drawItemIndices[pathIndex])
             this.__drawItemIndices.splice(pathIndex, 1);
             this.__geomDatas.splice(pathIndex, 1);
+            
+            this.drawItemsChanged.emit(0, 1);
         })
 
         this.modelMatrixArray = [];
         const updateXfo = (index, mode) => {
+            // console.log("updateXfo", index)
             this.__callbacks.dirtyDrawItem(this.__drawItemIndices[index])
         };
         this.geomItem.geomXfoChanged.connect(updateXfo);

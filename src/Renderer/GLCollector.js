@@ -380,7 +380,7 @@ class GLCollector {
     //////////////////////////////////////////////////
     // Data Uploading
     __populateTransformDataArray(gldrawItem, pathIndex, index, dataArray) {
-        // console.log(gldrawItem.getGeomItem().getName(), gldrawItem.getGeomItem().getGeomXfo(pathIndex).toString())
+        // console.log(gldrawItem.getGeomItem().getName(), pathIndex, gldrawItem.getGeomItem().getGeomXfo(pathIndex).toString())
 
         const mat4 = gldrawItem.getGeomItem().getGeomXfo(pathIndex).toMat4();
         const lightmapCoordsOffset = gldrawItem.getGeomItem().getLightmapCoordsOffset(pathIndex);

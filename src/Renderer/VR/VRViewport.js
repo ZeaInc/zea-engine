@@ -57,7 +57,7 @@ class VRViewport extends BaseViewport {
 
         //////////////////////////////////////////////
         // Resources
-        const id = resourceLoader.resolveFilePathToId("VisualiveEngine/Vive.vla")
+        const id = resourceLoader.resolveFilePathToId("VisualiveEngine_MultipleInheritance/Vive.vla")
         if (!SystemDesc.isMobileDevice && id) {
             this.__viveAsset = renderer.getScene().loadCommonAssetResource(id);
             this.__viveAsset.loaded.connect(()=>{
@@ -92,7 +92,7 @@ class VRViewport extends BaseViewport {
         this.__stageTreeItem.setSelectable(false);
         this.__stageTreeItem.setVisible(false);
 
-        this.__stageTreeItem.addOwnerIndex(0);
+        this.__stageTreeItem.addOwner(null);
         this.__stageTreeItem.__addPath(0, -1);
 
         this.__renderer.getCollector().addTreeItem(this.__stageTreeItem);

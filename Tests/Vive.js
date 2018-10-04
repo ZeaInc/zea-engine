@@ -23,26 +23,41 @@ testingHarness.registerTest('Vive', (domElement, resources)=> {
     const viveAsset = new Visualive.VLAAsset("Vive");
     viveAsset.getParameter('DataFilePath').setFilepath("VisualiveEngine/Vive.vla");
     viveAsset.loaded.connect(()=>{
-        const materialLibrary = viveAsset.getMaterialLibrary();
-        const materialNames = materialLibrary.getMaterialNames();
-        for(let name of materialNames) {
-            const material = materialLibrary.getMaterial(name, false);
-            if(material)
-                material.setShaderName('SimpleSurfaceShader');
-        }
+        // const materialLibrary = viveAsset.getMaterialLibrary();
+        // const materialNames = materialLibrary.getMaterialNames();
+        // for(let name of materialNames) {
+        //     const material = materialLibrary.getMaterial(name, false);
+        //     if(material)
+        //         material.setShaderName('SimpleSurfaceShader');
+        // }
+        viveAsset.traverse((treeItem)=>{
+            console.log(treeItem.constructor.name, treeItem.getName())
+        })
 
+        const hmdTree = viveAsset.getChildByName('HTC_Vive_HMD');
+        const idx = scene.getRoot().addChild(hmdTree);
+        const xfo = new Visualive.Xfo(
+            new Visualive.Vec3(0, 0, 0.1), 
+            new Visualive.Quat({ setFromAxisAndAngle: [new Visualive.Vec3(1, 0, 0), Math.PI * 0.5] }), 
+            new Visualive.Vec3(100, 100, 100)
+            );
+        hmdTree.setLocalXfo(idx, xfo);
+
+        const controllerTree = viveAsset.getChildByName('HTC_Vive_Controller');
+        const idx0 = scene.getRoot().addChild(controllerTree);
+        controllerTree.setLocalXfo(idx0, new Visualive.Xfo(new Visualive.Vec3(-0.25, 0,0)));
+
+        const idx1 = scene.getRoot().addChild(controllerTree);
+        controllerTree.setLocalXfo(idx1, new Visualive.Xfo(new Visualive.Vec3(0.25, 0,0)));
         
-        // viveAsset.traverse((treeItem)=>{
-        //     console.log(treeItem.constructor.name, treeItem.getName())
-        // })
     });
 
-    const idx = scene.getRoot().addChild(viveAsset);
+    // const idx = scene.getRoot().addChild(viveAsset);
     const xfo = new Visualive.Xfo(
         new Visualive.Vec3(0, -0.035, 0.01), 
         new Visualive.Quat({ setFromAxisAndAngle: [new Visualive.Vec3(1, 0, 0), Math.PI * 0.5] })
         );;
-    viveAsset.setLocalXfo(idx, xfo);
+    viveAsset.setLocalXfo(0, xfo);
 
 
 

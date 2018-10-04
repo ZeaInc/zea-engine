@@ -200,7 +200,7 @@ class SessionParticipant {
 
     setViveRepresentation() {
         this.__avatarTreeItem.removeAllChildren();
-        let hmdHolder = new TreeItem("hmdHolder");
+        const hmdHolder = new TreeItem("hmdHolder");
         if (this.__audioIem) {
             hmdHolder.addChild(this.__audioIem);
         }
@@ -222,7 +222,7 @@ class SessionParticipant {
             }
 
             this.__viveAsset.loaded.connect((entries) => {
-                let hmdTree = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
+                const hmdTree = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
                 hmdTree.getLocalXfo().ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI);
                 hmdHolder.addChild(hmdTree);
             });
@@ -234,10 +234,10 @@ class SessionParticipant {
         for (let i = 0; i < data.controllers.length; i++) {
             if (i >= this.__controllers.length) {
 
-                let treeItem = new TreeItem("handleHolder" + i);
+                const treeItem = new TreeItem("handleHolder" + i);
 
                 this.__viveAsset.loaded.connect(() => {
-                    let controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+                    const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
                     controllerTree.getLocalXfo().tr.set(0, -0.035, 0.01);
                     controllerTree.getLocalXfo().ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI);
                     treeItem.addChild(controllerTree);

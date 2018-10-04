@@ -141,11 +141,10 @@ let generateResourcesDict = (list=[], assetDescs=[], imageDescs=[])=>{
 
     let resources = {};
 
-    addResourceURL(resources, 'VisualiveEngine/ResourceLoaderWorker.js', 'http://localhost:3150/VisualiveEngineClient/src/SceneTree/ResourceLoader/ResourceLoaderWorker.js')
-    addResourceURL(resources, 'VisualiveEngine/Vive.vla', 'http://localhost:3150/VisualiveEngineClient/Resources/Vive.vla')
-    addResourceURL(resources, 'VisualiveEngine/Dome.vla', 'http://localhost:3150/VisualiveEngineClient/Resources/Dome.vla')
-    addResourceURL(resources, 'VisualiveEngine/LogoSmall.png', 'http://localhost:3150/VisualiveEngineClient/Resources/LogoSmall.png')
-    addResourceURL(resources, 'VisualiveEngine/FlakesNormalMap.png', 'http://localhost:3150/VisualiveEngineClient/Resources/FlakesNormalMap.png')
+    addResourceURL(resources, 'VisualiveEngine_MultipleInheritance/Vive.vla', 'http://localhost:3150/VisualiveEngineClient/Resources/Vive.vla')
+    addResourceURL(resources, 'VisualiveEngine_MultipleInheritance/Dome.vla', 'http://localhost:3150/VisualiveEngineClient/Resources/Dome.vla')
+    addResourceURL(resources, 'VisualiveEngine_MultipleInheritance/LogoSmall.png', 'http://localhost:3150/VisualiveEngineClient/Resources/LogoSmall.png')
+    addResourceURL(resources, 'VisualiveEngine_MultipleInheritance/FlakesNormalMap.png', 'http://localhost:3150/VisualiveEngineClient/Resources/FlakesNormalMap.png')
     
 
     for(let item of list){

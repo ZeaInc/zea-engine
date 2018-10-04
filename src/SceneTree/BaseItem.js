@@ -109,49 +109,18 @@ class BaseItem extends ParameterOwner {
         return this.__owners[ownerIndex].ownerItem;
     }
 
-    __addNewOwnerIndex(ownerIndex) {
+    addOwnerIndex(ownerIndex) {
 
     }
 
-    // addOwnerIndex() {
-    //     let ownerIndex;
-    //     if(this.__freeOwnerIndices.length > 0)
-    //         ownerIndex = this.__freeOwnerIndices.pop();
-    //     else {
-    //         ownerIndex = this.__owners.length;
-    //         this.__owners.push(null);
-    //         this.__addNewOwnerIndex(ownerIndex);
-    //     }
-    //     this.__parentToPathIndices[ownerIndex] = [];
-    //     return ownerIndex;
-    // }
-
-    // setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
-    //     this.addRef(ownerItem);
-    //     this.__owners[ownerIndex] = { ownerItem, childIndexWithinOwner };
-    //     this.__parentToPathIndices[ownerIndex] = [];
-
-    //     // TODO: add Owner interface to MaterialLibrary, GeomLibrary
-    //     if(ownerItem.getNumPaths) {
-    //         const numParentPaths = ownerItem.getNumPaths();
-    //         for(let i=0; i<numParentPaths; i++) {
-    //             this.__addPath(ownerIndex, i);
-    //         }
-    //         // ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
-    //     }
-    // }
-
     addOwner(ownerItem) {
-        // const ownerIndex = this.addOwnerIndex();
-        // this.setOwnerAtIndex(ownerIndex, ownerItem);
-
         let ownerIndex;
         if(this.__freeOwnerIndices.length > 0)
             ownerIndex = this.__freeOwnerIndices.pop();
         else {
             ownerIndex = this.__owners.length;
             this.__owners.push(null);
-            this.__addNewOwnerIndex(ownerIndex);
+            this.addOwnerIndex(ownerIndex);
         }
 
         this.__parentToPathIndices[ownerIndex] = [];
