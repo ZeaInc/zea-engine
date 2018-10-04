@@ -120,7 +120,7 @@ class GLCollector {
         this.__geoms = [];
 
         this.__newItemsAdded = false;
-        this.__dirtyItemIndices = [];
+        this.__dirtyItemIndices = new Set();
 
         this.__sceneItemFilters = [];
         this.__sceneItemFilters.push((treeItem) => {
@@ -266,7 +266,7 @@ class GLCollector {
                 this.__numDrawItems++;
             }
             
-            this.__dirtyItemIndices.push(drawItemIndex);
+            this.__dirtyItemIndices.add(drawItemIndex);
             this.__drawItemToGLGeomItem[drawItemIndex] = [geomItemIndex, pathIndex];
             this.__renderer.requestRedraw();
             return drawItemIndex;
@@ -278,7 +278,7 @@ class GLCollector {
         }
 
         const dirtyDrawItem = (drawItemIndex) => {
-            this.__dirtyItemIndices.push(drawItemIndex);
+            this.__dirtyItemIndices.add(drawItemIndex);
             this.__renderer.requestRedraw();
         }
 
@@ -380,6 +380,7 @@ class GLCollector {
     //////////////////////////////////////////////////
     // Data Uploading
     __populateTransformDataArray(gldrawItem, pathIndex, index, dataArray) {
+        // console.log(gldrawItem.getGeomItem().getName(), gldrawItem.getGeomItem().getGeomXfo(pathIndex).toString())
 
         const mat4 = gldrawItem.getGeomItem().getGeomXfo(pathIndex).toMat4();
         const lightmapCoordsOffset = gldrawItem.getGeomItem().getLightmapCoordsOffset(pathIndex);
@@ -400,7 +401,7 @@ class GLCollector {
     };
 
     newItemsReadyForLoading() {
-        return this.__dirtyItemIndices.length > 0;
+        return this.__dirtyItemIndices.size > 0;
     };
 
     uploadDrawItems() {
@@ -408,15 +409,14 @@ class GLCollector {
         const gl = this.__renderer.gl;
         if (!gl.floatTexturesSupported) {
             // Pull on the GeomXfo params. This will trigger the lazy evaluation of the operators in the scene.
-            const len = this.__dirtyItemIndices.length;
-            for (let i = 0; i < len; i++) {
-                const glgeomItemIndex = this.__drawItemToGLGeomItem[this.__dirtyItemIndices[i]];
+            for (let value of this.__dirtyItemIndices) {
+                const glgeomItemIndex = this.__drawItemToGLGeomItem[value];
                 const glgeomItem = this.__glGeomItems[glgeomItemIndex];
                 if (glgeomItem) {
-                    glgeomItem.updateGeomMatrix(this.__dirtyItemIndices[i]);
+                    glgeomItem.updateGeomMatrix(value);
                 }
             }
-            this.__dirtyItemIndices = [];
+            this.__dirtyItemIndices = new Set();
             this.renderTreeUpdated.emit();
             return;
         }
@@ -443,19 +443,30 @@ class GLCollector {
             });
         } else if (this.__drawItemsTexture.width != size) {
             this.__drawItemsTexture.resize(size, size);
-            this.__dirtyItemIndices = Array((size * size) / pixelsPerItem).fill().map((v, i) => i);
+            // this.__dirtyItemIndices = Array(this.__numDrawItems-1).fill().map((v, i) => i+1);
+            this.__dirtyItemIndices = new Set();
+            for (let i = 0; i < this.__numDrawItems; i++) {
+                if(this.__drawItemToGLGeomItem[i])
+                    this.__dirtyItemIndices.add(i);
+            }
         }
 
         gl.bindTexture(gl.TEXTURE_2D, this.__drawItemsTexture.glTex);
         const typeId = this.__drawItemsTexture.getTypeID();
         const formatId = this.__drawItemsTexture.getFormatID();
 
-        for (let i = 0; i < this.__dirtyItemIndices.length; i++) {
-            const indexStart = this.__dirtyItemIndices[i];
+        const values = this.__dirtyItemIndices.values();
+
+        let it = values.next();
+        while (!it.done) {
+            const indexStart = it.value;
             const yoffset = Math.floor((indexStart * pixelsPerItem) / size);
             let indexEnd = indexStart + 1;
-            for (let j = i + 1; j < this.__dirtyItemIndices.length; j++) {
-                const index = this.__dirtyItemIndices[j];
+            // for (let j = i + 1; j < this.__dirtyItemIndices.size; j++) {
+
+            while (!it.done) {
+                it = values.next();
+                const index = it.value;
                 if (Math.floor((index * pixelsPerItem) / size) != yoffset) {
                     break;
                 }
@@ -490,17 +501,15 @@ class GLCollector {
                 const unit16s = Math.convertFloat32ArrayToUInt16Array(dataArray);
                 gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, formatId, typeId, unit16s);
             }
-
-            i += uploadCount - 1;
         }
 
 
-        this.__dirtyItemIndices = [];
+        this.__dirtyItemIndices = new Set();
     };
 
 
     finalize() {
-        if (this.__dirtyItemIndices.length == 0)
+        if (this.__dirtyItemIndices.size == 0)
             return;
         this.uploadDrawItems();
 
