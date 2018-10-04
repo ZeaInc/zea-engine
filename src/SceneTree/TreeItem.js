@@ -158,31 +158,42 @@ class TreeItem extends BaseItem {
         super.copyTo(cloned);
         // cloned.__visible = this.__visible;
         cloned.__selectable = this.__selectable;
-        for (let childItem of this.__childItems)
-            cloned.addChild(childItem.clone());
+        for (let childItemData of this.__childItems)
+            cloned.addChild(childItemData.childItem.clone());
     }
 
 
     //////////////////////////////////////////
     // Parent Item
 
-    addOwnerIndex() {
-        const ownerIndex = super.addOwnerIndex()
+    __addNewOwnerIndex(ownerIndex) {
         this.__localXfoParam.insertElement(ownerIndex, new Xfo())
-        return ownerIndex;
     }
 
-    setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
-        if (ownerItem && childIndexWithinOwner == undefined) {
-            childIndexWithinOwner = ownerItem.addChild(this, ownerIndex);
+    addOwner(ownerItem, addChild=true) {
+        const ownerIndex = super.addOwner(ownerItem);
+        if (ownerItem && addChild) {
+            ownerItem.addChild(this, ownerIndex);
         }
-        super.setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner);
         // if (ownerItem) {
         //     ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
         //         this._setGlobalXfoDirty(ownerIndex, parentPathIndex)
         //     });
         // }
+        return ownerIndex;
     }
+
+    // setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
+    //     if (ownerItem && childIndexWithinOwner == undefined) {
+    //         childIndexWithinOwner = ownerItem.addChild(this, ownerIndex);
+    //     }
+    //     super.setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner);
+    //     // if (ownerItem) {
+    //     //     ownerItem.globalXfoChanged.connect((parentPathIndex, mode) => {
+    //     //         this._setGlobalXfoDirty(ownerIndex, parentPathIndex)
+    //     //     });
+    //     // }
+    // }
 
     removeOwner(ownerItem) {
 
@@ -197,6 +208,11 @@ class TreeItem extends BaseItem {
         this.__globalXfoParam.insertElement(pathIndex, new Xfo())
         this.__boundingBoxParam.insertElement(pathIndex, new Box3())
         super.__addPathIndex(pathIndex);
+
+        // Push paths to children,
+        for (let childItemData of this.__childItems) {
+            childItemData.childItem.__addPath(childItemData.childsOwnerIndex, pathIndex);
+        }
     }
 
     __addPath(ownerIndex, parentPathIndex) {
@@ -204,15 +220,14 @@ class TreeItem extends BaseItem {
         // this.__globalXfoParam.setElementDirty(pathIndex, this._cleanGlobalXfo);
         // this.__boundingBoxParam.setElementDirty(pathIndex, this._cleanBoundingBox);
 
-        // Push paths to children,
-        for (let childItemData of this.__childItems) {
-            childItemData.childItem.__addPath(childItemData.childsOwnerIndex, pathIndex);
-        }
-
         return pathIndex;
     }
 
     getPath(pathIndex) {
+        if(!Number.isInteger(pathIndex))
+            throw("Path Index must be a number.")
+        if (!this.__pathToParentIndex[ownerIndex])
+            throw("Invalid Path Index.")
         const {
             ownerIndex,
             parentPathIndex
@@ -452,6 +467,9 @@ class TreeItem extends BaseItem {
         return childItems;
     }
 
+    getNumChildren() {
+        return this.__childItems.length;
+    }
     numChildren() {
         return this.__childItems.length;
     }
@@ -465,8 +483,9 @@ class TreeItem extends BaseItem {
 
         // Note: this index is the index this item holds in the child's owner array.
         if (childsOwnerIndex == undefined) {
-            childsOwnerIndex = childItem.addOwnerIndex();
-            childItem.setOwnerAtIndex(childsOwnerIndex, this, index);
+            // childsOwnerIndex = childItem.addOwner(null);
+            // childItem.setOwnerAtIndex(childsOwnerIndex, this, index);
+            childsOwnerIndex = childItem.addOwner(this, false)
         }
 
         this.__childItems.splice(index, 0, {
@@ -507,13 +526,11 @@ class TreeItem extends BaseItem {
         this._setBoundingBoxDirty(-1);
         this.childAdded.emit(childItem, index);
 
-        return childItem;
+        return childsOwnerIndex;
     }
 
     addChild(childItem, ownerIndex) {
-        const childIndex = this.__childItems.length;
-        this.insertChild(childItem, childIndex, ownerIndex);
-        return childIndex;
+        return this.insertChild(childItem, this.__childItems.length, ownerIndex);
     }
 
     getChild(index) {
@@ -787,7 +804,7 @@ class TreeItem extends BaseItem {
                     } else if (childJson.type) {
                         childItem = sgFactory.constructClass(childJson.type);
                         if (childItem) {
-                            this.addChild(childItem, false, false);
+                            this.addChild(childItem);
                             childItem.fromJSON(childJson, context);
                         }
                     } else {
@@ -809,7 +826,7 @@ class TreeItem extends BaseItem {
                             // This is because certain items. (e.g. Groups)
                             // Calculate thier global Xfo, and use it to modify 
                             // the transform of thier members. 
-                            this.addChild(childItem, false, false);
+                            this.addChild(childItem);
                             childItem.fromJSON(childJson, context);
                         }
                     } else {
@@ -845,18 +862,22 @@ class TreeItem extends BaseItem {
         const bboxFlag = 1 << 3;
 
         if(context.treefileversion < 2) {
+            if(this.getNumOwners() == 0) {
+                this.__freeOwnerIndices.push(this.addOwner(null));
+                this.__freePathIndices.push(this.__addPath(0, -1));
+            }
 
             if (itemflags & localXfoFlag) {
                 const xfo = new Xfo();
                 xfo.tr = reader.loadFloat32Vec3();
                 xfo.ori = reader.loadFloat32Quat();
                 xfo.sc.set(reader.loadFloat32());
-                // console.log(this.getPath() + " TreeItem:" + xfo.toString());
-                this.__localXfoParam.setValue(xfo, Visualive.ValueSetMode.DATA_LOAD);
+                // console.log(this.getName(), " TreeItem:", xfo.toString());
+                this.__localXfoParam.setElementValue(0, xfo, Visualive.ValueSetMode.DATA_LOAD);
             }
 
             if (itemflags & bboxFlag)
-                this.__boundingBoxParam.setValue(new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()), Visualive.ValueSetMode.DATA_LOAD);
+                this.__boundingBoxParam.setElementValue(0, new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()), Visualive.ValueSetMode.DATA_LOAD);
 
             const numChildren = reader.loadUInt32();
             if (numChildren > 0) {
@@ -876,26 +897,28 @@ class TreeItem extends BaseItem {
 
                     reader.seek(toc[i]); // Reset the pointer to the start of the item data.
                     childItem.readBinary(reader, context);
-                    this.addChild(childItem, false, false);
+                    this.addChild(childItem);
                 }
             }
         }
         else {
             const numOwners = reader.loadUInt32();
 
-            if(numOwners > 1)
-                console.log("numOwners:" + numOwners);
+            // if(numOwners > 1)
+            //     console.log("numOwners:" + numOwners);
             for (let i = 0; i < numOwners; i++) {
                 const ownerAddr = reader.loadUInt32();
                 if(ownerAddr == 0 || !(ownerAddr in context.loadedItems)) {
-                    console.log("Invalid owner Addr:", ownerAddr)
+                    if(i != 0)
+                        console.warn("Invalid owner Addr:", ownerAddr)
                     if (itemflags & localXfoFlag) {
                         reader.advance((3+4+1)*4);
                     }
                     continue;
                 }
 
-                const ownerIndex = this.addOwnerIndex();
+                const ownerItem = context.loadedItems[ownerAddr];
+                const ownerIndex = this.addOwner(ownerItem);
                 if (itemflags & localXfoFlag) {
                     const xfo = new Xfo();
                     xfo.tr = reader.loadFloat32Vec3();
@@ -910,8 +933,6 @@ class TreeItem extends BaseItem {
                 //     this.__boundingBoxParam.setElementValue(ownerIndex, bbox, Visualive.ValueSetMode.DATA_LOAD);
                 // }
 
-                const ownerItem = context.loadedItems[ownerAddr];
-                this.setOwnerAtIndex(ownerIndex, ownerItem);
             }
         }
     }

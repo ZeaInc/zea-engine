@@ -129,6 +129,7 @@ class VLAAsset extends AssetItem {
     const folder = this.__datafileParam.getFileFolderPath()
     const fileId = this.__datafileParam.getValue();
     const stem = this.__datafileParam.getStem();
+    const filename = this.__datafileParam.getFilename();
     let numGeomsFiles = 0;
 
     // TODO: one day the resourcecs tree could include meta data to indicate how
@@ -141,7 +142,9 @@ class VLAAsset extends AssetItem {
       (entries) => {
         const treeData = entries[Object.keys(entries)[0]];
         numGeomsFiles = this.readBinary(new BinReader(treeData.buffer, 0, SystemDesc.isMobileDevice), {
-          dataversion: 1
+          treefileversion: 1,
+          loadedItems:{}, 
+          filename
         });
         resourceLoader.freeData(treeData.buffer);
 

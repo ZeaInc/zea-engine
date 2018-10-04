@@ -115,7 +115,7 @@ class GLBillboardsPass extends GLPass {
 
     __populateBillboardDataArray(billboardData, index, dataArray) {
         const billboard = billboardData.billboard;
-        const mat4 = billboard.getGlobalXfo().toMat4();
+        const mat4 = billboard.getGlobalXfo(0).toMat4();
         const scale = billboard.getParameter('scale').getValue();
         let flags = 0;
         if(billboard.getParameter('alignedToCamera').getValue())

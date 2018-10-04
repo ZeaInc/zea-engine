@@ -19,7 +19,7 @@ import {
     MeshProxy,
 } from './Geometry/GeomProxies.js';
 
-let GeomParserWorker = require("worker-loader?inline!./Geometry/GeomParserWorker.js");
+const GeomParserWorker = require("worker-loader?inline!./Geometry/GeomParserWorker.js");
 // import {
 //     parseGeomsBinary
 // } from './Geometry/parseGeomsBinary.js';

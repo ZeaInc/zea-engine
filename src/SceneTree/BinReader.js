@@ -7,19 +7,35 @@ import {
     Box3
 } from '../Math';
 
-import {
-  SystemDesc
-} from '../BrowserDetection.js';
+
+// Note: the BinReader is used oin WebWorkers,
+// so avoid importing full BrowserDesc, which
+// also queries GPU capabilities.
+// import {
+//   isMobileDevice
+// } from '../BrowserDetection.js';
+function isMobileDevice() {
+    return (navigator.userAgent.match(/Android/i) ||
+        navigator.userAgent.match(/webOS/i) ||
+        navigator.userAgent.match(/iPhone/i) ||
+        navigator.userAgent.match(/iPad/i) ||
+        navigator.userAgent.match(/iPod/i) ||
+        navigator.userAgent.match(/BlackBerry/i) ||
+        navigator.userAgent.match(/Pixel/i) ||
+        navigator.userAgent.match(/Windows Phone/i)) != null;
+}
 
 class BinReader {
     constructor(data, byteOffset = 0) {
         this.__data = data;
         this.__byteOffset = byteOffset;
         this.__dataView = new DataView(this.__data);
+
+        this.__isMobildDevice = isMobileDevice();
     }
 
     get isMobileDevice() {
-        return SystemDesc.isMobileDevice;
+        return this.__isMobildDevice;
     }
 
     get data() {
@@ -107,7 +123,7 @@ class BinReader {
             return new Uint16Array();
         this.readPadd(2);
         let result;
-        if (SystemDesc.isMobileDevice) {
+        if (this.__isMobildDevice) {
             result = new Uint16Array(size);
             for (let i = 0; i < size; i++) {
                 result[i] = this.__dataView.getUint16(this.__byteOffset, true);
@@ -128,7 +144,7 @@ class BinReader {
             return new Uint32Array();
         this.readPadd(4);
         let result;
-        if (SystemDesc.isMobileDevice) {
+        if (this.__isMobildDevice) {
             result = new Uint32Array(size);
             for (let i = 0; i < size; i++) {
                 result[i] = this.__dataView.getUint32(this.__byteOffset, true);
@@ -149,7 +165,7 @@ class BinReader {
             return new Float32Array();
         this.readPadd(4);
         let result;
-        if (SystemDesc.isMobileDevice) {
+        if (this.__isMobildDevice) {
             result = new Float32Array(size);
             for (let i = 0; i < size; i++) {
                 result[i] = this.__dataView.getFloat32(this.__byteOffset, true);

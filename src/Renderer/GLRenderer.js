@@ -58,11 +58,14 @@ if (process === 'undefined' || process.browser == true) {
     }
 }
 
-
 const registeredPasses = {};
 
 class GLRenderer {
     constructor(canvasDiv, options = {}) {
+        if(!SystemDesc.gpuDesc) {
+            console.warn("Unable to create renderer");
+            return;
+        }
         this.__drawItems = [];
         this.__drawItemsIndexFreeList = [];
         this.__geoms = [];

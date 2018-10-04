@@ -65,19 +65,19 @@ class VRHead extends Gizmo {
         // For fun, draw a blue cube where the players head would have been if
         // we weren't taking the stageParameters into account. It'll start in
         // the center of the floor.
-        let localXfo = this.__treeItem.getLocalXfo();
+        let localXfo = this.__treeItem.getLocalXfo(0);
         if(frameData.pose.position)
             localXfo.tr.setDataArray(frameData.pose.position);
         if(frameData.pose.orientation)
             localXfo.ori.setDataArray(frameData.pose.orientation);
-        this.__treeItem.setLocalXfo(localXfo);
+        this.__treeItem.setLocalXfo(0, localXfo);
     }
 
     getTreeItem(){
         return this.__treeItem;
     }
     getXfo(){
-        return this.__treeItem.getLocalXfo();
+        return this.__treeItem.getLocalXfo(0);
     }
 };
 

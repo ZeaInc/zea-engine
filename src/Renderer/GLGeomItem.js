@@ -13,6 +13,11 @@ class GLGeomItem {
         this.gl = gl;
         this.geomItem = geomItem;
         this.glGeom = glGeom;
+
+        // console.log("GLGeomItem", geomItem.getName(), geomItem.getNumPaths())
+        // for(let i=0; i<geomItem.getNumPaths(); i++)
+        //     console.log(geomItem.getGeomXfo(i))
+
         this.visible = true;//this.geomItem.getVisible();
         this.culled = false;
 

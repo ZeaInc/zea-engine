@@ -90,9 +90,9 @@ class GeomItem extends TreeItem {
     //////////////////////////////////////////
     // Ownership
 
-    setOwnerAtIndex(ownerIndex, ownerItem, addChild = true) {
-        super.setOwnerAtIndex(ownerIndex, ownerItem);
-    }
+    // setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
+    //     super.setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner);
+    // }
 
     __addPathIndex(pathIndex) {
         this.__geomXfoParam.insertElement(pathIndex, new Xfo())

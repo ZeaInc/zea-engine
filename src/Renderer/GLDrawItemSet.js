@@ -28,6 +28,9 @@ class GLDrawItemSet {
     getGLDrawItems() {
         return this.glgeomitems;
     }
+    getGLDrawItem(index) {
+        return this.glgeomitems[index];
+    }
 
     // isInverted() {
     //     return this.inverted;

@@ -193,7 +193,7 @@ class VRToolHoldObjects extends VRTool {
             if(!heldGeom)
                 continue;
             let grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i]);
-            this.__heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.getGlobalXfo());
+            this.__heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.getGlobalXfo(0));
         }
     }
 
@@ -204,7 +204,7 @@ class VRToolHoldObjects extends VRTool {
             if(!heldGeom)
                 continue;
             let grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i]);
-            heldGeom.setGlobalXfo(grabXfo.multiply(this.__heldGeomItemOffsets[i]));
+            heldGeom.setGlobalXfo(0, grabXfo.multiply(this.__heldGeomItemOffsets[i]));
         }
     }
 

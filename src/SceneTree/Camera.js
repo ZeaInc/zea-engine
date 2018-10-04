@@ -60,9 +60,10 @@ class Camera extends TreeItem {
 
     }
 
-    __addPathIndex(pathIndex) {
-        super.__addPathIndex(pathIndex);
+    __addPath(ownerIndex, parentPathIndex) {
+        const pathIndex = super.__addPath(ownerIndex, parentPathIndex);
         this.setPositionAndTarget(pathIndex, new Vec3(3, 3, 1.75), new Vec3(0, 0, 1));
+        return pathIndex;
     }
 
     //////////////////////////////////////////////
@@ -169,7 +170,9 @@ class Camera extends TreeItem {
         this.__defaultManipulationState = mode;
     }
 
-    setPositionAndTarget(pathIndex = 0, position, target, mode = ValueSetMode.USER_SETVALUE) {
+    setPositionAndTarget(pathIndex, position, target, mode = ValueSetMode.USER_SETVALUE) {
+        if(!Number.isInteger(pathIndex))
+            throw("Path Index must be a number.")
         this.setFocalDistance(position.distanceTo(target), mode);
         const xfo = new Xfo();
         xfo.setLookAt(position, target, new Vec3(0.0, 0.0, 1.0));

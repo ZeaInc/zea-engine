@@ -35,6 +35,7 @@ class BaseItem extends ParameterOwner {
         this.__name = name;
         this.__owners = [];
         this.__freeOwnerIndices = [];
+        this.__freePathIndices = [];
         this.__numPaths = 0;
         this.__parentToPathIndices = [];
         this.__pathToParentIndex = [];
@@ -100,40 +101,74 @@ class BaseItem extends ParameterOwner {
     //////////////////////////////////////////
     // Owner Item
 
+    getNumOwners() {
+        return this.__owners.length;
+    }
+
     getOwner(ownerIndex) {
         return this.__owners[ownerIndex].ownerItem;
     }
 
-    addOwnerIndex() {
+    __addNewOwnerIndex(ownerIndex) {
+
+    }
+
+    // addOwnerIndex() {
+    //     let ownerIndex;
+    //     if(this.__freeOwnerIndices.length > 0)
+    //         ownerIndex = this.__freeOwnerIndices.pop();
+    //     else {
+    //         ownerIndex = this.__owners.length;
+    //         this.__owners.push(null);
+    //         this.__addNewOwnerIndex(ownerIndex);
+    //     }
+    //     this.__parentToPathIndices[ownerIndex] = [];
+    //     return ownerIndex;
+    // }
+
+    // setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
+    //     this.addRef(ownerItem);
+    //     this.__owners[ownerIndex] = { ownerItem, childIndexWithinOwner };
+    //     this.__parentToPathIndices[ownerIndex] = [];
+
+    //     // TODO: add Owner interface to MaterialLibrary, GeomLibrary
+    //     if(ownerItem.getNumPaths) {
+    //         const numParentPaths = ownerItem.getNumPaths();
+    //         for(let i=0; i<numParentPaths; i++) {
+    //             this.__addPath(ownerIndex, i);
+    //         }
+    //         // ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
+    //     }
+    // }
+
+    addOwner(ownerItem) {
+        // const ownerIndex = this.addOwnerIndex();
+        // this.setOwnerAtIndex(ownerIndex, ownerItem);
+
         let ownerIndex;
         if(this.__freeOwnerIndices.length > 0)
             ownerIndex = this.__freeOwnerIndices.pop();
         else {
             ownerIndex = this.__owners.length;
             this.__owners.push(null);
+            this.__addNewOwnerIndex(ownerIndex);
         }
-        this.__parentToPathIndices[ownerIndex] = [];
-        return ownerIndex;
-    }
 
-    setOwnerAtIndex(ownerIndex, ownerItem, childIndexWithinOwner) {
-        this.addRef(ownerItem);
-        this.__owners[ownerIndex] = { ownerItem, childIndexWithinOwner };
         this.__parentToPathIndices[ownerIndex] = [];
+        if(ownerItem) {
+            this.addRef(ownerItem);
+            this.__owners[ownerIndex] = { ownerItem, childIndexWithinOwner: -1 };
 
-        // TODO: add Owner interface to MaterialLibrary, GeomLibrary
-        if(ownerItem.getNumPaths) {
-            const numParentPaths = ownerItem.getNumPaths();
-            for(let i=0; i<numParentPaths; i++) {
-                this.__addPath(ownerIndex, i);
+            // TODO: add Owner interface to MaterialLibrary, GeomLibrary
+            if(ownerItem.getNumPaths) {
+                const numParentPaths = ownerItem.getNumPaths();
+                for(let i=0; i<numParentPaths; i++) {
+                    this.__addPath(ownerIndex, i);
+                }
+                // ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
             }
-            // ownerItem.pathAdded.connect((parentPathIndex)=>this.__addPath(ownerIndex, parentPathIndex))
         }
-    }
 
-    addOwner(ownerItem) {
-        const ownerIndex = this.addOwnerIndex();
-        this.setOwnerAtIndex(ownerIndex, ownerItem);
         return ownerIndex;
     }
 
@@ -144,6 +179,13 @@ class BaseItem extends ParameterOwner {
 
     removeOwner(ownerIndex) {
         this.removeRef(this.__owners[ownerIndex].ownerItem);
+
+        const paths = this.__parentToPathIndices[ownerIndex];
+        for(let index of paths)
+            this.__freePathIndices.push(index);
+
+        this.__parentToPathIndices[ownerIndex] = [];
+
         this.__owners[ownerIndex] = null;
         this.__freeOwnerIndices.push(ownerIndex)
     }
@@ -164,12 +206,21 @@ class BaseItem extends ParameterOwner {
     }
 
     __addPath(ownerIndex, parentPathIndex) {
-        const pathIndex = this.__numPaths;
+
+        let pathIndex;
+        if(this.__freePathIndices.length > 0)
+            pathIndex = this.__freePathIndices.pop();
+        else {
+            pathIndex = this.__numPaths;
+            this.__addPathIndex(pathIndex)
+            this.__numPaths++;
+            this.pathAdded.emit(pathIndex)
+        }
+
         this.__pathToParentIndex[pathIndex] = { ownerIndex, parentPathIndex };
         this.__parentToPathIndices[ownerIndex].push(pathIndex);
-        this.__numPaths++;
-        this.__addPathIndex(pathIndex)
-        this.pathAdded.emit(pathIndex)
+        
+        // console.log("__addPath", this.getName(), this.getNumPaths())
         return pathIndex;
     }
 
@@ -252,6 +303,7 @@ class BaseItem extends ParameterOwner {
         const type = reader.loadStr();
 
         this.setName(reader.loadStr());
+        // console.log(type, this.__name)
 
 
         // Note: parameters follow name...

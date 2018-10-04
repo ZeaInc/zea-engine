@@ -57,9 +57,9 @@ class VRViewport extends BaseViewport {
 
         //////////////////////////////////////////////
         // Resources
-
-        if (!SystemDesc.isMobileDevice && resourceLoader.resourceAvailable("VisualiveEngine/Vive.vla")) {
-            this.__viveAsset = renderer.getScene().loadCommonAssetResource("VisualiveEngine/Vive.vla");
+        const id = resourceLoader.resolveFilePathToId("VisualiveEngine/Vive.vla")
+        if (!SystemDesc.isMobileDevice && id) {
+            this.__viveAsset = renderer.getScene().loadCommonAssetResource(id);
             this.__viveAsset.loaded.connect(()=>{
                 const materialLibrary = this.__viveAsset.getMaterialLibrary();
                 const materialNames = materialLibrary.getMaterialNames();
@@ -91,6 +91,10 @@ class VRViewport extends BaseViewport {
         this.__stageTreeItem = new TreeItem('VRStage');
         this.__stageTreeItem.setSelectable(false);
         this.__stageTreeItem.setVisible(false);
+
+        this.__stageTreeItem.addOwnerIndex(0);
+        this.__stageTreeItem.__addPath(0, -1);
+
         this.__renderer.getCollector().addTreeItem(this.__stageTreeItem);
 
         // Construct the head geom and add it directly to the Gizmo pass.
@@ -248,12 +252,12 @@ class VRViewport extends BaseViewport {
 
     getXfo() {
         return this.__stageXfo;
-        // return this.__stageTreeItem.getGlobalXfo();
+        // return this.__stageTreeItem.getGlobalXfo(0);
     }
 
     setXfo(xfo) {
         this.__stageXfo = xfo;
-        this.__stageTreeItem.setGlobalXfo(xfo);
+        this.__stageTreeItem.setGlobalXfo(0, xfo);
         this.__stageMatrix = xfo.inverse().toMat4();
         // this.__stageMatrix.multiplyInPlace(this.__sittingToStandingMatrix);
         this.__stageScale = xfo.sc.x;
@@ -366,7 +370,7 @@ class VRViewport extends BaseViewport {
             this.__stageTreeItem.setVisible(true);
 
             if (SystemDesc.isMobileDevice) {
-                const xfo = this.__renderer.getViewport().getCamera().getGlobalXfo().clone();
+                const xfo = this.__renderer.getViewport().getCamera().getGlobalXfo(0).clone();
                 const yaxis = xfo.ori.getYaxis();
                 const up = new Vec3(0, 0, 1);
                 const angle = yaxis.angleTo(up);
@@ -559,12 +563,12 @@ class VRViewport extends BaseViewport {
         // Emit a signal for the shared session.
         const data = {
             interfaceType: 'Vive',
-            viewXfo: this.__vrhead.getTreeItem().getGlobalXfo(),
+            viewXfo: this.__vrhead.getTreeItem().getGlobalXfo(0),
             controllers: []
         }
         for (let controller of this.__vrControllers) {
             data.controllers.push({
-                xfo: controller.getTreeItem().getGlobalXfo()
+                xfo: controller.getTreeItem().getGlobalXfo(0)
             });
         }
         this.viewChanged.emit(data);
@@ -608,7 +612,7 @@ class VRViewport extends BaseViewport {
         renderstate.viewport = this;
         // renderstate.cameraMatrix = this.__standingMatrix;
         renderstate.viewScale = 1.0 / this.__stageScale;
-        renderstate.viewXfo = this.__vrhead.getTreeItem().getGlobalXfo();
+        renderstate.viewXfo = this.__vrhead.getTreeItem().getGlobalXfo(0);
         renderstate.cameraMatrix = renderstate.viewXfo.toMat4();
 
         const width = this.__hmdCanvasSize[0];

@@ -80,6 +80,12 @@ class ListParameter extends Parameter {
         }
     }
 
+    setValue(value) {
+        if(!Array.isArray(value))
+            throw("Value should be an array");
+        super.setValue(value)
+    }
+
 
     getElementValue(index, mode = ValueSetMode.USER_SETVALUE) {
         if(index == undefined) {

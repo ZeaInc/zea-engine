@@ -17,8 +17,8 @@ import {
     Camera
 } from './Camera.js';
 import {
-    AssetItem
-} from './AssetItem.js';
+    VLAAsset
+} from './VLAAsset.js';
 import {
     Sphere
 } from './Geometry/Shapes/Sphere.js';
@@ -48,8 +48,8 @@ import {
 class Root extends TreeItem {
     constructor() {
         super('root')
-        this.addOwnerIndex(0);
-        this.__addPath(0, -1);
+        const ownerIndex = this.addOwner(null);
+        this.__addPath(ownerIndex, -1);
     }
 }
 
@@ -111,13 +111,13 @@ class Scene {
         return resourceLoader;
     }
 
-    loadCommonAssetResource(path) {
-        if (path in this.__commonResources) {
-            return this.__commonResources[path];
+    loadCommonAssetResource(resourceId) {
+        if (resourceId in this.__commonResources) {
+            return this.__commonResources[resourceId];
         }
-        let asset = new AssetItem(path, resourceLoader);
-        asset.getParameter('DataFilePath').setValue(path);
-        this.__commonResources[path] = asset;
+        const asset = new VLAAsset(resourceId);
+        asset.getParameter('DataFilePath').setValue(resourceId);
+        this.__commonResources[resourceId] = asset;
         return asset;
     }
 
@@ -276,10 +276,10 @@ class Scene {
     }
 
     startPlaying(sceneTime) {
-        let prev = Date.now();
-        let onAnimationFrame = () => {
-            let now = Date.now();
-            let newTime = this.__sceneTime + ((now - prev) / 1000);
+        const prev = Date.now();
+        const onAnimationFrame = () => {
+            const now = Date.now();
+            const newTime = this.__sceneTime + ((now - prev) / 1000);
             if (newTime > this.__sceneDuration) {
                 // newTime = 0;
                 this.__playing = false;
