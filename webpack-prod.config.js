@@ -19,6 +19,5 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
     library: libraryName
   },
-  plugins,
-  devtool: 'source-map'
+  plugins
 };

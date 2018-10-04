@@ -36,19 +36,6 @@ const addCanvas = function(width, height) {
     return resizeDiv;
 }
 
-const getUrlVars = () => {
-    const url = window.location.href,
-        args = {};
-
-    const parts = url.split('?');
-    const hashes = parts.length > 1 ? parts[1].split('&') : [];
-    for (let i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        args[hash[0]] = hash[1];
-    }
-    return args;
-}
-
 const createLink = (name, parent)=>{
     const a = document.createElement('a');
     const linkText = document.createTextNode(name);
