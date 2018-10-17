@@ -1,6 +1,6 @@
 {
-  "name": "Visualive",
-  "version": "0.0.13",
+  "name": "@visualive/engine",
+  "version": "0.0.14",
   "description": "Visualive core engine",
   "main": "lib/Visualive.js",
   "scripts": {
