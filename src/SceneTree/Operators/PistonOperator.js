@@ -21,9 +21,6 @@ import {
     ListParameter,
     KinematicGroupParameter
 } from '../Parameters';
-import {
-    NumberParameter
-} from '../Parameters/NumberParameter.js';
 
 import {
     sgFactory
@@ -251,7 +248,7 @@ class PistonOperator extends Operator {
             const piston = pistons[i];
             piston.evaluate(quat, crankAxis, revolutions);
         }
-        
+
         this.postEval.emit(revolutions)
     }
 

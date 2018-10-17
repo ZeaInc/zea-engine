@@ -16,9 +16,6 @@ import {
     BaseImage
 } from '../SceneTree';
 import {
-    bindParam
-} from './GLShader.js';
-import {
     GLTexture2D
 } from './GLTexture2D.js';
 import {
@@ -36,7 +33,7 @@ const bindParam = (gl, param, renderstate, gltextures = {}) => {
     const unifs = renderstate.unifs;
     const name = param.getName();
     const unif = unifs[name];
-    
+
     // console.log("bindParam:" + name);
     if (param.getValue() instanceof BaseImage) {
         const gltexture = gltextures[name];
@@ -145,7 +142,7 @@ class GLMaterial extends BaseItem {
     getMaterial() {
         return this.__material;
     }
-    
+
     getShader() {
         return this.__glshader;
     }
@@ -203,7 +200,7 @@ class GLMaterial extends BaseItem {
 
     unbind(renderstate) {
         // Enable texture units to be re-used by resetting the count back
-        // to what it was. 
+        // to what it was.
         renderstate.boundTextures = this.__boundTexturesBeforeMaterial;
     }
 };

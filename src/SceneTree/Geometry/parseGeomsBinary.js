@@ -10,9 +10,6 @@ import {
 import {
     BinReader
 } from '../BinReader.js';
-import {
-    parseGeomsBinary
-} from './parseGeomsBinary.js';
 
 let parseGeomsBinary = (key, toc, geomIndexOffset, geomsRange, isMobileDevice, bufferSlice, genBuffersOpts, callback) => {
     let geomDatas = [];
