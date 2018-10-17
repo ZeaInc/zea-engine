@@ -12,9 +12,10 @@
     "chai": "3.4.1",
     "eslint": "3.2.0",
     "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony",
-    "copy-webpack-plugin": "^4.4.2",
-    "webpack": "^2.5.1",
-    "worker-loader": "^0.8.0",
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "webpack": "^4.21.0",
+    "webpack-cli": "^3.1.2",
+    "worker-loader": "^2.0.0",
     "yargs": "3.32.0"
   },
   "repository": {
