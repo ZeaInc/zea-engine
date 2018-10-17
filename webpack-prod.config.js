@@ -1,11 +1,10 @@
 const path = require('path');
 let fs = require('fs');
 let webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const Uglify = require("uglifyjs-webpack-plugin");
 
 let package_json = JSON.parse(fs.readFileSync('package.json'));
 let libraryName = package_json.name;
-
 
 module.exports = {
   mode: 'production',
@@ -16,7 +15,7 @@ module.exports = {
     library: libraryName
   },
   devtool: 'source-map',
-  optimization: {
-    minimizer: [new UglifyJsPlugin()]
-  }
+  plugins: [
+    new Uglify()
+  ]
 };
