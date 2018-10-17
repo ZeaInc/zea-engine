@@ -1,11 +1,13 @@
 {
   "name": "@visualive/engine",
+  "libraryName": "Visualive",
   "version": "0.0.14",
   "description": "Visualive core engine",
   "main": "lib/Visualive.js",
   "scripts": {
     "build": "webpack --config webpack-dev.config.js",
     "build:dev": "webpack --watch --config webpack-dev.config.js",
+    "build:prod": "npm run build:production",
     "build:production": "webpack --config webpack-prod.config.js"
   },
   "devDependencies": {

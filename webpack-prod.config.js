@@ -4,7 +4,7 @@ let webpack = require('webpack');
 const Uglify = require("uglifyjs-webpack-plugin");
 
 let package_json = JSON.parse(fs.readFileSync('package.json'));
-let libraryName = package_json.name;
+let { libraryName } = package_json
 
 module.exports = {
   mode: 'production',
