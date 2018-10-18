@@ -1,4 +1,3 @@
-
 export * from './BrowserDetection.js';
 export * from './Math';
 export * from './Utilities';
