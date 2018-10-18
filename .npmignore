@@ -5,3 +5,5 @@ VLPreprocessor/
 src/
 visualivestream/
 lib/*.map
+lib/*.worker.js
+external/

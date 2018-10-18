@@ -46,10 +46,6 @@ import {
     VRFlyTool
 } from './Tools/VRFlyTool.js'
 
-import {
-    SystemDesc
-} from '../../BrowserDetection.js';
-
 class VRViewport extends BaseViewport {
     constructor(renderer, vrDisplay /*, width, height*/ ) {
         super(renderer);
@@ -125,8 +121,8 @@ class VRViewport extends BaseViewport {
         this.pointerEvent = new Signal();
         this.resized = new Signal();
 
-        // Signals to abstract the user view. 
-        // i.e. when a user switches to VR mode, the signals 
+        // Signals to abstract the user view.
+        // i.e. when a user switches to VR mode, the signals
         // simply emit the new VR data.
         this.viewChanged = new Signal();
         this.presentingChanged = new Signal();
@@ -137,7 +133,7 @@ class VRViewport extends BaseViewport {
         this.actionOccuring = new Signal();
 
         this.controllerAdded = new Signal();
-        
+
         //////////////////////////////////////////////
         // UI
         if (this.__vrDisplay.stageParameters &&
@@ -194,7 +190,7 @@ class VRViewport extends BaseViewport {
 
         // TODO: Make mobile phones start presenting immedietly.
         // if(SystemDesc.isMobileDevice && this.__vrDisplay) {
-        //     // Update the view usng the VR 
+        //     // Update the view usng the VR
         //     const frameData = this.__vrViewport.getFrameData();
         //     if(frameData.pose.orientation) {
         //         const xfo = this.__viewports[0].getCamera().getLocalXfo();
@@ -250,7 +246,7 @@ class VRViewport extends BaseViewport {
     resize(width, height) {
         this.__canvasWidth = width;
         this.__canvasHeight = height;
-        // TODO: Support adaptive scaling of the viewport size to 
+        // TODO: Support adaptive scaling of the viewport size to
         // enable higher Fps in heavy scenes. If the Fps drops below
         // a certain threshold, we can drop the viewport resolution.
         this.__width = this.__canvasWidth * this.__canvasSizeScale.x;
@@ -631,7 +627,7 @@ class VRViewport extends BaseViewport {
     }
 
     drawOverlays(renderstate) {
-        // No overlays in VR 
+        // No overlays in VR
         //(overlays will be 3d scene grometries at an appropriate dist to the head... maybe.)
         // Instead we will use the controllers and attach widgets there.
     }
