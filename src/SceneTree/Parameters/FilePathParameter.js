@@ -144,8 +144,6 @@ class FilePathParameter extends Parameter {
       const visualiveSession = window.VisualiveSessionFactory.getInstance(
         resourceLoader.getCurrentUser(),
         resourceLoader.getProjectId(),
-        null,
-        this.__file.parent || 'root'
       )
 
       this.__unsubFileWithProgress = visualiveSession.sub(
