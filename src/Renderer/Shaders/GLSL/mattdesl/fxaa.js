@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary';
 
-shaderLibrary.setShaderModule('mattdesl/fxaa-texcoords.glsl', `
+shaderLibrary.setShaderModule(
+  'mattdesl/fxaa-texcoords.glsl',
+  `
 //To save 9 dependent texture reads, you can compute
 //these in the vertex shader and use the optimized
 //frag.glsl function in your frag shader. 
@@ -19,9 +21,12 @@ void texcoords(vec2 fragCoord, vec2 resolution,
     v_rgbM = vec2(fragCoord * inverseVP);
 }
 
-`);
+`
+);
 
-shaderLibrary.setShaderModule('mattdesl/fxaa.glsl', `
+shaderLibrary.setShaderModule(
+  'mattdesl/fxaa.glsl',
+  `
 
 /**
 Basic FXAA implementation based on the code on geeks3d.com with the
@@ -117,9 +122,12 @@ vec4 fxaa(sampler2D tex, vec2 fragCoord, vec2 resolution,
     return color;
 }
 
-`);
+`
+);
 
-shaderLibrary.setShaderModule('mattdesl/fxaa-apply.glsl', `
+shaderLibrary.setShaderModule(
+  'mattdesl/fxaa-apply.glsl',
+  `
 
 <%include file="mattdesl/fxaa.glsl"/>
 
@@ -137,4 +145,5 @@ vec4 apply(sampler2D tex, vec2 fragCoord, vec2 resolution) {
     return fxaa(tex, fragCoord, resolution, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);
 }
 
-`);
+`
+);

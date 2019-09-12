@@ -1,9 +1,9 @@
-import {
-    shaderLibrary
-} from '../../ShaderLibrary.js';
+import { shaderLibrary } from '../../ShaderLibrary.js';
 
 // https://gist.github.com/pyalot/cc7c3e5f144fb825d626
-shaderLibrary.setShaderModule('pragmatic-pbr/envmap-octahedral.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/envmap-octahedral.glsl',
+  `
 
 #define sectorize(value) step(0.0, (value))*2.0-1.0
 #define sum(value) dot(clamp((value), 1.0, 1.0), (value))
@@ -58,4 +58,5 @@ vec3 sphOctUvToDir(vec2 uv){
     );
 }
 
-`);
+`
+);

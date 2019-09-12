@@ -1,30 +1,12 @@
-import {
-  Vec3, 
-  Vec4
-} from '../../Math';
-import {
-  BillboardItem
-} from '../../SceneTree';
-import {
-  BillboardShader
-} from '../Shaders/BillboardShader.js';
-import {
-  GLPass, PassType
-} from './GLPass.js';
-import {
-  GLShader
-} from '../GLShader.js';
-import {
-  ImageAtlas
-} from '../ImageAtlas.js';
-import {
-  GLTexture2D
-} from '../GLTexture2D.js';
-import {
-  generateShaderGeomBinding
-} from '../GeomShaderBinding.js';
+import { Vec3, Vec4 } from '../../Math';
+import { BillboardItem } from '../../SceneTree';
+import { BillboardShader } from '../Shaders/BillboardShader.js';
+import { GLPass, PassType } from './GLPass.js';
+import { GLShader } from '../GLShader.js';
+import { ImageAtlas } from '../ImageAtlas.js';
+import { GLTexture2D } from '../GLTexture2D.js';
+import { generateShaderGeomBinding } from '../GeomShaderBinding.js';
 import { GLRenderer } from '../GLRenderer.js';
-
 
 const pixelsPerItem = 5; // The number of pixels per draw item.
 
@@ -32,7 +14,7 @@ class GLBillboardsPass extends GLPass {
   constructor() {
     super();
   }
-  
+
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
 
@@ -44,21 +26,26 @@ class GLBillboardsPass extends GLPass {
 
     this.__prevSortCameraPos = new Vec3();
 
-    this.__atlas = new ImageAtlas(this.__renderer.gl, 'Billboards', 'RGBA', 'UNSIGNED_BYTE', [1, 1, 1, 0]);
+    this.__atlas = new ImageAtlas(
+      this.__renderer.gl,
+      'Billboards',
+      'RGBA',
+      'UNSIGNED_BYTE',
+      [1, 1, 1, 0]
+    );
     this.__atlas.loaded.connect(this.updated.emit);
     this.__atlas.updated.connect(this.updated.emit);
 
-
     this.__renderer.registerPass(
-      (treeItem) => {
-        if(treeItem instanceof BillboardItem) {
+      treeItem => {
+        if (treeItem instanceof BillboardItem) {
           this.addBillboard(treeItem);
           return true;
         }
         return false;
       },
-      (treeItem) => {
-        if(treeItem instanceof BillboardItem) {
+      treeItem => {
+        if (treeItem instanceof BillboardItem) {
           this.removeBillboard(treeItem);
           return true;
         }
@@ -67,36 +54,35 @@ class GLBillboardsPass extends GLPass {
     );
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Bind to Render Tree
 
   filterRenderTree() {}
 
-  __requestUpdate(){
-    if(!this.__updateRequested) {
+  __requestUpdate() {
+    if (!this.__updateRequested) {
       this.__updateRequested = true;
-      setTimeout(()=>{
-        this.__updateBillboards();  
+      setTimeout(() => {
+        this.__updateBillboards();
       }, 100);
     }
   }
 
   addBillboard(billboard) {
-
     const image = billboard.getParameter('image').getValue();
-    if(!image) {
-      billboard.getParameter('image').valueChanged.connect(()=> this.addBillboard(billboard) );
+    if (!image) {
+      billboard
+        .getParameter('image')
+        .valueChanged.connect(() => this.addBillboard(billboard));
       return;
     }
-    image.loaded.connect(()=>{
+    image.loaded.connect(() => {
       let index;
-      if(this.__freeIndices.length > 0)
-        index = this.__freeIndices.pop();
-      else
-        index = this.__billboards.length;
+      if (this.__freeIndices.length > 0) index = this.__freeIndices.pop();
+      else index = this.__billboards.length;
       this.__billboards[index] = {
         billboard,
-        imageIndex: this.__atlas.addSubImage(image)
+        imageIndex: this.__atlas.addSubImage(image),
       };
       billboard.setMetadata('GLBillboardsPass_Index', index);
 
@@ -105,7 +91,7 @@ class GLBillboardsPass extends GLPass {
         this.updated.emit();
       });
       image.updated.connect(() => {
-        console.warn("TODO: update the atlas:" + index);
+        console.warn('TODO: update the atlas:' + index);
         // const image = billboard.getParameter('image').getValue();
         // const imageIndex = this.__atlas.addSubImage(image)
         // this.__billboards[index].image = image;
@@ -123,8 +109,8 @@ class GLBillboardsPass extends GLPass {
 
   removeBillboard(billboard) {
     const index = billboard.getMetadata('GLBillboardsPass_Index');
-    if(index == -1) {
-      console.warn("Billboard already removed.");
+    if (index == -1) {
+      console.warn('Billboard already removed.');
       return;
     }
     const billboardData = this.__billboards[index];
@@ -134,7 +120,7 @@ class GLBillboardsPass extends GLPass {
     // I don't have time to figureit out, so simply adding images
     // to the atlas. (for the Zahner demo)
     // Eventually we need to clean up the atlas, so debug this using the
-    // survey-point-calibration 190528_Dummy_Srvy_Data.vlexe test 
+    // survey-point-calibration 190528_Dummy_Srvy_Data.vlexe test
     // const image = billboardData.billboard.getParameter('image').getValue();
     // this.__atlas.removeSubImage(image)
 
@@ -143,14 +129,12 @@ class GLBillboardsPass extends GLPass {
     this.__requestUpdate();
   }
 
-
   __populateBillboardDataArray(billboardData, index, dataArray) {
     const billboard = billboardData.billboard;
     const mat4 = billboard.getGlobalXfo().toMat4();
     const scale = billboard.getParameter('scale').getValue();
     let flags = 0;
-    if(billboard.getParameter('alignedToCamera').getValue())
-      flags |= 1<<2;
+    if (billboard.getParameter('alignedToCamera').getValue()) flags |= 1 << 2;
     const alpha = billboard.getParameter('alpha').getValue();
     const color = billboard.getParameter('color').getValue();
 
@@ -168,59 +152,68 @@ class GLBillboardsPass extends GLPass {
     col4.set(color.r, color.g, color.b, color.a);
   }
 
-  __updateIndexArray(){
-
+  __updateIndexArray() {
     const gl = this.__gl;
     // Note: When the camera moves, this array is sorted and re-upload.
-    if(this.__indexArray && this.__indexArray.length != (this.__billboards.length - this.__freeIndices.length)) {
+    if (
+      this.__indexArray &&
+      this.__indexArray.length !=
+        this.__billboards.length - this.__freeIndices.length
+    ) {
       gl.deleteBuffer(this.__instanceIdsBuffer);
       this.__instanceIdsBuffer = null;
     }
 
-    this.__indexArray = new Float32Array(this.__billboards.length - this.__freeIndices.length);
+    this.__indexArray = new Float32Array(
+      this.__billboards.length - this.__freeIndices.length
+    );
     this.__drawCount = 0;
     for (let i = 0; i < this.__billboards.length; i++) {
-      if(this.__billboards[i] && this.__billboards[i].billboard.getVisible()) {
+      if (this.__billboards[i] && this.__billboards[i].billboard.getVisible()) {
         this.__indexArray[this.__drawCount] = i;
         this.__drawCount++;
       }
     }
-    if(!this.__instanceIdsBuffer)
-      this.__instanceIdsBuffer = gl.createBuffer();
+    if (!this.__instanceIdsBuffer) this.__instanceIdsBuffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.__instanceIdsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.__indexArray, gl.STATIC_DRAW);
   }
 
   __updateBillboards() {
-    if (!this.__updateRequested)
-      return;
+    if (!this.__updateRequested) return;
 
     this.__updateIndexArray();
 
     const gl = this.__gl;
-    if(!this.__glshader) {
+    if (!this.__glshader) {
       if (!gl.__quadVertexIdsBuffer) {
         gl.setupInstancedQuad();
       }
       this.__glshader = new BillboardShader(gl);
-      let shaderComp = this.__glshader.compileForTarget('GLBillboardsPass', this.__renderer.getShaderPreproc());
-      this.__shaderBinding = generateShaderGeomBinding(gl, shaderComp.attrs, gl.__quadattrbuffers, gl.__quadIndexBuffer);
+      const shaderComp = this.__glshader.compileForTarget(
+        'GLBillboardsPass',
+        this.__renderer.getShaderPreproc()
+      );
+      this.__shaderBinding = generateShaderGeomBinding(
+        gl,
+        shaderComp.attrs,
+        gl.__quadattrbuffers,
+        gl.__quadIndexBuffer
+      );
     }
 
-    const doIt = ()=>{
-
+    const doIt = () => {
       // Note: Currently the atlas destroys all the source images
       // after loading them(to save memory). This means we can't
       // re-render the atlas. If re-rendering is needed, add an age
       this.__atlas.renderAtlas();
 
-      if(!gl.floatTexturesSupported || !gl.drawElementsInstanced) {
+      if (!gl.floatTexturesSupported || !gl.drawElementsInstanced) {
         this.__modelMatrixArray = [];
         this.__billboardDataArray = [];
         this.__tintColorArray = [];
-        this.__indexArray.forEach( index => {
-
+        this.__indexArray.forEach(index => {
           const billboardData = this.__billboards[index];
           const billboard = billboardData.billboard;
           const mat4 = billboard.getGlobalXfo().toMat4();
@@ -230,16 +223,22 @@ class GLBillboardsPass extends GLPass {
           const color = billboard.getParameter('color').getValue();
 
           this.__modelMatrixArray[index] = mat4.asArray();
-          this.__billboardDataArray[index] = [scale, flags, billboardData.imageIndex, alpha];
+          this.__billboardDataArray[index] = [
+            scale,
+            flags,
+            billboardData.imageIndex,
+            alpha,
+          ];
           this.__tintColorArray[index] = [color.r, color.g, color.b, color.a];
         });
         this.__updateRequested = false;
         return;
       }
 
-
-      let size = Math.round(Math.sqrt(this.__indexArray.length * pixelsPerItem) + 0.5);
-      // Note: the following few lines need a cleanup. 
+      let size = Math.round(
+        Math.sqrt(this.__indexArray.length * pixelsPerItem) + 0.5
+      );
+      // Note: the following few lines need a cleanup.
       // We should be using power of 2 textures. The problem is that pot texture sizes don't
       // align with the 6 pixels per draw item. So we need to upload a slightly bigger teture
       // but upload the 'usable' size.
@@ -250,7 +249,7 @@ class GLBillboardsPass extends GLPass {
       // in memory. (makes updating a lot easier. See __updateItemInstanceData below)
       // size = Math.nextPow2(size);
 
-      if((size % pixelsPerItem) != 0)
+      if (size % pixelsPerItem != 0)
         size += pixelsPerItem - (size % pixelsPerItem);
 
       this.__width = size;
@@ -265,16 +264,16 @@ class GLBillboardsPass extends GLPass {
           height: size,
           filter: 'NEAREST',
           wrap: 'CLAMP_TO_EDGE',
-          mipMapped: false
+          mipMapped: false,
         });
         this.__drawItemsTexture.clear();
       } else {
         this.__drawItemsTexture.resize(size, size);
       }
 
-      this.__indexArray.forEach( index => {
+      this.__indexArray.forEach(index => {
         this.__updateBillboard(index);
-      })
+      });
 
       this.__updateRequested = false;
     };
@@ -282,17 +281,15 @@ class GLBillboardsPass extends GLPass {
     if (this.__atlas.isLoaded()) {
       doIt();
     } else {
-      this.__atlas.loaded.connect(doIt)
+      this.__atlas.loaded.connect(doIt);
     }
   }
 
   __updateBillboard(index) {
-    if (!this.__drawItemsTexture)
-      return;
+    if (!this.__drawItemsTexture) return;
 
     const billboardData = this.__billboards[index];
-    if (!billboardData.billboard.getVisible())
-      return;
+    if (!billboardData.billboard.getVisible()) return;
 
     const gl = this.__gl;
 
@@ -312,33 +309,62 @@ class GLBillboardsPass extends GLPass {
     const format = this.__drawItemsTexture.getFormat();
 
     if (type == 'FLOAT') {
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, gl[format], gl[type], dataArray);
+      gl.texSubImage2D(
+        gl.TEXTURE_2D,
+        0,
+        xoffset,
+        yoffset,
+        width,
+        height,
+        gl[format],
+        gl[type],
+        dataArray
+      );
     } else {
       const unit16s = Math.convertFloat32ArrayToUInt16Array(dataArray);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, gl[format], gl[type], unit16s);
+      gl.texSubImage2D(
+        gl.TEXTURE_2D,
+        0,
+        xoffset,
+        yoffset,
+        width,
+        height,
+        gl[format],
+        gl[type],
+        unit16s
+      );
     }
-
   }
 
   sort(cameraPos) {
-    for (let billboardData of this.__billboards) {
-      if(billboardData) {
-        billboardData.dist = billboardData.billboard.getGlobalXfo().tr.distanceTo(cameraPos);
+    for (const billboardData of this.__billboards) {
+      if (billboardData) {
+        billboardData.dist = billboardData.billboard
+          .getGlobalXfo()
+          .tr.distanceTo(cameraPos);
       }
     }
-    this.__indexArray.sort((a, b) => (this.__billboards[a].dist > this.__billboards[b].dist) ? -1 : ((this.__billboards[a].dist < this.__billboards[b].dist) ? 1 : 0));
+    this.__indexArray.sort((a, b) =>
+      this.__billboards[a].dist > this.__billboards[b].dist
+        ? -1
+        : this.__billboards[a].dist < this.__billboards[b].dist
+        ? 1
+        : 0
+    );
 
     const gl = this.__gl;
-    if(gl.floatTexturesSupported && this.__instanceIdsBuffer) {
+    if (gl.floatTexturesSupported && this.__instanceIdsBuffer) {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.__instanceIdsBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.__indexArray, gl.STATIC_DRAW);
     }
   }
 
-
   draw(renderstate) {
-
-    if(this.__drawCount == 0 || !this.__atlas.isReady() || this.__updateRequested)
+    if (
+      this.__drawCount == 0 ||
+      !this.__atlas.isReady() ||
+      this.__updateRequested
+    )
       return;
 
     const gl = this.__gl;
@@ -354,15 +380,17 @@ class GLBillboardsPass extends GLPass {
     if (dist > this.__threshold) {
       this.sort(cameraPos);
       this.__prevSortCameraPos = cameraPos.clone();
-      if(this.__billboards.length > 1) {
-        const v0 = this.__billboards[this.__indexArray[0]].billboard.getGlobalXfo().tr;
-        const v1 = this.__billboards[this.__indexArray[1]].billboard.getGlobalXfo().tr;
+      if (this.__billboards.length > 1) {
+        const v0 = this.__billboards[
+          this.__indexArray[0]
+        ].billboard.getGlobalXfo().tr;
+        const v1 = this.__billboards[
+          this.__indexArray[1]
+        ].billboard.getGlobalXfo().tr;
         this.__threshold = v0.distanceTo(v1);
-      }
-      else {
+      } else {
         this.__threshold = 9999;
       }
-
     }
 
     this.__glshader.bind(renderstate);
@@ -371,48 +399,63 @@ class GLBillboardsPass extends GLPass {
     const unifs = renderstate.unifs;
     this.__atlas.bindToUniform(renderstate, unifs.atlasBillboards);
 
-    if(!gl.floatTexturesSupported || !gl.drawElementsInstanced) {
+    if (!gl.floatTexturesSupported || !gl.drawElementsInstanced) {
       const len = this.__indexArray.length;
       for (let i = 0; i < len; i++) {
         // this.__drawItems[i].bind(renderstate);
         // this.__glgeom.draw();
 
-        gl.uniformMatrix4fv(unifs.modelMatrix.location, false, this.__modelMatrixArray[i]);
-        gl.uniform4fv(unifs.billboardData.location, this.__billboardDataArray[i]);
+        gl.uniformMatrix4fv(
+          unifs.modelMatrix.location,
+          false,
+          this.__modelMatrixArray[i]
+        );
+        gl.uniform4fv(
+          unifs.billboardData.location,
+          this.__billboardDataArray[i]
+        );
         gl.uniform4fv(unifs.tintColor.location, this.__tintColorArray[i]);
-        gl.uniform4fv(unifs.layoutData.location, this.__atlas.getLayoutData(this.__billboards[i].imageIndex));
-        
-        renderstate.bindViewports(unifs, ()=>{
+        gl.uniform4fv(
+          unifs.layoutData.location,
+          this.__atlas.getLayoutData(this.__billboards[i].imageIndex)
+        );
+
+        renderstate.bindViewports(unifs, () => {
           gl.drawQuad();
-        })
-      };
-    }
-    else
-    {
-      this.__drawItemsTexture.bindToUniform(renderstate, unifs.instancesTexture);
+        });
+      }
+    } else {
+      this.__drawItemsTexture.bindToUniform(
+        renderstate,
+        unifs.instancesTexture
+      );
       gl.uniform1i(unifs.instancesTextureSize.location, this.__width);
 
       {
         // The instance transform ids are bound as an instanced attribute.
-        let location = renderstate.attrs.instanceIds.location;
+        const location = renderstate.attrs.instanceIds.location;
         gl.enableVertexAttribArray(location);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.__instanceIdsBuffer);
         gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 4, 0);
         gl.vertexAttribDivisor(location, 1); // This makes it instanced
       }
 
-      renderstate.bindViewports(unifs, ()=>{
-        gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, this.__drawCount);
-      })
+      renderstate.bindViewports(unifs, () => {
+        gl.drawElementsInstanced(
+          gl.TRIANGLES,
+          6,
+          gl.UNSIGNED_SHORT,
+          0,
+          this.__drawCount
+        );
+      });
     }
 
     gl.disable(gl.BLEND);
   }
-};
+}
 
 GLRenderer.registerPass(GLBillboardsPass, PassType.TRANSPARENT);
 
-export {
-  GLBillboardsPass
-};
+export { GLBillboardsPass };
 // export default GLBillboardsPass;

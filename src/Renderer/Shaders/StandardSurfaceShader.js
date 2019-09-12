@@ -1,15 +1,7 @@
-import {
-    Color
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/constants.js';
 import './GLSL/stack-gl/transpose.js';
@@ -22,9 +14,11 @@ import './GLSL/debugColors.js';
 import './GLSL/ImagePyramid.js';
 
 class StandardSurfaceShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('StandardSurfaceShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'StandardSurfaceShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -88,9 +82,12 @@ void main(void) {
     v_worldPos      = (modelMatrix * pos).xyz;
     v_cutAwayData   = getCutaway();
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('StandardSurfaceShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'StandardSurfaceShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -296,37 +293,51 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
 
-        this.finalize();
-    }
+    this.finalize();
+  }
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
-        paramDescs.push({ name: 'Metallic', defaultValue: 0.0, range:[0,1] });
-        paramDescs.push({ name: 'Roughness', defaultValue: 0.85, range:[0,1] });
-        // F0 = reflectance and is a physical property of materials
-        // It also has direct relation to IOR so we need to dial one or the other
-        // For simplicity sake, we don't need to touch this value as metalic can dictate it
-        // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
-        paramDescs.push({ name: 'Reflectance', defaultValue: 0.1, range:[0,1] } );
-        paramDescs.push({ name: 'EmissiveStrength', defaultValue: 0.0, range:[0,1] });
-        
-        // paramDescs.push({ name: 'TexCoordScale', defaultValue: 1.0, texturable: false });
-        return paramDescs;
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Metallic', defaultValue: 0.0, range: [0, 1] });
+    paramDescs.push({
+      name: 'Roughness',
+      defaultValue: 0.85,
+      range: [0, 1],
+    });
+    // F0 = reflectance and is a physical property of materials
+    // It also has direct relation to IOR so we need to dial one or the other
+    // For simplicity sake, we don't need to touch this value as metalic can dictate it
+    // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
+    paramDescs.push({
+      name: 'Reflectance',
+      defaultValue: 0.1,
+      range: [0, 1],
+    });
+    paramDescs.push({
+      name: 'EmissiveStrength',
+      defaultValue: 0.0,
+      range: [0, 1],
+    });
 
-    static getGeomDataShaderName(){
-        return 'StandardSurfaceGeomDataShader';
-    }
+    // paramDescs.push({ name: 'TexCoordScale', defaultValue: 1.0, texturable: false });
+    return paramDescs;
+  }
 
-    static getSelectedShaderName(){
-        return 'StandardSurfaceSelectedGeomsShader';
-    }
-};
+  static getGeomDataShaderName() {
+    return 'StandardSurfaceGeomDataShader';
+  }
+
+  static getSelectedShaderName() {
+    return 'StandardSurfaceSelectedGeomsShader';
+  }
+}
 
 sgFactory.registerClass('StandardSurfaceShader', StandardSurfaceShader);
-export {
-    StandardSurfaceShader
-};
+export { StandardSurfaceShader };

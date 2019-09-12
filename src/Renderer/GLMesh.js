@@ -12,7 +12,7 @@ class GLMesh extends GLGeom {
     return this.__numTriangles;
   }
 
-  ///////////////////////////////////////
+  // /////////////////////////////////////
   // Buffers
 
   genBuffers() {
@@ -23,11 +23,11 @@ class GLMesh extends GLGeom {
     const geomBuffers = this.__geom.genBuffers();
     const indices = geomBuffers.indices;
     this.__numTriIndices = geomBuffers.indices.length;
-    if(indices instanceof Uint8Array)
-      this.__indexDataType = this.__gl.UNSIGNED_BYTE ;
-    if(indices instanceof Uint16Array)
+    if (indices instanceof Uint8Array)
+      this.__indexDataType = this.__gl.UNSIGNED_BYTE;
+    if (indices instanceof Uint16Array)
       this.__indexDataType = this.__gl.UNSIGNED_SHORT;
-    if(indices instanceof Uint32Array)
+    if (indices instanceof Uint32Array)
       this.__indexDataType = this.__gl.UNSIGNED_INT;
 
     this.__numTriangles = indices.length / 3;
@@ -42,7 +42,7 @@ class GLMesh extends GLGeom {
     // let maxIndex;
     // if (debugAttrValues)
     //   maxIndex = Math.max(...indices);
-    for (let attrName in geomBuffers.attrBuffers) {
+    for (const attrName in geomBuffers.attrBuffers) {
       const attrData = geomBuffers.attrBuffers[attrName];
 
       const attrBuffer = gl.createBuffer();
@@ -52,20 +52,21 @@ class GLMesh extends GLGeom {
       this.__glattrbuffers[attrName] = {
         buffer: attrBuffer,
         dimension: attrData.dimension,
-        normalized: attrData.normalized
+        normalized: attrData.normalized,
       };
 
-      if(attrName == 'textureCoords')
-        this.__glattrbuffers['texCoords'] = this.__glattrbuffers['textureCoords'];
+      if (attrName == 'textureCoords')
+        this.__glattrbuffers['texCoords'] = this.__glattrbuffers[
+          'textureCoords'
+        ];
     }
   }
-
 
   updateBuffers(opts) {
     const gl = this.__gl;
 
     const geomBuffers = this.__geom.genBuffers({ includeIndices: false });
-    for (let attrName in geomBuffers.attrBuffers) {
+    for (const attrName in geomBuffers.attrBuffers) {
       const attrData = geomBuffers.attrBuffers[attrName];
       const glattr = this.__glattrbuffers[attrName];
       gl.bindBuffer(gl.ARRAY_BUFFER, glattr.buffer);
@@ -73,27 +74,23 @@ class GLMesh extends GLGeom {
     }
   }
 
-
-  getNumUnSplitVerts(){
+  getNumUnSplitVerts() {
     return this.__geom.vertices.length;
   }
 
-  getNumSplitVerts(){
+  getNumSplitVerts() {
     return this.__numRenderVerts;
   }
 
-  //////////////////////////////////
+  // ////////////////////////////////
   // Wireframes
 
   generateWireframesVAO() {
+    if (!this.__vao) return false;
 
-    if (!this.__vao)
-      return false;
+    if (!this.__geom.edgeVerts) this.__geom.genTopologyInfo();
 
-    if (!this.__geom.edgeVerts)
-      this.__geom.genTopologyInfo();
-
-    // generate the wireframes VAO. 
+    // generate the wireframes VAO.
     // It can share buffers with the regular VAO, but provide a different index buffer.
     if (this.__wireframesVao)
       this.__ext.deleteVertexArrayOES(this.__wireframesVao);
@@ -116,8 +113,7 @@ class GLMesh extends GLGeom {
   }
 
   bindWireframeVAO(renderstate) {
-    if (this.__wireframesVao == undefined)
-      return false;
+    if (this.__wireframesVao == undefined) return false;
     this.__ext.bindVertexArrayOES(this.__wireframesVao);
     return true;
   }
@@ -129,22 +125,23 @@ class GLMesh extends GLGeom {
   // Draw an item to screen.
   drawWireframe() {
     if (this.__wireframesVao)
-      this.__gl.drawElements(this.__gl.LINES, this.__numWireIndices, this.__gl.UNSIGNED_INT, 0);
+      this.__gl.drawElements(
+        this.__gl.LINES,
+        this.__numWireIndices,
+        this.__gl.UNSIGNED_INT,
+        0
+      );
   }
 
-  //////////////////////////////////
+  // ////////////////////////////////
   // Hard Edges
 
-
   generateHardEdgesVAO() {
+    if (!this.__vao) return false;
 
-    if (!this.__vao)
-      return false;
+    if (!this.__geom.edgeVerts) this.__geom.generateHardEdgesFlags();
 
-    if (!this.__geom.edgeVerts)
-      this.__geom.generateHardEdgesFlags();
-
-    // generate the wireframes VAO. 
+    // generate the wireframes VAO.
     // It can share buffers with the regular VAO, but provide a different index buffer.
     if (this.__hardEdgesVao)
       this.__ext.deleteVertexArrayOES(this.__hardEdgesVao);
@@ -153,7 +150,9 @@ class GLMesh extends GLGeom {
 
     const gl = this.__gl;
     const hardEdgeIndexBuffer = gl.createBuffer();
-    const hardEdgeIndices = Uint32Array.from(this.__geom.computeHardEdgesIndices());
+    const hardEdgeIndices = Uint32Array.from(
+      this.__geom.computeHardEdgesIndices()
+    );
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, hardEdgeIndexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, hardEdgeIndices, gl.STATIC_DRAW);
 
@@ -166,10 +165,8 @@ class GLMesh extends GLGeom {
     this.__ext.bindVertexArrayOES(null); // Note: is this necessary?
   }
 
-
   bindHardEdgesVAO(renderstate) {
-    if (this.__hardEdgesVao == undefined)
-      return false;
+    if (this.__hardEdgesVao == undefined) return false;
     this.__ext.bindVertexArrayOES(this.__hardEdgesVao);
     return true;
   }
@@ -181,29 +178,43 @@ class GLMesh extends GLGeom {
   // Draw an item to screen.
   drawHardEdges() {
     if (this.__hardEdgesVao)
-      this.__gl.drawElements(this.__gl.LINES, this.__numEdgeIndices, this.__gl.UNSIGNED_INT, 0);
+      this.__gl.drawElements(
+        this.__gl.LINES,
+        this.__numEdgeIndices,
+        this.__gl.UNSIGNED_INT,
+        0
+      );
   }
 
-
-  //////////////////////////////////
+  // ////////////////////////////////
   // Drawing Mesh Points.
 
   drawPoints() {
     this.__gl.drawArrays(this.__gl.POINTS, 0, this.__geom.numVertices());
   }
 
-  //////////////////////////////////
+  // ////////////////////////////////
   // Regular Drawing.
 
   // Draw an item to screen.
   draw() {
-    this.__gl.drawElements(this.__gl.TRIANGLES, this.__numTriIndices, this.__indexDataType, 0);
+    this.__gl.drawElements(
+      this.__gl.TRIANGLES,
+      this.__numTriIndices,
+      this.__indexDataType,
+      0
+    );
   }
 
   drawInstanced(instanceCount) {
-    this.__gl.drawElementsInstanced(this.__gl.TRIANGLES, this.__numTriIndices, this.__indexDataType, 0, instanceCount);
+    this.__gl.drawElementsInstanced(
+      this.__gl.TRIANGLES,
+      this.__numTriIndices,
+      this.__indexDataType,
+      0,
+      instanceCount
+    );
   }
-
 
   destroy() {
     super.destroy();
@@ -215,9 +226,7 @@ class GLMesh extends GLGeom {
     // if (this.__hardEdgesVao)
     //     gl.deleteVertexArray(this.__hardEdgesVao);
   }
-};
+}
 
-export {
-  GLMesh
-};
+export { GLMesh };
 // export default GLMesh;

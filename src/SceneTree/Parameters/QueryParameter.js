@@ -1,26 +1,10 @@
-import {
-  Vec2,
-  Xfo
-} from '../../Math';
-import {
-  Signal
-} from '../../Utilities';
-import {
-  ItemFlags
-} from '../BaseItem';
-import {
-  sgFactory
-} from '../SGFactory.js';
-import {
-  Parameter,
-  ValueSetMode
-} from './Parameter.js';
-import {
-  StringParameter
-} from './StringParameter.js';
-import {
-  ItemSetParameter
-} from './ItemSetParameter.js';
+import { Vec2, Xfo } from '../../Math';
+import { Signal } from '../../Utilities';
+import { ItemFlags } from '../BaseItem';
+import { sgFactory } from '../SGFactory.js';
+import { Parameter, ValueSetMode } from './Parameter.js';
+import { StringParameter } from './StringParameter.js';
+import { ItemSetParameter } from './ItemSetParameter.js';
 
 const QUERY_TYPES = {
   NAME: 0,
@@ -29,30 +13,35 @@ const QUERY_TYPES = {
   MATERIAL: 3,
   LEVEL: 4,
   LAYER: 5,
-  VOLUME: 6
-}
+  VOLUME: 6,
+};
 
 const QUERY_MATCH_TYPE = {
   EXACT: 0,
-  REGEX: 1
-}
+  REGEX: 1,
+};
 
 const QUERY_LOGIC = {
   AND: 0,
   OR: 1,
   NOT: 3,
-  NEWSET: 4
-}
+  NEWSET: 4,
+};
 
 class QueryParameter extends StringParameter {
-  constructor(name, queryType = QUERY_TYPES.PATH, matchType = QUERY_MATCH_TYPE.EXACT, locicalOperator = QUERY_LOGIC.AND) {
+  constructor(
+    name,
+    queryType = QUERY_TYPES.PATH,
+    matchType = QUERY_MATCH_TYPE.EXACT,
+    locicalOperator = QUERY_LOGIC.AND
+  ) {
     super(name, '', 'String');
     this.__enabled = true;
     this.__queryType = queryType;
     this.__matchType = matchType;
     this.__locicalOperator = locicalOperator;
     this.__negate = false;
-    this.__propName = "";
+    this.__propName = '';
   }
 
   clone(flags) {
@@ -61,7 +50,7 @@ class QueryParameter extends StringParameter {
   }
 
   getEnabled() {
-    return this.__enabled
+    return this.__enabled;
   }
 
   setEnabled(ngate) {
@@ -70,7 +59,7 @@ class QueryParameter extends StringParameter {
   }
 
   getQueryType() {
-    return this.__queryType
+    return this.__queryType;
   }
 
   setQueryType(queryType) {
@@ -79,7 +68,7 @@ class QueryParameter extends StringParameter {
   }
 
   getMatchType() {
-    return this.__matchType
+    return this.__matchType;
   }
 
   setMatchType(matchType) {
@@ -88,7 +77,7 @@ class QueryParameter extends StringParameter {
   }
 
   getLocicalOperator() {
-    return this.__locicalOperator
+    return this.__locicalOperator;
   }
 
   setLocicalOperator(locicalOperator) {
@@ -97,7 +86,7 @@ class QueryParameter extends StringParameter {
   }
 
   getNegate() {
-    return this.__negate
+    return this.__negate;
   }
 
   setNegate(ngate) {
@@ -133,13 +122,13 @@ class QueryParameter extends StringParameter {
         return new RegExp(`${value}`, 'i');
         break;
       default:
-        throw ("Unknown Match type")
+        throw 'Unknown Match type';
     }
   }
 
   readBinary(reader, context) {
     const value = reader.loadStr();
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.setValue(value, ValueSetMode.DATA_LOAD);
   }
 
   static get QUERY_TYPES() {
@@ -151,14 +140,8 @@ class QueryParameter extends StringParameter {
   static get QUERY_LOGIC() {
     return QUERY_LOGIC;
   }
-};
-
+}
 
 sgFactory.registerClass('QueryParameter', QueryParameter);
 
-export {
-  QueryParameter,
-  QUERY_TYPES,
-  QUERY_MATCH_TYPE,
-  QUERY_LOGIC
-};
+export { QueryParameter, QUERY_TYPES, QUERY_MATCH_TYPE, QUERY_LOGIC };

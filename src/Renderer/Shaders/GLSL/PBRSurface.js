@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('PBRSurfaceRadiance.glsl', `
+shaderLibrary.setShaderModule(
+  'PBRSurfaceRadiance.glsl',
+  `
 
 struct MaterialParams {
     vec3 baseColor;
@@ -92,4 +94,5 @@ vec3 pbrSurfaceRadiance(in MaterialParams materialParams, vec3 irradiance, vec3 
     // radiance = vec4( kd * diffuse + /*ks */ specular, 1);
     return radiance;
 }
-`);
+`
+);

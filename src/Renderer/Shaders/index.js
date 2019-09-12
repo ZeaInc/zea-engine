@@ -1,5 +1,3 @@
-
-
 export * from './GLSL';
 
 export * from './BillboardShader.js';
@@ -36,4 +34,3 @@ export * from './ToolIconShader.js';
 export * from './UnpackHDRShader.js';
 export * from './UnpackLDRAlphaImageShader.js';
 export * from './WireShader.js';
-

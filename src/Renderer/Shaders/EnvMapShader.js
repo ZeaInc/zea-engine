@@ -1,5 +1,5 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
@@ -11,7 +11,9 @@ import './GLSL/utils/quadVertexFromID.js';
 class EnvMapShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('EnvMapShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'EnvMapShader.vertexShader',
+      `
 precision highp float;
 
 <%include file="utils/quadVertexFromID.glsl"/>
@@ -44,15 +46,17 @@ void main()
   gl_Position = vec4(position, 0, 1);
 }
 
-`);
+`
+    );
   }
-};
-
+}
 
 class BackgroundImageShader extends EnvMapShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('LatLongEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'LatLongEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -95,16 +99,18 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
-
+}
 
 class OctahedralEnvMapShader extends EnvMapShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('OctahedralEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'OctahedralEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -157,16 +163,18 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
-
+}
 
 class LatLongEnvMapShader extends EnvMapShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('LatLongEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'LatLongEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -207,20 +215,22 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
   static getParamDeclarations() {
     const paramDescs = super.getParamDeclarations();
     return paramDescs;
   }
-};
-
+}
 
 class SterioLatLongEnvMapShader extends EnvMapShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('SterioLatLongEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'SterioLatLongEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -270,16 +280,18 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
-
+}
 
 class DualFishEyeEnvMapShader extends EnvMapShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('DualFishEyeEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'DualFishEyeEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -323,17 +335,18 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
-
-
+}
 
 class DualFishEyeToLatLongBackgroundShader extends EnvMapShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('DualFishEyeEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'DualFishEyeEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -377,11 +390,11 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
-
+}
 
 export {
   EnvMapShader,
@@ -390,6 +403,5 @@ export {
   LatLongEnvMapShader,
   SterioLatLongEnvMapShader,
   DualFishEyeEnvMapShader,
-  DualFishEyeToLatLongBackgroundShader
+  DualFishEyeToLatLongBackgroundShader,
 };
-

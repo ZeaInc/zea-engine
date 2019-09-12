@@ -1,9 +1,7 @@
-import {
-  Signal
-} from '../../Utilities';
+import { Signal } from '../../Utilities';
 
 const CommandFlags = {
-  DISABLED: 1<<2
+  DISABLED: 1 << 2,
 };
 
 class Command {
@@ -24,19 +22,18 @@ class Command {
 
   setOwner(ownerItem) {
     // this.__private.set(ownerItem, ownerItem);
-    if(this.__ownerItem !== ownerItem){
+    if (this.__ownerItem !== ownerItem) {
       this.__ownerItem = ownerItem;
     }
   }
 
   getPath() {
-    if(this.__ownerItem) {
-      if(this.__ownerItem.getPath) {
+    if (this.__ownerItem) {
+      if (this.__ownerItem.getPath) {
         const path = this.__ownerItem.getPath().slice();
         path.push(this.__name);
         return path;
-      }
-      else {
+      } else {
         return [this.__ownerItem.getName(), this.__name];
       }
     }
@@ -44,21 +41,16 @@ class Command {
   }
 
   setEnabled(state) {
-    if(state)
-      this.__flags &= ~CommandFlags.DISABLED;
-    else
-      this.__flags |= ~CommandFlags.DISABLED;
+    if (state) this.__flags &= ~CommandFlags.DISABLED;
+    else this.__flags |= ~CommandFlags.DISABLED;
   }
   isEnabled() {
     this.__flags & CommandFlags.DISABLED;
   }
 
-  invoke(){
+  invoke() {
     this.__cb();
   }
-
 }
 
-export {
-  Command
-};
+export { Command };

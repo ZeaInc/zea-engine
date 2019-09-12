@@ -1,38 +1,32 @@
-import {
-  Color
-} from '../Math';
-import {
-  Signal
-} from '../Utilities';
+import { Color } from '../Math';
+import { Signal } from '../Utilities';
 import {
   ParameterOwner,
   BaseImage,
   ColorParameter,
-  NumberParameter
+  NumberParameter,
 } from '../SceneTree';
-import {
-  GLHDRImage
-} from './GLHDRImage.js';
-import {
-  GLTexture2D
-} from './GLTexture2D.js';
-import {
-  GLFbo
-} from './GLFbo.js';
+import { GLHDRImage } from './GLHDRImage.js';
+import { GLTexture2D } from './GLTexture2D.js';
+import { GLFbo } from './GLFbo.js';
 
 class GLBaseViewport extends ParameterOwner {
   constructor(renderer) {
     super();
     this.__renderer = renderer;
 
-    this.__backgroundColorParam = this.addParameter(new ColorParameter('BackgroundColor', new Color('#808080')));
-    this.__backgroundColorParam.valueChanged.connect((mode)=>{
+    this.__backgroundColorParam = this.addParameter(
+      new ColorParameter('BackgroundColor', new Color('#808080'))
+    );
+    this.__backgroundColorParam.valueChanged.connect(mode => {
       if (this.__fbo) {
         const color = this.__backgroundColorParam.getValue();
         this.__fbo.setClearColor(color.asArray());
       }
-    })
-    this.__doubleClickTimeMSParam = this.addParameter(new NumberParameter('DoubleClickTimeMS', 200));
+    });
+    this.__doubleClickTimeMSParam = this.addParameter(
+      new NumberParameter('DoubleClickTimeMS', 200)
+    );
     this.__fbo = undefined;
     this.updated = new Signal();
     this.resized = new Signal();
@@ -75,33 +69,32 @@ class GLBaseViewport extends ParameterOwner {
   getHeight() {
     return this.__height;
   }
-  
+
   getBackground() {
-    return this.__backgroundTexture ? this.__backgroundTexture : this.__backgroundColorParam.getValue();
+    return this.__backgroundTexture
+      ? this.__backgroundTexture
+      : this.__backgroundColorParam.getValue();
   }
 
   setBackground(background) {
-    let gl = this.__renderer.gl;
-    if (background instanceof BaseImage){
-      if (background.type === 'FLOAT'){
+    const gl = this.__renderer.gl;
+    if (background instanceof BaseImage) {
+      if (background.type === 'FLOAT') {
         this.__backgroundTexture = background;
         this.__backgroundGLTexture = new GLHDRImage(gl, background);
-      }
-      else{
+      } else {
         this.__backgroundTexture = background;
         this.__backgroundGLTexture = new GLTexture2D(gl, background);
       }
-    }
-    else if (background instanceof Color){
-       if(this.__backgroundGLTexture) {
+    } else if (background instanceof Color) {
+      if (this.__backgroundGLTexture) {
         this.__backgroundGLTexture.destroy();
         this.__backgroundGLTexture = undefined;
         this.__backgroundTexture = undefined;
       }
-      this.__backgroundColorParam.setValue(background)
-    }
-    else{
-      console.warn("Invalid background:" + background);
+      this.__backgroundColorParam.setValue(background);
+    } else {
+      console.warn('Invalid background:' + background);
     }
     this.updated.emit();
   }
@@ -109,17 +102,18 @@ class GLBaseViewport extends ParameterOwner {
   resize(width, height) {
     this.__canvasWidth = width;
     this.__canvasHeight = height;
-    this.__x = (this.__canvasWidth * this.__bl.x);
-    this.__y = (this.__canvasWidth * this.__bl.y);
-    this.__width = (this.__canvasWidth * this.__tr.x) - (this.__canvasWidth * this.__bl.x);
-    this.__height = (this.__canvasHeight * this.__tr.y) - (this.__canvasHeight * this.__bl.y);
+    this.__x = this.__canvasWidth * this.__bl.x;
+    this.__y = this.__canvasWidth * this.__bl.y;
+    this.__width =
+      this.__canvasWidth * this.__tr.x - this.__canvasWidth * this.__bl.x;
+    this.__height =
+      this.__canvasHeight * this.__tr.y - this.__canvasHeight * this.__bl.y;
     this.region = [this.__x, this.__y, this.__width, this.__height];
 
     this.resized.emit();
   }
 
-
-  /////////////////////////////
+  // ///////////////////////////
   // Events
   onMouseDown(event) {
     return false;
@@ -142,10 +136,7 @@ class GLBaseViewport extends ParameterOwner {
   onKeyUp(key, event) {
     return false;
   }
+}
 
-};
-
-export {
-  GLBaseViewport
-};
-//export default GLBaseViewport;
+export { GLBaseViewport };
+// export default GLBaseViewport;

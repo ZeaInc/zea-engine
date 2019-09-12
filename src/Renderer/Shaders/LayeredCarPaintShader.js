@@ -1,16 +1,7 @@
-import {
-    Color
-} from '../../Math';
-import {
-    FileImage,
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { FileImage, sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 import './GLSL/constants.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/stack-gl/gamma.js';
@@ -21,9 +12,11 @@ import './GLSL/debugColors.js';
 import './GLSL/ImagePyramid.js';
 
 class LayeredCarPaintShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('LayeredCarPaintShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'LayeredCarPaintShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -84,10 +77,12 @@ void main(void) {
     v_viewPos       = -viewPos.xyz;
     v_viewNormal    = normalMatrix * normals;
 }
-`);
+`
+    );
 
-
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('LayeredCarPaintShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'LayeredCarPaintShader.fragmentShader',
+      `
 #ifndef ENABLE_ES3
     #extension GL_OES_standard_derivatives : enable
 #endif
@@ -289,49 +284,59 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
 
-        this.finalize();
-    }
+    this.finalize();
+  }
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
 
-        // F0 = reflectance and is a physical property of materials
-        // It also has direct relation to IOR so we need to dial one or the other
-        // For simplicity sake, we don't need to touch this value as metalic can dictate it
-        // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
+    // F0 = reflectance and is a physical property of materials
+    // It also has direct relation to IOR so we need to dial one or the other
+    // For simplicity sake, we don't need to touch this value as metalic can dictate it
+    // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
 
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 0.0, 0.0) });
-        paramDescs.push({ name: 'BaseMetallic', defaultValue: 0.0 });
-        paramDescs.push({ name: 'BaseRoughness', defaultValue: 0.35 });
-        paramDescs.push({ name: 'BaseReflectance', defaultValue: 0.03 });
-        paramDescs.push({ name: 'MidColorTint', defaultValue: new Color(1.0, 1.0, 1.0) });
-        paramDescs.push({ name: 'MidColorTintReflectance', defaultValue: 0.03 });
-        paramDescs.push({ name: 'GlossMetallic', defaultValue: 0.0 });
-        paramDescs.push({ name: 'GlossRoughness', defaultValue: 0.35 });
-        paramDescs.push({ name: 'GlossReflectance', defaultValue: 0.03 });
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 0.0, 0.0),
+    });
+    paramDescs.push({ name: 'BaseMetallic', defaultValue: 0.0 });
+    paramDescs.push({ name: 'BaseRoughness', defaultValue: 0.35 });
+    paramDescs.push({ name: 'BaseReflectance', defaultValue: 0.03 });
+    paramDescs.push({
+      name: 'MidColorTint',
+      defaultValue: new Color(1.0, 1.0, 1.0),
+    });
+    paramDescs.push({
+      name: 'MidColorTintReflectance',
+      defaultValue: 0.03,
+    });
+    paramDescs.push({ name: 'GlossMetallic', defaultValue: 0.0 });
+    paramDescs.push({ name: 'GlossRoughness', defaultValue: 0.35 });
+    paramDescs.push({ name: 'GlossReflectance', defaultValue: 0.03 });
 
+    const flakesNormal = new FileImage(
+      'flakes',
+      'ZeaEngine/FlakesNormalMap.png'
+    );
+    flakesNormal.wrap = 'REPEAT';
+    flakesNormal.mipMapped = true;
+    paramDescs.push({ name: 'FlakesNormal', defaultValue: flakesNormal });
+    paramDescs.push({ name: 'FlakesScale', defaultValue: 0.1 });
+    paramDescs.push({ name: 'MicroflakePerturbation', defaultValue: 0.1 });
 
-        const flakesNormal = new FileImage('flakes', 'ZeaEngine/FlakesNormalMap.png');
-        flakesNormal.wrap = 'REPEAT';
-        flakesNormal.mipMapped = true;
-        paramDescs.push({ name: 'FlakesNormal', defaultValue: flakesNormal });
-        paramDescs.push({ name: 'FlakesScale', defaultValue: 0.1 });
-        paramDescs.push({ name: 'MicroflakePerturbation', defaultValue: 0.1 });
+    return paramDescs;
+  }
+  static getGeomDataShaderName() {
+    return 'StandardSurfaceGeomDataShader';
+  }
 
-        return paramDescs;
-    }
-    static getGeomDataShaderName(){
-        return 'StandardSurfaceGeomDataShader';
-    }
-
-    static getSelectedShaderName(){
-        return 'StandardSurfaceSelectedGeomsShader';
-    }
-};
+  static getSelectedShaderName() {
+    return 'StandardSurfaceSelectedGeomsShader';
+  }
+}
 
 sgFactory.registerClass('LayeredCarPaintShader', LayeredCarPaintShader);
-export {
-    LayeredCarPaintShader
-};
+export { LayeredCarPaintShader };

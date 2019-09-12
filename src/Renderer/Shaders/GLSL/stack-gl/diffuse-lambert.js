@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('stack-gl/diffuse-lambert.glsl', `
+shaderLibrary.setShaderModule(
+  'stack-gl/diffuse-lambert.glsl',
+  `
 
 float lambertDiffuse(
   vec3 lightDirection,
@@ -9,4 +11,5 @@ float lambertDiffuse(
   return max(0.0, dot(lightDirection, surfaceNormal));
 }
 
-`);
+`
+);

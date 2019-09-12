@@ -1,25 +1,21 @@
 import { Vec2 } from '../../../Math/Vec2';
 import { Vec3 } from '../../../Math/Vec3';
 import { Mesh } from '../Mesh.js';
-import {
-  BooleanParameter,
-  NumberParameter
-} from '../../Parameters';
-import {
-  sgFactory
-} from '../../SGFactory.js';
+import { BooleanParameter, NumberParameter } from '../../Parameters';
+import { sgFactory } from '../../SGFactory.js';
 
 class Cuboid extends Mesh {
-  constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero=false) {
+  constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero = false) {
     super();
 
-    if(isNaN(x) || isNaN(y) || isNaN(z))
-      throw("Invalid geom args");
-    
+    if (isNaN(x) || isNaN(y) || isNaN(z)) throw 'Invalid geom args';
+
     this.__xParam = this.addParameter(new NumberParameter('x', x));
     this.__yParam = this.addParameter(new NumberParameter('y', y));
     this.__zParam = this.addParameter(new NumberParameter('z', z));
-    this.__baseZAtZeroParam = this.addParameter(new BooleanParameter('baseZAtZero', baseZAtZero));
+    this.__baseZAtZeroParam = this.addParameter(
+      new BooleanParameter('baseZAtZero', baseZAtZero)
+    );
 
     this.setFaceCounts([0, 6]);
     this.setFaceVertexIndices(0, 0, 1, 2, 3);
@@ -35,9 +31,9 @@ class Cuboid extends Mesh {
     this.addVertexAttribute('normals', Vec3);
     this.__rebuild();
 
-    const resize = ()=>{
+    const resize = () => {
       this.__resize();
-    }
+    };
     this.__xParam.valueChanged.connect(resize);
     this.__yParam.valueChanged.connect(resize);
     this.__zParam.valueChanged.connect(resize);
@@ -59,13 +55,25 @@ class Cuboid extends Mesh {
     const normals = this.getVertexAttribute('normals');
     for (let i = 0; i < 6; i++) {
       let normal;
-      switch(i) {
-      case 0: normal = new Vec3(0,0,1); break;
-      case 1: normal = new Vec3(0,0,-1); break;
-      case 2: normal = new Vec3(1,0,0); break;
-      case 3: normal = new Vec3(-1,0,0); break;
-      case 4: normal = new Vec3(0,1,0); break;
-      case 5: normal = new Vec3(0,-1,0); break;
+      switch (i) {
+        case 0:
+          normal = new Vec3(0, 0, 1);
+          break;
+        case 1:
+          normal = new Vec3(0, 0, -1);
+          break;
+        case 2:
+          normal = new Vec3(1, 0, 0);
+          break;
+        case 3:
+          normal = new Vec3(-1, 0, 0);
+          break;
+        case 4:
+          normal = new Vec3(0, 1, 0);
+          break;
+        case 5:
+          normal = new Vec3(0, -1, 0);
+          break;
       }
       normals.setFaceVertexValue(i, 0, normal);
       normals.setFaceVertexValue(i, 1, normal);
@@ -88,38 +96,33 @@ class Cuboid extends Mesh {
     const z = this.__zParam.getValue();
     const baseZAtZero = this.__baseZAtZeroParam.getValue();
     let zoff = 0.5;
-    if(baseZAtZero)
-      zoff = 1.0
+    if (baseZAtZero) zoff = 1.0;
     this.getVertex(0).set(0.5 * x, -0.5 * y, zoff * z);
     this.getVertex(1).set(0.5 * x, 0.5 * y, zoff * z);
     this.getVertex(2).set(-0.5 * x, 0.5 * y, zoff * z);
     this.getVertex(3).set(-0.5 * x, -0.5 * y, zoff * z);
 
     zoff = -0.5;
-    if(baseZAtZero)
-      zoff = 0.0
+    if (baseZAtZero) zoff = 0.0;
     this.getVertex(4).set(0.5 * x, -0.5 * y, zoff * z);
     this.getVertex(5).set(0.5 * x, 0.5 * y, zoff * z);
     this.getVertex(6).set(-0.5 * x, 0.5 * y, zoff * z);
     this.getVertex(7).set(-0.5 * x, -0.5 * y, zoff * z);
-
 
     this.setBoundingBoxDirty();
     this.geomDataChanged.emit();
   }
 
   toJSON() {
-    let json = super.toJSON();
+    const json = super.toJSON();
     json['x'] = this.__x;
     json['y'] = this.__y;
     json['z'] = this.__z;
-    return json
+    return json;
   }
-};
+}
 
 sgFactory.registerClass('Cuboid', Cuboid);
 
-export {
-  Cuboid
-};
-//export default Cuboid;
+export { Cuboid };
+// export default Cuboid;

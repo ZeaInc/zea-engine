@@ -1,22 +1,16 @@
-import {
-  Color
-} from '../../Math';
-import {
-  sgFactory
-} from '../../SceneTree';
-import {
-  shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-  GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/modelMatrix.js';
 
 class FatLinesShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('FatLinesShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'FatLinesShader.vertexShader',
+      `
 precision highp float;
 
 instancedattribute vec2 segmentIndices;
@@ -124,9 +118,12 @@ void main(void) {
   v_viewPos       = viewPos;
   gl_Position     = projectionMatrix * vec4(viewPos, 1.0);
 }
-`);
+`
+    );
 
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('FatLinesShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'FatLinesShader.fragmentShader',
+      `
 precision highp float;
 
 /* VS Outputs */
@@ -166,28 +163,29 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
 
   bind(renderstate) {
-    if(super.bind(renderstate)) {
+    if (super.bind(renderstate)) {
       renderstate.supportsInstancing = false;
       return true;
     }
     return false;
-  } 
-
+  }
 
   static getParamDeclarations() {
     const paramDescs = super.getParamDeclarations();
-    paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) })
-    paramDescs.push({ name: 'Opacity', defaultValue: 1.0 })
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Opacity', defaultValue: 1.0 });
     return paramDescs;
   }
-};
+}
 
 sgFactory.registerClass('FatLinesShader', FatLinesShader);
-export {
-  FatLinesShader
-};
+export { FatLinesShader };

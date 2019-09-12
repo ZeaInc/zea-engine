@@ -1,4 +1,3 @@
-
 export * from './PointGrid.js';
 
 export * from './Rect.js';
@@ -14,5 +13,3 @@ export * from './Disc.js';
 export * from './Plane.js';
 export * from './Sphere.js';
 export * from './Torus.js';
-
-

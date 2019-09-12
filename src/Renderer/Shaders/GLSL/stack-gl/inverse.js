@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('stack-gl/inverse.glsl', `
+shaderLibrary.setShaderModule(
+  'stack-gl/inverse.glsl',
+  `
 
 
 #ifndef ENABLE_ES3
@@ -73,4 +75,5 @@ mat4 inverse(mat4 m) {
 
 #endif
 
-`);
+`
+);

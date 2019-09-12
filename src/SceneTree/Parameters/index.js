@@ -1,4 +1,3 @@
-
 export * from './Command.js';
 export * from './Parameter.js';
 export * from './MultiChoiceParameter.js';
@@ -17,7 +16,6 @@ export * from './StructParameter.js';
 export * from './TreeItemParameter.js';
 export * from './ItemSetParameter.js';
 // export * from './KinematicGroupParameter.js';
-
 
 export * from './MaterialFloatParam.js';
 export * from './MaterialColorParam.js';

@@ -1,16 +1,12 @@
-import {
-    GLShader
-} from '../GLShader.js';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-
+import { GLShader } from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary.js';
 
 class OutlinesShader extends GLShader {
-    
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('OutlinesShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'OutlinesShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;    //(location = 0)
@@ -24,8 +20,11 @@ void main()
     gl_Position = vec4(positions.xy*2.0, 0.0, 1.0);
 }
 
-`);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('OutlinesShader.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'OutlinesShader.fragmentShader',
+      `
 precision highp float;
 
 uniform sampler2D highlightDataTexture;
@@ -101,12 +100,9 @@ void main(void) {
     }
 }
 
-`);
-    }
-};
+`
+    );
+  }
+}
 
-
-export {
-    OutlinesShader
-};
-
+export { OutlinesShader };

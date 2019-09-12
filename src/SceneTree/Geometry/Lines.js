@@ -26,20 +26,25 @@ class Lines extends BaseGeom {
   }
 
   setSegment(index, p0, p1) {
-    if (index >= (this.__indices.length / 2))
-      throw ("Invalid line index:" + index + ". Num Segments:" + (this.__indices.length / 2));
-    this.__indices[(index * 2) + 0] = p0;
-    this.__indices[(index * 2) + 1] = p1;
+    if (index >= this.__indices.length / 2)
+      throw 'Invalid line index:' +
+        index +
+        '. Num Segments:' +
+        this.__indices.length / 2;
+    this.__indices[index * 2 + 0] = p0;
+    this.__indices[index * 2 + 1] = p1;
   }
 
   getSegmentVertexIndex(line, linevertex) {
-    let numLines = this.numLines;
-    if (line < numLines)
-      return this.__indices[(line * 2) + linevertex];
+    const numLines = this.numLines;
+    if (line < numLines) return this.__indices[line * 2 + linevertex];
   }
 
   addSegmentAttribute(name, dataType, count = undefined) {
-    let attr = new Attribute(dataType, (count != undefined) ? count : this.polygonCount);
+    const attr = new Attribute(
+      dataType,
+      count != undefined ? count : this.polygonCount
+    );
     this.__segmentAttributes.set(name, attr);
     return attr;
   }
@@ -49,54 +54,49 @@ class Lines extends BaseGeom {
   }
 
   getSegmentAttribute(name) {
-    return this.__segmentAttributes.get(name)
+    return this.__segmentAttributes.get(name);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Memory
-  
+
   genBuffers() {
-    let buffers = super.genBuffers();
+    const buffers = super.genBuffers();
 
     let indices;
-    if (buffers.numVertices < Math.pow(2, 8)){
+    if (buffers.numVertices < Math.pow(2, 8)) {
       indices = new Uint8Array(this.__indices.length);
-      this.__indices.forEach((value, index)=>{
+      this.__indices.forEach((value, index) => {
         indices[index] = value;
       });
-    }
-    else if (buffers.numVertices < Math.pow(2, 16)){
+    } else if (buffers.numVertices < Math.pow(2, 16)) {
       indices = new Uint16Array(this.__indices.length);
-      this.__indices.forEach((value, index)=>{
+      this.__indices.forEach((value, index) => {
         indices[index] = value;
       });
-    }
-    else{
+    } else {
       indices = this.__indices;
     }
     buffers.indices = indices;
     return buffers;
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
-    if(!(flags&SAVE_FLAG_SKIP_GEOMDATA)) {
+    if (!(flags & SAVE_FLAG_SKIP_GEOMDATA)) {
       j.indices = Array.from(this.__indices);
     }
     return j;
-  };
+  }
 
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
     this.__indices = Uint32Array.from(j.indices);
   }
+}
 
-};
-
-export {
-  Lines
-};
-//export default Lines;
+export { Lines };
+// export default Lines;

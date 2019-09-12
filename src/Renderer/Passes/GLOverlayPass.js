@@ -11,29 +11,28 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
     super.init(renderer, passIndex);
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Bind to Render Tree
   filterGeomItem(geomItem) {
     const shaderClass = geomItem.getMaterial().getShaderClass();
     if (shaderClass) {
-      if (shaderClass.isOverlay())
-        return true;
+      if (shaderClass.isOverlay()) return true;
     }
     return false;
   }
 
   draw(renderstate) {
-
-    if (this.newItemsReadyForLoading())
-      this.finalize();
+    if (this.newItemsReadyForLoading()) this.finalize();
 
     const gl = this.__gl;
 
     // Clear the depth buffer so handls are always drawn over the top.
     gl.clear(gl.DEPTH_BUFFER_BIT);
 
-    if(false)// 2-sided rendering.
-      gl.disable(gl.CULL_FACE); // 2-sided rendering.
+    if (false)
+      // 2-sided rendering.
+      gl.disable(gl.CULL_FACE);
+    // 2-sided rendering.
     else {
       gl.enable(gl.CULL_FACE);
       gl.cullFace(gl.BACK);
@@ -49,10 +48,8 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
     gl.disable(gl.BLEND);
     // gl.enable(gl.DEPTH_TEST);
   }
-  
 
   drawGeomData(renderstate) {
-
     const gl = this.__gl;
 
     // Clear the depth buffer so handls are always drawn over the top.
@@ -70,10 +67,8 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
     gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
   }
-};
+}
 
 GLRenderer.registerPass(GLOverlayPass, PassType.OVERLAY);
 
-export {
-  GLOverlayPass
-};
+export { GLOverlayPass };

@@ -1,8 +1,6 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
-import {
-    sgFactory
-} from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
+import { sgFactory } from '../../SceneTree';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
@@ -10,9 +8,11 @@ import './GLSL/modelMatrix.js';
 import './GLSL/glsl-bits.js';
 
 class StandardSurfaceGeomDataShader extends GLShader {
-    constructor(gl, floatGeomBuffer) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('StandardSurfaceGeomDataShader.vertexShader', `
+  constructor(gl, floatGeomBuffer) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'StandardSurfaceGeomDataShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -37,10 +37,12 @@ void main(void) {
 
     v_drawItemID = float(getId());
 }
-`);
-        
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('StandardSurfaceGeomDataShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'StandardSurfaceGeomDataShader.fragmentShader',
+      `
 precision highp float;
 
 varying vec3 v_viewPos;
@@ -85,12 +87,14 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-    }
-};
+`
+    );
+  }
+}
 
-sgFactory.registerClass('StandardSurfaceGeomDataShader', StandardSurfaceGeomDataShader);
+sgFactory.registerClass(
+  'StandardSurfaceGeomDataShader',
+  StandardSurfaceGeomDataShader
+);
 
-export {
-    StandardSurfaceGeomDataShader
-};
+export { StandardSurfaceGeomDataShader };

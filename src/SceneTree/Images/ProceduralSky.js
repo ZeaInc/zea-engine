@@ -1,9 +1,5 @@
-import {
-  Signal
-} from '../../Utilities';
-import {
-  RefCounted
-} from '../RefCounted.js';
+import { Signal } from '../../Utilities';
+import { RefCounted } from '../RefCounted.js';
 
 class ProceduralSky extends RefCounted {
   constructor(params = {}) {
@@ -11,8 +7,6 @@ class ProceduralSky extends RefCounted {
 
     this.updated = new Signal();
   }
-};
-export {
-  ProceduralSky
-};
+}
+export { ProceduralSky };
 // ProceduralSky;

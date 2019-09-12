@@ -1,37 +1,27 @@
-
-import {
-  Signal
-} from '../../Utilities';
-import {
-  RefCounted
-} from '../RefCounted.js';
-import {
-  ResourceLoader
-} from '../ResourceLoader.js';
-import {
-  VLHImage
-} from './VLHImage.js';
-
+import { Signal } from '../../Utilities';
+import { RefCounted } from '../RefCounted.js';
+import { ResourceLoader } from '../ResourceLoader.js';
+import { VLHImage } from './VLHImage.js';
 
 class Lightmap extends RefCounted {
   constructor(filepath, asset, stream) {
     super();
     this.atlasSize = asset.getLightmapSize();
-    this.image = new VLHImage("Lightmap", {stream});
-    this.image.getParameter("FilePath").setFilepath(filepath)
-    this.image.setHDRTint(asset.getParameter("LightmapTint").getValue())
+    this.image = new VLHImage('Lightmap', { stream });
+    this.image.getParameter('FilePath').setFilepath(filepath);
+    this.image.setHDRTint(asset.getParameter('LightmapTint').getValue());
     this.__stream = stream;
   }
 
-  get width(){
+  get width() {
     return this.atlasSize[0];
   }
-  get height(){
+  get height() {
     return this.atlasSize[1];
   }
 
-  isStream(){
-    return this.__stream
+  isStream() {
+    return this.__stream;
   }
 
   loadResource(filepath) {
@@ -41,8 +31,7 @@ class Lightmap extends RefCounted {
   fromJSON(j, context, flags) {
     this.__atlasSize = j.atlasSize;
   }
-
-};
+}
 
 class LightmapMixer extends RefCounted {
   constructor(atlasSize) {
@@ -56,26 +45,26 @@ class LightmapMixer extends RefCounted {
     this.lightmapWeightChanged = new Signal();
   }
 
-  get width(){
+  get width() {
     return this.atlasSize[0];
   }
-  get height(){
+  get height() {
     return this.atlasSize[1];
   }
 
-  isStream(){
-    return this.__stream
+  isStream() {
+    return this.__stream;
   }
 
-  loadResource(index, resourceName, weight = undefined, stream=false) {
+  loadResource(index, resourceName, weight = undefined, stream = false) {
     if (!this.__images[index]) {
-      this.__images[index] = new FileImage(resourceName, {stream});
+      this.__images[index] = new FileImage(resourceName, { stream });
       this.__weights[index] = weight ? weight : 1.0;
       this.lightmapAdded.emit(index);
     } else {
       this.__images[index].loadResource(resourceName);
       this.lightmapResourceChanged.emit(index, weight);
-      if(weight){
+      if (weight) {
         this.__weights[index] = weight;
         this.lightmapWeightChanged.emit(index, weight);
       }
@@ -88,23 +77,19 @@ class LightmapMixer extends RefCounted {
     this.lightmapWeightChanged.emit(index, weight);
   }
 
-  numSubImages(){
+  numSubImages() {
     return this.__images.length;
   }
-  getSubImage(index){
+  getSubImage(index) {
     return this.__images[index];
   }
-  getSubImageWeight(index){
+  getSubImageWeight(index) {
     return this.__weights[index];
   }
 
   fromJSON(j, context, flags) {
     this.__atlasSize = j['atlasSize'];
   }
-};
+}
 
-
-export {
-  Lightmap,
-  LightmapMixer
-};
+export { Lightmap, LightmapMixer };

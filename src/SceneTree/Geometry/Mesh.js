@@ -1,20 +1,8 @@
-import {
-  Float32,
-  Vec2,
-  Vec3,
-  Xfo
-} from '../../Math';
-import {
-  BaseGeom,
-  SAVE_FLAG_SKIP_GEOMDATA
-} from './BaseGeom.js';
-import {
-  Attribute
-} from './Attribute.js';
+import { Float32, Vec2, Vec3, Xfo } from '../../Math';
+import { BaseGeom, SAVE_FLAG_SKIP_GEOMDATA } from './BaseGeom.js';
+import { Attribute } from './Attribute.js';
 
-import {
-  VertexAttribute
-} from './VertexAttribute.js';
+import { VertexAttribute } from './VertexAttribute.js';
 
 class Mesh extends BaseGeom {
   constructor() {
@@ -57,14 +45,14 @@ class Mesh extends BaseGeom {
 
   setFaceCounts(faceCounts) {
     if (this.__numPopulatedFaceVertexIndices) {
-      throw ("Cannot set face counts on a mesh that is already populated. Please call 'clear' before re-building the mesh.");
+      throw "Cannot set face counts on a mesh that is already populated. Please call 'clear' before re-building the mesh.";
     }
     this.__faceCounts = faceCounts;
 
     let numFaces = 0;
     let numFacesVertices = 0;
     let numVertsPerFace = 3;
-    for (let fc of this.__faceCounts) {
+    for (const fc of this.__faceCounts) {
       numFaces += fc;
       numFacesVertices += fc * numVertsPerFace;
       numVertsPerFace++;
@@ -73,8 +61,7 @@ class Mesh extends BaseGeom {
     this.__faceOffsets = new Uint32Array(numFaces);
     this.__faceVertexIndices = new Uint32Array(numFacesVertices);
 
-    for (let attr of this.__faceAttributes)
-      attr.resize(numFaces);
+    for (const attr of this.__faceAttributes) attr.resize(numFaces);
   }
 
   setFaceVertexIndices(faceIndex) {
@@ -108,22 +95,28 @@ class Mesh extends BaseGeom {
     return this.__faceVertexCounts.length;
   }
 
-
-
-  /////////////////////////////
+  // ///////////////////////////
   // Vertex Attributes
 
   addVertexAttribute(name, dataType, defaultScalarValue = undefined) {
-    let attr = new VertexAttribute(this, dataType, (this.vertices != undefined) ? this.vertices.length : 0, defaultScalarValue);
+    const attr = new VertexAttribute(
+      this,
+      dataType,
+      this.vertices != undefined ? this.vertices.length : 0,
+      defaultScalarValue
+    );
     this.__vertexAttributes.set(name, attr);
     return attr;
   }
 
-  /////////////////////////////
+  // ///////////////////////////
   // Face Attributes
 
   addFaceAttribute(name, dataType, count = undefined) {
-    const attr = new Attribute(dataType, (count != undefined) ? count : this.getNumFaces());
+    const attr = new Attribute(
+      dataType,
+      count != undefined ? count : this.getNumFaces()
+    );
     this.__faceAttributes.set(name, attr);
     return attr;
   }
@@ -133,14 +126,17 @@ class Mesh extends BaseGeom {
   }
 
   getFaceAttribute(name) {
-    return this.__faceAttributes.get(name)
+    return this.__faceAttributes.get(name);
   }
 
-  ///////////////////////////
+  // /////////////////////////
   // Edge Attributes
 
   addEdgeAttribute(name, dataType, count = undefined) {
-    const attr = new Attribute(dataType, (count != undefined) ? count : this.getNumEdges());
+    const attr = new Attribute(
+      dataType,
+      count != undefined ? count : this.getNumEdges()
+    );
     this.__edgeAttributes.set(name, attr);
     return attr;
   }
@@ -150,15 +146,15 @@ class Mesh extends BaseGeom {
   }
 
   getEdgeAttribute(name) {
-    return this.__edgeAttributes.get(name)
+    return this.__edgeAttributes.get(name);
   }
 
-  /////////////////////////////
+  // ///////////////////////////
 
   genTopologyInfo() {
     const connectedVertices = {}; // acceleration structure.
-    this.vertexEdges = []; // 2d array of vertex to edges. 
-    // this.vertexFaces = []; // 2d array of vertex to faces. 
+    this.vertexEdges = []; // 2d array of vertex to edges.
+    // this.vertexFaces = []; // 2d array of vertex to faces.
     this.edgeFaces = []; // flat array of 2 face indices per edge
     this.edgeVerts = []; // flat array of 2 vert indices per edge
     this.faceEdges = []; // the edges bordering each face.
@@ -184,9 +180,9 @@ class Mesh extends BaseGeom {
 
       const edgeIndex = this.edgeFaces.length / 2;
       const edgeData = {
-        'edgeIndex': edgeIndex,
-        'edgeVec': edgeVec
-      }
+        edgeIndex: edgeIndex,
+        edgeVec: edgeVec,
+      };
       connectedVertices[key] = edgeData;
 
       this.edgeFaces.push(-1);
@@ -197,7 +193,7 @@ class Mesh extends BaseGeom {
 
       this.numEdges++;
       return edgeData;
-    }
+    };
 
     const addEdge = (v0, v1, faceIndex) => {
       // console.log('addEdge:' + v0 + " :" + v1 + " faceIndex:" + faceIndex );
@@ -205,19 +201,18 @@ class Mesh extends BaseGeom {
       const edgeIndex = edgeData.edgeIndex;
       const edgeVec = edgeData.edgeVec;
       if (v1 < v0) {
-        const edgeFaceIndex = (edgeIndex * 2) + 0;
+        const edgeFaceIndex = edgeIndex * 2 + 0;
         if (this.__logTopologyWarnings && this.edgeFaces[edgeFaceIndex] != -1)
-          console.warn("Edge poly 0 already set. Mesh is non-manifold.");
+          console.warn('Edge poly 0 already set. Mesh is non-manifold.');
         this.edgeFaces[edgeFaceIndex] = faceIndex;
       } else {
-        const edgeFaceIndex = (edgeIndex * 2) + 1;
+        const edgeFaceIndex = edgeIndex * 2 + 1;
         if (this.__logTopologyWarnings && this.edgeFaces[edgeFaceIndex] != -1)
-          console.warn("Edge poly 1 already set. Mesh is non-manifold.");
+          console.warn('Edge poly 1 already set. Mesh is non-manifold.');
         this.edgeFaces[edgeFaceIndex] = faceIndex;
       }
 
-      if (!(faceIndex in this.faceEdges))
-        this.faceEdges[faceIndex] = [];
+      if (!(faceIndex in this.faceEdges)) this.faceEdges[faceIndex] = [];
       this.faceEdges[faceIndex].push(edgeIndex);
 
       // Push the edge index onto both vertex edge lists.
@@ -235,22 +230,20 @@ class Mesh extends BaseGeom {
       //     this.vertexFaces[v0] = [];
       // }
       // this.vertexFaces[v0].push(faceIndex);
-    }
+    };
 
     const numFaces = this.getNumFaces();
     for (let faceIndex = 0; faceIndex < numFaces; faceIndex++) {
       const faceVerts = this.getFaceVertexIndices(faceIndex);
       for (let j = 0; j < faceVerts.length; j++) {
         const v0 = faceVerts[j];
-        const v1 = faceVerts[((j + 1) % faceVerts.length)];
+        const v1 = faceVerts[(j + 1) % faceVerts.length];
         addEdge(v0, v1, faceIndex);
       }
     }
   }
 
-
   computeFaceNormals() {
-
     const vertices = this.vertices;
     const faceNormals = this.addFaceAttribute('normals', Vec3);
     const numFaces = this.getNumFaces();
@@ -268,9 +261,9 @@ class Mesh extends BaseGeom {
         prev = pn;
       }
       if (faceNormal.lengthSquared() < Number.EPSILON) {
-        // Note: we are getting many faces with no surface area. 
-        // This is simply an authoring issue. 
-        //console.warn("Invalid Mesh topology");
+        // Note: we are getting many faces with no surface area.
+        // This is simply an authoring issue.
+        // console.warn("Invalid Mesh topology");
         // if(debugMesh){
         //     printf("Face vertices are coincident face:%i", i);
         //     for (let j = 0; j < faceVerts.length; j++)
@@ -283,21 +276,16 @@ class Mesh extends BaseGeom {
     }
   }
 
-
   generateEdgeFlags() {
+    if (this.vertexEdges == undefined) this.genTopologyInfo();
 
-    if (this.vertexEdges == undefined)
-      this.genTopologyInfo();
-
-    if (!this.hasFaceAttribute('normals'))
-      this.computeFaceNormals();
+    if (!this.hasFaceAttribute('normals')) this.computeFaceNormals();
 
     const vertices = this.vertices;
-    const faceNormals = this.getFaceAttribute("normals");
+    const faceNormals = this.getFaceAttribute('normals');
     this.edgeVecs = [];
     this.edgeAngles = new Float32Array(this.numEdges);
     for (let i = 0; i < this.edgeFaces.length; i += 2) {
-
       const v0 = this.edgeVerts[i];
       const v1 = this.edgeVerts[i + 1];
       const e_vec = vertices.getValueRef(v1).subtract(vertices.getValueRef(v0));
@@ -318,7 +306,7 @@ class Mesh extends BaseGeom {
     }
   }
 
-  computeVertexNormals(hardAngle = 1.0 /*radians*/ ) {
+  computeVertexNormals(hardAngle = 1.0 /* radians*/) {
     // console.log("computeVertexNormals");
 
     this.generateEdgeFlags();
@@ -330,61 +318,62 @@ class Mesh extends BaseGeom {
     // these methods are faster versions than using the methods
     // provided on the attributes. We cache values and use hard coded constants.
     const faceNormalsBuffer = faceNormals.data.buffer;
-    const getFaceNormal = (index) => {
+    const getFaceNormal = index => {
       return new Vec3(faceNormalsBuffer, index * 12); // 3 conmponents at 4 bytes each.
-    }
+    };
     const vertexNormalsArray = normalsAttr.data;
     const setVertexNormal = (index, value) => {
-      vertexNormalsArray[(index * 3) + 0] = value.x;
-      vertexNormalsArray[(index * 3) + 1] = value.y;
-      vertexNormalsArray[(index * 3) + 2] = value.z;
-    }
+      vertexNormalsArray[index * 3 + 0] = value.x;
+      vertexNormalsArray[index * 3 + 1] = value.y;
+      vertexNormalsArray[index * 3 + 2] = value.z;
+    };
     const getConnectedEdgeVecs = (faceIndex, vertexIndex) => {
-      let e0, e1;
+      let e0;
+      let e1;
       const faceEdges = this.faceEdges[faceIndex];
-      for (let e of faceEdges) {
-        if (this.edgeVerts[(e * 2)] == vertexIndex) {
+      for (const e of faceEdges) {
+        if (this.edgeVerts[e * 2] == vertexIndex) {
           if (!e0) e0 = this.edgeVecs[e];
           else e1 = this.edgeVecs[e];
-        } else if (this.edgeVerts[(e * 2) + 1] == vertexIndex) {
+        } else if (this.edgeVerts[e * 2 + 1] == vertexIndex) {
           if (!e0) e0 = this.edgeVecs[e];
           else e1 = this.edgeVecs[e];
         }
       }
       return [e0, e1];
-    }
+    };
 
     for (let i = 0; i < this.vertexEdges.length; i++) {
+      // If this face indexing doesn't start at 0, then the vertexEdges don't either.
+      if (this.vertexEdges[i] == undefined) continue;
 
-      // If this face indexing doesn't start at 0, then the vertexEdges don't either. 
-      if (this.vertexEdges[i] == undefined)
-        continue;
-
-      let v = vertices.getValueRef(i);
-      let edges = this.vertexEdges[i];
+      const v = vertices.getValueRef(i);
+      const edges = this.vertexEdges[i];
 
       // Groups of faces having a smooth normal at the current vertex.
-      let faceGroups = [];
-      let addFaceToGroup = (face) => {
+      const faceGroups = [];
+      const addFaceToGroup = face => {
         let inGroup = false;
-        for (let faceGroup of faceGroups) {
+        for (const faceGroup of faceGroups) {
           inGroup = faceGroup.indexOf(face) != -1;
-          if (inGroup)
-            break;
+          if (inGroup) break;
         }
-        if (!inGroup)
-          faceGroups.push([face]);
-      }
+        if (!inGroup) faceGroups.push([face]);
+      };
       let smooth = true;
-      for (let e of edges) {
-        let f0 = this.edgeFaces[e * 2];
-        let f1 = this.edgeFaces[(e * 2) + 1];
+      for (const e of edges) {
+        const f0 = this.edgeFaces[e * 2];
+        const f1 = this.edgeFaces[e * 2 + 1];
         if (f0 != -1 && f1 == -1 && this.edgeAngles[e] < hardAngle) {
           // This is a smooth edge... Add both faces to the same group.
-          let addedtoGroup = false;
+          const addedtoGroup = false;
           let f0groupIndex = -1;
           let f1groupIndex = -1;
-          for (let groupIndex = 0; groupIndex < faceGroups.length; groupIndex++) {
+          for (
+            let groupIndex = 0;
+            groupIndex < faceGroups.length;
+            groupIndex++
+          ) {
             if (f0groupIndex == -1 && faceGroups[groupIndex].indexOf(f0) != -1)
               f0groupIndex = groupIndex;
             if (f1groupIndex == -1 && faceGroups[groupIndex].indexOf(f1) != -1)
@@ -395,7 +384,9 @@ class Mesh extends BaseGeom {
           } else if (f0groupIndex != -1 && f1groupIndex != -1) {
             if (f0groupIndex != f1groupIndex) {
               // Merge the 2 groups that the smooth edge joins.
-              faceGroups[f0groupIndex] = faceGroups[f0groupIndex].concat(faceGroups[f1groupIndex]);
+              faceGroups[f0groupIndex] = faceGroups[f0groupIndex].concat(
+                faceGroups[f1groupIndex]
+              );
               faceGroups.splice(f1groupIndex, 1);
             }
           } else {
@@ -410,22 +401,22 @@ class Mesh extends BaseGeom {
         }
         smooth = false;
         // This is a hard edge or a border edge... Add faces separately group.
-        if (f0 != -1)
-          addFaceToGroup(f0);
-        if (f1 != -1)
-          addFaceToGroup(f1);
+        if (f0 != -1) addFaceToGroup(f0);
+        if (f1 != -1) addFaceToGroup(f1);
       }
 
       // Sort the groups to have the biggest group first.
-      faceGroups.sort((a, b) => (a.length < b.length) ? 1 : ((a.length > b.length) ? -1 : 0));
+      faceGroups.sort((a, b) =>
+        a.length < b.length ? 1 : a.length > b.length ? -1 : 0
+      );
 
       let firstVirtex = true;
-      for (let faceGroup of faceGroups) {
-        let normal = new Vec3();
-        for (let faceIndex of faceGroup) {
-          let face_edges = getConnectedEdgeVecs(faceIndex, i);
-          let weight = face_edges[0].angleTo(face_edges[1]);
-          // if (i == 1) 
+      for (const faceGroup of faceGroups) {
+        const normal = new Vec3();
+        for (const faceIndex of faceGroup) {
+          const face_edges = getConnectedEdgeVecs(faceIndex, i);
+          const weight = face_edges[0].angleTo(face_edges[1]);
+          // if (i == 1)
           //     console.log("FaceNormal:" + faceIndex + ":" + getFaceNormal(faceIndex).toString());
           normal.addInPlace(getFaceNormal(faceIndex).scale(weight));
         }
@@ -445,38 +436,40 @@ class Mesh extends BaseGeom {
   computeNumTriangles() {
     let numVertsPerFace = 3;
     let trisCount = 0;
-    for (let fc of this.__faceCounts) {
+    for (const fc of this.__faceCounts) {
       trisCount += fc * (numVertsPerFace - 2);
       numVertsPerFace++;
     }
     return trisCount;
   }
 
-  generateTriangulatedIndices(totalNumVertices, numUnSplitVertices, splitIndices) {
-
-    let faceCount = this.getNumFaces();
+  generateTriangulatedIndices(
+    totalNumVertices,
+    numUnSplitVertices,
+    splitIndices
+  ) {
+    const faceCount = this.getNumFaces();
     // let faceVertexIndices = this.getFaceVertexIndices();
 
-    let trisCount = this.computeNumTriangles();
+    const trisCount = this.computeNumTriangles();
 
     let trianglulatedIndices;
     if (totalNumVertices < Math.pow(2, 8))
       trianglulatedIndices = new Uint8Array(trisCount * 3);
     else if (totalNumVertices < Math.pow(2, 16))
       trianglulatedIndices = new Uint16Array(trisCount * 3);
-    else
-      trianglulatedIndices = new Uint32Array(trisCount * 3);
+    else trianglulatedIndices = new Uint32Array(trisCount * 3);
 
     let triangleVertex = 0;
-    let addTriangleVertexIndex = function(vertex, faceIndex) {
+    const addTriangleVertexIndex = function(vertex, faceIndex) {
       if (vertex in splitIndices && faceIndex in splitIndices[vertex])
         vertex = numUnSplitVertices + splitIndices[vertex][faceIndex];
       trianglulatedIndices[triangleVertex] = vertex;
       triangleVertex++;
-    }
-    let numFaces = this.getNumFaces();
+    };
+    const numFaces = this.getNumFaces();
     for (let faceIndex = 0; faceIndex < numFaces; faceIndex++) {
-      let faceVerts = this.getFaceVertexIndices(faceIndex);
+      const faceVerts = this.getFaceVertexIndices(faceIndex);
       for (let j = 0; j < faceVerts.length; j++) {
         if (j >= 3) {
           // For each aditional triangle, we have to add 2 indices.
@@ -486,20 +479,18 @@ class Mesh extends BaseGeom {
         addTriangleVertexIndex(faceVerts[j], faceIndex);
       }
     }
-    return trianglulatedIndices
-
+    return trianglulatedIndices;
   }
 
-
   computeHardEdgesIndices(hardAngle = 1.0) {
-    let hardEdges = [];
-    let addEdge = (index) => {
+    const hardEdges = [];
+    const addEdge = index => {
       hardEdges.push(this.edgeVerts[index]);
       hardEdges.push(this.edgeVerts[index + 1]);
-    }
+    };
     for (let i = 0; i < this.edgeFlags.length; i += 2) {
-      let p0 = this.edgeFaces[i];
-      let p1 = this.edgeFaces[i + 1];
+      const p0 = this.edgeFaces[i];
+      const p1 = this.edgeFaces[i + 1];
       if (this.edgeAngles[i / 2] > hardAngle) {
         addEdge(i);
       }
@@ -511,15 +502,11 @@ class Mesh extends BaseGeom {
     return indices;
   }
 
-
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Memory
 
-
   genBuffers(opts) {
-
-    // Compute the normals on demand. 
+    // Compute the normals on demand.
     // if (!('normals' in this.__vertexAttributes)) {
     //     // this.__geom.computeVertexNormals();
     //     this.addVertexAttribute("normals", Vec3, 0.0);
@@ -527,14 +514,13 @@ class Mesh extends BaseGeom {
 
     const splitIndices = {};
     let splitCount = 0;
-    for (let [attrName, attr] of this.__vertexAttributes) {
-      let attrSplits = attr.getSplits();
-      for (let polygon in attrSplits) {
-        if (!(polygon in splitIndices))
-          splitIndices[polygon] = {};
-        let vertices = attrSplits[polygon];
-        for (let v in vertices) {
-          let vertex = parseInt(v);
+    for (const [attrName, attr] of this.__vertexAttributes) {
+      const attrSplits = attr.getSplits();
+      for (const polygon in attrSplits) {
+        if (!(polygon in splitIndices)) splitIndices[polygon] = {};
+        const vertices = attrSplits[polygon];
+        for (const v in vertices) {
+          const vertex = parseInt(v);
           if (!(vertex in splitIndices[polygon])) {
             splitIndices[polygon][vertex] = splitCount;
             splitCount++;
@@ -548,7 +534,11 @@ class Mesh extends BaseGeom {
 
     let indices;
     if (!opts || opts.includeIndices != false) {
-      indices = this.generateTriangulatedIndices(totalNumVertices, numUnSplitVertices, splitIndices);
+      indices = this.generateTriangulatedIndices(
+        totalNumVertices,
+        numUnSplitVertices,
+        splitIndices
+      );
     }
 
     // Create some vertex attribute buffers
@@ -557,12 +547,10 @@ class Mesh extends BaseGeom {
     // if (debugAttrValues)
     //     maxIndex = Math.max(...indices);
     const attrBuffers = {};
-    for (let [attrName, attr] of this.__vertexAttributes) {
+    for (const [attrName, attr] of this.__vertexAttributes) {
       let values;
-      if (splitCount == 0)
-        values = attr.data;
-      else
-        values = attr.generateSplitValues(splitIndices, splitCount);
+      if (splitCount == 0) values = attr.data;
+      else values = attr.generateSplitValues(splitIndices, splitCount);
 
       const dimension = attr.numFloat32Elements;
       const count = values.length / dimension;
@@ -576,7 +564,7 @@ class Mesh extends BaseGeom {
         values: values,
         count: count,
         dimension: dimension,
-        normalized: attrName == 'normals'
+        normalized: attrName == 'normals',
       };
     }
 
@@ -584,34 +572,33 @@ class Mesh extends BaseGeom {
       numVertices: this.numVertices(),
       numRenderVerts: totalNumVertices,
       indices,
-      attrBuffers
+      attrBuffers,
     };
 
     if (opts && opts.includeVertexNeighbors) {
-      if (this.vertexEdges == undefined)
-        this.genTopologyInfo();
+      if (this.vertexEdges == undefined) this.genTopologyInfo();
 
       let count = 0;
       for (let i = 0; i < this.vertexEdges.length; i++) {
-        // If this face indexing doesn't start at 0, then the vertexEdges don't either. 
-        if (this.vertexEdges[i])
-          count += this.vertexEdges[i].size;
+        // If this face indexing doesn't start at 0, then the vertexEdges don't either.
+        if (this.vertexEdges[i]) count += this.vertexEdges[i].size;
       }
       // The array will be structured as a start+offset for each vertex, followed
       // by a 2d array of neighbor indices.
-      const vertexNeighbors = new Uint32Array(this.vertexEdges.length * 2 + count);
+      const vertexNeighbors = new Uint32Array(
+        this.vertexEdges.length * 2 + count
+      );
 
-      const sortFanEdges = (fanEdges)=>{
-
+      const sortFanEdges = fanEdges => {
         for (let i = 0; i < fanEdges.length; i++) {
-          let feA = fanEdges[i];
+          const feA = fanEdges[i];
           for (let j = 0; j < i; j++) {
-            let feB = fanEdges[j];
+            const feB = fanEdges[j];
             if (feA[0] != -1 && feA[0] == feB[1]) {
               //  move feA after feB;
-              if(i != j+1){
+              if (i != j + 1) {
                 fanEdges.splice(i, 1);
-                fanEdges.splice(j+1, 0, feA);
+                fanEdges.splice(j + 1, 0, feA);
               }
               break;
             }
@@ -623,87 +610,82 @@ class Mesh extends BaseGeom {
             }
           }
         }
-      }
+      };
 
-      const checkFanEdges = (fanEdges)=>{
-
+      const checkFanEdges = fanEdges => {
         // now check that the faces all build a fan. Maybe starting and ending with -1
-        if(fanEdges[0][0] == -1 || fanEdges[fanEdges.length-1][1] == -1){
-          if(fanEdges[0][0] != -1 || fanEdges[fanEdges.length-1][1] != -1){
-            throw ("If fan starts with -1, it must also end with -1");
+        if (fanEdges[0][0] == -1 || fanEdges[fanEdges.length - 1][1] == -1) {
+          if (fanEdges[0][0] != -1 || fanEdges[fanEdges.length - 1][1] != -1) {
+            throw 'If fan starts with -1, it must also end with -1';
           }
         }
         for (let i = 0; i < fanEdges.length; i++) {
-          let fe = fanEdges[i];
-          if(fe[0] == -1 || fe[1] == -1){
-            if(i != 0 && i != fanEdges.length-1){
-              throw ("-1 only allowed at the beginning and end of a fan.");
+          const fe = fanEdges[i];
+          if (fe[0] == -1 || fe[1] == -1) {
+            if (i != 0 && i != fanEdges.length - 1) {
+              throw '-1 only allowed at the beginning and end of a fan.';
             }
           }
-          if(fe[0] != -1 ){
-            let prev = (i-1);
-            if(prev < 0)
-              prev += fanEdges.length;
+          if (fe[0] != -1) {
+            let prev = i - 1;
+            if (prev < 0) prev += fanEdges.length;
             if (fe[0] != fanEdges[prev][1]) {
-              throw ("Faces are not sequential");
+              throw 'Faces are not sequential';
             }
           }
-          if(fe[1] != -1 ){
-            let next = (i+1)%fanEdges.length;
+          if (fe[1] != -1) {
+            const next = (i + 1) % fanEdges.length;
             if (fe[1] != fanEdges[next][0]) {
-              throw ("Faces are not sequential");
+              throw 'Faces are not sequential';
             }
           }
         }
-      }
+      };
 
       // Populate the start and offset values.
       let offset = this.vertexEdges.length * 2;
       for (let i = 0; i < this.vertexEdges.length; i++) {
-        if (this.vertexEdges[i] == undefined)
-          continue;
-        let edges = this.vertexEdges[i];
+        if (this.vertexEdges[i] == undefined) continue;
+        const edges = this.vertexEdges[i];
 
         // Build a sorted list of faces based on a fan around
-        // the vertex. 
-        let fanEdges = [];
-        for (let e of edges) {
-          let v0 = this.edgeVerts[e * 2];
-          let v1 = this.edgeVerts[(e * 2) + 1];
+        // the vertex.
+        const fanEdges = [];
+        for (const e of edges) {
+          const v0 = this.edgeVerts[e * 2];
+          const v1 = this.edgeVerts[e * 2 + 1];
           let f0 = this.edgeFaces[e * 2];
-          let f1 = this.edgeFaces[(e * 2) + 1];
+          let f1 = this.edgeFaces[e * 2 + 1];
           let neigVert;
           if (v0 == i) {
             neigVert = v1;
           } else if (v1 == i) {
             neigVert = v0;
             // swap the faces
-            let tmp = f0;
+            const tmp = f0;
             f0 = f1;
             f1 = tmp;
           } else {
-            throw ("Invalid topology");
+            throw 'Invalid topology';
           }
           fanEdges.push([f0, f1, neigVert]);
         }
         sortFanEdges(fanEdges);
         checkFanEdges(fanEdges);
-        let closed = (fanEdges[0][0] != -1 || fanEdges[fanEdges.length-1][1] != -1);
+        const closed =
+          fanEdges[0][0] != -1 || fanEdges[fanEdges.length - 1][1] != -1;
         let flags = 0;
-        if(closed)
-          flags += 1;
+        if (closed) flags += 1;
         vertexNeighbors[i * 2] = offset;
         vertexNeighbors[i * 2 + 1] = edges.size + (flags << 8);
-        for (let fe of fanEdges) {
+        for (const fe of fanEdges) {
           vertexNeighbors[offset] = fe[2];
           offset++;
         }
       }
 
       result.vertexNeighbors = vertexNeighbors;
-
     }
-
 
     return result;
   }
@@ -713,40 +695,39 @@ class Mesh extends BaseGeom {
     this.init();
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
   readBinary(reader, context) {
     super.loadBaseGeomBinary(reader);
     this.setFaceCounts(reader.loadUInt32Array());
-    this.__faceVertexCounts = reader.loadUInt8Array(this.__faceVertexCounts.length);
+    this.__faceVertexCounts = reader.loadUInt8Array(
+      this.__faceVertexCounts.length
+    );
     const offsetRange = reader.loadSInt32Vec2();
     const bytes = reader.loadUInt8();
     let faceVertexIndexDeltas;
-    if (bytes == 1)
-      faceVertexIndexDeltas = reader.loadUInt8Array();
-    else if (bytes == 2)
-      faceVertexIndexDeltas = reader.loadUInt16Array();
-    else if (bytes == 4)
-      faceVertexIndexDeltas = reader.loadUInt32Array();
+    if (bytes == 1) faceVertexIndexDeltas = reader.loadUInt8Array();
+    else if (bytes == 2) faceVertexIndexDeltas = reader.loadUInt16Array();
+    else if (bytes == 4) faceVertexIndexDeltas = reader.loadUInt32Array();
 
-    let numVerts = this.numVertices();
+    const numVerts = this.numVertices();
 
     const numFaces = this.getNumFaces();
     let offset = 0;
     let prevCount = 0;
     for (let faceIndex = 0; faceIndex < numFaces; faceIndex++) {
-      let count = this.__faceVertexCounts[faceIndex] + 3;
+      const count = this.__faceVertexCounts[faceIndex] + 3;
       this.__faceOffsets[faceIndex] = offset;
       for (let j = 0; j < count; j++) {
-        let faceVertex = offset + j;
-        let delta = faceVertexIndexDeltas[faceVertex] + offsetRange.x;
-        if (faceIndex == 0)
-          this.__faceVertexIndices[faceVertex] = delta;
+        const faceVertex = offset + j;
+        const delta = faceVertexIndexDeltas[faceVertex] + offsetRange.x;
+        if (faceIndex == 0) this.__faceVertexIndices[faceVertex] = delta;
         else {
           let prevFaceVertex = this.__faceOffsets[faceIndex - 1];
-          prevFaceVertex += (j < prevCount) ? j : (prevCount - 1);
-          this.__faceVertexIndices[faceVertex] = this.__faceVertexIndices[prevFaceVertex] + delta;
+          prevFaceVertex += j < prevCount ? j : prevCount - 1;
+          this.__faceVertexIndices[faceVertex] =
+            this.__faceVertexIndices[prevFaceVertex] + delta;
         }
       }
       offset += count;
@@ -754,39 +735,43 @@ class Mesh extends BaseGeom {
     }
     this.__numPopulatedFaceVertexIndices = offset;
 
-    /////////////////////////////////////
+    // ///////////////////////////////////
     // Clusters
     const numClusters = reader.loadUInt32();
     if (numClusters > 0) {
       const positionsAttr = this.vertices;
-      const lightmapCoordsAttr = this.addVertexAttribute('lightmapCoords', Vec2);
+      const lightmapCoordsAttr = this.addVertexAttribute(
+        'lightmapCoords',
+        Vec2
+      );
       // let clusterIDsAttr = this.addVertexAttribute('clusterIDs', Float32);
       for (let i = 0; i < numClusters; i++) {
-        let xfo = new Xfo(reader.loadFloat32Vec3(), reader.loadFloat32Quat());
+        const xfo = new Xfo(reader.loadFloat32Vec3(), reader.loadFloat32Quat());
         const coordsScale = reader.loadFloat32();
-        let offset = reader.loadFloat32Vec2();
-        let offsetRange = reader.loadSInt32Vec2();
-        let bytes = reader.loadUInt8();
+        const offset = reader.loadFloat32Vec2();
+        const offsetRange = reader.loadSInt32Vec2();
+        const bytes = reader.loadUInt8();
         let clusterFaceIndiceDeltas;
-        if (bytes == 1)
-          clusterFaceIndiceDeltas = reader.loadUInt8Array();
-        else if (bytes == 2)
-          clusterFaceIndiceDeltas = reader.loadUInt16Array();
-        else
-          clusterFaceIndiceDeltas = reader.loadUInt32Array();
+        if (bytes == 1) clusterFaceIndiceDeltas = reader.loadUInt8Array();
+        else if (bytes == 2) clusterFaceIndiceDeltas = reader.loadUInt16Array();
+        else clusterFaceIndiceDeltas = reader.loadUInt32Array();
         let prevFace = 0;
-        for (let delta of clusterFaceIndiceDeltas) {
+        for (const delta of clusterFaceIndiceDeltas) {
           let face = delta + offsetRange.x;
           face += prevFace;
           prevFace = face;
-          let vertexIndices = this.getFaceVertexIndices(face);
-          for (let vertexIndex of vertexIndices) {
-            let pos = positionsAttr.getValueRef(vertexIndex);
-            let tmp = xfo.transformVec3(pos);
-            let lightmapCoord = new Vec2(tmp.x, tmp.z); // Discard y, use x,z
+          const vertexIndices = this.getFaceVertexIndices(face);
+          for (const vertexIndex of vertexIndices) {
+            const pos = positionsAttr.getValueRef(vertexIndex);
+            const tmp = xfo.transformVec3(pos);
+            const lightmapCoord = new Vec2(tmp.x, tmp.z); // Discard y, use x,z
             lightmapCoord.scaleInPlace(coordsScale);
             lightmapCoord.addInPlace(offset);
-            lightmapCoordsAttr.setFaceVertexValue_ByVertexIndex(face, vertexIndex, lightmapCoord);
+            lightmapCoordsAttr.setFaceVertexValue_ByVertexIndex(
+              face,
+              vertexIndex,
+              lightmapCoord
+            );
 
             // for debugging.
             // clusterIDsAttr.setFaceVertexValue_ByVertexIndex(face, vertexIndex, i);
@@ -797,38 +782,30 @@ class Mesh extends BaseGeom {
       }
     }
 
-
-    if(!this.hasVertexAttribute('normals')){
+    if (!this.hasVertexAttribute('normals')) {
       this.computeVertexNormals();
     }
-
 
     // this.computeVertexNormals();
     this.geomDataChanged.emit();
   }
 
-
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
-    if(!(flags&SAVE_FLAG_SKIP_GEOMDATA)) {
+    if (!(flags & SAVE_FLAG_SKIP_GEOMDATA)) {
       j.faceCounts = Array.from(this.__faceCounts);
       j.faceVertexIndices = Array.from(this.__faceVertexIndices);
     }
-    return j
+    return j;
   }
 
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
-    if(j.faceCounts)
-      this.__faceCounts = Uint32Array.from(j.faceCounts);
-    if(j.faceVertexIndices)
+    if (j.faceCounts) this.__faceCounts = Uint32Array.from(j.faceCounts);
+    if (j.faceVertexIndices)
       this.__faceVertexIndices = Uint32Array.from(j.faceVertexIndices);
   }
+}
 
-
-};
-
-export {
-  Mesh
-};
-//export default Mesh;
+export { Mesh };
+// export default Mesh;

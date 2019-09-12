@@ -1,43 +1,29 @@
-
-import {
-  SystemDesc
-} from '../BrowserDetection.js';
-import {
-  Vec2,
-  Vec3,
-  Quat,
-  Mat4,
-  Box3,
-  Xfo
-} from '../Math';
-import {
-  Signal
-} from '../Utilities';
-import {
-  TreeItem
-} from './TreeItem.js';
+import { SystemDesc } from '../BrowserDetection.js';
+import { Vec2, Vec3, Quat, Mat4, Box3, Xfo } from '../Math';
+import { Signal } from '../Utilities';
+import { TreeItem } from './TreeItem.js';
 import {
   ValueSetMode,
   Parameter,
   BooleanParameter,
-  NumberParameter
+  NumberParameter,
 } from './Parameters';
-import {
-  sgFactory
-} from './SGFactory';
-
+import { sgFactory } from './SGFactory';
 
 class Camera extends TreeItem {
   constructor(name = undefined) {
-    if (name == undefined)
-      name = "Camera";
+    if (name == undefined) name = 'Camera';
     super(name);
 
-    this.__isOrthographicParam = this.addParameter(new BooleanParameter('isOrthographic', false));
+    this.__isOrthographicParam = this.addParameter(
+      new BooleanParameter('isOrthographic', false)
+    );
     this.__fovParam = this.addParameter(new NumberParameter('fov', 1.0));
     this.__nearParam = this.addParameter(new NumberParameter('near', 0.1));
     this.__farParam = this.addParameter(new NumberParameter('far', 1000.0));
-    this.__focalDistanceParam = this.addParameter(new NumberParameter('focalDistance', 5.0));
+    this.__focalDistanceParam = this.addParameter(
+      new NumberParameter('focalDistance', 5.0)
+    );
 
     // this.__viewMatParam = this.addParameter(new Parameter('viewMat', new Mat4()));
     // const _cleanViewMat = (xfo)=>{
@@ -51,7 +37,9 @@ class Camera extends TreeItem {
     this.projectionParamChanged = new Signal();
     this.movementFinished = new Signal();
 
-    this.__isOrthographicParam.valueChanged.connect(this.projectionParamChanged.emit);
+    this.__isOrthographicParam.valueChanged.connect(
+      this.projectionParamChanged.emit
+    );
     this.__fovParam.valueChanged.connect(this.projectionParamChanged.emit);
     this.__nearParam.valueChanged.connect(this.projectionParamChanged.emit);
     this.__farParam.valueChanged.connect(this.projectionParamChanged.emit);
@@ -59,11 +47,10 @@ class Camera extends TreeItem {
     // Initial viewing coords of a person standing 3 meters away from the
     // center of the stage looking at something 1 meter off the ground.
     this.setPositionAndTarget(new Vec3(3, 3, 1.75), new Vec3(0, 0, 1));
-    this.setLensFocalLength('28mm')
-
+    this.setLensFocalLength('28mm');
   }
 
-  //////////////////////////////////////////////
+  // ////////////////////////////////////////////
   // getters/setters.
 
   getNear() {
@@ -128,10 +115,10 @@ class Camera extends TreeItem {
       '400mm': 3.4,
       '500mm': 2.7,
       '600mm': 2.3,
-      '800mm': 1.7
+      '800mm': 1.7,
     };
-    if(!value in mapping) {
-      console.warn("Camera lense focal length not suported:" + value)
+    if (!value in mapping) {
+      console.warn('Camera lense focal length not suported:' + value);
       return;
     }
     this.__fovParam.setValue(Math.degToRad(mapping[value]));
@@ -141,7 +128,7 @@ class Camera extends TreeItem {
     return this.__focalDistanceParam.getValue();
   }
 
-  setFocalDistance(dist, mode=ValueSetMode.USER_SETVALUE) {
+  setFocalDistance(dist, mode = ValueSetMode.USER_SETVALUE) {
     this.__focalDistanceParam.setValue(dist, mode);
     this.__nearParam.setValue(dist * 0.01, mode);
     this.__farParam.setValue(dist * 200.0, mode);
@@ -151,7 +138,7 @@ class Camera extends TreeItem {
     return this.__isOrthographicParam.getValue();
   }
 
-  setIsOrthographic(value, mode=ValueSetMode.USER_SETVALUE) {
+  setIsOrthographic(value, mode = ValueSetMode.USER_SETVALUE) {
     this.__isOrthographicParam.setValue(value, mode);
   }
 
@@ -167,7 +154,7 @@ class Camera extends TreeItem {
     this.__defaultManipulationState = mode;
   }
 
-  setPositionAndTarget(position, target, mode=ValueSetMode.USER_SETVALUE) {
+  setPositionAndTarget(position, target, mode = ValueSetMode.USER_SETVALUE) {
     this.setFocalDistance(position.distanceTo(target), mode);
     const xfo = new Xfo();
     xfo.setLookAt(position, target, new Vec3(0.0, 0.0, 1.0));
@@ -183,15 +170,15 @@ class Camera extends TreeItem {
     return target;
   }
 
-  /////////////////////////////
+  // ///////////////////////////
 
   frameView(viewport, treeItems) {
     const boundingBox = new Box3();
-    for (let treeItem of treeItems)
+    for (const treeItem of treeItems)
       boundingBox.addBox3(treeItem.getBoundingBox());
 
     if (!boundingBox.isValid()) {
-      console.warn("Bounding box not valid.")
+      console.warn('Bounding box not valid.');
       return;
     }
     const focalDistance = this.__focalDistanceParam.getValue();
@@ -218,8 +205,10 @@ class Camera extends TreeItem {
     const newFocalDistanceX = (Math.abs(p.x) / Math.tan(0.5 * fovX)) * 1.2;
     const newFocalDistanceY = (Math.abs(p.y) / Math.tan(0.5 * fovY)) * 1.2;
 
-    const camSpaceBBoxDepth = (transformedBBox.p0.z - transformedBBox.p1.z) * -0.5;
-    const newFocalDistance = Math.max(newFocalDistanceX, newFocalDistanceY) + camSpaceBBoxDepth;
+    const camSpaceBBoxDepth =
+      (transformedBBox.p0.z - transformedBBox.p1.z) * -0.5;
+    const newFocalDistance =
+      Math.max(newFocalDistanceX, newFocalDistanceY) + camSpaceBBoxDepth;
 
     const dollyDist = newFocalDistance - focalDistance;
     globalXfo.tr.addInPlace(cameraViewVec.scale(dollyDist));
@@ -237,10 +226,8 @@ class Camera extends TreeItem {
     const focalDistance = this.__focalDistanceParam.getValue();
     mat.setPerspectiveMatrix(fov, aspect, near, far);
   }
-};
+}
 
 sgFactory.registerClass('Camera', Camera);
 
-export {
-  Camera
-};
+export { Camera };

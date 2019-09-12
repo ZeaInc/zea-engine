@@ -1,10 +1,5 @@
-import {
-  Color,
-} from '../../Math';
-import {
-  Signal,
-  Async
-} from '../../Utilities';
+import { Color } from '../../Math';
+import { Signal, Async } from '../../Utilities';
 import {
   Parameter,
   BooleanParameter,
@@ -12,18 +7,11 @@ import {
   Vec2Parameter,
   Vec3Parameter,
   ColorParameter,
-  StringParameter
+  StringParameter,
 } from '../Parameters';
-import {
-  sgFactory
-} from '../SGFactory.js';
-import {
-  DataImage
-} from './DataImage.js';
-import {
-  labelManager
-} from './LabelManager.js';
-
+import { sgFactory } from '../SGFactory.js';
+import { DataImage } from './DataImage.js';
+import { labelManager } from './LabelManager.js';
 
 // http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
 /**
@@ -35,7 +23,7 @@ import {
  * @param {Number} y The top left y coordinate
  * @param {Number} width The width of the rectangle
  * @param {Number} height The height of the rectangle
- * @param {Number} [radius = 5] The corner radius; It can also be an object 
+ * @param {Number} [radius = 5] The corner radius; It can also be an object
  *                 to specify different radii for corners
  * @param {Number} [radius.tl = 0] Top left
  * @param {Number} [radius.tr = 0] Top right
@@ -44,7 +32,17 @@ import {
  * @param {Boolean} [fill = false] Whether to fill the rectangle.
  * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
  */
-function roundRect(ctx, x, y, width, height, radius, fill, stroke, strokeWidth) {
+function roundRect(
+  ctx,
+  x,
+  y,
+  width,
+  height,
+  radius,
+  fill,
+  stroke,
+  strokeWidth
+) {
   if (typeof stroke == 'undefined') {
     stroke = true;
   }
@@ -56,16 +54,16 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke, strokeWidth) 
       tl: radius,
       tr: radius,
       br: radius,
-      bl: radius
+      bl: radius,
     };
   } else {
-    var defaultRadius = {
+    const defaultRadius = {
       tl: 0,
       tr: 0,
       br: 0,
-      bl: 0
+      bl: 0,
     };
-    for (var side in defaultRadius) {
+    for (const side in defaultRadius) {
       radius[side] = radius[side] || defaultRadius[side];
     }
   }
@@ -74,7 +72,12 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke, strokeWidth) 
   ctx.lineTo(x + width - radius.tr, y);
   ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
   ctx.lineTo(x + width, y + height - radius.br);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width - radius.br,
+    y + height
+  );
   ctx.lineTo(x + radius.bl, y + height);
   ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
   ctx.lineTo(x, y + radius.tl);
@@ -100,13 +103,11 @@ class Label extends DataImage {
 
     const libraryParam = this.addParameter(new StringParameter('library'));
     const textParam = this.addParameter(new StringParameter('text', ''));
-    if (labelManager.isLibraryLoaded(library))
-      this.__getLabelText();
+    if (labelManager.isLibraryLoaded(library)) this.__getLabelText();
     // or load the label when it is loaded.
-    labelManager.labelLibraryLoaded.connect((loadedLibrary) => {
+    labelManager.labelLibraryLoaded.connect(loadedLibrary => {
       const library = libraryParam.getValue();
-      if (loadedLibrary == library)
-        this.__getLabelText();
+      if (loadedLibrary == library) this.__getLabelText();
     });
     libraryParam.valueChanged.connect(this.__getLabelText.bind(this));
     this.nameChanged.connect(this.__getLabelText.bind(this));
@@ -118,7 +119,9 @@ class Label extends DataImage {
     // }
     // textParam.valueChanged.connect(setLabelText);
 
-    this.addParameter(new ColorParameter('fontColor', new Color(1.0, 1.0, 1.0)));
+    this.addParameter(
+      new ColorParameter('fontColor', new Color(1.0, 1.0, 1.0))
+    );
     this.addParameter(new StringParameter('textAlign', 'left', 'String'));
     // this.addParameter(MultiChoiceParameter('textAlign', 0, ['left', 'right']));
     this.addParameter(new StringParameter('fillText', true));
@@ -131,8 +134,12 @@ class Label extends DataImage {
     this.addParameter(new ColorParameter('backgroundColor', backgroundColor));
     this.addParameter(new BooleanParameter('fillBackground', true));
     this.addParameter(new BooleanParameter('strokeBackgroundOutline', true));
-    const fontSizeParam = this.addParameter(new NumberParameter('fontSize', 22))
-    const fontParam = this.addParameter(new StringParameter('font', 'Helvetica', 'String'));
+    const fontSizeParam = this.addParameter(
+      new NumberParameter('fontSize', 22)
+    );
+    const fontParam = this.addParameter(
+      new StringParameter('font', 'Helvetica', 'String')
+    );
 
     const loadFont = () => {
       const library = this.getParameter('library').getValue();
@@ -157,13 +164,12 @@ class Label extends DataImage {
         if (library == '' || !labelManager.isLibraryFound(library))
           this.renderLabelToImage();
       }
-    }
+    };
     fontSizeParam.valueChanged.connect(loadFont);
     fontParam.valueChanged.connect(loadFont);
     // fontParam.setValue('AGBookTTReg');
 
-    if (library)
-      libraryParam.setValue(library)
+    if (library) libraryParam.setValue(library);
   }
 
   __getLabelText() {
@@ -175,7 +181,7 @@ class Label extends DataImage {
     const name = this.getName();
 
     if (!labelManager.isLibraryFound(library)) {
-      console.warn("Label Libary not found:", library)
+      console.warn('Label Libary not found:', library);
       return;
     }
     if (!labelManager.isLibraryLoaded(library)) {
@@ -186,19 +192,17 @@ class Label extends DataImage {
       textParam.setValue(text);
       this.renderLabelToImage();
     } catch (e) {
-      console.warn(e)
+      console.warn(e);
     }
   }
 
   renderLabelToImage() {
-
-    let ctx2d = this.__canvasElem.getContext('2d', {
-      'alpha': true
+    const ctx2d = this.__canvasElem.getContext('2d', {
+      alpha: true,
     });
 
     let text = this.getParameter('text').getValue();
-    if (text == '')
-      text = this.getName();
+    if (text == '') text = this.getName();
 
     const font = this.getParameter('font').getValue();
     const fontColor = this.getParameter('fontColor').getValue();
@@ -213,41 +217,57 @@ class Label extends DataImage {
     const background = this.getParameter('background').getValue();
     const backgroundColor = this.getParameter('backgroundColor').getValue();
     const fillBackground = this.getParameter('fillBackground').getValue();
-    const strokeBackgroundOutline = this.getParameter('strokeBackgroundOutline').getValue();
+    const strokeBackgroundOutline = this.getParameter(
+      'strokeBackgroundOutline'
+    ).getValue();
 
     // let ratio = devicePixelRatio / backingStoreRatio;
     const marginAndBorder = margin + borderWidth;
-    const lines = text.split('\n')
+    const lines = text.split('\n');
 
     ctx2d.font = fontSize + 'px "' + font + '"';
     // console.log("renderLabelToImage:" + ctx2d.font);
     let width = 0;
     lines.forEach(line => {
-      width = Math.max(ctx2d.measureText(line).width, width)
-    })
-    const fontHeight = parseInt(fontSize)
-    this.width = (width + (marginAndBorder * 2));
-    this.height = (fontHeight * lines.length + (marginAndBorder * 2));
+      width = Math.max(ctx2d.measureText(line).width, width);
+    });
+    const fontHeight = parseInt(fontSize);
+    this.width = width + marginAndBorder * 2;
+    this.height = fontHeight * lines.length + marginAndBorder * 2;
     ctx2d.canvas.width = this.width;
     ctx2d.canvas.height = this.height;
 
     // ctx2d.clearRect(0, 0, this.width, this.height);
-    ctx2d.fillStyle = "rgba(0, 0, 0, 0.0)";
+    ctx2d.fillStyle = 'rgba(0, 0, 0, 0.0)';
     ctx2d.fillRect(0, 0, this.width, this.height);
 
     if (background) {
       ctx2d.fillStyle = backgroundColor.toHex();
       ctx2d.strokeStyle = outlineColor.toHex();
-      roundRect(ctx2d, borderWidth, borderWidth, this.width - (borderWidth * 2), this.height - (borderWidth * 2), borderRadius, fillBackground, strokeBackgroundOutline, borderWidth);
+      roundRect(
+        ctx2d,
+        borderWidth,
+        borderWidth,
+        this.width - borderWidth * 2,
+        this.height - borderWidth * 2,
+        borderRadius,
+        fillBackground,
+        strokeBackgroundOutline,
+        borderWidth
+      );
     }
 
     ctx2d.font = fontSize + 'px "' + font + '"';
     ctx2d.textAlign = textAlign;
     ctx2d.fillStyle = fontColor.toHex();
-    ctx2d.textBaseline = "hanging";
+    ctx2d.textBaseline = 'hanging';
     lines.forEach((line, index) => {
-      ctx2d.fillText(line, marginAndBorder, marginAndBorder + (index * fontHeight));
-    })
+      ctx2d.fillText(
+        line,
+        marginAndBorder,
+        marginAndBorder + index * fontHeight
+      );
+    });
 
     if (outline) {
       ctx2d.strokeStyle = outlineColor.toHex();
@@ -270,9 +290,8 @@ class Label extends DataImage {
     return super.getParams();
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
-
 
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -283,11 +302,8 @@ class Label extends DataImage {
     super.fromJSON(j, context, flags);
     this.__getLabelText();
   }
-};
+}
 
 sgFactory.registerClass('Label', Label);
 
-
-export {
-  Label
-};
+export { Label };

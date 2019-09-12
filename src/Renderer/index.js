@@ -1,5 +1,3 @@
-
-
 export * from './GLContext.js';
 export * from './GLTexture2D.js';
 export * from './GLMesh.js';
@@ -13,4 +11,3 @@ export * from './ShaderLibrary.js';
 export * from './GeomShaderBinding.js';
 export * from './Shaders/';
 export * from './Passes/';
-

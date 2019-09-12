@@ -1,13 +1,13 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import {
-    sgFactory
-} from '../../SceneTree';
-import { StandardSurfaceGeomDataShader }  from './StandardSurfaceGeomDataShader';
+import { shaderLibrary } from '../ShaderLibrary';
+import { sgFactory } from '../../SceneTree';
+import { StandardSurfaceGeomDataShader } from './StandardSurfaceGeomDataShader';
 
 class HandleGeomDataShader extends StandardSurfaceGeomDataShader {
-    constructor(gl, floatGeomBuffer) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('HandleGeomDataShader.vertexShader', `
+  constructor(gl, floatGeomBuffer) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'HandleGeomDataShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -46,12 +46,11 @@ void main(void) {
 
     v_drawItemID = float(getId());
 }
-`);
-    }
-};
+`
+    );
+  }
+}
 
 sgFactory.registerClass('HandleGeomDataShader', HandleGeomDataShader);
 
-export {
-    HandleGeomDataShader
-};
+export { HandleGeomDataShader };

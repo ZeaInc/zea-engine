@@ -2,7 +2,9 @@ import { shaderLibrary } from '../../ShaderLibrary.js';
 
 import './glslutils.js';
 
-shaderLibrary.setShaderModule('utils/ImageStream.glsl', `
+shaderLibrary.setShaderModule(
+  'utils/ImageStream.glsl',
+  `
 
 // Stream Desc looks like the following
 // x : atlas Width in images
@@ -23,4 +25,5 @@ vec4 sampleStreamFrame(vec2 texCoord, int index, in sampler2D streamImage, in ve
     return texture2D(streamImage, calcFrameImageTexCoords(texCoord, index, streamDesc));
 }
 
-`);
+`
+);

@@ -1,24 +1,18 @@
-import {
-    Color
-} from '../../Math/Color';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math/Color';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/stack-gl/gamma.js';
 import './GLSL/modelMatrix.js';
 
 class ScreenSpaceShader extends GLShader {
-    constructor(gl) {
-        super(gl);
+  constructor(gl) {
+    super(gl);
 
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('ScreenSpaceShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'ScreenSpaceShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -43,9 +37,12 @@ void main(void) {
     v_textureCoord = texCoords;
     v_textureCoord.y = 1.0 - v_textureCoord.y;// Flip y
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('ScreenSpaceShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'ScreenSpaceShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="stack-gl/gamma.glsl"/>
@@ -88,33 +85,35 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
 
-        this.finalize();
-    }
+    this.finalize();
+  }
 
-    static isOverlay() {
-        return true;
-    }
+  static isOverlay() {
+    return true;
+  }
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) })
-        return paramDescs;
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    return paramDescs;
+  }
 
-    static getGeomDataShaderName(){
-        // TODO: Provide a geom data shader for overlay items.
-        return null;
-    }
+  static getGeomDataShaderName() {
+    // TODO: Provide a geom data shader for overlay items.
+    return null;
+  }
 
-    static getSelectedShaderName(){
-        // TODO: Provide a geom data shader for overlay items.
-        return null;
-    }
-};
+  static getSelectedShaderName() {
+    // TODO: Provide a geom data shader for overlay items.
+    return null;
+  }
+}
 
 sgFactory.registerClass('ScreenSpaceShader', ScreenSpaceShader);
-export {
-    ScreenSpaceShader
-};
+export { ScreenSpaceShader };

@@ -1,14 +1,12 @@
-import {
-  shaderLibrary
-} from '../ShaderLibrary';
-import {
-  GLShader
-} from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 class DepthMapShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('DepthMapShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'DepthMapShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;    //(location = 0)
@@ -26,8 +24,11 @@ void main(void) {
   gl_Position = lightProjectionMatrix * v_viewPos;
 }
 
-`);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('DepthMapShader.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'DepthMapShader.fragmentShader',
+      `
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
 
@@ -48,11 +49,9 @@ void main(void) {
   float dy = dFdy(depth);
   gl_FragColor = vec4(depth, pow(depth, 2.0) + 0.25*(dx*dx + dy*dy), 0.0, 1.0);
 }
-`);
+`
+    );
   }
-};
+}
 
-
-export {
-  DepthMapShader
-};
+export { DepthMapShader };

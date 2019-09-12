@@ -1,24 +1,18 @@
-import {
-    Color
-} from '../../Math/Color';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math/Color';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/stack-gl/gamma.js';
 import './GLSL/modelMatrix.js';
-    
-class HandleShader extends GLShader {
-    constructor(gl) {
-        super(gl);
 
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('HandleShader.vertexShader', `
+class HandleShader extends GLShader {
+  constructor(gl) {
+    super(gl);
+
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'HandleShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -63,9 +57,12 @@ void main(void) {
     v_textureCoord = texCoords;
     v_textureCoord.y = 1.0 - v_textureCoord.y;// Flip y
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('HandleShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'HandleShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="stack-gl/gamma.glsl"/>
@@ -109,31 +106,33 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-        
-        this.finalize();
-    }
+`
+    );
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) })
-        return paramDescs;
-    }
+    this.finalize();
+  }
 
-    static isOverlay() {
-        return true;
-    }
-    
-    static getGeomDataShaderName(){
-        return 'HandleGeomDataShader';
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    return paramDescs;
+  }
 
-    // static getSelectedShaderName(){
-    //     return 'StandardSurfaceSelectedGeomsShader';
-    // }
-};
+  static isOverlay() {
+    return true;
+  }
+
+  static getGeomDataShaderName() {
+    return 'HandleGeomDataShader';
+  }
+
+  // static getSelectedShaderName(){
+  //     return 'StandardSurfaceSelectedGeomsShader';
+  // }
+}
 
 sgFactory.registerClass('HandleShader', HandleShader);
-export {
-    HandleShader
-};
+export { HandleShader };

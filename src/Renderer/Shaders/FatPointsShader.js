@@ -1,16 +1,7 @@
-
-import {
-  Color
-} from '../../Math';
-import {
-  sgFactory
-} from '../../SceneTree';
-import {
-  shaderLibrary
-} from '../ShaderLibrary';
-import {
-  GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
@@ -18,7 +9,9 @@ import './GLSL/stack-gl/transpose.js';
 class PointsShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('PointsShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'PointsShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -37,9 +30,12 @@ void main(void) {
   mat4 modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
   gl_Position = modelViewProjectionMatrix * vec4(positions, 1.);
 }
-`);
+`
+    );
 
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('PointsShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'PointsShader.fragmentShader',
+      `
 precision highp float;
 
 uniform color BaseColor;
@@ -60,21 +56,26 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
   }
 
   static getParamDeclarations() {
     const paramDescs = super.getParamDeclarations();
-    paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
     return paramDescs;
   }
-};
-
+}
 
 class FatPointsShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('FatPointsShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'FatPointsShader.vertexShader',
+      `
 precision highp float;
 
 instancedattribute vec3 positions;
@@ -103,9 +104,12 @@ void main(void) {
   gl_Position += vec4(vec3(quadPointPos, 0.0) * PointSize, 0.);
   gl_Position = projectionMatrix * gl_Position;
 }
-`);
+`
+    );
 
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('FatPointsShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'FatPointsShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -143,31 +147,31 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
   }
 
   bind(renderstate) {
-    if(super.bind(renderstate)) {
+    if (super.bind(renderstate)) {
       renderstate.supportsInstancing = false;
       return true;
     }
     return false;
-  } 
+  }
 
   static getParamDeclarations() {
     const paramDescs = super.getParamDeclarations();
-    paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
     paramDescs.push({ name: 'PointSize', defaultValue: 0.05 });
     paramDescs.push({ name: 'Rounded', defaultValue: 1.0 });
     paramDescs.push({ name: 'BorderWidth', defaultValue: 0.2 });
     return paramDescs;
   }
-};
-
+}
 
 sgFactory.registerClass('PointsShader', PointsShader);
 sgFactory.registerClass('FatPointsShader', FatPointsShader);
-export {
-  PointsShader,
-  FatPointsShader
-};
+export { PointsShader, FatPointsShader };

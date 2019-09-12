@@ -1,16 +1,7 @@
-import {
-    Vec3,
-    Color
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Vec3, Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/stack-gl/gamma.js';
@@ -19,10 +10,12 @@ import './GLSL/materialparams.js';
 import './GLSL/cutaways.js';
 
 class SimpleCutawaySurfaceShader extends GLShader {
-    constructor(name) {
-        super(name);
+  constructor(name) {
+    super(name);
 
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('SimpleCutawaySurfaceShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'SimpleCutawaySurfaceShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -72,9 +65,12 @@ void main(void) {
     }
 
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('SimpleCutawaySurfaceShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'SimpleCutawaySurfaceShader.fragmentShader',
+      `
 #ifdef GL_EXT_frag_depth
 #extension GL_EXT_frag_depth : enable
 #endif
@@ -171,25 +167,46 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
 
-        this.finalize();
-    }
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
-        paramDescs.push({ name: 'Opacity', defaultValue: 1.0 });
+    this.finalize();
+  }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Opacity', defaultValue: 1.0 });
 
-        // cutaway params
-        paramDescs.push({ name: 'cutawayEnabled', defaultValue: true, texturable: false });
-        paramDescs.push({ name: 'cutColor', defaultValue: new Color(0.7, 0.2, 0.2), texturable: false });
-        paramDescs.push({ name: 'planeNormal', defaultValue: new Vec3(1, 0, 0), texturable: false });
-        paramDescs.push({ name: 'planeDist', defaultValue: 0.0, texturable: false });
-        return paramDescs;
-    }
-};
+    // cutaway params
+    paramDescs.push({
+      name: 'cutawayEnabled',
+      defaultValue: true,
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'cutColor',
+      defaultValue: new Color(0.7, 0.2, 0.2),
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'planeNormal',
+      defaultValue: new Vec3(1, 0, 0),
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'planeDist',
+      defaultValue: 0.0,
+      texturable: false,
+    });
+    return paramDescs;
+  }
+}
 
-sgFactory.registerClass('SimpleCutawaySurfaceShader', SimpleCutawaySurfaceShader);
-export {
-    SimpleCutawaySurfaceShader
-};
+sgFactory.registerClass(
+  'SimpleCutawaySurfaceShader',
+  SimpleCutawaySurfaceShader
+);
+export { SimpleCutawaySurfaceShader };

@@ -1,18 +1,8 @@
-import {
-  AttrValue
-} from '../Math';
-import {
-  Signal
-} from '../Utilities';
-import {
-  GLShader
-} from './GLShader.js';
-import {
-  ScreenQuadShader
-} from './Shaders/ScreenQuadShader.js';
-import {
-  generateShaderGeomBinding
-} from './GeomShaderBinding.js';
+import { AttrValue } from '../Math';
+import { Signal } from '../Utilities';
+import { GLShader } from './GLShader.js';
+import { ScreenQuadShader } from './Shaders/ScreenQuadShader.js';
+import { generateShaderGeomBinding } from './GeomShaderBinding.js';
 
 class GLScreenQuad {
   constructor(gl, preproc) {
@@ -23,11 +13,18 @@ class GLScreenQuad {
     this.flipY = true;
     this.__glshader = new ScreenQuadShader(gl);
 
-    if (!gl.__quadVertexIdsBuffer)
-      gl.setupInstancedQuad();
+    if (!gl.__quadVertexIdsBuffer) gl.setupInstancedQuad();
 
-    let shaderComp = this.__glshader.compileForTarget('GLScreenQuad', preproc);
-    this.__quadBinding = generateShaderGeomBinding(gl, shaderComp.attrs, gl.__quadattrbuffers, gl.__quadIndexBuffer);
+    const shaderComp = this.__glshader.compileForTarget(
+      'GLScreenQuad',
+      preproc
+    );
+    this.__quadBinding = generateShaderGeomBinding(
+      gl,
+      shaderComp.attrs,
+      gl.__quadattrbuffers,
+      gl.__quadIndexBuffer
+    );
 
     this.ready = true;
   }
@@ -36,15 +33,27 @@ class GLScreenQuad {
     const unifs = renderstate.unifs;
     texture.bindToUniform(renderstate, renderstate.unifs.image);
 
-    const gl = this.__gl; {
-      let unif = unifs.pos;
+    const gl = this.__gl;
+    {
+      const unif = unifs.pos;
       if (unif) {
-        gl.uniform2fv(unif.location, pos ? (pos instanceof AttrValue ? pos.asArray() : pos) : this.__pos);
+        gl.uniform2fv(
+          unif.location,
+          pos ? (pos instanceof AttrValue ? pos.asArray() : pos) : this.__pos
+        );
       }
-    } {
-      let unif = unifs.size;
+    }
+    {
+      const unif = unifs.size;
       if (unif) {
-        gl.uniform2fv(unif.location, size ? (size instanceof AttrValue ? size.asArray() : size) : this.__size);
+        gl.uniform2fv(
+          unif.location,
+          size
+            ? size instanceof AttrValue
+              ? size.asArray()
+              : size
+            : this.__size
+        );
       }
     }
     // if ('flipY' in unifs)
@@ -61,18 +70,13 @@ class GLScreenQuad {
   }
 
   draw(renderstate, texture, pos = undefined, size = undefined) {
-
     this.bind(renderstate, texture, pos, size);
 
     this.__gl.drawQuad();
   }
 
-  destroy() {
+  destroy() {}
+}
 
-  }
-};
-
-export {
-  GLScreenQuad
-};
+export { GLScreenQuad };
 // export default GLScreenQuad;

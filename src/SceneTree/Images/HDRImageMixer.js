@@ -1,23 +1,14 @@
-import {
-  SystemDesc
-} from '../../BrowserDetection.js';
-import {
-  Async,
-  Signal
-} from '../../Utilities';
-import {
-  BaseImage
-} from '../BaseImage.js';
-import {
-  FileImage
-} from './FileImage.js';
+import { SystemDesc } from '../../BrowserDetection.js';
+import { Async, Signal } from '../../Utilities';
+import { BaseImage } from '../BaseImage.js';
+import { FileImage } from './FileImage.js';
 
 class HDRImageMixer extends BaseImage {
   constructor(name, stream = true) {
     super({
       type: 'FLOAT',
       format: 'RGB',
-      filter: SystemDesc.isMobileDevice ? 'NEAREST' : 'LINEAR'
+      filter: SystemDesc.isMobileDevice ? 'NEAREST' : 'LINEAR',
     });
 
     this.__name = name;
@@ -40,8 +31,7 @@ class HDRImageMixer extends BaseImage {
   }
 
   setURLs(urls) {
-
-    let async = new Async();
+    const async = new Async();
     async.incAsyncCount(urls.length);
     async.ready.connect(() => {
       if (!this.__loaded) {
@@ -51,8 +41,8 @@ class HDRImageMixer extends BaseImage {
         this.updated.emit();
       }
     }, this);
-    for (let fileUrl of urls) {
-      let subImage = new FileImage(undefined, fileUrl);
+    for (const fileUrl of urls) {
+      const subImage = new FileImage(undefined, fileUrl);
       subImage.loaded.connect(async.decAsyncCount);
       subImage.updated.connect(this.updated.emit);
       this.__subImages.push(subImage);
@@ -79,7 +69,7 @@ class HDRImageMixer extends BaseImage {
   }
 
   getParams() {
-    let params = super.getParams();
+    const params = super.getParams();
     if (this.__loaded) {
       params.subImages = this.__subImages;
       params.weights = this.__weights;
@@ -87,16 +77,10 @@ class HDRImageMixer extends BaseImage {
     return params;
   }
 
-  fromJSON(json, context, flags) {
+  fromJSON(json, context, flags) {}
 
-  }
+  toJSON(context, flags) {}
+}
 
-  toJSON(context, flags) {
-
-  }
-};
-
-export {
-  HDRImageMixer
-};
-//export default HDRImageMixer;
+export { HDRImageMixer };
+// export default HDRImageMixer;

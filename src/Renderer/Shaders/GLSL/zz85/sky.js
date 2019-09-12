@@ -12,10 +12,11 @@
  * http://blenderartists.org/forum/showthread.php?245954-preethams-sky-impementation-HDR
  *
  * Three.js integration by zz85 http://twitter.com/blurspline
-*/
+ */
 
-
-shaderLibrary.setShaderModule('zz85/skyVertex.glsl', `
+shaderLibrary.setShaderModule(
+  'zz85/skyVertex.glsl',
+  `
 
 uniform vec3 sunPosition;
 uniform float rayleigh;
@@ -89,9 +90,12 @@ void main() {
     vBetaM = totalMie( turbidity ) * mieCoefficient;
 
 }
-`);
+`
+);
 
-shaderLibrary.setShaderModule('zz85/skyFragment.glsl', `
+shaderLibrary.setShaderModule(
+  'zz85/skyFragment.glsl',
+  `
 
 varying vec3 vWorldPosition;
 varying vec3 vSunDirection;
@@ -202,4 +206,5 @@ vec3 atmosphere(
     vec3 retColor = pow( color, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );
 
     return retColor;
-}`);
+}`
+);

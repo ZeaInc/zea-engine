@@ -1,21 +1,13 @@
-import {
-  Vec4
-} from '../Math';
-import {
-  Signal
-} from '../Utilities';
-import {
-  BaseItem
-} from './BaseItem.js';
+import { Vec4 } from '../Math';
+import { Signal } from '../Utilities';
+import { BaseItem } from './BaseItem.js';
 
 import {
   Parameter,
   BooleanParameter,
   NumberParameter,
-  ParameterSet
+  ParameterSet,
 } from './Parameters';
-
-
 
 class BaseImage extends BaseItem {
   constructor(name, params = {}) {
@@ -65,12 +57,9 @@ class BaseImage extends BaseItem {
       height: this.height,
       flipY: this.getParameter('FlipY').getValue(),
       invert: this.getParameter('Invert').getValue(),
-      alphaFromLuminance: this.getParameter('AlphaFromLuminance').getValue()
-    }
+      alphaFromLuminance: this.getParameter('AlphaFromLuminance').getValue(),
+    };
   }
+}
 
-};
-
-export {
-  BaseImage
-};
+export { BaseImage };

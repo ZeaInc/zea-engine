@@ -1,16 +1,8 @@
-import {
-  PassType
-} from './GLPass.js';
-import {
-  GLStandardGeomsPass
-} from './GLStandardGeomsPass.js';
-import {
-  GLRenderer
-} from '../GLRenderer.js';
+import { PassType } from './GLPass.js';
+import { GLStandardGeomsPass } from './GLStandardGeomsPass.js';
+import { GLRenderer } from '../GLRenderer.js';
 
-import {
-  GLGeomItemSet
-} from '../GLGeomItemSet.js';
+import { GLGeomItemSet } from '../GLGeomItemSet.js';
 
 class GLShaderMaterials {
   constructor(glshader, glgeomdatashader, glselectedshader) {
@@ -21,9 +13,8 @@ class GLShaderMaterials {
   }
 
   findMaterialGeomItemSets(glmaterial) {
-    for (let matGeomItemSet of this.glmaterialGeomItemSets) {
-      if (matGeomItemSet.glmaterial == glmaterial)
-        return matGeomItemSet;
+    for (const matGeomItemSet of this.glmaterialGeomItemSets) {
+      if (matGeomItemSet.glmaterial == glmaterial) return matGeomItemSet;
     }
   }
 
@@ -47,7 +38,7 @@ class GLMaterialGeomItemSets {
     this.geomItemSets = [];
     this.drawCount = 0;
     this.visibleInGeomDataBuffer = glmaterial.getMaterial().visibleInGeomDataBuffer;
-    this.__drawCountChanged = this.__drawCountChanged.bind(this)
+    this.__drawCountChanged = this.__drawCountChanged.bind(this);
   }
 
   getGLMaterial() {
@@ -64,11 +55,11 @@ class GLMaterialGeomItemSets {
 
       this.drawCount += geomItemSet.drawCount;
       geomItemSet.drawCountChanged.connect(this.__drawCountChanged);
-      geomItemSet.destructing.connect(()=>{
+      geomItemSet.destructing.connect(() => {
         this.removeGeomItemSet(geomItemSet);
       });
     } else {
-      console.warn("geomItemSet already added to GLMaterialGeomItemSets")
+      console.warn('geomItemSet already added to GLMaterialGeomItemSets');
     }
   }
 
@@ -79,9 +70,8 @@ class GLMaterialGeomItemSets {
   }
 
   findGeomItemSet(glgeom) {
-    for (let geomItemSet of this.geomItemSets) {
-      if (geomItemSet.getGLGeom() == glgeom)
-        return geomItemSet;
+    for (const geomItemSet of this.geomItemSets) {
+      if (geomItemSet.getGLGeom() == glgeom) return geomItemSet;
     }
     return null;
   }
@@ -89,8 +79,7 @@ class GLMaterialGeomItemSets {
   getGeomItemSets() {
     return this.geomItemSets;
   }
-};
-
+}
 
 class GLOpaqueGeomsPass extends GLStandardGeomsPass {
   constructor() {
@@ -106,15 +95,13 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
     super.init(renderer, passIndex);
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Bind to Render Tree
   filterGeomItem(geomItem) {
     const shaderClass = geomItem.getMaterial().getShaderClass();
     if (shaderClass) {
-      if (shaderClass.isTransparent())
-        return false;
-      if (shaderClass.isOverlay())
-        return false;
+      if (shaderClass.isTransparent()) return false;
+      if (shaderClass.isOverlay()) return false;
       return true;
     }
     return false;
@@ -122,22 +109,34 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   addGeomItem(geomItem) {
     const material = geomItem.getMaterial();
-    let glshader, glgeomdatashader, glselectedshader;
+    let glshader;
+    let glgeomdatashader;
+    let glselectedshader;
     glshader = this.__renderer.getOrCreateShader(material.getShaderName());
     if (glshader.constructor.getGeomDataShaderName())
-      glgeomdatashader = this.__renderer.getOrCreateShader(glshader.constructor.getGeomDataShaderName());
+      glgeomdatashader = this.__renderer.getOrCreateShader(
+        glshader.constructor.getGeomDataShaderName()
+      );
     if (glshader.constructor.getSelectedShaderName())
-      glselectedshader = this.__renderer.getOrCreateShader(glshader.constructor.getSelectedShaderName());
+      glselectedshader = this.__renderer.getOrCreateShader(
+        glshader.constructor.getSelectedShaderName()
+      );
     const glmaterial = this.addMaterial(material);
     const glgeomItem = super.addGeomItem(geomItem);
 
     let glshaderMaterials = this.__glshadermaterials[glshader.getName()];
     if (!glshaderMaterials) {
-      glshaderMaterials = new GLShaderMaterials(glshader, glgeomdatashader, glselectedshader);
+      glshaderMaterials = new GLShaderMaterials(
+        glshader,
+        glgeomdatashader,
+        glselectedshader
+      );
       this.__glshadermaterials[material.getShaderName()] = glshaderMaterials;
     }
 
-    let glmaterialGeomItemSets = glshaderMaterials.findMaterialGeomItemSets(glmaterial);
+    let glmaterialGeomItemSets = glshaderMaterials.findMaterialGeomItemSets(
+      glmaterial
+    );
     if (!glmaterialGeomItemSets) {
       glmaterialGeomItemSets = new GLMaterialGeomItemSets(glmaterial);
       glshaderMaterials.addMaterialGeomItemSets(glmaterialGeomItemSets);
@@ -157,18 +156,16 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
   }
 
   removeGeomItem(geomItem) {
-
     const glgeomItem = super.removeGeomItem(geomItem);
-    if (!glgeomItem)
-      return false;
+    if (!glgeomItem) return false;
 
     const geomItemSet = geomItem.getMetadata('geomItemSet');
     if (geomItemSet) {
-      // Note: for now leave the material and geom in place. Multiple 
+      // Note: for now leave the material and geom in place. Multiple
       // GeomItems can reference a given material/geom, so we simply wait
-      // for them to be destroyed. 
+      // for them to be destroyed.
       geomItemSet.removeGeomItem(glgeomItem);
-      geomItem.deleteMetadata('geomItemSet')
+      geomItem.deleteMetadata('geomItemSet');
     }
 
     return true;
@@ -176,28 +173,37 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   removeMaterial(material) {
     const glshaderMaterials = this.__glshadermaterials[material.hash];
-    if (!glshaderMaterials || glshaderMaterials != material.getMetadata('glshaderMaterials')) {
-      console.warn("Material not found in pass");
+    if (
+      !glshaderMaterials ||
+      glshaderMaterials != material.getMetadata('glshaderMaterials')
+    ) {
+      console.warn('Material not found in pass');
       return;
     }
 
-    const glmaterialGeomItemSets = material.getMetadata('glmaterialGeomItemSets');
+    const glmaterialGeomItemSets = material.getMetadata(
+      'glmaterialGeomItemSets'
+    );
     glshaderMaterials.removeMaterialGeomItemSets(glmaterialGeomItemSets);
-  };
+  }
 
   __traverseTreeAndDraw(renderstate) {
-
-    for (let shaderName in this.__glshadermaterials) {
+    for (const shaderName in this.__glshadermaterials) {
       const glshaderMaterials = this.__glshadermaterials[shaderName];
       const glshader = glshaderMaterials.glshader;
       if (this.bindShader(renderstate, glshader)) {
         const glmaterialGeomItemSets = glshaderMaterials.getMaterialGeomItemSets();
-        for (let glmaterialGeomItemSet of glmaterialGeomItemSets) {
-          if (glmaterialGeomItemSet.drawCount == 0)
-            continue;
-          if (this.bindMaterial(renderstate, glmaterialGeomItemSet.getGLMaterial(), true)) {
+        for (const glmaterialGeomItemSet of glmaterialGeomItemSets) {
+          if (glmaterialGeomItemSet.drawCount == 0) continue;
+          if (
+            this.bindMaterial(
+              renderstate,
+              glmaterialGeomItemSet.getGLMaterial(),
+              true
+            )
+          ) {
             const gldrawitemsets = glmaterialGeomItemSet.getGeomItemSets();
-            for (let gldrawitemset of gldrawitemsets) {
+            for (const gldrawitemset of gldrawitemsets) {
               gldrawitemset.draw(renderstate);
             }
           }
@@ -212,15 +218,15 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
   }
 
   draw(renderstate) {
-
-    if (this.newItemsReadyForLoading())
-      this.finalize();
+    if (this.newItemsReadyForLoading()) this.finalize();
 
     const gl = this.__gl;
     gl.disable(gl.BLEND);
 
-    if(true)// 2-sided rendering.
-      gl.disable(gl.CULL_FACE); // 2-sided rendering.
+    if (true)
+      // 2-sided rendering.
+      gl.disable(gl.CULL_FACE);
+    // 2-sided rendering.
     else {
       gl.enable(gl.CULL_FACE);
       gl.cullFace(gl.BACK);
@@ -234,27 +240,24 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
   }
 
   drawHighlightedGeoms(renderstate) {
-
     const gl = this.__gl;
     gl.disable(gl.CULL_FACE); // 2-sided rendering.
 
     // for (let glshaderMaterials of this.__glshadermaterials) {
-    for (let shaderName in this.__glshadermaterials) {
+    for (const shaderName in this.__glshadermaterials) {
       const glshaderMaterials = this.__glshadermaterials[shaderName];
-      if (!glshaderMaterials.glselectedshader)
-        continue
+      if (!glshaderMaterials.glselectedshader) continue;
       if (!this.bindShader(renderstate, glshaderMaterials.glselectedshader))
-        continue
+        continue;
 
       const glmaterialGeomItemSets = glshaderMaterials.getMaterialGeomItemSets();
-      for (let glmaterialGeomItemSet of glmaterialGeomItemSets) {
+      for (const glmaterialGeomItemSet of glmaterialGeomItemSets) {
         const gldrawitemsets = glmaterialGeomItemSet.getGeomItemSets();
-        for (let gldrawitemset of gldrawitemsets) {
+        for (const gldrawitemset of gldrawitemsets) {
           gldrawitemset.drawHighlighted(renderstate);
         }
       }
     }
-
 
     if (renderstate.glgeom) {
       renderstate.glgeom.unbind(renderstate);
@@ -262,8 +265,8 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
   }
 
   getGeomItemAndDist(geomData) {
-
-    let itemId, dist;
+    let itemId;
+    let dist;
     const gl = this.__gl;
     if (gl.floatGeomBuffer) {
       itemId = Math.round(geomData[1]);
@@ -277,15 +280,13 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
     if (glgeomItem) {
       return {
         geomItem: glgeomItem.getGeomItem(),
-        dist
-      }
+        dist,
+      };
     }
   }
 
   drawGeomData(renderstate) {
-
-    if (this.newItemsReadyForLoading())
-      this.finalize();
+    if (this.newItemsReadyForLoading()) this.finalize();
 
     const gl = this.__gl;
     gl.disable(gl.BLEND);
@@ -294,21 +295,20 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
     gl.depthFunc(gl.LESS);
     gl.depthMask(true);
 
-
     // for (let glshaderMaterials of this.__glshadermaterials) {
-    for (let shaderName in this.__glshadermaterials) {
+    for (const shaderName in this.__glshadermaterials) {
       const glshaderMaterials = this.__glshadermaterials[shaderName];
-      if (!glshaderMaterials.glgeomdatashader)
-        continue;
+      if (!glshaderMaterials.glgeomdatashader) continue;
       if (!this.bindShader(renderstate, glshaderMaterials.glgeomdatashader))
-        continue
+        continue;
 
       {
         const unif = renderstate.unifs.floatGeomBuffer;
         if (unif) {
           gl.uniform1i(unif.location, gl.floatGeomBuffer ? 1 : 0);
         }
-      } {
+      }
+      {
         const unif = renderstate.unifs.passId;
         if (unif) {
           gl.uniform1i(unif.location, this.__passIndex);
@@ -316,15 +316,24 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
       }
 
       const glmaterialGeomItemSets = glshaderMaterials.getMaterialGeomItemSets();
-      for (let glmaterialGeomItemSet of glmaterialGeomItemSets) {
-        if (glmaterialGeomItemSet.drawCount == 0 || !glmaterialGeomItemSet.visibleInGeomDataBuffer)
+      for (const glmaterialGeomItemSet of glmaterialGeomItemSets) {
+        if (
+          glmaterialGeomItemSet.drawCount == 0 ||
+          !glmaterialGeomItemSet.visibleInGeomDataBuffer
+        )
           continue;
         // Sometimes materials contain params required for rendering.
         // e.g. PointSize.
-        // Note: avoid generating warnings for missing uniforms. 
-        if (this.bindMaterial(renderstate, glmaterialGeomItemSet.getGLMaterial(), false)) {
+        // Note: avoid generating warnings for missing uniforms.
+        if (
+          this.bindMaterial(
+            renderstate,
+            glmaterialGeomItemSet.getGLMaterial(),
+            false
+          )
+        ) {
           const gldrawitemsets = glmaterialGeomItemSet.getGeomItemSets();
-          for (let gldrawitemset of gldrawitemsets) {
+          for (const gldrawitemset of gldrawitemsets) {
             gldrawitemset.draw(renderstate);
           }
         }
@@ -335,10 +344,8 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
       renderstate.glgeom.unbind(renderstate);
     }
   }
-};
+}
 
 GLRenderer.registerPass(GLOpaqueGeomsPass, PassType.OPAQUE);
 
-export {
-  GLOpaqueGeomsPass
-};
+export { GLOpaqueGeomsPass };

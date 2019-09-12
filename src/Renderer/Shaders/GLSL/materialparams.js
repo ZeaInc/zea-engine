@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('materialparams.glsl', `
+shaderLibrary.setShaderModule(
+  'materialparams.glsl',
+  `
 
 ////////////////////////
 // Material Param Helpers.
@@ -33,4 +35,5 @@ float getLuminanceParamValue(float value, sampler2D tex, int texType, vec2 texCo
     else
         return luminanceFromRGB(texture2D(tex, texCoord).rgb);
 }
-`);
+`
+);

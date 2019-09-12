@@ -1,6 +1,8 @@
-import { shaderLibrary }  from '../ShaderLibrary';
+import { shaderLibrary } from '../ShaderLibrary';
 
-shaderLibrary.setShaderModule('pragmatic-pbr/tonemap-uncharted2.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/tonemap-uncharted2.glsl',
+  `
 
 float A = 0.15;
 float B = 0.50;
@@ -23,4 +25,5 @@ vec3 tonemapUncharted2(vec3 color) {
     return curr * whiteScale;
 }
 
-`);
+`
+);

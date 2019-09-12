@@ -1,6 +1,8 @@
-import { shaderLibrary }  from '../../../ShaderLibrary.js';
+import { shaderLibrary } from '../../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('pragmatic-pbr/tonemap-filmic.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/tonemap-filmic.glsl',
+  `
 
 //Based on Filmic Tonemapping Operators http://filmicgames.com/archives/75
 vec3 tonemapFilmic(vec3 color) {
@@ -8,4 +10,5 @@ vec3 tonemapFilmic(vec3 color) {
     return (x * (6.2 * x + 0.5)) / (x * (6.2 * x + 1.7) + 0.06);
 }
 
-`);
+`
+);

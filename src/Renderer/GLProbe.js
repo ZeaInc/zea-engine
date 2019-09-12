@@ -1,40 +1,19 @@
-import {
-  Vec3,
-  hammersley
-} from '../Math';
-import {
-  GLShader
-} from './GLShader.js';
-import {
-  GLTexture2D
-} from './GLTexture2D.js';
-import {
-  GLHDRImage
-} from './GLHDRImage.js';
-import {
-  ImageAtlas
-} from './ImageAtlas.js';
-import {
-  ConvolverShader
-} from './Shaders/ConvolverShader.js';
-import {
-  GLFbo
-} from './GLFbo.js';
-import {
-  ImagePyramid
-} from './ImagePyramid.js';
-import {
-  generateShaderGeomBinding
-} from './GeomShaderBinding.js';
-
+import { Vec3, hammersley } from '../Math';
+import { GLShader } from './GLShader.js';
+import { GLTexture2D } from './GLTexture2D.js';
+import { GLHDRImage } from './GLHDRImage.js';
+import { ImageAtlas } from './ImageAtlas.js';
+import { ConvolverShader } from './Shaders/ConvolverShader.js';
+import { GLFbo } from './GLFbo.js';
+import { ImagePyramid } from './ImagePyramid.js';
+import { generateShaderGeomBinding } from './GeomShaderBinding.js';
 
 class GLProbe extends ImageAtlas {
   constructor(gl, name) {
     super(gl, name);
     this.__gl = gl;
 
-    if (!gl.__quadVertexIdsBuffer)
-      gl.setupInstancedQuad();
+    if (!gl.__quadVertexIdsBuffer) gl.setupInstancedQuad();
 
     this.__convolved = false;
     this.__fbos = [];
@@ -43,7 +22,6 @@ class GLProbe extends ImageAtlas {
   generateHammersleySamples(numSamples) {
     const gl = this.__gl;
     if (!gl['Hammersley' + numSamples]) {
-
       const dataArray = new Float32Array(numSamples * 3);
       for (let i = 0; i < numSamples; i++) {
         const Xi = hammersley(i, numSamples);
@@ -59,7 +37,7 @@ class GLProbe extends ImageAtlas {
         width: numSamples,
         height: 1,
         data: dataArray,
-        mipMapped: false
+        mipMapped: false,
       });
     }
     return gl['Hammersley' + numSamples];
@@ -86,7 +64,7 @@ class GLProbe extends ImageAtlas {
 
       let currRez = [srcGLTex.width / 2, srcGLTex.height / 2];
 
-      const levels = 6; //this.__lodPyramid.numSubImages();
+      const levels = 6; // this.__lodPyramid.numSubImages();
       for (let i = 0; i < levels; i++) {
         const level = new GLTexture2D(gl, {
           format: 'RGBA',
@@ -94,12 +72,12 @@ class GLProbe extends ImageAtlas {
           filter: 'LINEAR',
           wrap: 'CLAMP_TO_EDGE',
           width: currRez[0],
-          height: currRez[1]
+          height: currRez[1],
         });
         this.addSubImage(level);
 
         const fbo = new GLFbo(gl, level);
-        fbo.setClearColor([0, 1, 0, 0])
+        fbo.setClearColor([0, 1, 0, 0]);
         this.__fbos.push(fbo);
 
         currRez = [currRez[0] / 2, currRez[1] / 2];
@@ -108,13 +86,23 @@ class GLProbe extends ImageAtlas {
       this.generateAtlasLayout();
 
       this.__convolverShader = new ConvolverShader(gl);
-      const covolverShaderComp = this.__convolverShader.compileForTarget('GLProbe',  Object.assign({
-        repl: {
-          "NUM_SAMPLES": numSamples
-        }
-      }, gl.shaderopts));
-      this.__covolverShaderBinding = generateShaderGeomBinding(gl, covolverShaderComp.attrs, gl.__quadattrbuffers, gl.__quadIndexBuffer);
-
+      const covolverShaderComp = this.__convolverShader.compileForTarget(
+        'GLProbe',
+        Object.assign(
+          {
+            repl: {
+              NUM_SAMPLES: numSamples,
+            },
+          },
+          gl.shaderopts
+        )
+      );
+      this.__covolverShaderBinding = generateShaderGeomBinding(
+        gl,
+        covolverShaderComp.attrs,
+        gl.__quadattrbuffers,
+        gl.__quadIndexBuffer
+      );
     }
 
     // TODO: Refactor this code.
@@ -127,7 +115,7 @@ class GLProbe extends ImageAtlas {
     for (let i = 0; i < this.__fbos.length; i++) {
       this.__fbos[i].bindAndClear();
 
-      // Note: we should not need to bind the texture every iteration. 
+      // Note: we should not need to bind the texture every iteration.
       this.__lodPyramid.bindToUniform(renderstate, unifs.envMapPyramid);
       if ('hammersleyMap' in unifs) {
         hammersleyTexture.bindToUniform(renderstate, unifs.hammersleyMap);
@@ -135,10 +123,9 @@ class GLProbe extends ImageAtlas {
 
       // Set the roughness.
       if ('roughness' in unifs) {
-        const roughness = (i+1) / this.__fbos.length;
+        const roughness = (i + 1) / this.__fbos.length;
         gl.uniform1f(unifs.roughness.location, roughness);
       }
-
 
       gl.drawQuad();
     }
@@ -149,23 +136,19 @@ class GLProbe extends ImageAtlas {
   }
 
   bindProbeToUniform(renderstate, unif) {
-    //this.__lodPyramid.getSubImage(3).bind(renderstate, unif);
-    if (this.__convolved)
-      super.bindToUniform(renderstate, unif);
+    // this.__lodPyramid.getSubImage(3).bind(renderstate, unif);
+    if (this.__convolved) super.bindToUniform(renderstate, unif);
   }
 
   destroy() {
     super.destroy();
     this.__convolverShader.destroy();
 
-    for (let fbo of this.__fbos) {
+    for (const fbo of this.__fbos) {
       fbo.destroy();
     }
   }
-};
+}
 
-
-export {
-  GLProbe
-};
+export { GLProbe };
 // export default GLProbe;

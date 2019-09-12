@@ -1,33 +1,29 @@
-
-import {
-  Operator,
-  OperatorOutput
-} from './Operator.js';
+import { Operator, OperatorOutput } from './Operator.js';
 import {
   ValueGetMode,
   Parameter,
   NumberParameter,
   StructParameter,
-  ListParameter
+  ListParameter,
 } from '../Parameters';
 
-import {
-  sgFactory
-} from '../SGFactory.js';
+import { sgFactory } from '../SGFactory.js';
 
 class RouterOperator extends Operator {
   constructor(name) {
     super(name);
 
     this.__inputParam = this.addParameter(new NumberParameter('Input'));
-    this.__routesParam = this.addParameter(new ListParameter('Routes', NumberParameter));
+    this.__routesParam = this.addParameter(
+      new ListParameter('Routes', NumberParameter)
+    );
     this.__routesParam.elementAdded.connect((value, index) => {
-      value.setValue(1.0)
+      value.setValue(1.0);
       this.addOutput(new OperatorOutput('Output'));
-    })
+    });
     this.__routesParam.elementRemoved.connect((value, index) => {
       this.removeOutput(this.getOutput(index));
-    })
+    });
   }
 
   evaluate() {
@@ -36,12 +32,14 @@ class RouterOperator extends Operator {
     let i = this.__outputs.length;
     while (i--) {
       const output = this.__outputs[i];
-      output.setValue(input * routes[i].getValue(ValueGetMode.OPERATOR_GETVALUE));
+      output.setValue(
+        input * routes[i].getValue(ValueGetMode.OPERATOR_GETVALUE)
+      );
     }
-    this.postEval.emit(input)
+    this.postEval.emit(input);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
   toJSON(context, flags) {
@@ -52,16 +50,11 @@ class RouterOperator extends Operator {
     super.fromJSON(j, context, flags);
   }
 
-
-  destroy(){
+  destroy() {
     super.destroy();
-  };
-};
-
+  }
+}
 
 sgFactory.registerClass('RouterOperator', RouterOperator);
 
-
-export {
-  RouterOperator
-};
+export { RouterOperator };

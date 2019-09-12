@@ -5,35 +5,34 @@ class EulerAngles extends AttrValue {
   constructor(x = 0, y = 0, z = 0, order = 0) {
     super();
 
-    if(!isNaN(order))
-      this.order = order;
+    if (!isNaN(order)) this.order = order;
     else {
       switch (order) {
-      case 'XYZ':
-        this.order = 0;
-        break;
-      case  'YZX':
-        this.order = 1;
-        break;
-      case  'ZXY':
-        this.order = 2;
-        break;
-      case  'XZY':
-        this.order = 3;
-        break;
-      case  'ZYX':
-        this.order = 4;
-        break;
-      case  'YXZ':
-        this.order = 5;
-        break;
-      default:
-        throw ("Invalid Euler Angles Order:" + order);
+        case 'XYZ':
+          this.order = 0;
+          break;
+        case 'YZX':
+          this.order = 1;
+          break;
+        case 'ZXY':
+          this.order = 2;
+          break;
+        case 'XZY':
+          this.order = 3;
+          break;
+        case 'ZYX':
+          this.order = 4;
+          break;
+        case 'YXZ':
+          this.order = 5;
+          break;
+        default:
+          throw 'Invalid Euler Angles Order:' + order;
       }
     }
     if (x instanceof ArrayBuffer) {
-      let buffer = x;
-      let byteOffset = y;
+      const buffer = x;
+      const byteOffset = y;
       this.__data = new Float32Array(buffer, byteOffset, 4);
     } else {
       this.__data = new Float32Array(3);
@@ -72,10 +71,8 @@ class EulerAngles extends AttrValue {
     this.__data[1] = y;
     this.__data[2] = z;
   }
-};
+}
 
 typeRegistry.registerType('EulerAngles', EulerAngles);
 
-export {
-  EulerAngles
-};
+export { EulerAngles };

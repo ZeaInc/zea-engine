@@ -1,11 +1,8 @@
 // Taken from here: https://github.com/jakesgordon/bin-packing/blob/master/js/packer.growing.js
 
-import {
-  Signal
-} from './Signal'
+import { Signal } from './Signal';
 
-
-/******************************************************************************
+/** ****************************************************************************
 
 This is a binary tree based bin packing algorithm that is more complex than
 the simple Packer (packer.js). Instead of starting off with a fixed width and
@@ -70,7 +67,7 @@ class GrowingPacker {
       x: 0,
       y: 0,
       w: w,
-      h: h
+      h: h,
     };
 
     this.resized = new Signal();
@@ -78,61 +75,54 @@ class GrowingPacker {
 
   fit(blocks) {
     const len = blocks.length;
-    if (len == 0)
-      return;
+    if (len == 0) return;
     let resized = false;
-    if (this.root.w < blocks[0].w){
+    if (this.root.w < blocks[0].w) {
       this.root.w = blocks[0].w;
       resized = true;
     }
-    if (this.root.h < blocks[0].h){
+    if (this.root.h < blocks[0].h) {
       this.root.h = blocks[0].h;
       resized = true;
     }
-    if(resized){
+    if (resized) {
       this.resized.emit(this.root.w, this.root.h);
     }
-    const eachBlock = (block) => {
-      block.fit = this.__addBlock(block)
-    }
-    blocks.forEach(eachBlock)
+    const eachBlock = block => {
+      block.fit = this.__addBlock(block);
+    };
+    blocks.forEach(eachBlock);
   }
 
   __addBlock(block) {
     const node = this.findNode(this.root, block.w, block.h);
-    if (node)
-      return this.splitNode(node, block.w, block.h);
-    else
-      return this.growNode(block.w, block.h);
+    if (node) return this.splitNode(node, block.w, block.h);
+    else return this.growNode(block.w, block.h);
   }
 
   addBlock(block) {
     let resized = false;
-    if (this.root.w < block.w){
+    if (this.root.w < block.w) {
       this.root.w = block.w;
       resized = true;
     }
-    if (this.root.h < block.h){
+    if (this.root.h < block.h) {
       this.root.h = block.h;
       resized = true;
     }
-    if(resized){
+    if (resized) {
       this.resized.emit(this.root.w, this.root.h);
     }
     const node = this.findNode(this.root, block.w, block.h);
-    if (node)
-      return this.splitNode(node, block.w, block.h);
-    else
-      return this.growNode(block.w, block.h);
+    if (node) return this.splitNode(node, block.w, block.h);
+    else return this.growNode(block.w, block.h);
   }
 
   findNode(root, w, h) {
     if (root.used)
       return this.findNode(root.right, w, h) || this.findNode(root.down, w, h);
-    else if ((w <= root.w) && (h <= root.h))
-      return root;
-    else
-      return null;
+    else if (w <= root.w && h <= root.h) return root;
+    else return null;
   }
 
   splitNode(node, w, h) {
@@ -141,34 +131,29 @@ class GrowingPacker {
       x: node.x,
       y: node.y + h,
       w: node.w,
-      h: node.h - h
+      h: node.h - h,
     };
     node.right = {
       x: node.x + w,
       y: node.y,
       w: node.w - w,
-      h: h
+      h: h,
     };
     return node;
   }
 
   growNode(w, h) {
-    const canGrowDown = (w <= this.root.w);
-    const canGrowRight = (h <= this.root.h);
+    const canGrowDown = w <= this.root.w;
+    const canGrowRight = h <= this.root.h;
 
-    const shouldGrowRight = canGrowRight && (this.root.h >= (this.root.w + w)); // attempt to keep square-ish by growing right when height is much greater than width
-    const shouldGrowDown = canGrowDown && (this.root.w >= (this.root.h + h)); // attempt to keep square-ish by growing down  when width  is much greater than height
+    const shouldGrowRight = canGrowRight && this.root.h >= this.root.w + w; // attempt to keep square-ish by growing right when height is much greater than width
+    const shouldGrowDown = canGrowDown && this.root.w >= this.root.h + h; // attempt to keep square-ish by growing down  when width  is much greater than height
 
-    if (shouldGrowRight)
-      return this.growRight(w, h);
-    else if (shouldGrowDown)
-      return this.growDown(w, h);
-    else if (canGrowRight)
-      return this.growRight(w, h);
-    else if (canGrowDown)
-      return this.growDown(w, h);
-    else
-      return null; // need to ensure sensible root starting size to avoid this happening
+    if (shouldGrowRight) return this.growRight(w, h);
+    else if (shouldGrowDown) return this.growDown(w, h);
+    else if (canGrowRight) return this.growRight(w, h);
+    else if (canGrowDown) return this.growDown(w, h);
+    else return null; // need to ensure sensible root starting size to avoid this happening
   }
 
   growRight(w, h) {
@@ -183,13 +168,12 @@ class GrowingPacker {
         x: this.root.w,
         y: 0,
         w: w,
-        h: this.root.h
-      }
+        h: this.root.h,
+      },
     };
     const node = this.findNode(this.root, w, h);
     let res;
-    if (node)
-      res = this.splitNode(node, w, h);
+    if (node) res = this.splitNode(node, w, h);
     this.resized.emit(this.root.w, this.root.h);
     return res;
   }
@@ -205,20 +189,16 @@ class GrowingPacker {
         x: 0,
         y: this.root.h,
         w: this.root.w,
-        h: h
+        h: h,
       },
-      right: this.root
+      right: this.root,
     };
     const node = this.findNode(this.root, w, h);
     let res;
-    if (node)
-      res = this.splitNode(node, w, h);
+    if (node) res = this.splitNode(node, w, h);
     this.resized.emit(this.root.w, this.root.h);
     return res;
   }
-
 }
 
-export {
-  GrowingPacker
-};
+export { GrowingPacker };

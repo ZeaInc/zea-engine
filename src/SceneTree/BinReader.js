@@ -1,11 +1,4 @@
-import {
-  Vec2,
-  Vec3,
-  Quat,
-  Color,
-  Box2,
-  Box3
-} from '../Math';
+import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math';
 
 class BinReader {
   constructor(data, byteOffset = 0, isMobileDevice = true) {
@@ -80,7 +73,6 @@ class BinReader {
     return result;
   }
 
-
   loadFloat32() {
     const result = this.__dataView.getFloat32(this.__byteOffset, true);
     this.__byteOffset += 4;
@@ -88,20 +80,17 @@ class BinReader {
   }
 
   loadUInt8Array(size = undefined, clone = false) {
-    if (size == undefined)
-      size = this.loadUInt32();
+    if (size == undefined) size = this.loadUInt32();
     const result = new Uint8Array(this.__data, this.__byteOffset, size);
     this.__byteOffset += size;
     const padd = this.__byteOffset % 4;
-    //this.readPadd();
+    // this.readPadd();
     return result;
   }
 
   loadUInt16Array(size = undefined, clone = false) {
-    if (size == undefined)
-      size = this.loadUInt32();
-    if (size == 0)
-      return new Uint16Array();
+    if (size == undefined) size = this.loadUInt32();
+    if (size == 0) return new Uint16Array();
     this.readPadd(2);
     let result;
     if (this.__isMobileDevice) {
@@ -114,15 +103,13 @@ class BinReader {
       result = new Uint16Array(this.__data, this.__byteOffset, size);
       this.__byteOffset += size * 2;
     }
-    //this.readPadd();
+    // this.readPadd();
     return result;
   }
 
   loadUInt32Array(size = undefined, clone = false) {
-    if (size == undefined)
-      size = this.loadUInt32();
-    if (size == 0)
-      return new Uint32Array();
+    if (size == undefined) size = this.loadUInt32();
+    if (size == 0) return new Uint32Array();
     this.readPadd(4);
     let result;
     if (this.__isMobileDevice) {
@@ -138,12 +125,9 @@ class BinReader {
     return result;
   }
 
-
   loadFloat32Array(size = undefined, clone = false) {
-    if (size == undefined)
-      size = this.loadUInt32();
-    if (size == 0)
-      return new Float32Array();
+    if (size == undefined) size = this.loadUInt32();
+    if (size == 0) return new Float32Array();
     this.readPadd(4);
     let result;
     if (this.__isMobileDevice) {
@@ -171,8 +155,8 @@ class BinReader {
 
   loadStrArray() {
     const size = this.loadUInt32();
-    
-    let result = [];
+
+    const result = [];
     for (let i = 0; i < size; i++) {
       result[i] = this.loadStr();
     }
@@ -273,12 +257,8 @@ class BinReader {
 
   readPadd(stride) {
     const padd = this.__byteOffset % stride;
-    if (padd != 0)
-      this.__byteOffset += stride - padd;
+    if (padd != 0) this.__byteOffset += stride - padd;
   }
+}
 
-};
-
-export {
-  BinReader
-};
+export { BinReader };

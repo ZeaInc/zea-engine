@@ -1,5 +1,6 @@
-
-shaderLibrary.setShaderModule('pragmatic-pbr/sky.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/sky.glsl',
+  `
 
 
 #ifdef GL_ES
@@ -251,4 +252,5 @@ vec2 SunAtTime(in float julianDay2000, in float latitude, in float longitude) {
     return vec2(sin(ha)>0.? azimuth : pi2-azimuth, elevation);
 }
 
-`);
+`
+);

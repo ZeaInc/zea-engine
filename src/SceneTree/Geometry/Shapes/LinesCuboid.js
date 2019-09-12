@@ -1,13 +1,9 @@
 import { Lines } from '../Lines.js';
-import {
-  NumberParameter
-} from '../../Parameters/NumberParameter.js';
-import {
-  sgFactory
-} from '../../SGFactory.js';
+import { NumberParameter } from '../../Parameters/NumberParameter.js';
+import { sgFactory } from '../../SGFactory.js';
 
 class LinesCuboid extends Lines {
-  constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero=false) {
+  constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero = false) {
     super();
 
     this.__x = this.addParameter(new NumberParameter('x', x));
@@ -16,7 +12,9 @@ class LinesCuboid extends Lines {
     this.__y.valueChanged.connect(this.__resize.bind(this));
     this.__z = this.addParameter(new NumberParameter('z', z));
     this.__z.valueChanged.connect(this.__resize.bind(this));
-    this.__baseZAtZero = this.addParameter(new NumberParameter('BaseZAtZero', baseZAtZero));
+    this.__baseZAtZero = this.addParameter(
+      new NumberParameter('BaseZAtZero', baseZAtZero)
+    );
     this.__baseZAtZero.valueChanged.connect(this.__rebuild.bind(this));
     this.__rebuild();
   }
@@ -49,36 +47,29 @@ class LinesCuboid extends Lines {
     const baseZAtZero = this.__baseZAtZero.getValue();
 
     let zoff = 0.5;
-    if(baseZAtZero)
-      zoff = 1.0
-    this.getVertex(0).set( 0.5 * x, -0.5 * y, zoff * z);
-    this.getVertex(1).set( 0.5 * x,  0.5 * y, zoff * z);
-    this.getVertex(2).set(-0.5 * x,  0.5 * y, zoff * z);
+    if (baseZAtZero) zoff = 1.0;
+    this.getVertex(0).set(0.5 * x, -0.5 * y, zoff * z);
+    this.getVertex(1).set(0.5 * x, 0.5 * y, zoff * z);
+    this.getVertex(2).set(-0.5 * x, 0.5 * y, zoff * z);
     this.getVertex(3).set(-0.5 * x, -0.5 * y, zoff * z);
 
     zoff = -0.5;
-    if(baseZAtZero)
-      zoff = 0.0
-    this.getVertex(4).set( 0.5 * x, -0.5 * y, zoff * z);
-    this.getVertex(5).set( 0.5 * x,  0.5 * y, zoff * z);
-    this.getVertex(6).set(-0.5 * x,  0.5 * y, zoff * z);
+    if (baseZAtZero) zoff = 0.0;
+    this.getVertex(4).set(0.5 * x, -0.5 * y, zoff * z);
+    this.getVertex(5).set(0.5 * x, 0.5 * y, zoff * z);
+    this.getVertex(6).set(-0.5 * x, 0.5 * y, zoff * z);
     this.getVertex(7).set(-0.5 * x, -0.5 * y, zoff * z);
 
-
     this.setBoundingBoxDirty();
-    if(mode != -1)
-      this.geomDataChanged.emit();
+    if (mode != -1) this.geomDataChanged.emit();
   }
-
 
   toJSON() {
-    let json = super.toJSON();
+    const json = super.toJSON();
     json['size'] = this.__size;
-    return json
+    return json;
   }
-};
+}
 
 sgFactory.registerClass('LinesCuboid', LinesCuboid);
-export {
-  LinesCuboid
-};
+export { LinesCuboid };

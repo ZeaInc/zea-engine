@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary';
 
-shaderLibrary.setShaderModule('utils/quadVertexFromID.glsl', `
+shaderLibrary.setShaderModule(
+  'utils/quadVertexFromID.glsl',
+  `
 
 attribute float vertexIDs;
 
@@ -16,4 +18,5 @@ vec2 getQuadVertexPositionFromID(){
         return vec2(0.5, 0.5);
     return vec2(0,0);
 }
-`);
+`
+);

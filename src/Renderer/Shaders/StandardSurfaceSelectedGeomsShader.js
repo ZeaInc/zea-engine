@@ -1,17 +1,17 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
-import {
-    sgFactory
-} from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
+import { sgFactory } from '../../SceneTree';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/modelMatrix.js';
 
 class StandardSurfaceSelectedGeomsShader extends GLShader {
-    constructor(gl, floatGeomBuffer) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('StandardSurfaceSelectedGeomsShader.vertexShader', `
+  constructor(gl, floatGeomBuffer) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'StandardSurfaceSelectedGeomsShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -32,9 +32,12 @@ void main(void) {
 
     v_highlightColor = getHighlightColor();
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('StandardSurfaceSelectedGeomsShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'StandardSurfaceSelectedGeomsShader.fragmentShader',
+      `
 precision highp float;
 
 varying vec4 v_highlightColor;
@@ -54,11 +57,13 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-    }
-};
+`
+    );
+  }
+}
 
-sgFactory.registerClass('StandardSurfaceSelectedGeomsShader', StandardSurfaceSelectedGeomsShader);
-export {
-    StandardSurfaceSelectedGeomsShader
-};
+sgFactory.registerClass(
+  'StandardSurfaceSelectedGeomsShader',
+  StandardSurfaceSelectedGeomsShader
+);
+export { StandardSurfaceSelectedGeomsShader };

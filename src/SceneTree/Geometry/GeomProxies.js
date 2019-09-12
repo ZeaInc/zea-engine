@@ -1,13 +1,6 @@
-
-import {
-  Signal
-} from '../../Utilities';
-import {
-  Box3
-} from '../../Math';
-import {
-  RefCounted
-} from '../RefCounted.js';
+import { Signal } from '../../Utilities';
+import { Box3 } from '../../Math';
+import { RefCounted } from '../RefCounted.js';
 
 class BaseProxy extends RefCounted {
   constructor(data) {
@@ -29,20 +22,19 @@ class BaseProxy extends RefCounted {
     return this.__buffers;
   }
 
-  freeBuffers(){
-
-    // Note: Explicitly transfer data to a web worker and then 
+  freeBuffers() {
+    // Note: Explicitly transfer data to a web worker and then
     // terminate the worker. (hacky way to free TypedArray memory explicitly)
-    let freeData = { attrBuffers:{} };
-    let transferables = [];
-    if(this.__buffers.indices){
+    const freeData = { attrBuffers: {} };
+    const transferables = [];
+    if (this.__buffers.indices) {
       transferables.push(this.__buffers.indices.buffer);
       freeData.indices = this.__buffers.indices;
       delete this.__buffers.indices;
     }
-    if(this.__buffers.attrBuffers){
-      for (let attrName in this.__buffers.attrBuffers) {
-        let attrData = this.__buffers.attrBuffers[attrName];
+    if (this.__buffers.attrBuffers) {
+      for (const attrName in this.__buffers.attrBuffers) {
+        const attrData = this.__buffers.attrBuffers[attrName];
         freeData.attrBuffers[attrName] = this.__buffers.attrBuffers[attrName];
         transferables.push(attrData.values.buffer);
         delete this.__buffers.attrBuffers[attrName];
@@ -51,15 +43,15 @@ class BaseProxy extends RefCounted {
     }
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Metadata
 
   getMetadata(key) {
-    return this.__metaData.get(key)
+    return this.__metaData.get(key);
   }
 
   hasMetadata(key) {
-    return this.__metaData.has(key)
+    return this.__metaData.has(key);
   }
 
   setMetadata(key, metaData) {
@@ -71,22 +63,18 @@ class PointsProxy extends BaseProxy {
   constructor(data) {
     super(data);
   }
-};
+}
 
 class LinesProxy extends BaseProxy {
   constructor(data) {
     super(data);
   }
-};
+}
 
 class MeshProxy extends BaseProxy {
   constructor(data) {
     super(data);
   }
-};
+}
 
-export {
-  PointsProxy,
-  LinesProxy,
-  MeshProxy
-};
+export { PointsProxy, LinesProxy, MeshProxy };

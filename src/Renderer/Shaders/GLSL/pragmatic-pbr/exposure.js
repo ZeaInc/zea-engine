@@ -1,6 +1,8 @@
-import { shaderLibrary }  from '../../../ShaderLibrary';
+import { shaderLibrary } from '../../../ShaderLibrary';
 
-shaderLibrary.setShaderModule('pragmatic-pbr/exposure.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/exposure.glsl',
+  `
 
 /*
 * Get an exposure using the Saturation-based Speed method.
@@ -37,4 +39,5 @@ float getStandardOutputBasedExposure(float aperture,
     return MIDDLE_GREY / l_avg;
 }
 
-`);
+`
+);

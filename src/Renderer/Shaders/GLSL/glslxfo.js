@@ -1,7 +1,9 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 import './glslutils.js';
 
-shaderLibrary.setShaderModule('glslxfo.glsl', `
+shaderLibrary.setShaderModule(
+  'glslxfo.glsl',
+  `
 
 <%include file="GLSLUtils.glsl"/>
 
@@ -52,4 +54,5 @@ vec3 quat_rotateVec3(vec4 quat, vec3 rhs) {
 }
 
 
-`);
+`
+);

@@ -1,16 +1,9 @@
-import {
-  Signal
-} from '../../Utilities';
-import {
-  sgFactory
-} from '../SGFactory';
-import {
-  Parameter,
-  ValueSetMode
-} from './Parameter.js';
+import { Signal } from '../../Utilities';
+import { sgFactory } from '../SGFactory';
+import { Parameter, ValueSetMode } from './Parameter.js';
 
 class StringParameter extends Parameter {
-  constructor(name, value='') {
+  constructor(name, value = '') {
     super(name, value, 'String');
     this.multiLine = false;
   }
@@ -30,14 +23,11 @@ class StringParameter extends Parameter {
 
   readBinary(reader, context) {
     const value = reader.loadStr();
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.setValue(value, ValueSetMode.DATA_LOAD);
   }
-};
-
+}
 
 sgFactory.registerClass('StringParameter', StringParameter);
 sgFactory.registerClass('Property_String', StringParameter);
 
-export {
-  StringParameter
-};
+export { StringParameter };

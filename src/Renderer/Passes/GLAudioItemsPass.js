@@ -1,35 +1,25 @@
-import {
-  Vec3
-} from '../../Math/Vec3';
-import {
-  GLPass,
-  PassType
-} from './GLPass.js';
-import {
-  GLRenderer
-} from '../GLRenderer.js';
+import { Vec3 } from '../../Math/Vec3';
+import { GLPass, PassType } from './GLPass.js';
+import { GLRenderer } from '../GLRenderer.js';
 
-import {
-  AudioItem,
-  GeomItem
-} from '../../SceneTree';
+import { AudioItem, GeomItem } from '../../SceneTree';
 
-
-const AudioContext = window.AudioContext // Default
-  ||
-  window.webkitAudioContext // Safari and old versions of Chrome
-  ||
+const AudioContext =
+  window.AudioContext || // Default
+  window.webkitAudioContext || // Safari and old versions of Chrome
   false;
 
 let audioCtx;
 if (AudioContext) {
   // Do whatever you want using the Web Audio API
-  audioCtx = new AudioContext;
+  audioCtx = new AudioContext();
   // ...
 } else {
   // Web Audio API is not supported
   // Alert the user
-  alert("Sorry, but the Web Audio API is not supported by your browser. Please, consider upgrading to the latest version or downloading Google Chrome or Mozilla Firefox");
+  alert(
+    'Sorry, but the Web Audio API is not supported by your browser. Please, consider upgrading to the latest version or downloading Google Chrome or Mozilla Firefox'
+  );
 }
 
 class GLAudioItemsPass extends GLPass {
@@ -38,64 +28,60 @@ class GLAudioItemsPass extends GLPass {
     this.__audioItems = [];
   }
 
-
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
 
-    if (!audioCtx)
-      return;
+    if (!audioCtx) return;
 
     this.__renderer.registerPass(
-      (treeItem) => {
+      treeItem => {
         if (treeItem instanceof AudioItem) {
-          treeItem.audioSourceCreated.connect((audioSource) => {
+          treeItem.audioSourceCreated.connect(audioSource => {
             this.addAudioSource(treeItem, audioSource, treeItem);
-          })
+          });
           return true;
         }
         if (treeItem instanceof GeomItem) {
           const material = treeItem.getMaterial();
           if (material) {
             const baseColorParam = material.getParameter('BaseColor');
-            if (baseColorParam && baseColorParam.getImage && baseColorParam.getImage()) {
+            if (
+              baseColorParam &&
+              baseColorParam.getImage &&
+              baseColorParam.getImage()
+            ) {
               const image = baseColorParam.getImage();
               image.loaded.connect(() => {
                 if (image.getAudioSource) {
                   const audioSource = image.getAudioSource();
-                  if (audioSource instanceof HTMLMediaElement || audioSource instanceof AudioBufferSourceNode)
+                  if (
+                    audioSource instanceof HTMLMediaElement ||
+                    audioSource instanceof AudioBufferSourceNode
+                  )
                     this.addAudioSource(treeItem, audioSource, image);
                 }
-              })
+              });
             }
           }
           // Let other passes handle this item.
           return false;
         }
       },
-      (treeItem) => {
-      }
+      treeItem => {}
     );
   }
 
-
-
   addAudioSource(treeItem, audioSource, parameterOwner) {
-
-    if (audioSource.addedToCollector)
-      return;
-
+    if (audioSource.addedToCollector) return;
 
     let source;
     if (audioSource instanceof HTMLMediaElement)
       source = audioCtx.createMediaElementSource(audioSource);
-    else if (audioSource instanceof AudioBufferSourceNode)
-      source = audioSource;
-    else
-      source = audioCtx.createMediaStreamSource(audioSource);
+    else if (audioSource instanceof AudioBufferSourceNode) source = audioSource;
+    else source = audioCtx.createMediaStreamSource(audioSource);
 
     const connectVLParamToAudioNodeParam = (vlParam, param) => {
-      if(!vlParam)
-        return;
+      if (!vlParam) return;
       // Note: setting the gain has no effect. Not sure what to do.
       // param.value = vlParam.getValue();
       param.setValueAtTime(vlParam.getValue(), 0);
@@ -104,7 +90,7 @@ class GLAudioItemsPass extends GLPass {
         // param.setTargetAtTime(vlParam.getValue(), audioCtx.currentTime);
         param.value = vlParam.getValue();
       });
-    }
+    };
 
     const gainNode = audioCtx.createGain();
     const gainParam = parameterOwner.getParameter('Gain');
@@ -114,7 +100,7 @@ class GLAudioItemsPass extends GLPass {
 
     source.connect(gainNode);
 
-    const spatializeParam = parameterOwner.getParameter('SpatializeAudio')
+    const spatializeParam = parameterOwner.getParameter('SpatializeAudio');
     if (spatializeParam && spatializeParam.getValue() == false) {
       source.connect(audioCtx.destination);
     } else {
@@ -124,15 +110,14 @@ class GLAudioItemsPass extends GLPass {
       source.connect(panner);
       panner.connect(audioCtx.destination);
 
-      const connectVLParamToAudioNode = (paramName) => {
-        const vlParam = parameterOwner.getParameter(paramName)
-        if(!vlParam)
-          return;
+      const connectVLParamToAudioNode = paramName => {
+        const vlParam = parameterOwner.getParameter(paramName);
+        if (!vlParam) return;
         panner[paramName] = vlParam.getValue();
         vlParam.valueChanged.connect(() => {
           panner[paramName] = vlParam.getValue();
         });
-      }
+      };
 
       // connectVLParamToAudioNode('refDistance');
       // connectVLParamToAudioNode('maxDistance');
@@ -141,21 +126,17 @@ class GLAudioItemsPass extends GLPass {
       connectVLParamToAudioNode('coneOuterAngle');
       connectVLParamToAudioNode('coneOuterGain');
 
-
       const updatePannerNodePosition = () => {
-
         // Note: the new audio params are reccomended to be used, but cause audio stutter.
         // ITs as if when we set the value, it is set for only a brief moment in time, and
-        // then reverts back to the previous value. 
+        // then reverts back to the previous value.
         // Note: I downloaded and messed with the 'RoomOfMetal' demo here, and found
         // that I could not move the listener using the reccommended approach (setting values on the AudioParams.)
         // https://developer.mozilla.org/en-US/docs/Web/API/AudioListener/setPosition
 
         let xfo;
-        if (treeItem instanceof GeomItem)
-          xfo = treeItem.getGeomXfo();
-        else
-          xfo = treeItem.getGlobalXfo();
+        if (treeItem instanceof GeomItem) xfo = treeItem.getGeomXfo();
+        else xfo = treeItem.getGlobalXfo();
         // if (panner.positionX) {
         //     // panner.positionX.setTargetAtTime(xfo.tr.x, audioCtx.currentTime);
         //     // panner.positionY.setTargetAtTime(xfo.tr.y, audioCtx.currentTime);
@@ -179,35 +160,31 @@ class GLAudioItemsPass extends GLPass {
         panner.setOrientation(dir.x, dir.y, dir.z);
         // }
 
-        // TODO: 
+        // TODO:
         // setVelocity()
-      }
+      };
       updatePannerNodePosition();
-      treeItem.globalXfoChanged.connect((changeType) => {
+      treeItem.globalXfoChanged.connect(changeType => {
         updatePannerNodePosition();
       });
     }
-
-
 
     audioSource.addedToCollector = true;
     this.__audioItems.push({
       treeItem,
       audioSource,
-      parameterOwner
+      parameterOwner,
     });
 
     this.updated.emit();
   }
 
   __updateListenerPosition(viewXfo) {
-    if (!audioCtx)
-      return;
-
+    if (!audioCtx) return;
 
     // Note: the new audio params are reccomended to be used, but cause audio stutter.
     // ITs as if when we set the value, it is set for only a brief moment in time, and
-    // then reverts back to the previous value. 
+    // then reverts back to the previous value.
     // Note: I downloaded and messed with the 'RoomOfMetal' demo here, and found
     // that I could not move the listener using the reccommended approach (setting values on the AudioParams.)
     // https://developer.mozilla.org/en-US/docs/Web/API/AudioListener/setPosition
@@ -244,21 +221,13 @@ class GLAudioItemsPass extends GLPass {
     // }
   }
 
-
   draw(renderstate) {
-    if (this.__audioItems.length == 0)
-      return;
-    this.__updateListenerPosition(renderstate.viewXfo)
+    if (this.__audioItems.length == 0) return;
+    this.__updateListenerPosition(renderstate.viewXfo);
   }
-
-
-};
-
+}
 
 GLRenderer.registerPass(GLAudioItemsPass, PassType.OVERLAY);
 
-export {
-  GLAudioItemsPass,
-  audioCtx
-};
+export { GLAudioItemsPass, audioCtx };
 // export default GLAudioItemsPass;

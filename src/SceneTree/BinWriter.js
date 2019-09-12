@@ -1,14 +1,7 @@
-import {
-  Vec2,
-  Vec3,
-  Quat,
-  Color,
-  Box2,
-  Box3
-} from '../Math';
+import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math';
 
 class BinWriter {
-  constructor(dataSize=0) {
+  constructor(dataSize = 0) {
     this.__data = new ArrayBuffer(dataSize);
     this.__byteOffset = 0;
     this.__reserved = dataSize;
@@ -27,10 +20,9 @@ class BinWriter {
   }
 
   getBuffer() {
-    if(this.__data.byteLength == this.__byteOffset) {
+    if (this.__data.byteLength == this.__byteOffset) {
       return this.__data;
-    }
-    else {
+    } else {
       const unit8Array = new Uint8Array(this.__data);
       return unit8Array.slice(0, this.__byteOffset).buffer;
     }
@@ -49,13 +41,13 @@ class BinWriter {
 
   __reserve(offset) {
     if (this.__byteOffset + offset > this.__reserved) {
-      this.__grow()
+      this.__grow();
     }
   }
 
   __offset(byteCount) {
     this.__byteOffset += byteCount;
-    if(this.__byteOffset > this.__reserved) {
+    if (this.__byteOffset > this.__reserved) {
       this.__grow();
     }
   }
@@ -98,19 +90,16 @@ class BinWriter {
   writeUInt8Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
     this.__reserve(count + (writeSize ? 4 : 0));
-    if (writeSize)
-      this.writeUInt32(count);
+    if (writeSize) this.writeUInt32(count);
     for (let i = 0; i < count; i++) {
       this.writeUInt8(value[i]);
     }
   }
 
-
   writeUInt16Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
     this.__reserve(count * 2 + (writeSize ? 4 : 0));
-    if (writeSize)
-      this.writeUInt32(count);
+    if (writeSize) this.writeUInt32(count);
     for (let i = 0; i < count; i++) {
       this.writeUInt16(value[i]);
     }
@@ -119,8 +108,7 @@ class BinWriter {
   writeUInt32Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
     this.__reserve(count * 4 + (writeSize ? 4 : 0));
-    if (writeSize)
-      this.writeUInt32(count);
+    if (writeSize) this.writeUInt32(count);
     for (let i = 0; i < count; i++) {
       this.writeUInt32(value[i]);
     }
@@ -129,8 +117,7 @@ class BinWriter {
   writeFloat32Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
     this.__reserve(count * 4 + (writeSize ? 4 : 0));
-    if (writeSize)
-      this.writeUInt32(count);
+    if (writeSize) this.writeUInt32(count);
     for (let i = 0; i < count; i++) {
       this.writeFloat32(value[i]);
     }
@@ -139,8 +126,7 @@ class BinWriter {
   writeStr(str, writeSize = true) {
     const count = value.length;
     this.__reserve(count * 4 + (writeSize ? 4 : 0));
-    if (writeSize)
-      this.writeUInt32(count);
+    if (writeSize) this.writeUInt32(count);
     for (let i = 0; i < count; i++) {
       this.writeFloat32(value.charCodeAt(i));
     }
@@ -235,15 +221,12 @@ class BinWriter {
   }
 
   writeAlignment(numBytes) {
-    const bytes =  (this.__byteOffset % numBytes);
-    if(bytes != 0) {
+    const bytes = this.__byteOffset % numBytes;
+    if (bytes != 0) {
       this.__reserve(numBytes - bytes);
       this.__offset(numBytes - bytes);
     }
   }
+}
 
-};
-
-export {
-  BinWriter
-};
+export { BinWriter };

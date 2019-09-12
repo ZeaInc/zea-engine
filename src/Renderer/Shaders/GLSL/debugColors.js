@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('debugColors.glsl', `
+shaderLibrary.setShaderModule(
+  'debugColors.glsl',
+  `
 
 float modI(float a, float b) {
     float m=a-floor((a+0.5)/b)*b;
@@ -43,4 +45,5 @@ vec3 getDebugColor(float id) {
 }
 
 
-`);
+`
+);

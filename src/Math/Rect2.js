@@ -1,9 +1,6 @@
-import {
-  JSON_stringify_fixedPrecision
-} from './Common.js';
+import { JSON_stringify_fixedPrecision } from './Common.js';
 import { Vec2 } from './Vec2.js';
 import { typeRegistry } from './TypeRegistry.js';
-
 
 class Rect2 {
   constructor(pos = undefined, size = undefined) {
@@ -48,9 +45,9 @@ class Rect2 {
       this.size.y += this.pos.y - point.y;
       this.pos.y = point.y;
     }
-    if (point.x > (this.pos.x + this.size.x))
+    if (point.x > this.pos.x + this.size.x)
       this.size.x += point.x - (this.pos.x + this.size.x);
-    if (point.y > (this.pos.y + this.size.y))
+    if (point.y > this.pos.y + this.size.y)
       this.size.y += point.y - (this.pos.y + this.size.y);
   }
 
@@ -62,37 +59,34 @@ class Rect2 {
 
   corners() {
     return {
-      "p0": this.pos.toJSON(),
-      "p1": this.pos.add(this.size).toJSON()
-    }
+      p0: this.pos.toJSON(),
+      p1: this.pos.add(this.size).toJSON(),
+    };
   }
-  
-  //////////////////////////////////////////
+
+  // ////////////////////////////////////////
   // Static Methods
 
   static create(...args) {
     return new Rect2(...args);
   }
 
-  /////////////////////////////
+  // ///////////////////////////
   // Persistence
-
 
   toJSON() {
     return {
-      "pos": this.pos.toJSON(),
-      "size": this.size.toJSON()
-    }
+      pos: this.pos.toJSON(),
+      size: this.size.toJSON(),
+    };
   }
 
   toString() {
-    return JSON_stringify_fixedPrecision(this.toJSON())
+    return JSON_stringify_fixedPrecision(this.toJSON());
   }
-};
+}
 
 typeRegistry.registerType('Rect2', Rect2);
 
-export {
-  Rect2
-};
+export { Rect2 };
 // export default Rect2;

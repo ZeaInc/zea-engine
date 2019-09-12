@@ -1,27 +1,18 @@
-import {
-  Signal
-} from '../../Utilities';
-import {
-  ValueSetMode,
-  ParamFlags,
-  Parameter
-} from './Parameter.js';
-import {
-  resourceLoader
-} from '../ResourceLoader.js';
+import { Signal } from '../../Utilities';
+import { ValueSetMode, ParamFlags, Parameter } from './Parameter.js';
+import { resourceLoader } from '../ResourceLoader.js';
 
 class FilePathParameter extends Parameter {
   constructor(name, exts) {
     super(name, '', 'FilePath');
 
     this.fileUpdated = new Signal();
-    if (exts)
-      this.setSupportedExts(exts); 
+    if (exts) this.setSupportedExts(exts);
   }
 
   setSupportedExts(exts) {
     // Note: supported Extensions should be in the format ext1|exts2|ext3
-    this.__reextensions = new RegExp('\\.(' + exts + ')$', "i");
+    this.__reextensions = new RegExp('\\.(' + exts + ')$', 'i');
   }
 
   getFilepath() {
@@ -34,7 +25,7 @@ class FilePathParameter extends Parameter {
   setFilepath(filePath, mode) {
     const resourceId = resourceLoader.resolveFilePathToId(filePath);
     if (!resourceId) {
-      console.warn("Resource unavailable:" + filePath);
+      console.warn('Resource unavailable:' + filePath);
       return;
     }
     this.setValue(resourceId, mode);
@@ -48,26 +39,22 @@ class FilePathParameter extends Parameter {
 
   getExt() {
     const filename = this.getFilename();
-    const suffixSt = filename.lastIndexOf('.')
-    if (suffixSt != -1)
-      return filename.substring(suffixSt).toLowerCase()
+    const suffixSt = filename.lastIndexOf('.');
+    if (suffixSt != -1) return filename.substring(suffixSt).toLowerCase();
   }
 
   getStem() {
     const filename = this.getFilename();
     if (filename) {
       const parts = filename.split('.');
-      if (parts.length == 2)
-        return parts[0];
-      else
-        return filename;
+      if (parts.length == 2) return parts[0];
+      else return filename;
     }
   }
 
   getFileFolder() {
     if (this.__file) {
-      if (this.__file.parent)
-        return resourceLoader.getFile(this.__file.parent);
+      if (this.__file.parent) return resourceLoader.getFile(this.__file.parent);
       return resourceLoader.getRootFolder();
     }
   }
@@ -75,7 +62,7 @@ class FilePathParameter extends Parameter {
   getFileFolderPath() {
     const filePath = this.getFilepath();
     if (filePath) {
-      return filePath.substring(0, filePath.lastIndexOf("/")) + '/';
+      return filePath.substring(0, filePath.lastIndexOf('/')) + '/';
     }
   }
 
@@ -90,17 +77,16 @@ class FilePathParameter extends Parameter {
   }
 
   setUrl(url, mode = ValueSetMode.USER_SETVALUE) {
-    
     const parts = url.split('/');
-    const name = parts[parts.length-1]
-    
+    const name = parts[parts.length - 1];
+
     this.__value = name;
     this.__file = {
       id: url,
       name,
-      url
+      url,
     };
-    
+
     if (mode == ValueSetMode.USER_SETVALUE)
       this.__flags |= ParamFlags.USER_EDITED;
     this.valueChanged.emit(mode);
@@ -117,16 +103,19 @@ class FilePathParameter extends Parameter {
   }
 
   setDirty(cleanerFn) {
-    throw ("Cannot drive a filepath param from an oporator")
+    throw 'Cannot drive a filepath param from an oporator';
   }
 
-  setValue(value, mode = ValueSetMode.USER_SETVALUE) { // 0 == normal set. 1 = changed via cleaner fn, 2=change by loading/cloning code.
+  setValue(value, mode = ValueSetMode.USER_SETVALUE) {
+    // 0 == normal set. 1 = changed via cleaner fn, 2=change by loading/cloning code.
     if (value == undefined) {
-      throw ("Invalid value for setValue.");
+      throw 'Invalid value for setValue.';
     }
     if (value.indexOf('.') > 0) {
-      console.warn("Deprecation warning for setValue. setValue should now only take a file id, not a path.");
-      return this.setFilepath(value, mode)
+      console.warn(
+        'Deprecation warning for setValue. setValue should now only take a file id, not a path.'
+      );
+      return this.setFilepath(value, mode);
     }
     // Note: equality tests only work on simple types.
     // Important here because file changes cause reloads..
@@ -139,44 +128,42 @@ class FilePathParameter extends Parameter {
     // and we convert to relative when we save.
     const resourceId = value;
     if (!resourceLoader.resourceAvailable(resourceId)) {
-      console.warn("Resource unavailable:" + resourceId);
+      console.warn('Resource unavailable:' + resourceId);
       return;
     }
 
     const file = resourceLoader.getFile(resourceId);
     if (this.__reextensions && !this.__reextensions.test(file.name)) {
-      console.warn("Unsupported file type:" + file.name);
+      console.warn('Unsupported file type:' + file.name);
       return false;
     }
 
     this.__value = value;
     this.__file = file;
 
-    resourceLoader.fileUpdated.connect((id)=>{
+    resourceLoader.fileUpdated.connect(id => {
       if (id == this.__value) {
         this.__file = resourceLoader.getFile(this.__value);
         this.fileUpdated.emit();
       }
-    })
+    });
 
     if (mode == ValueSetMode.USER_SETVALUE)
       this.__flags |= ParamFlags.USER_EDITED;
     this.valueChanged.emit(mode);
   }
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
-
   toJSON(context, flags) {
-    if ((this.__flags & ParamFlags.USER_EDITED) == 0)
-      return;
+    if ((this.__flags & ParamFlags.USER_EDITED) == 0) return;
     const j = {};
     if (this.__file) {
       j.value = this.__file.id;
-      // For cases where the file ID changed. 
+      // For cases where the file ID changed.
       // e.g. if a file was deleted from the system, and
       // then re-added
-      j.filepath = resourceLoader.getFilepath(this.__file.id)
+      j.filepath = resourceLoader.getFilepath(this.__file.id);
     }
     return j;
   }
@@ -184,7 +171,7 @@ class FilePathParameter extends Parameter {
   fromJSON(j, context, flags) {
     if (j.value) {
       if (j.value.indexOf('.') > 0) {
-        this.setFilepath(j.value, ValueSetMode.DATA_LOAD)
+        this.setFilepath(j.value, ValueSetMode.DATA_LOAD);
         return;
       } else {
         if (resourceLoader.resourceAvailable(j.value)) {
@@ -197,7 +184,7 @@ class FilePathParameter extends Parameter {
     if (j.filepath) {
       const resourceId = resourceLoader.resolveFilePathToId(j.filepath);
       if (!resourceId) {
-        console.warn("Resource unavailable:" + j.filepath);
+        console.warn('Resource unavailable:' + j.filepath);
       } else {
         this.setValue(resourceId, ValueSetMode.DATA_LOAD);
         return;
@@ -207,13 +194,7 @@ class FilePathParameter extends Parameter {
 
   destroy() {
     super.destroy();
-
   }
+}
 
-
-};
-
-
-export {
-  FilePathParameter
-};
+export { FilePathParameter };
