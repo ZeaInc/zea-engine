@@ -14,10 +14,14 @@
   "scripts": {
     "build:dev": "webpack --watch --config webpack-dev.config.js",
     "build": "webpack --config webpack-prod.config.js",
-    "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public"
+    "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public",
+    "docs": "documentation build src/** -f html -o docs",
+    "docs:serve": "documentation serve --watch src/**",
+    "docs:lint": "documentation lint src/**"
   },
   "devDependencies": {
     "chai": "3.4.1",
+    "documentation": "^12.1.1",
     "eslint": "^6.3.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.3.0",

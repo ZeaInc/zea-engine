@@ -1,16 +1,7 @@
-import {
-    Color,
-    Vec3
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    GLShader
-} from '../GLShader.js';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
+import { Color, Vec3 } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { GLShader } from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
@@ -19,9 +10,11 @@ import './GLSL/envmap-octahedral.js';
 import './GLSL/modelMatrix.js';
 
 class BaseShadowCatcherShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('FlatShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'FlatShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -56,14 +49,17 @@ void main(void) {
 
     v_lightmapCoord = (lightmapCoords + geomItemData.zw) / lightmapSize;
 }
-`);
-    }
-};
+`
+    );
+  }
+}
 
 class ShadowCatcherShader extends BaseShadowCatcherShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('ShadowCatcherShader.fragmentShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'ShadowCatcherShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -123,35 +119,39 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-        this.finalize();
-    }
+`
+    );
+    this.finalize();
+  }
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'ProjectionCenter', defaultValue: new Vec3(0.0, 0.0, 1.7) })
-        paramDescs.push({ name: 'ShadowMultiplier', defaultValue: 1.0 })
-        return paramDescs;
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'ProjectionCenter',
+      defaultValue: new Vec3(0.0, 0.0, 1.7),
+    });
+    paramDescs.push({ name: 'ShadowMultiplier', defaultValue: 1.0 });
+    return paramDescs;
+  }
 
-    static isTransparent() {
-        return true;
-    }
+  static isTransparent() {
+    return true;
+  }
 
-    bind(renderstate, key) {
-        if (renderstate.pass != 'ADD')
-            return false;
-        return super.bind(renderstate, key);
-    }
-};
+  bind(renderstate, key) {
+    if (renderstate.pass != 'ADD') return false;
+    return super.bind(renderstate, key);
+  }
+}
 
 sgFactory.registerClass('ShadowCatcherShader', ShadowCatcherShader);
 
-
 class FloatingShadowCatcherShader extends BaseShadowCatcherShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('FloatingShadowCatcherShader.fragmentShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'FloatingShadowCatcherShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -196,31 +196,29 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-    }
+`
+    );
+  }
 
-    bind(renderstate, key) {
-        if (renderstate.pass != 'MULTIPLY')
-            return false;
-        return super.bind(renderstate, key);
-    }
+  bind(renderstate, key) {
+    if (renderstate.pass != 'MULTIPLY') return false;
+    return super.bind(renderstate, key);
+  }
 
-    static isTransparent() {
-        return true;
-    }
+  static isTransparent() {
+    return true;
+  }
 
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({ name: 'ShadowMultiplier', defaultValue: 1.0 });
+    return paramDescs;
+  }
+}
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'ShadowMultiplier', defaultValue: 1.0 })
-        return paramDescs;
-    }
+sgFactory.registerClass(
+  'FloatingShadowCatcherShader',
+  FloatingShadowCatcherShader
+);
 
-};
-
-sgFactory.registerClass('FloatingShadowCatcherShader', FloatingShadowCatcherShader);
-
-export {
-    LightmapCatcherShader
-};
-
+export { LightmapCatcherShader };
