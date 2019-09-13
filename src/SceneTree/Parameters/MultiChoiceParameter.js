@@ -1,9 +1,5 @@
-import {
-  Parameter
-} from './Parameter.js';
-import {
-  NumberParameter
-} from './NumberParameter.js';
+import { Parameter } from './Parameter.js';
+import { NumberParameter } from './NumberParameter.js';
 
 class MultiChoiceParameter extends NumberParameter {
   constructor(name, index, choices) {
@@ -16,16 +12,12 @@ class MultiChoiceParameter extends NumberParameter {
   }
 
   setValue(value, mode) {
-    if(typeof value === 'string') {
-      super.setValue(this.choices.indexOf(value), mode)
-    }
-    else {
-      super.setValue(value, mode)
+    if (typeof value === 'string') {
+      super.setValue(this.choices.indexOf(value), mode);
+    } else {
+      super.setValue(value, mode);
     }
   }
+}
 
-};
-
-export {
-  MultiChoiceParameter
-};
+export { MultiChoiceParameter };

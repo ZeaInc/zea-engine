@@ -1,15 +1,7 @@
-import {
-    Color
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/stack-gl/gamma.js';
@@ -17,10 +9,12 @@ import './GLSL/modelMatrix.js';
 import './GLSL/materialparams.js';
 
 class SimpleSurfaceShader extends GLShader {
-    constructor(name) {
-        super(name);
+  constructor(name) {
+    super(name);
 
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('SimpleSurfaceShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'SimpleSurfaceShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -67,9 +61,12 @@ void main(void) {
     v_worldPos      = (modelMatrix * pos).xyz;
     v_cutAwayData = getCutaway();
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('SimpleSurfaceShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'SimpleSurfaceShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="stack-gl/gamma.glsl"/>
@@ -162,27 +159,29 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-        this.finalize();
-    }
-    
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
-        paramDescs.push({ name: 'Opacity', defaultValue: 1.0, range:[0,1] });
-        return paramDescs;
-    }
+`
+    );
+    this.finalize();
+  }
 
-    static getGeomDataShaderName(){
-        return 'StandardSurfaceGeomDataShader';
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Opacity', defaultValue: 1.0, range: [0, 1] });
+    return paramDescs;
+  }
 
-    static getSelectedShaderName(){
-        return 'StandardSurfaceSelectedGeomsShader';
-    }
-};
+  static getGeomDataShaderName() {
+    return 'StandardSurfaceGeomDataShader';
+  }
+
+  static getSelectedShaderName() {
+    return 'StandardSurfaceSelectedGeomsShader';
+  }
+}
 
 sgFactory.registerClass('SimpleSurfaceShader', SimpleSurfaceShader);
-export {
-    SimpleSurfaceShader
-};
+export { SimpleSurfaceShader };

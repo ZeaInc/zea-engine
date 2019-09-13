@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('cutaways.glsl', `
+shaderLibrary.setShaderModule(
+  'cutaways.glsl',
+  `
 
 
 const int GEOMITEM_FLAG_CUTAWAY =  1; // 1<<0;
@@ -43,4 +45,5 @@ bool cutaway(vec3 worldPos, vec3 planeNormal, float planeDist) {
     }
     return  false;
 }
-`);
+`
+);

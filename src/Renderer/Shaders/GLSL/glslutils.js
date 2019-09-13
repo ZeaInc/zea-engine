@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('GLSLUtils.glsl', `
+shaderLibrary.setShaderModule(
+  'GLSLUtils.glsl',
+  `
 
 
 int ftoi(float val){
@@ -96,4 +98,5 @@ int uvToPixelIndex(vec2 uv, int textureSize){
 
 
 
-`);
+`
+);

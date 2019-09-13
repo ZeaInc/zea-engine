@@ -1,16 +1,7 @@
-import {
-  Color,
-  Vec3
-} from '../../Math';
-import {
-  sgFactory
-} from '../../SceneTree';
-import {
-  GLShader
-} from '../GLShader.js';
-import {
-  shaderLibrary
-} from '../ShaderLibrary.js';
+import { Color, Vec3 } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { GLShader } from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
@@ -21,7 +12,9 @@ import './GLSL/modelMatrix.js';
 class EnvProjectionShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('EnvProjectionShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'EnvProjectionShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;    //(location = 0)
@@ -49,22 +42,28 @@ void main()
   v_worldDir = worldPos.xyz - projectionCenter;
 }
 
-`);
+`
+    );
 
     this.finalize();
   }
 
   static getParamDeclarations() {
     const paramDescs = super.getParamDeclarations();
-    paramDescs.push({ name: 'projectionCenter', defaultValue: new Vec3(0.0, 0.0, 1.7) })
+    paramDescs.push({
+      name: 'projectionCenter',
+      defaultValue: new Vec3(0.0, 0.0, 1.7),
+    });
     return paramDescs;
   }
-};
+}
 
 class OctahedralEnvProjectionShader extends EnvProjectionShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('OctahedralEnvProjectionShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'OctahedralEnvProjectionShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -105,17 +104,23 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
+}
 
-sgFactory.registerClass('OctahedralEnvProjectionShader', OctahedralEnvProjectionShader);
+sgFactory.registerClass(
+  'OctahedralEnvProjectionShader',
+  OctahedralEnvProjectionShader
+);
 
 class LatLongEnvProjectionShader extends EnvProjectionShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('LatLongEnvProjectionShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'LatLongEnvProjectionShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -154,15 +159,18 @@ void main(void) {
   gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
     this.finalize();
   }
-};
+}
 
-
-sgFactory.registerClass('LatLongEnvProjectionShader', LatLongEnvProjectionShader);
+sgFactory.registerClass(
+  'LatLongEnvProjectionShader',
+  LatLongEnvProjectionShader
+);
 export {
   EnvProjectionShader,
   OctahedralEnvProjectionShader,
-  LatLongEnvProjectionShader
+  LatLongEnvProjectionShader,
 };

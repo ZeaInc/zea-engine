@@ -1,22 +1,17 @@
-
-
 class VRTool {
-    constructor() {
-        this.__active = false;
-    }
+  constructor() {
+    this.__active = false;
+  }
 
-    activateTool() {
-        this.__active = true;
-    }
+  activateTool() {
+    this.__active = true;
+  }
 
-    deactivateTool() {
-        this.__active = false;
-    }
+  deactivateTool() {
+    this.__active = false;
+  }
 
-    evalTool() {
-    }
-};
+  evalTool() {}
+}
 
-export {
-    VRTool
-};
+export { VRTool };

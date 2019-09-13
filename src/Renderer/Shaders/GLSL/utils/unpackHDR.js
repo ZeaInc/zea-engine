@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('utils/unpackHDR.glsl', `
+shaderLibrary.setShaderModule(
+  'utils/unpackHDR.glsl',
+  `
 
 vec3 decodeHDR(const in vec3 ldrPixel, const in float cdmAlpha) {
     float avg = (cdmAlpha * 16.0 - 8.0);
@@ -28,4 +30,5 @@ vec3 decodeHDR(sampler2D ldrSampler, sampler2D cdmSampler, vec2 texCoord) {
     return decodeHDR(texture2D(ldrSampler, texCoord).rgb, cdm);
 }
 
-`);
+`
+);

@@ -1,12 +1,6 @@
+import { sgFactory } from '../SceneTree/SGFactory.js';
 
-import {
-  sgFactory
-} from '../SceneTree/SGFactory.js';
-
-import {
-  ParameterOwner
-} from '../SceneTree/ParameterOwner.js';
-
+import { ParameterOwner } from '../SceneTree/ParameterOwner.js';
 
 class StateAction extends ParameterOwner {
   constructor(name) {
@@ -17,18 +11,18 @@ class StateAction extends ParameterOwner {
     this.__outputs = {};
   }
 
-  addOutput(output){
+  addOutput(output) {
     this.__outputs[output.getName()] = output;
     return output;
   }
 
-  getOutput(name){
+  getOutput(name) {
     return this.__outputs[name];
   }
 
   setState(state) {
     this.__state = state;
-    this.__childActions.forEach((childAction)=>{
+    this.__childActions.forEach(childAction => {
       childAction.setState(state);
     });
   }
@@ -38,13 +32,15 @@ class StateAction extends ParameterOwner {
     childAction.setState(this.__state);
   }
 
-
   getChild(index) {
     return this.__childActions[index];
   }
 
-  activate(){
-    console.warn("activate must be implmented by each action. this:" + this.constructor.name)
+  activate() {
+    console.warn(
+      'activate must be implmented by each action. this:' +
+        this.constructor.name
+    );
   }
 
   addChild(childAction) {
@@ -52,37 +48,32 @@ class StateAction extends ParameterOwner {
     childAction.setState(this.__state);
   }
 
-
-  deactivate() {
-
-  }
+  deactivate() {}
 
   __onDone() {
-    this.__childActions.forEach((action)=>{
+    this.__childActions.forEach(action => {
       action.activate();
     });
   }
 
-
-
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
   toJSON(context, flags) {
     let j = super.toJSON(context, flags);
-    if (!j)// If a state action has had no defaults changed, then it may not return json.
-      j = {}
+    if (!j)
+      // If a state action has had no defaults changed, then it may not return json.
+      j = {};
     j.type = sgFactory.getClassName(this);
 
     const childActionsj = [];
-    for(let childAction of this.__childActions){
+    for (const childAction of this.__childActions) {
       childActionsj.push(childAction.toJSON(context, flags));
     }
     j.childActions = childActionsj;
 
     const outputsj = {};
-    for(let key in this.__outputs){
+    for (const key in this.__outputs) {
       outputsj[key] = this.__outputs[key].toJSON(context, flags);
     }
     j.outputs = outputsj;
@@ -93,18 +84,17 @@ class StateAction extends ParameterOwner {
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
 
-    for(let childActionjson of j.childActions){
+    for (const childActionjson of j.childActions) {
       const childAction = sgFactory.constructClass(childActionjson.type);
       if (childAction) {
         childAction.fromJSON(childActionjson, context);
         this.addChild(childAction);
-      }
-      else {
-        throw("Invalid type:" + childActionjson.type)
+      } else {
+        throw 'Invalid type:' + childActionjson.type;
       }
     }
 
-    for(let key in j.outputs){
+    for (const key in j.outputs) {
       this.__outputs[key].fromJSON(j.outputs[key], context);
       // const outputjson = j.outputs[key];
       // const output = sgFactory.constructClass(outputjson.type);
@@ -118,12 +108,10 @@ class StateAction extends ParameterOwner {
     }
   }
 
-  destroy(){
+  destroy() {
     super.destroy();
     this.__outputs = [];
   }
-};
+}
 
-export {
-  StateAction
-};
+export { StateAction };

@@ -2,7 +2,9 @@ import { shaderLibrary } from '../../ShaderLibrary.js';
 
 import './ImageAtlas.js';
 
-shaderLibrary.setShaderModule('utils/imagePyramid.glsl', `
+shaderLibrary.setShaderModule(
+  'utils/imagePyramid.glsl',
+  `
 
 <%include file="utils/imageAtlas.glsl"/>
 
@@ -17,4 +19,5 @@ vec4 sampleImagePyramid(vec2 uv, float lod, in sampler2D atlasLayout, in sampler
 }
 
 
-`);
+`
+);

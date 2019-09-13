@@ -1,7 +1,9 @@
 import { shaderLibrary } from '../../../ShaderLibrary.js';
 
 // https://github.com/wwwtyro/glsl-atmosphere
-shaderLibrary.setShaderModule('wwwtyro/glsl-atmosphere.glsl', `
+shaderLibrary.setShaderModule(
+  'wwwtyro/glsl-atmosphere.glsl',
+  `
 
 #define iSteps 16
 #define jSteps 8
@@ -111,4 +113,5 @@ vec3 atmosphere(vec3 r, vec3 r0, vec3 pSun, float iSun, float rPlanet, float rAt
 }
 
 
-`);
+`
+);

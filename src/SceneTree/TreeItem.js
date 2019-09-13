@@ -1,14 +1,6 @@
-import {
-  Color,
-  Xfo,
-  Box3
-} from '../Math';
-import {
-  Signal
-} from '../Utilities';
-import {
-  sgFactory
-} from './SGFactory.js';
+import { Color, Xfo, Box3 } from '../Math';
+import { Signal } from '../Utilities';
+import { sgFactory } from './SGFactory.js';
 import {
   ParamFlags,
   ValueSetMode,
@@ -17,37 +9,36 @@ import {
   NumberParameter,
   ColorParameter,
   Vec2Parameter,
-  XfoParameter
+  XfoParameter,
 } from './Parameters';
-import {
-  ItemFlags,
-  BaseItem
-} from './BaseItem.js';
-
+import { ItemFlags, BaseItem } from './BaseItem.js';
 
 // Defines used to explicity specify types for WebGL.
 const SaveFlags = {
-  SAVE_FLAG_SKIP_CHILDREN: 1 << 0
-}
+  SAVE_FLAG_SKIP_CHILDREN: 1 << 0,
+};
 
 const LoadFlags = {
   // When loading the values of a bin tree, as opposed
   // to loading a full json defined tree.
-  LOAD_FLAG_LOADING_BIN_TREE_VALUES: 1 << 4
-}
+  LOAD_FLAG_LOADING_BIN_TREE_VALUES: 1 << 4,
+};
 
 const CloneFlags = {
-  CLONE_FLAG_INSTANCED_TREE: 1 << 0
-}
+  CLONE_FLAG_INSTANCED_TREE: 1 << 0,
+};
 
-const selectionOutlineColor = new Color("#03E3AC");
+const selectionOutlineColor = new Color('#03E3AC');
 selectionOutlineColor.a = 0.1;
-const branchSelectionOutlineColor = selectionOutlineColor.lerp(new Color("white"), 0.5);
+const branchSelectionOutlineColor = selectionOutlineColor.lerp(
+  new Color('white'),
+  0.5
+);
 branchSelectionOutlineColor.a = 0.1;
 
 class TreeItem extends BaseItem {
   constructor(name) {
-    super(name)
+    super(name);
 
     this.__visibleCounter = 1; // Visible by Default.
     this.__visible = true;
@@ -67,13 +58,21 @@ class TreeItem extends BaseItem {
     this.mouseUp = new Signal();
     this.mouseMove = new Signal();
 
-    ///////////////////////////////////////
+    // /////////////////////////////////////
     // Add parameters.
 
-    this.__visibleParam = this.addParameter(new BooleanParameter('Visible', true));
-    this.__localXfoParam = this.addParameter(new XfoParameter('LocalXfo', new Xfo()));
-    this.__globalXfoParam = this.addParameter(new XfoParameter('GlobalXfo', new Xfo()));
-    this.__boundingBoxParam = this.addParameter(new Parameter('BoundingBox', new Box3()));
+    this.__visibleParam = this.addParameter(
+      new BooleanParameter('Visible', true)
+    );
+    this.__localXfoParam = this.addParameter(
+      new XfoParameter('LocalXfo', new Xfo())
+    );
+    this.__globalXfoParam = this.addParameter(
+      new XfoParameter('GlobalXfo', new Xfo())
+    );
+    this.__boundingBoxParam = this.addParameter(
+      new Parameter('BoundingBox', new Box3())
+    );
 
     this.parentChanged = this.ownerChanged;
     this.childAdded = new Signal();
@@ -95,14 +94,16 @@ class TreeItem extends BaseItem {
 
     this.__localXfoParam.valueChanged.connect(this._setGlobalXfoDirty);
 
-    const cleanLocalXfo = (prevValue) => {
+    const cleanLocalXfo = prevValue => {
       const globalXfo = this.__globalXfoParam.getValue();
       if (this.__ownerItem !== undefined)
-        return this.__ownerItem.getGlobalXfo().inverse().multiply(globalXfo);
-      else
-        return globalXfo;
-    }
-    this.__globalXfoParam.valueChanged.connect((mode) => {
+        return this.__ownerItem
+          .getGlobalXfo()
+          .inverse()
+          .multiply(globalXfo);
+      else return globalXfo;
+    };
+    this.__globalXfoParam.valueChanged.connect(mode => {
       // Dirtiness propagates from Local to Global, but not vice versa.
       if (mode != ValueSetMode.OPERATOR_DIRTIED) {
         this.__localXfoParam.setDirty(cleanLocalXfo);
@@ -110,8 +111,8 @@ class TreeItem extends BaseItem {
       this._setBoundingBoxDirty();
     });
 
-    this.__visibleParam.valueChanged.connect((mode) => {
-      this.__visibleCounter += (this.__visibleParam.getValue() ? 1 : -1);
+    this.__visibleParam.valueChanged.connect(mode => {
+      this.__visibleCounter += this.__visibleParam.getValue() ? 1 : -1;
       this.__updateVisiblity();
     });
   }
@@ -132,16 +133,15 @@ class TreeItem extends BaseItem {
 
     // Share a local Xfo
     // Note: disabled for now.
-    // When cloning instanced trees, the root item should 
-    // have a unique LocalXfoParam, as it must be re-set. 
+    // When cloning instanced trees, the root item should
+    // have a unique LocalXfoParam, as it must be re-set.
     // (The root of the tree is a cloned and attached to an Instance node that provides the transform)
 
     // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE)
     //     this.__localXfoParam = this.replaceParameter(src.getParameter('LocalXfo'));
 
-    for (let srcChildItem of src.getChildren())
-      if (srcChildItem)
-        this.addChild(srcChildItem.clone(flags));
+    for (const srcChildItem of src.getChildren())
+      if (srcChildItem) this.addChild(srcChildItem.clone(flags));
     // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE) {
     //     src.childAdded.connect((childItem, index)=>{
     //         this.addChild(childItem.clone(flags));
@@ -149,7 +149,7 @@ class TreeItem extends BaseItem {
     // }
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Flags
 
   _childFlagsChanged(flags) {
@@ -159,33 +159,28 @@ class TreeItem extends BaseItem {
 
   setFlag(flag) {
     super.setFlag(flag);
-    if (this.__ownerItem)
-      this.__ownerItem._childFlagsChanged(flag)
+    if (this.__ownerItem) this.__ownerItem._childFlagsChanged(flag);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Parent Item
 
   setOwner(parentItem) {
-
     if (this.__ownerItem) {
       this.__ownerItem.globalXfoChanged.disconnect(this._setGlobalXfoDirty);
 
       // The effect of the invisible owner is removed.
-      if (!this.__ownerItem.getVisible())
-        this.__visibleCounter++;
+      if (!this.__ownerItem.getVisible()) this.__visibleCounter++;
     }
 
     super.setOwner(parentItem);
 
     this._setGlobalXfoDirty();
     if (this.__ownerItem) {
-
       this.setSelectable(this.__ownerItem.getSelectable(), true);
-      
+
       // The effect of the invisible owner is added.
-      if (!this.__ownerItem.getVisible())
-        this.__visibleCounter--;
+      if (!this.__ownerItem.getVisible()) this.__visibleCounter--;
 
       this.__ownerItem.globalXfoChanged.connect(this._setGlobalXfoDirty);
     }
@@ -195,13 +190,11 @@ class TreeItem extends BaseItem {
 
   __updatePath() {
     super.__updatePath();
-    for (let childItem of this.__childItems) {
-      if (childItem)
-        childItem.__updatePath();
+    for (const childItem of this.__childItems) {
+      if (childItem) childItem.__updatePath();
     }
-    for (let component of this.__components) {
-      if (component)
-        component.__updatePath();
+    for (const component of this.__components) {
+      if (component) component.__updatePath();
     }
   }
 
@@ -213,7 +206,7 @@ class TreeItem extends BaseItem {
     this.setOwner(parentItem);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Global Matrix
 
   getLocalXfo() {
@@ -233,18 +226,19 @@ class TreeItem extends BaseItem {
   }
 
   _cleanGlobalXfo(prevValue) {
-    let parentItem = this.getParentItem();
+    const parentItem = this.getParentItem();
     if (parentItem !== undefined)
-      return parentItem.getGlobalXfo().multiply(this.__localXfoParam.getValue());
-    else
-      return this.__localXfoParam.getValue();
+      return parentItem
+        .getGlobalXfo()
+        .multiply(this.__localXfoParam.getValue());
+    else return this.__localXfoParam.getValue();
   }
 
   _setGlobalXfoDirty() {
     this.__globalXfoParam.setDirty(this._cleanGlobalXfo);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Visibility
 
   getVisible() {
@@ -265,7 +259,7 @@ class TreeItem extends BaseItem {
     const visible = this.__visibleCounter > 0;
     if (visible != this.__visible) {
       this.__visible = visible;
-      for (let childItem of this.__childItems) {
+      for (const childItem of this.__childItems) {
         childItem.propagateVisiblity(this.__visible ? 1 : -1);
       }
       this.visibilityChanged.emit(visible);
@@ -274,7 +268,7 @@ class TreeItem extends BaseItem {
     return false;
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Selectability and Selection
 
   getSelectable() {
@@ -284,7 +278,7 @@ class TreeItem extends BaseItem {
   setSelectable(val, propagateToChildren = true) {
     if (this.__selectable != val || propagateToChildren) {
       this.__selectable = val;
-      for (let childItem of this.__childItems)
+      for (const childItem of this.__childItems)
         childItem.setSelectable(this.__selectable, propagateToChildren);
     }
   }
@@ -300,18 +294,21 @@ class TreeItem extends BaseItem {
     this.__selected = sel;
     if (sel) {
       this.addHighlight('selected', selectionOutlineColor, false);
-      for (let childItem of this.__childItems)
-        childItem.addHighlight('branchselected' + this.getId(), branchSelectionOutlineColor, true);
+      for (const childItem of this.__childItems)
+        childItem.addHighlight(
+          'branchselected' + this.getId(),
+          branchSelectionOutlineColor,
+          true
+        );
     } else {
       this.removeHighlight('selected');
-      for (let childItem of this.__childItems)
+      for (const childItem of this.__childItems)
         childItem.removeHighlight('branchselected' + this.getId(), true);
     }
-    this.selectedChanged.emit(this.__selected)
+    this.selectedChanged.emit(this.__selected);
   }
 
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Highlights
 
   addHighlight(name, color, propagateToChildren = false) {
@@ -322,7 +319,7 @@ class TreeItem extends BaseItem {
     this.highlightChanged.emit();
 
     if (propagateToChildren) {
-      for (let childItem of this.__childItems)
+      for (const childItem of this.__childItems)
         childItem.addHighlight(name, color, propagateToChildren);
     }
   }
@@ -330,30 +327,32 @@ class TreeItem extends BaseItem {
   removeHighlight(name, propagateToChildren = false) {
     if (name in this.__highlightMapping) {
       const id = this.__highlights.indexOf(name);
-      this.__highlights.splice(id, 1)
+      this.__highlights.splice(id, 1);
       delete this.__highlightMapping[name];
       this.highlightChanged.emit();
     }
     if (propagateToChildren) {
-      for (let childItem of this.__childItems)
+      for (const childItem of this.__childItems)
         childItem.removeHighlight(name, propagateToChildren);
     }
   }
 
   getHighlight() {
     if (this.__highlights.length > 0)
-      return this.__highlightMapping[this.__highlights[this.__highlights.length - 1]];
+      return this.__highlightMapping[
+        this.__highlights[this.__highlights.length - 1]
+      ];
   }
 
   isHighlighted() {
     return this.__highlights.length > 0;
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // BoundingBox
 
   get boundingBox() {
-    console.warn(("getter is deprectated. Please use 'getBoundingBox'"));
+    console.warn("getter is deprectated. Please use 'getBoundingBox'");
     return this.getBoundingBox();
   }
 
@@ -363,7 +362,7 @@ class TreeItem extends BaseItem {
 
   _cleanBoundingBox(bbox) {
     bbox.reset();
-    for (let childItem of this.__childItems) {
+    for (const childItem of this.__childItems) {
       if (childItem.getVisible() && !childItem.testFlag(ItemFlags.IGNORE_BBOX))
         bbox.addBox3(childItem.getBoundingBox());
     }
@@ -381,8 +380,7 @@ class TreeItem extends BaseItem {
     }
   }
 
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Children
 
   getChildren() {
@@ -398,19 +396,27 @@ class TreeItem extends BaseItem {
   }
 
   generateUniqueName(name) {
-    if (!(name in this.__childItemsMapping))
-      return name;
+    if (!(name in this.__childItemsMapping)) return name;
 
     let index = 1;
-    if (name.length > 4 && !Number.isNaN(parseInt(name.substring(name.length - 4))))
+    if (
+      name.length > 4 &&
+      !Number.isNaN(parseInt(name.substring(name.length - 4)))
+    )
       index = parseInt(name.substr(name.length - 4));
-    else if (name.length > 3 && !Number.isNaN(parseInt(name.substring(name.length - 3))))
+    else if (
+      name.length > 3 &&
+      !Number.isNaN(parseInt(name.substring(name.length - 3)))
+    )
       index = parseInt(name.substr(name.length - 3));
-    else if (name.length > 2 && !Number.isNaN(parseInt(name.substring(name.length - 2))))
+    else if (
+      name.length > 2 &&
+      !Number.isNaN(parseInt(name.substring(name.length - 2)))
+    )
       index = parseInt(name.substr(name.length - 2));
 
     const names = [];
-    for (let c of this.__childItems) {
+    for (const c of this.__childItems) {
       // Sometimes we have an empty child slot.
       // We resize the child vector, and then populate it.
       if (c) {
@@ -426,34 +432,37 @@ class TreeItem extends BaseItem {
       }
 
       uniqueName = name + suffix;
-      if (names.indexOf(uniqueName) == -1)
-        break;
+      if (names.indexOf(uniqueName) == -1) break;
       index++;
     }
     return uniqueName;
   }
 
   __updateMapping(start) {
-    // If a child has been added or removed from the 
-    // tree item, we need to update the acceleration structure. 
-    for(let i=start; i<this.__childItems.length; i++) {
+    // If a child has been added or removed from the
+    // tree item, we need to update the acceleration structure.
+    for (let i = start; i < this.__childItems.length; i++) {
       this.__childItemsMapping[this.__childItems[i].getName()] = i;
     }
   }
 
   insertChild(childItem, index, maintainXfo = false, checkCollisions = true) {
-
     if (checkCollisions && childItem.getName() in this.__childItemsMapping)
-      throw ("Item '" + childItem.getName() + "' is already a child of :" + this.getPath());
+      throw "Item '" +
+        childItem.getName() +
+        "' is already a child of :" +
+        this.getPath();
     if (!(childItem instanceof TreeItem))
-      throw ("Object is is not a tree item :" + childItem.constructor.name);
+      throw 'Object is is not a tree item :' + childItem.constructor.name;
 
     if (childItem.isDestroyed())
-      throw ("childItem is destroyed:" + childItem.getPath());
+      throw 'childItem is destroyed:' + childItem.getPath();
 
     let newLocalXfo;
     if (maintainXfo)
-      newLocalXfo = this.getGlobalXfo().inverse().multiply(childItem.getGlobalXfo());
+      newLocalXfo = this.getGlobalXfo()
+        .inverse()
+        .multiply(childItem.getGlobalXfo());
 
     const signalIds = {};
     signalIds.nameChangedId = childItem.nameChanged.connect((name, oldName) => {
@@ -461,9 +470,13 @@ class TreeItem extends BaseItem {
       const index = this.__childItemsMapping[oldName];
       delete this.__childItemsMapping[oldName];
       this.__childItemsMapping[name] = index;
-    })
-    signalIds.bboxChangedId = childItem.boundingChanged.connect(this._setBoundingBoxDirty)
-    signalIds.visChangedId = childItem.visibilityChanged.connect(this._setBoundingBoxDirty)
+    });
+    signalIds.bboxChangedId = childItem.boundingChanged.connect(
+      this._setBoundingBoxDirty
+    );
+    signalIds.visChangedId = childItem.visibilityChanged.connect(
+      this._setBoundingBoxDirty
+    );
 
     this.__childItems.splice(index, 0, childItem);
     this.__childItemsSignalIds.splice(index, 0, signalIds);
@@ -472,21 +485,19 @@ class TreeItem extends BaseItem {
 
     childItem.setOwner(this);
 
-    if (maintainXfo)
-      childItem.setLocalXfo(newLocalXfo);
+    if (maintainXfo) childItem.setLocalXfo(newLocalXfo);
 
     if (childItem.testFlag(ItemFlags.USER_EDITED))
-      this.setFlag(ItemFlags.USER_EDITED)
+      this.setFlag(ItemFlags.USER_EDITED);
 
     this._setBoundingBoxDirty();
     this.childAdded.emit(childItem, index);
-
 
     return childItem;
   }
 
   addChild(childItem, maintainXfo = false, checkCollisions = true) {
-    let index = this.__childItems.length;
+    const index = this.__childItems.length;
     this.insertChild(childItem, index, maintainXfo, checkCollisions);
     return index;
   }
@@ -498,7 +509,7 @@ class TreeItem extends BaseItem {
   getChildByName(name) {
     const index = this.__childItemsMapping[name];
     if (index != undefined) {
-      return this.__childItems[index]
+      return this.__childItems[index];
     }
     // for (let childItem of this.__childItems) {
     //   if (childItem != null && childItem.getName() == name) {
@@ -512,8 +523,7 @@ class TreeItem extends BaseItem {
     const names = [];
     for (let i = 0; i < this.__childItems.length; i++) {
       const childItem = this.__childItems[i];
-      if (childItem != null)
-        names[i] = childItem.getName();
+      if (childItem != null) names[i] = childItem.getName();
     }
     return names;
   }
@@ -522,10 +532,10 @@ class TreeItem extends BaseItem {
     const childItem = this.__childItems[index];
     if (childItem) {
       const signalIds = this.__childItemsSignalIds[index];
-      childItem.nameChanged.disconnectId(signalIds.nameChangedId)
-      childItem.boundingChanged.disconnectId(signalIds.bboxChangedId)
-      childItem.visibilityChanged.disconnectId(signalIds.visChangedId)
-      
+      childItem.nameChanged.disconnectId(signalIds.nameChangedId);
+      childItem.boundingChanged.disconnectId(signalIds.bboxChangedId);
+      childItem.visibilityChanged.disconnectId(signalIds.visChangedId);
+
       this.__childItems.splice(index, 1);
       this.__childItemsSignalIds.splice(index, 1);
       delete this.__childItemsMapping[childItem.getName()];
@@ -540,7 +550,8 @@ class TreeItem extends BaseItem {
   removeChildByHandle(childItem) {
     const index = this.__childItems.indexOf(childItem);
     if (index == -1)
-      throw ("Error in removeChildByHandle. Child not found:" + childItem.getName());
+      throw 'Error in removeChildByHandle. Child not found:' +
+        childItem.getName();
     return this.removeChild(index);
   }
 
@@ -556,7 +567,7 @@ class TreeItem extends BaseItem {
     return this.__childItems.indexOf(childItem);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Components
 
   addComponent(component) {
@@ -571,7 +582,7 @@ class TreeItem extends BaseItem {
   removeComponent(name) {
     const index = this.__componentMapping[name];
     if (index == undefined) {
-      throw ("Component not found:" + name)
+      throw 'Component not found:' + name;
     }
     const component = this.__components[index];
     component.setOwner(undefined);
@@ -587,7 +598,7 @@ class TreeItem extends BaseItem {
   }
 
   hasComponent(name) {
-    return (name in this.__componentMapping)
+    return name in this.__componentMapping;
   }
 
   getComponent(name) {
@@ -598,24 +609,21 @@ class TreeItem extends BaseItem {
     return this.__components[this.__componentMapping[name]];
   }
 
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Path Traversial
-  // Note: path resolution starts at the root of the 
+  // Note: path resolution starts at the root of the
   // tree the path was generated from. (so index=1, because we don't resolve root).
   // Note: when a path is made relative to an item in its tree, the path
   // starts with the child elements.
   resolvePath(path, index = 0) {
-    if (typeof path == 'string')
-      path = path.split('/');
+    if (typeof path == 'string') path = path.split('/');
 
     if (index == 0) {
-      if (path[0] == '.' || path[0] == this.__name)
-        index++;
+      if (path[0] == '.' || path[0] == this.__name) index++;
       else if (path[0] == '..') {
         return this.__ownerItem.resolvePath(path, index + 1);
       } else {
-        // Note: new paths should be generated starting with the name of the root object. 
+        // Note: new paths should be generated starting with the name of the root object.
         // Re-enable this to debug path issues.
         // console.warn("Paths should start with the name of the root item or '.'")
       }
@@ -633,7 +641,7 @@ class TreeItem extends BaseItem {
     }
 
     const childName = path[index];
-    let childItem = this.getChildByName(childName);
+    const childItem = this.getChildByName(childName);
     if (childItem == undefined) {
       // Maybe the name is a component name.
       if (this.hasComponent(path[index])) {
@@ -651,9 +659,9 @@ class TreeItem extends BaseItem {
         return param;
       }
 
-      // Note: consuming code should generate errors if necssary. 
+      // Note: consuming code should generate errors if necssary.
       // In some cases, this _should_ return null and errors messages ares imply distracting.
-      //report("Unable to resolve path '"+"/".join(path)+"' after:"+this.getName());
+      // report("Unable to resolve path '"+"/".join(path)+"' after:"+this.getName());
       // console.warn("Unable to resolve path :" + (path) + " after:" + this.getName() + "\nNo child, component or property called :" + path[index]);
       return null;
     }
@@ -664,76 +672,66 @@ class TreeItem extends BaseItem {
   // and fire the callback for each visited item.
   // Note: depth only used by selection sets for now.
   traverse(callback, includeThis = true) {
-    const __c = (treeItem) => {
+    const __c = treeItem => {
       const children = treeItem.getChildren();
-      for (let childItem of children) {
-        if (childItem)
-          __t(childItem);
+      for (const childItem of children) {
+        if (childItem) __t(childItem);
       }
-    }
-    const __t = (treeItem) => {
-      if (callback(treeItem) == false)
-        return false;
+    };
+    const __t = treeItem => {
+      if (callback(treeItem) == false) return false;
       __c(treeItem);
-    }
-    if (includeThis)
-      __t(this);
-    else
-      __c(this);
-
+    };
+    if (includeThis) __t(this);
+    else __c(this);
   }
-  /////////////////////////
+  // ///////////////////////
   // Events
 
   onMouseDown(event) {
     this.mouseDown.emit(event);
     if (event.vleStopPropagation !== true && this.__ownerItem) {
-      this.__ownerItem.onMouseDown(event)
+      this.__ownerItem.onMouseDown(event);
     }
     return event.vleStopPropagation;
   }
 
   onMouseUp(event) {
-      this.mouseUp.emit(event);
-      if(event.vleStopPropagation !== true && this.__ownerItem){
-          this.__ownerItem.onMouseUp(event)
-      }
-      return event.vleStopPropagation;
+    this.mouseUp.emit(event);
+    if (event.vleStopPropagation !== true && this.__ownerItem) {
+      this.__ownerItem.onMouseUp(event);
+    }
+    return event.vleStopPropagation;
   }
 
   onMouseMove(event) {
-      this.mouseMove.emit(event);
-      if(event.vleStopPropagation !== true && this.__ownerItem){
-          this.__ownerItem.onMouseMove(event)
-      }
-      return event.vleStopPropagation;
+    this.mouseMove.emit(event);
+    if (event.vleStopPropagation !== true && this.__ownerItem) {
+      this.__ownerItem.onMouseMove(event);
+    }
+    return event.vleStopPropagation;
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
-
   toJSON(context, flags) {
-    if (!this.testFlag(ItemFlags.USER_EDITED))
-      return;
+    if (!this.testFlag(ItemFlags.USER_EDITED)) return;
 
     let j = super.toJSON(context, flags);
 
     const jcs = [];
-    for (let c of this.__components)
-      jcs.push(c.toJSON(context, flags));
-    if (jcs.length > 0)
-      j.components = jcs;
+    for (const c of this.__components) jcs.push(c.toJSON(context, flags));
+    if (jcs.length > 0) j.components = jcs;
 
     // Some Items, such as the SliderSceneWidget do not need thier children
     // to be saved.
     if (!(flags & SaveFlags.SAVE_FLAG_SKIP_CHILDREN)) {
       const childItemsJSON = {};
-      for (let childItem of this.__childItems) {
+      for (const childItem of this.__childItems) {
         if (childItem) {
           const childJSON = childItem.toJSON(context, flags);
-          if (childJSON)
-            childItemsJSON[childItem.getName()] = childJSON;
+          if (childJSON) childItemsJSON[childItem.getName()] = childJSON;
         }
       }
       if (Object.keys(childItemsJSON).length > 0) {
@@ -742,8 +740,8 @@ class TreeItem extends BaseItem {
         } else {
           j = {
             name: this.__name,
-            children: childItemsJSON
-          }
+            children: childItemsJSON,
+          };
         }
       }
     }
@@ -755,7 +753,7 @@ class TreeItem extends BaseItem {
 
     context.numTreeItems++;
 
-    // Note: JSON data is only used to store user edits, so 
+    // Note: JSON data is only used to store user edits, so
     // parameters loaded from JSON are considered user edited.
     this.setFlag(ItemFlags.USER_EDITED);
 
@@ -768,7 +766,7 @@ class TreeItem extends BaseItem {
     if (j.children != null) {
       const childrenJson = j.children;
       if (Array.isArray(childrenJson)) {
-        for (let childJson of childrenJson) {
+        for (const childJson of childrenJson) {
           // Note: During loading of asset trees, we have an
           // existing tree generated by loading a bin data file.
           let childItem = this.getChildByName(childJson.name);
@@ -790,7 +788,7 @@ class TreeItem extends BaseItem {
           }
         }
       } else {
-        for (let childName in childrenJson) {
+        for (const childName in childrenJson) {
           const childJson = childrenJson[childName];
           // Note: During loading of asset trees, we have an
           // existing tree generated by loading a bin data file.
@@ -800,9 +798,9 @@ class TreeItem extends BaseItem {
           } else if (childJson.type) {
             childItem = sgFactory.constructClass(childJson.type);
             if (childItem) {
-              // Note: we add the child now before loading. 
+              // Note: we add the child now before loading.
               // This is because certain items. (e.g. Groups)
-              // Calculate thier global Xfo, and use it to modify 
+              // Calculate thier global Xfo, and use it to modify
               // the transform of thier members.
               // Note: Groups bind to items in the scene which are
               // already added as children, and so have global Xfos.
@@ -818,16 +816,14 @@ class TreeItem extends BaseItem {
             // file. We don't want the json tree
             // to re-instate ghost tree items that have been removed from the bin tree.
             //  (as has happened in testing.)
-
             // console.warn("Warning loading JSON. Child not found:" + childName);
           }
         }
       }
     }
 
-
     if (j.components) {
-      for (let cj of j.components) {
+      for (const cj of j.components) {
         const component = sgFactory.constructClass(cj.type ? cj.type : cj.name);
         if (component) {
           component.fromJSON(cj, context);
@@ -847,11 +843,11 @@ class TreeItem extends BaseItem {
     const visibilityFlag = 1 << 1;
     // this.setVisible(itemflags&visibilityFlag);
 
-    //this.setVisible(j.visibility);
-    // Note: to save space, some values are skipped if they are identity values 
+    // this.setVisible(j.visibility);
+    // Note: to save space, some values are skipped if they are identity values
     const localXfoFlag = 1 << 2;
     if (itemflags & localXfoFlag) {
-      let xfo = new Xfo();
+      const xfo = new Xfo();
       xfo.tr = reader.loadFloat32Vec3();
       xfo.ori = reader.loadFloat32Quat();
       xfo.sc.set(reader.loadFloat32());
@@ -861,38 +857,44 @@ class TreeItem extends BaseItem {
 
     const bboxFlag = 1 << 3;
     if (itemflags & bboxFlag)
-      this.__boundingBoxParam.setValue(new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()), ValueSetMode.DATA_LOAD);
+      this.__boundingBoxParam.setValue(
+        new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()),
+        ValueSetMode.DATA_LOAD
+      );
 
     const numChildren = reader.loadUInt32();
     if (numChildren > 0) {
-
       const toc = reader.loadUInt32Array(numChildren);
       for (let i = 0; i < numChildren; i++) {
         reader.seek(toc[i]); // Reset the pointer to the start of the item data.
         let childType = reader.loadStr();
 
         if (childType.startsWith('N') && childType.endsWith('E')) {
-
-          /////////////////////////////////////////
+          // ///////////////////////////////////////
           // hack to work around a linux issue
           // untill we have a fix.
-          const ppos = childType.indexOf("podium");
+          const ppos = childType.indexOf('podium');
           if (ppos != -1) {
             if (parseInt(childType[ppos + 7]))
               childType = childType.substring(ppos + 8, childType.length - 1);
             else
               childType = childType.substring(ppos + 7, childType.length - 1);
           }
-          const lnpos = childType.indexOf("livenurbs");
+          const lnpos = childType.indexOf('livenurbs');
           if (lnpos != -1) {
-            childType = childType.substring(childType.indexOf("CAD"), childType.length - 1);
+            childType = childType.substring(
+              childType.indexOf('CAD'),
+              childType.length - 1
+            );
           }
         }
         // const childName = reader.loadStr();
         const childItem = sgFactory.constructClass(childType);
         if (!childItem) {
           const childName = reader.loadStr();
-          console.warn("Unable to construct child:" + childName + " of type:" + childType);
+          console.warn(
+            'Unable to construct child:' + childName + ' of type:' + childType
+          );
           continue;
         }
         reader.seek(toc[i]); // Reset the pointer to the start of the item data.
@@ -928,13 +930,8 @@ class TreeItem extends BaseItem {
   static setBranchSelectionOutlineColor(color) {
     branchSelectionOutlineColor = color;
   }
-};
+}
 
 sgFactory.registerClass('TreeItem', TreeItem);
 
-export {
-  SaveFlags,
-  LoadFlags,
-  CloneFlags,
-  TreeItem
-};
+export { SaveFlags, LoadFlags, CloneFlags, TreeItem };

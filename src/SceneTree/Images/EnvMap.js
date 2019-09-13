@@ -1,39 +1,24 @@
-import {
-  Vec2, 
-  Vec3,
-  Color
-} from '../../Math';
-import {
-  Signal,
-  decodeText
-} from '../../Utilities';
-import {
-  sgFactory
-} from '../SGFactory.js';
-import {
-  VLHImage
-} from './VLHImage.js';
-import {
-  resourceLoader
-} from '../ResourceLoader.js';
+import { Vec2, Vec3, Color } from '../../Math';
+import { Signal, decodeText } from '../../Utilities';
+import { sgFactory } from '../SGFactory.js';
+import { VLHImage } from './VLHImage.js';
+import { resourceLoader } from '../ResourceLoader.js';
 
 import {
   Parameter,
   NumberParameter,
   Vec4Parameter,
   FilePathParameter,
-  ParameterSet
+  ParameterSet,
 } from '../Parameters';
 
 const EnvMapMapping = {
   LATLONG: 1,
-  OCTAHEDRAL: 2
+  OCTAHEDRAL: 2,
 };
 
-
-
-const sq = (x) => (x * x)
-const step = (edge, x) => (x < edge ? 0.0 : 1.0)
+const sq = x => x * x;
+const step = (edge, x) => (x < edge ? 0.0 : 1.0);
 
 function sum_vec2(value) {
   return value.dot(new Vec2(1.0, 1.0));
@@ -42,38 +27,27 @@ function sum_vec3(value) {
   return value.dot(new Vec3(1.0, 1.0, 1.0));
 }
 function abs_vec2(value) {
-  return new Vec2(
-         Math.abs(value.x),
-         Math.abs(value.y)
-       );
+  return new Vec2(Math.abs(value.x), Math.abs(value.y));
 }
 function max_vec2(vec, value) {
-  return new Vec2(
-         Math.max(vec.x, value),
-         Math.max(vec.y, value)
-       );
+  return new Vec2(Math.max(vec.x, value), Math.max(vec.y, value));
 }
 function abs_vec3(value) {
-  return new Vec3(
-         Math.abs(value.x),
-         Math.abs(value.y),
-         Math.abs(value.z)
-       );
+  return new Vec3(Math.abs(value.x), Math.abs(value.y), Math.abs(value.z));
 }
 function sectorize_vec2(value) {
   return new Vec2(
-         step(0.0, value.x) * 2.0 - 1.0,
-         step(0.0, value.y) * 2.0 - 1.0
-       );
+    step(0.0, value.x) * 2.0 - 1.0,
+    step(0.0, value.y) * 2.0 - 1.0
+  );
 }
 function sectorize_vec3(value) {
   return new Vec3(
-         step(0.0, value.x) * 2.0 - 1.0,
-         step(0.0, value.y) * 2.0 - 1.0,
-         step(0.0, value.z) * 2.0 - 1.0
-       );
+    step(0.0, value.x) * 2.0 - 1.0,
+    step(0.0, value.y) * 2.0 - 1.0,
+    step(0.0, value.z) * 2.0 - 1.0
+  );
 }
-
 
 function latLongUVsFromDir(dir) {
   // Math function taken from...
@@ -87,9 +61,9 @@ function latLongUVsFromDir(dir) {
 // Note: when u == 0.5 z = 1
 function dirFromLatLongUVs(u, v) {
   // http://gl.ict.usc.edu/Data/HighResProbes/
-  const theta = Math.PI*((u * 2) - 1);
-  const phi = Math.PI*v;
-  return new Vec3(sin(phi)*sin(theta), -sin(phi)*cos(theta), cos(phi));
+  const theta = Math.PI * (u * 2 - 1);
+  const phi = Math.PI * v;
+  return new Vec3(sin(phi) * sin(theta), -sin(phi) * cos(theta), cos(phi));
 }
 
 function dirToSphOctUv(normal) {
@@ -104,14 +78,14 @@ function dirToSphOctUv(normal) {
   const pitch = Math.atan2(dir.y, dir.x) / Math.HALF_PI;
 
   let uv = new Vec2(sNorm.x * orient, sNorm.y * (1.0 - orient));
-  uv.scaleInPlace(pitch)
+  uv.scaleInPlace(pitch);
 
   if (normal.z < 0.0) {
     const ts = new Vec2(uv.y, uv.x);
     const sNorm_xy = new Vec2(sNorm.x, sNorm.y);
     uv = sNorm_xy.subtract(abs_vec2(ts).multiply(sNorm_xy));
   }
-  return uv.scale(0.5).add(new Vec2(0.5,  0.5));
+  return uv.scale(0.5).add(new Vec2(0.5, 0.5));
 }
 
 function sphOctUvToDir(uv) {
@@ -128,7 +102,10 @@ function sphOctUvToDir(uv) {
   }
   if (sabsuv > 1.0) {
     const ts = Vec2(uv.y, uv.x);
-    uv = abs_vec2(ts).negate().add(new Vec2(1, 1)).multiply(suv);
+    uv = abs_vec2(ts)
+      .negate()
+      .add(new Vec2(1, 1))
+      .multiply(suv);
 
     sabsuv = sum_vec2(abs_vec2(uv));
   }
@@ -139,11 +116,7 @@ function sphOctUvToDir(uv) {
   const sPitch = Math.sin(pitch);
   const cPitch = Math.cos(pitch);
 
-  return new Vec3(
-         sOrient * suv.x * sPitch,
-         cOrient * suv.y * sPitch,
-         cPitch
-       );
+  return new Vec3(sOrient * suv.x * sPitch, cOrient * suv.y * sPitch, cPitch);
 }
 
 class EnvMap extends VLHImage {
@@ -158,57 +131,58 @@ class EnvMap extends VLHImage {
 
     const samples = entries.samples;
 
-    if(samples) {
-      if(window.TextDecoder)
-        this.__sampleSets = JSON.parse((new TextDecoder("utf-8")).decode(samples));
-      else
-        this.__sampleSets = JSON.parse(decodeText(samples));
+    if (samples) {
+      if (window.TextDecoder)
+        this.__sampleSets = JSON.parse(
+          new TextDecoder('utf-8').decode(samples)
+        );
+      else this.__sampleSets = JSON.parse(decodeText(samples));
 
-      if(this.__sampleSets.luminanceThumbnail)
-        this.__thumbSize = Math.sqrt(this.__sampleSets.luminanceThumbnail.length);
+      if (this.__sampleSets.luminanceThumbnail)
+        this.__thumbSize = Math.sqrt(
+          this.__sampleSets.luminanceThumbnail.length
+        );
     }
   }
-  
+
   getSampleSets() {
     return this.__sampleSets;
   }
 
   uvToDir(uv) {
-    switch(this.mapping) {
-    case EnvMapMapping.LATLONG:
-      return dirFromLatLongUVs(uv);
-      break;
-    case EnvMapMapping.OCTAHEDRAL:
-      return sphOctUvToDir(uv);
-      break;
+    switch (this.mapping) {
+      case EnvMapMapping.LATLONG:
+        return dirFromLatLongUVs(uv);
+        break;
+      case EnvMapMapping.OCTAHEDRAL:
+        return sphOctUvToDir(uv);
+        break;
     }
   }
 
   dirToUv(dir) {
-    switch(this.mapping) {
-    case EnvMapMapping.LATLONG:
-      return latLongUVsFromDir(dir);
-      break;
-    case EnvMapMapping.OCTAHEDRAL:
-      return dirToSphOctUv(dir);
-      break;
+    switch (this.mapping) {
+      case EnvMapMapping.LATLONG:
+        return latLongUVsFromDir(dir);
+        break;
+      case EnvMapMapping.OCTAHEDRAL:
+        return dirToSphOctUv(dir);
+        break;
     }
   }
 
   uvToLuminance(uv) {
-    const thmbPixel = (Math.floor(uv.y * this.__thumbSize) * this.__thumbSize) + (Math.floor(uv.x * this.__thumbSize));
+    const thmbPixel =
+      Math.floor(uv.y * this.__thumbSize) * this.__thumbSize +
+      Math.floor(uv.x * this.__thumbSize);
     return this.__sampleSets.luminanceThumbnail[thmbPixel];
   }
 
   dirToLuminance(dir) {
     return this.uvToLuminance(this.dirToUv(dir));
   }
-
-};
+}
 
 sgFactory.registerClass('EnvMap', EnvMap);
 
-
-export {
-  EnvMap
-};
+export { EnvMap };

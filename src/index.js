@@ -1,6 +1,5 @@
-
-if(window.ZeaEngine) {
-  console.error("ZeaEngine has been included twice in your project.")
+if (window.ZeaEngine) {
+  console.error('ZeaEngine has been included twice in your project.');
 }
 
 export * from './BrowserDetection.js';

@@ -1,30 +1,24 @@
 import { Lines } from '../Lines.js';
-import {
-  NumberParameter
-} from '../../Parameters/NumberParameter.js';
-import {
-  sgFactory
-} from '../../SGFactory.js';
+import { NumberParameter } from '../../Parameters/NumberParameter.js';
+import { sgFactory } from '../../SGFactory.js';
 
 class Cross extends Lines {
   constructor(size = 1.0) {
     super();
 
-    if(isNaN(size))
-      throw("Invalid geom args");
+    if (isNaN(size)) throw 'Invalid geom args';
 
     this.__sizeParam = this.addParameter(new NumberParameter('size', size));
     this.__rebuild();
 
-    const resize = ()=>{
+    const resize = () => {
       this.__resize();
-    }
+    };
     this.__sizeParam.valueChanged.connect(resize);
   }
 
-
   get size() {
-    return this.__size
+    return this.__size;
   }
 
   set size(val) {
@@ -45,16 +39,13 @@ class Cross extends Lines {
     const size = this.__sizeParam.getValue();
     this.getVertex(0).set(-0.5 * size, 0, 0);
     this.getVertex(1).set(0.5 * size, 0, 0);
-    this.getVertex(2).set(0, 0.5 * size,  0);
-    this.getVertex(3).set(0, -0.5 * size,  0);
+    this.getVertex(2).set(0, 0.5 * size, 0);
+    this.getVertex(3).set(0, -0.5 * size, 0);
     this.getVertex(4).set(0, 0, 0.5 * size);
     this.getVertex(5).set(0, 0, -0.5 * size);
     this.setBoundingBoxDirty();
   }
-
-};
+}
 sgFactory.registerClass('Cross', Cross);
 
-export {
-  Cross
-};
+export { Cross };

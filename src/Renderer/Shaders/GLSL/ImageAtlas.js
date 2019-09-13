@@ -2,7 +2,9 @@ import { shaderLibrary } from '../../ShaderLibrary.js';
 
 import './glslutils.js';
 
-shaderLibrary.setShaderModule('utils/imageAtlas.glsl', `
+shaderLibrary.setShaderModule(
+  'utils/imageAtlas.glsl',
+  `
 
 // Note: On mobile, I can't seem to pass around a stuct containing sampler2D.
 // I have to unpack the struct and pass its members. :(
@@ -28,4 +30,5 @@ vec4 sampleSubImage(vec2 texCoord, int index, in sampler2D atlasLayout, in sampl
     return texture2D(atlasImage, (texCoord * layoutData.zw) + layoutData.xy);
 }
 
-`);
+`
+);

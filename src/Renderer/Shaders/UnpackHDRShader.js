@@ -4,11 +4,12 @@ import { GLShader } from '../GLShader.js';
 import './GLSL/utils/quadVertexFromID.js';
 import './GLSL/utils/unpackHDR.js';
 
-
 class UnpackHDRShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('UnpackHDRShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'UnpackHDRShader.vertexShader',
+      `
 precision highp float;
 
 <%include file="utils/quadVertexFromID.glsl"/>
@@ -22,8 +23,11 @@ void main()
     v_texCoord = position+0.5;
     gl_Position = vec4(position*2.0, 0.0, 1.0);
 }
-`);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('UnpackHDRShader.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'UnpackHDRShader.fragmentShader',
+      `
 precision highp float;
 
 varying vec2 v_texCoord;
@@ -50,13 +54,9 @@ void main(void) {
 #endif
 }
 
-`);
-    }
-};
+`
+    );
+  }
+}
 
-
-export {
-    UnpackHDRShader
-};
-
-
+export { UnpackHDRShader };

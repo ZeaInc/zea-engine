@@ -1,18 +1,16 @@
-import {
-  Signal
-} from './Signal.js';
+import { Signal } from './Signal.js';
 
 class Async {
-  constructor(asyncCount=0) {
+  constructor(asyncCount = 0) {
     this.__asyncCount = asyncCount;
     this.ready = new Signal(true);
 
-    this.incAsyncCount = function(count=1) {
-      this.__asyncCount+=count;
+    this.incAsyncCount = function(count = 1) {
+      this.__asyncCount += count;
     }.bind(this);
 
     this.decAsyncCount = function() {
-      if (this.__asyncCount > 0){
+      if (this.__asyncCount > 0) {
         this.__asyncCount--;
         if (this.__asyncCount == 0) {
           this.__asyncsCompleted();
@@ -20,19 +18,15 @@ class Async {
       }
     }.bind(this);
 
-    this.__asyncsCompleted = function(){
+    this.__asyncsCompleted = function() {
       this.ready.emit();
-    }.bind(this)
+    }.bind(this);
   }
 
-  get count(){
+  get count() {
     return this.__asyncCount;
   }
+}
 
-};
-
-export {
-  Async
-};
+export { Async };
 // export default Async;
-

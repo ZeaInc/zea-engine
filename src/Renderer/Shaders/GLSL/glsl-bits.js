@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('GLSLBits.glsl', `
+shaderLibrary.setShaderModule(
+  'GLSLBits.glsl',
+  `
     
 /////////////////////////////////////////////////////////////////
 // http://concord-consortium.github.io/lab/experiments/webgl-gpgpu/script.js

@@ -1,20 +1,9 @@
-import {
-  Signal
-} from '../../Utilities';
-import {
-  sgFactory
-} from '../SGFactory';
-import {
-  Parameter,
-  ValueSetMode
-} from './Parameter.js';
-import {
-  NumberParameter
-} from './NumberParameter.js';
+import { Signal } from '../../Utilities';
+import { sgFactory } from '../SGFactory';
+import { Parameter, ValueSetMode } from './Parameter.js';
+import { NumberParameter } from './NumberParameter.js';
 
-import {
-  BaseImage
-} from '../BaseImage.js';
+import { BaseImage } from '../BaseImage.js';
 
 class MaterialFloatParam extends NumberParameter {
   constructor(name, value, range) {
@@ -22,9 +11,12 @@ class MaterialFloatParam extends NumberParameter {
     this.textureConnected = new Signal();
     this.textureDisconnected = new Signal();
   }
-  
+
   clone(flags) {
-    const clonedParam = new MaterialFloatParam(this.__name, this.__value.clone());
+    const clonedParam = new MaterialFloatParam(
+      this.__name,
+      this.__value.clone()
+    );
     return clonedParam;
   }
 
@@ -35,14 +27,14 @@ class MaterialFloatParam extends NumberParameter {
   // let imageUpdated = () => {
   //     valueChanged.emit();
   // }
-  
-  setImage(value, mode=0) {
-    let disconnectImage = () => {
+
+  setImage(value, mode = 0) {
+    const disconnectImage = () => {
       this.__image.removeRef(this);
       // image.loaded.disconnect(imageUpdated);
       // image.updated.disconnect(imageUpdated);
       this.textureDisconnected.emit();
-    }
+    };
     if (value) {
       if (this.__image != undefined && this.__image !== value) {
         disconnectImage();
@@ -74,19 +66,16 @@ class MaterialFloatParam extends NumberParameter {
   }
 
   readBinary(reader, context) {
-
-    super.readBinary(reader, context)
+    super.readBinary(reader, context);
 
     const textureName = reader.loadStr();
-    if(textureName != "") {
-      console.log("Load Texture");
+    if (textureName != '') {
+      console.log('Load Texture');
       this.setImage(context.materialLibrary.getImage(textureName));
     }
   }
-};
+}
 
 sgFactory.registerClass('MaterialFloatParam', MaterialFloatParam);
 
-export {
-  MaterialFloatParam
-};
+export { MaterialFloatParam };

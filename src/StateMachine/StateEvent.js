@@ -1,14 +1,7 @@
+import { sgFactory } from '../SceneTree/SGFactory.js';
+import { ParameterOwner } from '../SceneTree/ParameterOwner.js';
 
-import {
-  sgFactory
-} from '../SceneTree/SGFactory.js';
-import {
-  ParameterOwner
-} from '../SceneTree/ParameterOwner.js';
-
-import {
-  StateAction
-} from './StateAction.js';
+import { StateAction } from './StateAction.js';
 
 class StateEvent extends StateAction {
   constructor(name) {
@@ -18,15 +11,11 @@ class StateEvent extends StateAction {
     this.__onEvent = this.__onEvent.bind(this);
   }
 
-  __onEvent(){
-    this.__childActions.forEach((action)=>{
+  __onEvent() {
+    this.__childActions.forEach(action => {
       action.activate();
     });
   }
+}
 
-};
-
-
-export {
-  StateEvent
-};
+export { StateEvent };

@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('pragmatic-pbr/envmap-equirect.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/envmap-equirect.glsl',
+  `
 
 
 vec2 latLongUVsFromDir(vec3 dir) {
@@ -26,4 +28,5 @@ vec3 dirFromPolar(vec2 polar) {
     return dirFromLatLongUVs(u, v);
 }
 
-`);
+`
+);

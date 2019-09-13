@@ -1,5 +1,5 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/pragmatic-pbr/exposure.js';
 import './GLSL/pragmatic-pbr/tonemap-filmic.js';
@@ -8,9 +8,11 @@ import './GLSL/utils/quadVertexFromID.js';
 import './GLSL/stack-gl/gamma.js';
 
 class PostProcessing extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('PostProcessing.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'PostProcessing.vertexShader',
+      `
 precision highp float;
 
 <%include file="utils/quadVertexFromID.glsl"/>
@@ -40,8 +42,11 @@ void main()
     texcoords(fragCoord, textureSize, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);
 }
 
-`);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('PostProcessing.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'PostProcessing.fragmentShader',
+      `
 precision highp float;
 
 <%include file="pragmatic-pbr/exposure.glsl"/>
@@ -97,14 +102,11 @@ void main(void) {
 #ifndef ENABLE_ES3
     gl_FragColor = fragColor;
 #endif
-}`);
-        this.finalize();
-    }
-};
+}`
+    );
+    this.finalize();
+  }
+}
 
-
-export {
-    PostProcessing
-};
-//export default PostProcessing;
-
+export { PostProcessing };
+// export default PostProcessing;

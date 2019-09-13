@@ -1,25 +1,10 @@
-
-import {
-  Async
-} from '../Utilities';
-import {
-  GLShader
-} from './GLShader.js';
-import {
-  GLTexture2D
-} from './GLTexture2D.js';
-import {
-  GLHDRImage
-} from './GLHDRImage.js';
-import {
-  ImageMixerShader
-} from './Shaders/ImageMixerShader.js';
-import {
-  GLFbo
-} from './GLFbo.js';
-import {
-  generateShaderGeomBinding
-} from './GeomShaderBinding.js';
+import { Async } from '../Utilities';
+import { GLShader } from './GLShader.js';
+import { GLTexture2D } from './GLTexture2D.js';
+import { GLHDRImage } from './GLHDRImage.js';
+import { ImageMixerShader } from './Shaders/ImageMixerShader.js';
+import { GLFbo } from './GLFbo.js';
+import { generateShaderGeomBinding } from './GeomShaderBinding.js';
 
 class GLLightmapMixer extends GLTexture2D {
   constructor(gl, lightmapMixer) {
@@ -33,26 +18,31 @@ class GLLightmapMixer extends GLTexture2D {
       filter: 'LINEAR',
       wrap: 'CLAMP_TO_EDGE',
       width: this.__lightmapMixer.width,
-      height: this.__lightmapMixer.height
+      height: this.__lightmapMixer.height,
     });
     this.__fbo = new GLFbo(gl, this);
 
-
     this.__decompAndMixShader = new ImageMixerShader(gl);
-    let shaderComp = this.__decompAndMixShader.compileForTarget('ImageMixerShader');
-    this.__shaderBinding = generateShaderGeomBinding(gl, shaderComp.attrs, gl.__quadattrbuffers, gl.__quadIndexBuffer);
-
+    const shaderComp = this.__decompAndMixShader.compileForTarget(
+      'ImageMixerShader'
+    );
+    this.__shaderBinding = generateShaderGeomBinding(
+      gl,
+      shaderComp.attrs,
+      gl.__quadattrbuffers,
+      gl.__quadIndexBuffer
+    );
 
     this.__srcTextures = [];
 
-    let async = new Async();
-    // increment the count, so its not zero. 
-    //(so an already loaded image doesn't trigger the ready signal)
-    async.incAsyncCount(); 
-    const genGLTex = (index) => {
-      let image = this.__lightmapMixer.getSubImage(index);
+    const async = new Async();
+    // increment the count, so its not zero.
+    // (so an already loaded image doesn't trigger the ready signal)
+    async.incAsyncCount();
+    const genGLTex = index => {
+      const image = this.__lightmapMixer.getSubImage(index);
       let gltexture = image.getMetadata('gltexture');
-      if(!gltexture) {
+      if (!gltexture) {
         if (image.type === 'FLOAT') {
           gltexture = new GLHDRImage(gl, image);
         } else {
@@ -62,16 +52,16 @@ class GLLightmapMixer extends GLTexture2D {
       this.__srcTextures[index] = gltexture;
       async.incAsyncCount();
       gltexture.ready.connect(async.decAsyncCount);
-    }
+    };
 
     for (let i = 0; i < this.__lightmapMixer.numSubImages(); i++) {
       genGLTex(i);
     }
 
-    this.__lightmapMixer.lightmapAdded.connect((index) => {
+    this.__lightmapMixer.lightmapAdded.connect(index => {
       genGLTex(index);
     });
-    
+
     async.ready.connect(this.__renderTgtImage.bind(this));
     async.decAsyncCount();
 
@@ -83,15 +73,12 @@ class GLLightmapMixer extends GLTexture2D {
     });
 
     this.__lightmapMixer.destructing.connect(() => {
-      console.log(this.__lightmapMixer.getName() + " destructing");
+      console.log(this.__lightmapMixer.getName() + ' destructing');
       this.destroy();
     });
-
   }
 
-
   __renderTgtImage() {
-
     const gl = this.__gl;
     this.__fbo.bindAndClear();
 
@@ -102,7 +89,10 @@ class GLLightmapMixer extends GLTexture2D {
     const unifs = renderstate.unifs;
     for (let i = 0; i < this.__srcTextures.length; i++) {
       this.__srcTextures[i].bind(renderstate, unifs['sampler' + i].location);
-      gl.uniform1f(unifs['weight' + i].location, this.__lightmapMixer.getSubImageWeight(i));
+      gl.uniform1f(
+        unifs['weight' + i].location,
+        this.__lightmapMixer.getSubImageWeight(i)
+      );
     }
 
     gl.drawQuad();
@@ -142,9 +132,7 @@ class GLLightmapMixer extends GLTexture2D {
     this.__lightmapMixer.loaded.disconnectScope(this);
     this.__lightmapMixer.updated.disconnectScope(this);
   }
-};
+}
 
-export {
-  GLLightmapMixer
-};
+export { GLLightmapMixer };
 // export default GLLightmapMixer;

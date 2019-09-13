@@ -1,7 +1,4 @@
-
-import {
-  sgFactory
-} from '../SceneTree/SGFactory.js';
+import { sgFactory } from '../SceneTree/SGFactory.js';
 
 class State {
   constructor(name) {
@@ -12,10 +9,10 @@ class State {
     this.__deactivationActions = [];
   }
 
-  getName(){
+  getName() {
     return this.__name;
   }
-  setName(name){
+  setName(name) {
     this.__name = name;
   }
 
@@ -28,23 +25,22 @@ class State {
   }
 
   activate() {
-    this.__stateEvents.forEach((stateEvent)=>{
+    this.__stateEvents.forEach(stateEvent => {
       stateEvent.activate();
     });
-    this.__activationActions.forEach((action)=>{
+    this.__activationActions.forEach(action => {
       action.activate();
     });
   }
 
   deactivate() {
-    this.__stateEvents.forEach((stateEvent)=>{
+    this.__stateEvents.forEach(stateEvent => {
       stateEvent.deactivate();
     });
-    this.__deactivationActions.forEach((action)=>{
+    this.__deactivationActions.forEach(action => {
       action.activate();
     });
   }
-
 
   addStateEvent(stateEvent) {
     stateEvent.setState(this);
@@ -68,31 +64,29 @@ class State {
     this.__deactivationActions.push(action);
   }
 
-
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
   toJSON(context, flags) {
-    let j = {
+    const j = {
       name: this.__name,
-      type: this.constructor.name
+      type: this.constructor.name,
     };
 
     const stateEventsJson = [];
-    for(let stateEvent of this.__stateEvents){
+    for (const stateEvent of this.__stateEvents) {
       stateEventsJson.push(stateEvent.toJSON(context, flags));
     }
     j.stateEvents = stateEventsJson;
-    
+
     const activationActionsJson = [];
-    for(let stateEvent of this.__activationActions){
+    for (const stateEvent of this.__activationActions) {
       activationActionsJson.push(stateEvent.toJSON(context, flags));
     }
     j.activationActions = activationActionsJson;
-    
+
     const deactivationActionsJson = [];
-    for(let stateEvent of this.__deactivationActions){
+    for (const stateEvent of this.__deactivationActions) {
       deactivationActionsJson.push(stateEvent.toJSON(context, flags));
     }
     j.deactivationActions = deactivationActionsJson;
@@ -101,30 +95,30 @@ class State {
   }
 
   fromJSON(j, context, flags) {
-
     this.__name = j.name;
 
-    for(let stateEventJson of j.stateEvents){
+    for (const stateEventJson of j.stateEvents) {
       const stateEvent = sgFactory.constructClass(stateEventJson.type);
       stateEvent.fromJSON(stateEventJson, context);
       this.addStateEvent(stateEvent);
     }
-    for(let activationActionJson of j.activationActions){
-      const activationAction = sgFactory.constructClass(activationActionJson.type);
+    for (const activationActionJson of j.activationActions) {
+      const activationAction = sgFactory.constructClass(
+        activationActionJson.type
+      );
       activationAction.fromJSON(activationActionJson, context);
       this.addActivationAction(activationAction);
     }
-    for(let deactivationActionJson of j.deactivationActions){
-      const deactivationAction = sgFactory.constructClass(deactivationActionJson.type);
+    for (const deactivationActionJson of j.deactivationActions) {
+      const deactivationAction = sgFactory.constructClass(
+        deactivationActionJson.type
+      );
       deactivationAction.fromJSON(deactivationActionJson, context);
       this.addDeactivationAction(deactivationAction);
     }
-
   }
-};
+}
 
 sgFactory.registerClass('State', State);
 
-export {
-  State
-};
+export { State };

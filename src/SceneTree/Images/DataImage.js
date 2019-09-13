@@ -1,14 +1,6 @@
-
-import {
-  Async,
-  Signal
-} from '../../Utilities';
-import {
-  sgFactory
-} from '../SGFactory.js';
-import {
-  BaseImage
-} from '../BaseImage.js';
+import { Async, Signal } from '../../Utilities';
+import { sgFactory } from '../SGFactory.js';
+import { BaseImage } from '../BaseImage.js';
 
 // let ResourceLoaderWorker = require("worker-loader?inline!./ResourceLoaderWorker.js");
 
@@ -16,8 +8,7 @@ class DataImage extends BaseImage {
   constructor(name) {
     super();
 
-    if (name == undefined)
-      name = this.constructor.name;
+    if (name == undefined) name = this.constructor.name;
     this.__name = name;
     this.format = 'RGBA';
     this.type = 'UNSIGNED_BYTE';
@@ -27,12 +18,11 @@ class DataImage extends BaseImage {
     this.width = 1;
     this.height = 1;
   }
-  
 
   isLoaded() {
     return this.__loaded;
   }
-  
+
   getName() {
     return this.__name;
   }
@@ -41,16 +31,14 @@ class DataImage extends BaseImage {
     return false;
   }
 
-  setData(width, height, data){
+  setData(width, height, data) {
     this.width = width;
     this.height = height;
     this.__data = data;
-    if(!this.__loaded) {
+    if (!this.__loaded) {
       this.__loaded = true;
       this.loaded.emit();
-    }
-    else
-      this.updated.emit();
+    } else this.updated.emit();
   }
 
   getParams() {
@@ -58,12 +46,9 @@ class DataImage extends BaseImage {
     params['data'] = this.__data;
     return params;
   }
-};
+}
 
 sgFactory.registerClass('DataImage2D', DataImage);
 sgFactory.registerClass('DataImage', DataImage);
 
-
-export {
-  DataImage
-};
+export { DataImage };

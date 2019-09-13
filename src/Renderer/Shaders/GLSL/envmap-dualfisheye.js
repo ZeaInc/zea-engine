@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('pragmatic-pbr/envmap-dualfisheye.glsl', `
+shaderLibrary.setShaderModule(
+  'pragmatic-pbr/envmap-dualfisheye.glsl',
+  `
 
 
 
@@ -17,4 +19,5 @@ vec2 dualfisheyeUVsFromDir(vec3 dir) {
 }
 
 
-`);
+`
+);

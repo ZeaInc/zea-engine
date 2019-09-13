@@ -1,20 +1,14 @@
-import {
-  Color
-} from '../Math';
-import {
-  Signal
-} from '../Utilities';
+import { Color } from '../Math';
+import { Signal } from '../Utilities';
 
 import '../SceneTree/GeomItem.js';
-
 
 const GLGeomItemChangeType = {
   GEOMITEM_CHANGED: 0,
   GEOM_CHANGED: 1,
   VISIBILITY_CHANGED: 2,
-  HIGHLIGHT_CHANGED: 3
+  HIGHLIGHT_CHANGED: 3,
 };
-
 
 // This class abstracts the rendering of a collection of geometries to screen.
 class GLGeomItem {
@@ -38,11 +32,11 @@ class GLGeomItem {
     this.destroy = this.destroy.bind(this);
 
     if (!gl.floatTexturesSupported) {
-      this.updateXfo = (geomXfo) => {
+      this.updateXfo = geomXfo => {
         this.updateGeomMatrix();
       };
     } else {
-      this.updateXfo = (geomXfo) => {
+      this.updateXfo = geomXfo => {
         this.updated.emit(GLGeomItemChangeType.GEOMITEM_CHANGED);
       };
     }
@@ -50,8 +44,8 @@ class GLGeomItem {
     this.geomItem.geomXfoChanged.connect(this.updateXfo);
     this.geomItem.visibilityChanged.connect(this.updateVisibility);
     this.geomItem.cutAwayChanged.connect(() => {
-        this.updated.emit(GLGeomItemChangeType.GEOMITEM_CHANGED);
-      });
+      this.updated.emit(GLGeomItemChangeType.GEOMITEM_CHANGED);
+    });
     this.geomItem.destructing.connect(this.destroy);
     this.highlightChangedId = this.geomItem.highlightChanged.connect(() => {
       this.updated.emit(GLGeomItemChangeType.HIGHLIGHT_CHANGED);
@@ -63,7 +57,12 @@ class GLGeomItem {
     const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset();
     const materialId = 0;
     const geomId = 0;
-    this.geomData = [lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId];
+    this.geomData = [
+      lightmapCoordsOffset.x,
+      lightmapCoordsOffset.y,
+      materialId,
+      geomId,
+    ];
   }
 
   getGeomItem() {
@@ -103,7 +102,10 @@ class GLGeomItem {
 
   updateGeomMatrix() {
     // Pull on the GeomXfo param. This will trigger the lazy evaluation of the operators in the scene.
-    this.modelMatrixArray = this.geomItem.getGeomXfo().toMat4().asArray();
+    this.modelMatrixArray = this.geomItem
+      .getGeomXfo()
+      .toMat4()
+      .asArray();
   }
 
   getGeomMatrixArray() {
@@ -111,16 +113,19 @@ class GLGeomItem {
   }
 
   bind(renderstate) {
-
     const gl = this.gl;
     const unifs = renderstate.unifs;
 
     if (!gl.floatTexturesSupported) {
-      let modelMatrixunif = unifs.modelMatrix;
+      const modelMatrixunif = unifs.modelMatrix;
       if (modelMatrixunif) {
-        gl.uniformMatrix4fv(modelMatrixunif.location, false, this.modelMatrixArray);
+        gl.uniformMatrix4fv(
+          modelMatrixunif.location,
+          false,
+          this.modelMatrixArray
+        );
       }
-      let drawItemDataunif = unifs.drawItemData;
+      const drawItemDataunif = unifs.drawItemData;
       if (drawItemDataunif) {
         gl.uniform4f(drawItemDataunif.location, this.geomData);
       }
@@ -136,7 +141,10 @@ class GLGeomItem {
         const gllightmap = renderstate.lightmaps[this.lightmapName];
         if (gllightmap && gllightmap.glimage.isLoaded()) {
           gllightmap.glimage.bindToUniform(renderstate, unifs.lightmap);
-          gl.uniform2fv(unifs.lightmapSize.location, gllightmap.atlasSize.asArray());
+          gl.uniform2fv(
+            unifs.lightmapSize.location,
+            gllightmap.atlasSize.asArray()
+          );
           if (unifs.lightmapConnected) {
             gl.uniform1i(unifs.lightmapConnected.location, true);
           }
@@ -149,10 +157,9 @@ class GLGeomItem {
         }
       }
     }
-    
+
     return true;
   }
-
 
   destroy() {
     this.geomItem.visibilityChanged.disconnect(this.updateVisibility);
@@ -161,10 +168,7 @@ class GLGeomItem {
     this.geomItem.destructing.disconnect(this.destroy);
     this.destructing.emit(this);
   }
-};
+}
 
-export {
-  GLGeomItemChangeType,
-  GLGeomItem
-};
+export { GLGeomItemChangeType, GLGeomItem };
 // export default GLGeomItem;

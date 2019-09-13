@@ -1,15 +1,7 @@
-import {
-    Color
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/stack-gl/gamma.js';
 import './GLSL/GGX_Specular.js';
@@ -17,9 +9,11 @@ import './GLSL/modelMatrix.js';
 import './GLSL/debugColors.js';
 
 class TransparentSurfaceShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('TransparentSurfaceShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'TransparentSurfaceShader.vertexShader',
+      `
 precision highp float;
 
 
@@ -59,9 +53,12 @@ void main(void) {
     v_viewPos       = -viewPos.xyz;
     v_viewNormal    = normalMatrix * normals;
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('TransparentSurfaceShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'TransparentSurfaceShader.fragmentShader',
+      `
 precision highp float;
 
 #ifdef ENABLE_INLINE_GAMMACORRECTION
@@ -186,45 +183,46 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-        this.finalize();
-    }
+`
+    );
+    this.finalize();
+  }
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
-        paramDescs.push({ name: 'Opacity', defaultValue: 1.0, range:[0,1] });
-        paramDescs.push({ name: 'Roughness', defaultValue: 0.85 });
-        // F0 = reflectance and is a physical property of materials
-        // It also has direct relation to IOR so we need to dial one or the other
-        // For simplicity sake, we don't need to touch this value as metalic can dictate it
-        // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
-        paramDescs.push({ name: 'Reflectance', defaultValue: 0.0001 } );
-        
-        // paramDescs.push({ name: 'TexCoordScale', defaultValue: 1.0, texturable: false });
-        return paramDescs;
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Opacity', defaultValue: 1.0, range: [0, 1] });
+    paramDescs.push({ name: 'Roughness', defaultValue: 0.85 });
+    // F0 = reflectance and is a physical property of materials
+    // It also has direct relation to IOR so we need to dial one or the other
+    // For simplicity sake, we don't need to touch this value as metalic can dictate it
+    // such that non metallic is mostly around (0.01-0.025) and metallic around (0.7-0.85)
+    paramDescs.push({ name: 'Reflectance', defaultValue: 0.0001 });
 
-    static getGeomDataShaderName(){
-        return 'StandardSurfaceGeomDataShader';
-    }
+    // paramDescs.push({ name: 'TexCoordScale', defaultValue: 1.0, texturable: false });
+    return paramDescs;
+  }
 
-    static getSelectedShaderName(){
-        return 'StandardSurfaceSelectedGeomsShader';
-    }
-    
-    static isTransparent() {
-        return true;
-    }
+  static getGeomDataShaderName() {
+    return 'StandardSurfaceGeomDataShader';
+  }
 
-    bind(renderstate, key) {
-        if (renderstate.pass != 'ADD')
-            return false;
-        return super.bind(renderstate, key);
-    }
-};
+  static getSelectedShaderName() {
+    return 'StandardSurfaceSelectedGeomsShader';
+  }
+
+  static isTransparent() {
+    return true;
+  }
+
+  bind(renderstate, key) {
+    if (renderstate.pass != 'ADD') return false;
+    return super.bind(renderstate, key);
+  }
+}
 
 sgFactory.registerClass('TransparentSurfaceShader', TransparentSurfaceShader);
-export {
-    TransparentSurfaceShader
-};
+export { TransparentSurfaceShader };

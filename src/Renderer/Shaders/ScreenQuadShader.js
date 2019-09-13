@@ -1,12 +1,14 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/utils/quadVertexFromID.js';
 
 class ScreenQuadShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('ScreenQuadShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'ScreenQuadShader.vertexShader',
+      `
 precision highp float;
 
 <%include file="utils/quadVertexFromID.glsl"/>
@@ -27,8 +29,11 @@ void main()
     if(size.y < 0.0)
         v_texCoord.y = 1.0 - v_texCoord.y;
 }
-`);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('ScreenQuadShader.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'ScreenQuadShader.fragmentShader',
+      `
 precision highp float;
 
 uniform sampler2D image;
@@ -50,13 +55,11 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-        this.finalize();
-    }
-};
+`
+    );
+    this.finalize();
+  }
+}
 
-export {
-    ScreenQuadShader
-};
-//export default ScreenQuadShader;
-
+export { ScreenQuadShader };
+// export default ScreenQuadShader;

@@ -1,22 +1,16 @@
-import {
-    Color
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/modelMatrix.js';
 
 class LinesShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('LinesShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'LinesShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -34,9 +28,12 @@ void main(void) {
     mat4 modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
     gl_Position = modelViewProjectionMatrix * vec4(positions, 1.0);
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('LinesShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'LinesShader.fragmentShader',
+      `
 precision highp float;
 
 uniform color Color;
@@ -56,37 +53,38 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-        this.finalize();
-    }
+`
+    );
+    this.finalize();
+  }
 
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'Color', defaultValue: new Color(1.0, 1.0, 0.5) })
-        paramDescs.push({ name: 'Opacity', defaultValue: 1.0 })
-        return paramDescs;
-    }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'Color',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Opacity', defaultValue: 1.0 });
+    return paramDescs;
+  }
 
-    static getGeomDataShaderName(){
-        return 'StandardSurfaceGeomDataShader';
-    }
+  static getGeomDataShaderName() {
+    return 'StandardSurfaceGeomDataShader';
+  }
 
-    static getSelectedShaderName(){
-        return 'StandardSurfaceSelectedGeomsShader';
-    }
-    
-    static isTransparent() {
-        return true;
-    }
+  static getSelectedShaderName() {
+    return 'StandardSurfaceSelectedGeomsShader';
+  }
 
-    bind(renderstate, key) {
-        if (renderstate.pass != 'ADD')
-            return false;
-        return super.bind(renderstate, key);
-    }
-};
+  static isTransparent() {
+    return true;
+  }
+
+  bind(renderstate, key) {
+    if (renderstate.pass != 'ADD') return false;
+    return super.bind(renderstate, key);
+  }
+}
 
 sgFactory.registerClass('LinesShader', LinesShader);
-export {
-    LinesShader
-};
+export { LinesShader };

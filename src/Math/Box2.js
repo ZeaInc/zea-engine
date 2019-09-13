@@ -1,12 +1,6 @@
-import {
-  JSON_stringify_fixedPrecision
-} from './Common.js';
-import {
-  Vec2
-} from './Vec2';
-import {
-  typeRegistry
-} from './TypeRegistry.js';
+import { JSON_stringify_fixedPrecision } from './Common.js';
+import { Vec2 } from './Vec2';
+import { typeRegistry } from './TypeRegistry.js';
 
 class Box2 {
   constructor(p0 = undefined, p1 = undefined) {
@@ -22,7 +16,6 @@ class Box2 {
     }
   }
 
-
   set(p0, p1) {
     this.p0 = p0;
     this.p1 = p1;
@@ -36,8 +29,12 @@ class Box2 {
   }
 
   isValid() {
-    return this.p0.x != Number.POSITIVE_INFINITY && this.p1.x != Number.NEGATIVE_INFINITY &&
-      this.p0.y != Number.POSITIVE_INFINITY && this.p1.y != Number.NEGATIVE_INFINITY;
+    return (
+      this.p0.x != Number.POSITIVE_INFINITY &&
+      this.p1.x != Number.NEGATIVE_INFINITY &&
+      this.p0.y != Number.POSITIVE_INFINITY &&
+      this.p1.y != Number.NEGATIVE_INFINITY
+    );
   }
 
   addPoint(point) {
@@ -60,38 +57,35 @@ class Box2 {
   }
 
   center() {
-    let result = this.p1.subtract(this.p0);
+    const result = this.p1.subtract(this.p0);
     result.scaleInPlace(0.5);
     result.addInPlace(this.p0);
     return result;
   }
 
-
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Static Methods
 
   static create(...args) {
     return new Box2(...args);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Persistence
 
   toJSON() {
     return {
-      "p0": this.p0.toJSON(),
-      "p1": this.p1.toJSON()
-    }
+      p0: this.p0.toJSON(),
+      p1: this.p1.toJSON(),
+    };
   }
 
   toString() {
-    return JSON_stringify_fixedPrecision(this.toJSON())
+    return JSON_stringify_fixedPrecision(this.toJSON());
   }
-};
+}
 
 typeRegistry.registerType('Box2', Box2);
 
-export {
-  Box2
-};
+export { Box2 };
 // export default Box2;

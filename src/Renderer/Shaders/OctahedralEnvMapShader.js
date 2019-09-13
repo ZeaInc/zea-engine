@@ -1,14 +1,16 @@
-import { GLShader }  from '../../GLShader.js';
-import { shaderLibrary }  from '../../ShaderLibrary.js';
+import { GLShader } from '../../GLShader.js';
+import { shaderLibrary } from '../../ShaderLibrary.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
 import './GLSL/Florian/Lookup.js';
 
 class OctahedralEnvMapShader extends GLShader {
-    constructor(name) {
-        super(name);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('OctahedralEnvMapShader.vertexShader', `
+  constructor(name) {
+    super(name);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'OctahedralEnvMapShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec2 positions;    //(location = 0)
@@ -40,9 +42,12 @@ void main()
     vPosition = positions;
     gl_Position = vec4(positions, 0, 1);
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('OctahedralEnvMapShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'OctahedralEnvMapShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="Florian/Lookup.glsl"/>
@@ -80,11 +85,10 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
-    }
-};
+`
+    );
+  }
+}
 
-export {
-    OctahedralEnvMapShader
-};
-//export default OctahedralEnvMapShader;
+export { OctahedralEnvMapShader };
+// export default OctahedralEnvMapShader;

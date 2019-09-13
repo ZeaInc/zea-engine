@@ -2,7 +2,9 @@ import { shaderLibrary } from '../../ShaderLibrary.js';
 import './ImagePyramid.js';
 import './envmap-octahedral.js';
 
-shaderLibrary.setShaderModule('GGX_Specular.glsl', `
+shaderLibrary.setShaderModule(
+  'GGX_Specular.glsl',
+  `
 
 
 <%include file="pragmatic-pbr/envmap-octahedral.glsl"/>
@@ -87,4 +89,5 @@ vec3 GGX_Specular_PrefilteredEnv(vec3 normal, vec3 viewVector, float roughness, 
 
     return radiance;        
 }
-`);
+`
+);

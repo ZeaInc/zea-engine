@@ -1,16 +1,14 @@
-import {
-    GLShader
-} from '../GLShader.js';
-import {
-    shaderLibrary
-} from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
 
 import './GLSL/utils/quadVertexFromID.js';
 
 class UnpackLDRAlphaImageShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('UnpackLDRAlphaImageShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'UnpackLDRAlphaImageShader.vertexShader',
+      `
 precision highp float;
 
 <%include file="utils/quadVertexFromID.glsl"/>
@@ -24,8 +22,11 @@ void main()
     v_texCoord = position+0.5;
     gl_Position = vec4(position*2.0, 0.0, 1.0);
 }
-`);
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('UnpackLDRAlphaImageShader.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'UnpackLDRAlphaImageShader.fragmentShader',
+      `
 precision highp float;
 
 varying vec2 v_texCoord;
@@ -53,13 +54,9 @@ void main(void) {
 #endif
 }
 
-`);
-    }
-};
+`
+    );
+  }
+}
 
-
-
-export {
-    UnpackLDRAlphaImageShader
-};
-
+export { UnpackLDRAlphaImageShader };

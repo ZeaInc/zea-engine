@@ -1,10 +1,6 @@
-import {
-  GLPass
-} from './GLPass';
+import { GLPass } from './GLPass';
 
-import {
-  Vec4
-} from '../../Math';
+import { Vec4 } from '../../Math';
 
 import {
   GeomItem,
@@ -14,31 +10,16 @@ import {
   PointsProxy,
   LinesProxy,
   MeshProxy,
-  sgFactory
+  sgFactory,
 } from '../../SceneTree';
 
-import {
-  GLPoints
-} from '../GLPoints.js';
-import {
-  GLLines
-} from '../GLLines.js';
-import {
-  GLMesh
-} from '../GLMesh.js';
-import {
-  GLShader
-} from '../GLShader.js';
-import {
-  GLMaterial
-} from '../GLMaterial.js';
-import {
-  GLGeomItemChangeType,
-  GLGeomItem
-} from '../GLGeomItem.js';
-import {
-  GLTexture2D
-} from '../GLTexture2D.js';
+import { GLPoints } from '../GLPoints.js';
+import { GLLines } from '../GLLines.js';
+import { GLMesh } from '../GLMesh.js';
+import { GLShader } from '../GLShader.js';
+import { GLMaterial } from '../GLMaterial.js';
+import { GLGeomItemChangeType, GLGeomItem } from '../GLGeomItem.js';
+import { GLTexture2D } from '../GLTexture2D.js';
 
 const pixelsPerItem = 6; // The number of RGBA pixels per draw item.
 
@@ -56,11 +37,10 @@ class GLStandardGeomsPass extends GLPass {
     super.init(renderer, passIndex);
 
     this.__renderer.registerPass(
-      (treeItem) => {
+      treeItem => {
         if (treeItem instanceof GeomItem) {
           if (!treeItem.getMetadata('glgeomItem')) {
-
-            const checkGeom = (geomItem) => {
+            const checkGeom = geomItem => {
               if (this.filterGeomItem(geomItem)) {
                 if (treeItem.getGeometry() == undefined) {
                   // we will add this geomitem once it recieves its geom.
@@ -70,7 +50,7 @@ class GLStandardGeomsPass extends GLPass {
                   // The geoms will get assigned after the tree is removed.
                   treeItem.geomAssigned.connect(() => {
                     this.addGeomItem(geomItem);
-                  })
+                  });
                 } else {
                   this.addGeomItem(geomItem);
                 }
@@ -78,14 +58,16 @@ class GLStandardGeomsPass extends GLPass {
               } else {
                 return false;
               }
-            }
+            };
 
             if (treeItem.getMaterial() == undefined) {
-              console.warn("Scene item :" + treeItem.getPath() + " has no material");
+              console.warn(
+                'Scene item :' + treeItem.getPath() + ' has no material'
+              );
               // TODO: listen for when the material is assigned.(like geoms below)
               return false;
             } else {
-              return checkGeom(treeItem)
+              return checkGeom(treeItem);
             }
           } else {
             return false;
@@ -94,8 +76,11 @@ class GLStandardGeomsPass extends GLPass {
           return false;
         }
       },
-      (treeItem) => {
-        if (treeItem instanceof GeomItem && treeItem.getMetadata('glgeomItem')) {
+      treeItem => {
+        if (
+          treeItem instanceof GeomItem &&
+          treeItem.getMetadata('glgeomItem')
+        ) {
           return this.removeGeomItem(treeItem);
         }
         return false;
@@ -112,12 +97,13 @@ class GLStandardGeomsPass extends GLPass {
   }
 
   addMaterial(material) {
-
     let glmaterial = material.getMetadata('glmaterial');
     if (glmaterial) {
       return glmaterial;
     }
-    const glshader = this.__renderer.getOrCreateShader(material.getShaderName());
+    const glshader = this.__renderer.getOrCreateShader(
+      material.getShaderName()
+    );
     glmaterial = new GLMaterial(this.__gl, material, glshader);
     glmaterial.updated.connect(() => {
       this.__renderer.requestRedraw();
@@ -128,7 +114,7 @@ class GLStandardGeomsPass extends GLPass {
     material.setMetadata('glmaterial', glmaterial);
 
     return glmaterial;
-  };
+  }
 
   addGeom(geom) {
     let glgeom = geom.getMetadata('glgeom');
@@ -143,21 +129,20 @@ class GLStandardGeomsPass extends GLPass {
     } else if (geom instanceof Points || geom instanceof PointsProxy) {
       glgeom = new GLPoints(gl, geom);
     } else {
-      throw ("Unsupported geom type:" + geom.constructor.name);
+      throw 'Unsupported geom type:' + geom.constructor.name;
     }
     geom.setMetadata('glgeom', glgeom);
     return glgeom;
-  };
+  }
 
   addGeomItem(geomItem) {
     if (geomItem.isDestroyed()) {
-      throw ("geomItem is destroyed:" + geomItem.getPath());
+      throw 'geomItem is destroyed:' + geomItem.getPath();
     }
     // let glmaterialGeomItemSets = this.addMaterial(geomItem.getMaterial());
     // if (!glmaterialGeomItemSets)
     //     return;
     const glgeom = this.addGeom(geomItem.getGeometry());
-
 
     const flags = 1;
     let index;
@@ -174,19 +159,17 @@ class GLStandardGeomsPass extends GLPass {
     const glgeomItem = new GLGeomItem(gl, geomItem, glgeom, index, flags);
     geomItem.setMetadata('glgeomItem', glgeomItem);
 
-    const updatedId = glgeomItem.updated.connect((type) => {
+    const updatedId = glgeomItem.updated.connect(type => {
       switch (type) {
         case GLGeomItemChangeType.GEOMITEM_CHANGED:
-          if (this.__dirtyItemIndices.indexOf(index) != -1)
-            return;
+          if (this.__dirtyItemIndices.indexOf(index) != -1) return;
           this.__dirtyItemIndices.push(index);
           break;
         case GLGeomItemChangeType.GEOM_CHANGED:
         case GLGeomItemChangeType.VISIBILITY_CHANGED:
           break;
         case GLGeomItemChangeType.HIGHLIGHT_CHANGED:
-          if (this.__dirtyItemIndices.indexOf(index) != -1)
-            return;
+          if (this.__dirtyItemIndices.indexOf(index) != -1) return;
           this.__dirtyItemIndices.push(index);
           this.__renderer.requestRedraw();
           return;
@@ -201,11 +184,10 @@ class GLStandardGeomsPass extends GLPass {
 
     geomItem.setMetadata('glpass', this);
     return glgeomItem;
-  };
+  }
 
   removeGeomItem(geomItem) {
-    if(geomItem.getMetadata('glpass') != this)
-      return;
+    if (geomItem.getMetadata('glpass') != this) return;
 
     const glgeomItem = geomItem.getMetadata('glgeomItem');
 
@@ -220,8 +202,8 @@ class GLStandardGeomsPass extends GLPass {
     // this.renderTreeUpdated.emit();
     this.__renderer.requestRedraw();
 
-    geomItem.getMetadata('glpass')
-    geomItem.deleteMetadata('glgeomItem')
+    geomItem.getMetadata('glpass');
+    geomItem.deleteMetadata('glgeomItem');
 
     return glgeomItem;
   }
@@ -245,33 +227,36 @@ class GLStandardGeomsPass extends GLPass {
     // if(materialGeomMapping.geomItemMappings.length == 0 && !this.__explicitShader){
     //     this.removeMaterialGeomMapping(materialGeomMapping.glmaterial);
     // }
-  };
+  }
 
-
-  //////////////////////////////////////////////////////////
-  /// GeomItem IDs
+  // ////////////////////////////////////////////////////////
+  // / GeomItem IDs
 
   getGeomItem(id) {
     if (id >= this.__drawItems.length) {
-      console.warn("Invalid Draw Item id:" + id + " NumItems:" + (this.__drawItems.length - 1));
+      console.warn(
+        'Invalid Draw Item id:' +
+          id +
+          ' NumItems:' +
+          (this.__drawItems.length - 1)
+      );
       return undefined;
     }
     return this.__drawItems[id];
-  };
+  }
 
-  //////////////////////////////////////////////////
+  // ////////////////////////////////////////////////
   // Data Uploading
   __populateDrawItemDataArray(geomItem, index, dataArray) {
-
     const stride = pixelsPerItem * 4; // The number of floats per draw item.
     const offset = index * stride;
 
-    ///////////////////////////
+    // /////////////////////////
     // Geom Item Params
     const materialId = 0;
     let flags = 0;
-    if(geomItem.isCutawayEnabled()) {
-      const GEOMITEM_FLAG_CUTAWAY =  1; // 1<<0;
+    if (geomItem.isCutawayEnabled()) {
+      const GEOMITEM_FLAG_CUTAWAY = 1; // 1<<0;
       flags |= GEOMITEM_FLAG_CUTAWAY;
     }
     const lightmapCoordsOffset = geomItem.getLightmapCoordsOffset();
@@ -279,7 +264,7 @@ class GLStandardGeomsPass extends GLPass {
     const pix0 = Vec4.createFromFloat32Buffer(dataArray.buffer, offset + 0);
     pix0.set(flags, materialId, lightmapCoordsOffset.x, lightmapCoordsOffset.y);
 
-    ///////////////////////////
+    // /////////////////////////
     // Geom Matrix
     const mat4 = geomItem.getGeomXfo().toMat4();
     const pix1 = Vec4.createFromFloat32Buffer(dataArray.buffer, offset + 4);
@@ -289,31 +274,30 @@ class GLStandardGeomsPass extends GLPass {
     pix2.set(mat4.xAxis.y, mat4.yAxis.y, mat4.zAxis.y, mat4.translation.y);
     pix3.set(mat4.xAxis.z, mat4.yAxis.z, mat4.zAxis.z, mat4.translation.z);
 
-    ///////////////////////////
+    // /////////////////////////
     // Hilight
     const pix4 = Vec4.createFromFloat32Buffer(dataArray.buffer, offset + 16);
-    if(geomItem.isHighlighted()) {
+    if (geomItem.isHighlighted()) {
       const highlight = geomItem.getHighlight();
       pix4.set(highlight.r, highlight.g, highlight.b, highlight.a);
     }
 
-    ///////////////////////////
+    // /////////////////////////
     // Cutaway
     const pix5 = Vec4.createFromFloat32Buffer(dataArray.buffer, offset + 20);
-    if(geomItem.isCutawayEnabled()) {
+    if (geomItem.isCutawayEnabled()) {
       const cutAwayVector = geomItem.getCutVector();
       const cutAwayDist = geomItem.getCutDist();
       // console.log(geomItem.getName(), geomItem.isCutawayEnabled(), flags, pix0.toString())
       pix5.set(cutAwayVector.x, cutAwayVector.y, cutAwayVector.z, cutAwayDist);
     }
-  };
+  }
 
   newItemsReadyForLoading() {
     return this.__dirtyItemIndices.length > 0;
-  };
+  }
 
   uploadGeomItems() {
-
     const gl = this.__gl;
     if (!gl.floatTexturesSupported) {
       // Pull on the GeomXfo params. This will trigger the lazy evaluation of the operators in the scene.
@@ -329,13 +313,15 @@ class GLStandardGeomsPass extends GLPass {
       return;
     }
 
-    let size = Math.round(Math.sqrt(this.__drawItems.length * pixelsPerItem) + 0.5);
+    let size = Math.round(
+      Math.sqrt(this.__drawItems.length * pixelsPerItem) + 0.5
+    );
     // Only support power 2 textures. Else we get strange corruption on some GPUs
     // in some scenes.
     size = Math.nextPow2(size);
     // Size should be a multiple of pixelsPerItem, so each geom item is always contiguous
     // in memory. (makes updating a lot easier. See __updateItemInstanceData below)
-    if ((size % pixelsPerItem) != 0)
+    if (size % pixelsPerItem != 0)
       size += pixelsPerItem - (size % pixelsPerItem);
 
     if (!this.__drawItemsTexture) {
@@ -346,12 +332,14 @@ class GLStandardGeomsPass extends GLPass {
         height: size,
         filter: 'NEAREST',
         wrap: 'CLAMP_TO_EDGE',
-        mipMapped: false
+        mipMapped: false,
       });
       this.__drawItemsTexture.clear();
     } else if (this.__drawItemsTexture.width != size) {
       this.__drawItemsTexture.resize(size, size);
-      this.__dirtyItemIndices = Array((size * size) / pixelsPerItem).fill().map((v, i) => i);
+      this.__dirtyItemIndices = Array((size * size) / pixelsPerItem)
+        .fill()
+        .map((v, i) => i);
     }
 
     gl.bindTexture(gl.TEXTURE_2D, this.__drawItemsTexture.glTex);
@@ -385,28 +373,49 @@ class GLStandardGeomsPass extends GLPass {
         const glgeomItem = this.__drawItems[j];
         // When an item is deleted, we allocate its index to the free list
         // and null this item in the array. skip over null items.
-        if (!glgeomItem)
-          continue;
-        this.__populateDrawItemDataArray(glgeomItem.getGeomItem(), j - indexStart, dataArray);
+        if (!glgeomItem) continue;
+        this.__populateDrawItemDataArray(
+          glgeomItem.getGeomItem(),
+          j - indexStart,
+          dataArray
+        );
       }
 
       if (typeId == gl.FLOAT) {
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, formatId, typeId, dataArray);
+        gl.texSubImage2D(
+          gl.TEXTURE_2D,
+          0,
+          xoffset,
+          yoffset,
+          width,
+          height,
+          formatId,
+          typeId,
+          dataArray
+        );
       } else {
         const unit16s = Math.convertFloat32ArrayToUInt16Array(dataArray);
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, formatId, typeId, unit16s);
+        gl.texSubImage2D(
+          gl.TEXTURE_2D,
+          0,
+          xoffset,
+          yoffset,
+          width,
+          height,
+          formatId,
+          typeId,
+          unit16s
+        );
       }
 
       i += uploadCount - 1;
     }
 
-
     this.__dirtyItemIndices = [];
   }
 
   finalize() {
-    if (this.__dirtyItemIndices.length == 0)
-      return;
+    if (this.__dirtyItemIndices.length == 0) return;
     this.uploadGeomItems();
   }
 
@@ -414,26 +423,28 @@ class GLStandardGeomsPass extends GLPass {
     const gl = this.__gl;
     const unifs = renderstate.unifs;
     if (this.__drawItemsTexture && unifs.instancesTexture) {
-      this.__drawItemsTexture.bindToUniform(renderstate, unifs.instancesTexture);
-      gl.uniform1i(unifs.instancesTextureSize.location, this.__drawItemsTexture.width);
+      this.__drawItemsTexture.bindToUniform(
+        renderstate,
+        unifs.instancesTexture
+      );
+      gl.uniform1i(
+        unifs.instancesTextureSize.location,
+        this.__drawItemsTexture.width
+      );
     }
     return true;
   }
 
   bindShader(renderstate, glshader) {
-    if (!glshader.bind(renderstate, this.constructor.name))
-      return false;
-    if (!this.bind(renderstate))
-      return false;
+    if (!glshader.bind(renderstate, this.constructor.name)) return false;
+    if (!this.bind(renderstate)) return false;
     return true;
   }
 
   bindMaterial(renderstate, glmaterial, warnMissingUnifs) {
     return glmaterial.bind(renderstate, warnMissingUnifs);
   }
-};
+}
 
-export {
-  GLStandardGeomsPass
-};
+export { GLStandardGeomsPass };
 // export default GLPass;

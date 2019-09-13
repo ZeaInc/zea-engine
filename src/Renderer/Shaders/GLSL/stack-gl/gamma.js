@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('stack-gl/gamma.glsl', `
+shaderLibrary.setShaderModule(
+  'stack-gl/gamma.glsl',
+  `
 
 const float gamma_const = 2.2;
 
@@ -54,4 +56,5 @@ vec4 toGamma(vec4 v, float gamma) {
 }
 
 
-`);
+`
+);

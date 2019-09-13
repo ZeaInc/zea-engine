@@ -1,16 +1,7 @@
-import {
-    Vec3,
-    Color
-} from '../../Math';
-import {
-    sgFactory
-} from '../../SceneTree';
-import {
-    shaderLibrary
-} from '../ShaderLibrary.js';
-import {
-    GLShader
-} from '../GLShader.js';
+import { Vec3, Color } from '../../Math';
+import { sgFactory } from '../../SceneTree';
+import { shaderLibrary } from '../ShaderLibrary.js';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/constants.js';
 import './GLSL/stack-gl/transpose.js';
@@ -24,9 +15,11 @@ import './GLSL/ImagePyramid.js';
 import './GLSL/cutaways.js';
 
 class StandardCutawaySurfaceShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('StandardCutawaySurfaceShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'StandardCutawaySurfaceShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;
@@ -97,9 +90,12 @@ void main(void) {
     }
 
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('StandardCutawaySurfaceShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'StandardCutawaySurfaceShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -305,38 +301,63 @@ void main(void) {
     gl_FragColor = fragColor;
 #endif
 }
-`);
+`
+    );
 
-        this.finalize();
-    }
-    static getParamDeclarations() {
-        const paramDescs = super.getParamDeclarations();
-        paramDescs.push({ name: 'BaseColor', defaultValue: new Color(1.0, 1.0, 0.5) });
-        paramDescs.push({ name: 'Metallic', defaultValue: 0.0 });
-        paramDescs.push({ name: 'Roughness', defaultValue: 0.85 });
-        paramDescs.push({ name: 'Reflectance', defaultValue: 0.0001 } );
-        paramDescs.push({ name: 'EmissiveStrength', defaultValue: 0.0 });
-        // paramDescs.push({ name: 'TexCoordScale', defaultValue: 1.0, texturable: false });
+    this.finalize();
+  }
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations();
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    });
+    paramDescs.push({ name: 'Metallic', defaultValue: 0.0 });
+    paramDescs.push({ name: 'Roughness', defaultValue: 0.85 });
+    paramDescs.push({ name: 'Reflectance', defaultValue: 0.0001 });
+    paramDescs.push({ name: 'EmissiveStrength', defaultValue: 0.0 });
+    // paramDescs.push({ name: 'TexCoordScale', defaultValue: 1.0, texturable: false });
 
-        // cutaway params
-        paramDescs.push({ name: 'cutawayEnabled', defaultValue: true, texturable: false });
-        paramDescs.push({ name: 'cutColor', defaultValue: new Color(0.7, 0.2, 0.2), texturable: false });
-        paramDescs.push({ name: 'planeNormal', defaultValue: new Vec3(1.0, 0.0, 0.0), texturable: false });
-        paramDescs.push({ name: 'planeDist', defaultValue: 0.0, texturable: false });
-        paramDescs.push({ name: 'cutawaySurfaceOffset', defaultValue: 0.000003, texturable: false });
-        return paramDescs;
-    }
-    
-    static getGeomDataShaderName(){
-        return 'StandardSurfaceGeomDataShader';
-    }
+    // cutaway params
+    paramDescs.push({
+      name: 'cutawayEnabled',
+      defaultValue: true,
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'cutColor',
+      defaultValue: new Color(0.7, 0.2, 0.2),
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'planeNormal',
+      defaultValue: new Vec3(1.0, 0.0, 0.0),
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'planeDist',
+      defaultValue: 0.0,
+      texturable: false,
+    });
+    paramDescs.push({
+      name: 'cutawaySurfaceOffset',
+      defaultValue: 0.000003,
+      texturable: false,
+    });
+    return paramDescs;
+  }
 
-    static getSelectedShaderName(){
-        return 'StandardSurfaceSelectedGeomsShader';
-    }
-};
+  static getGeomDataShaderName() {
+    return 'StandardSurfaceGeomDataShader';
+  }
 
-sgFactory.registerClass('StandardCutawaySurfaceShader', StandardCutawaySurfaceShader);
-export {
-    StandardCutawaySurfaceShader
-};
+  static getSelectedShaderName() {
+    return 'StandardSurfaceSelectedGeomsShader';
+  }
+}
+
+sgFactory.registerClass(
+  'StandardCutawaySurfaceShader',
+  StandardCutawaySurfaceShader
+);
+export { StandardCutawaySurfaceShader };

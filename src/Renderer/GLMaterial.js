@@ -1,15 +1,8 @@
-import {
-  Signal
-} from '../Utilities';
-import {
-  BaseItem
-} from '../SceneTree';
-import {
-  MaterialShaderBinding
-} from './MaterialShaderBinding.js';
+import { Signal } from '../Utilities';
+import { BaseItem } from '../SceneTree';
+import { MaterialShaderBinding } from './MaterialShaderBinding.js';
 
-
-class GLMaterial/* extends BaseItem why do we inherit base item here?*/{
+class GLMaterial /* extends BaseItem why do we inherit base item here?*/ {
   constructor(gl, material, glshader) {
     // super(name);
     this.__gl = gl;
@@ -36,20 +29,24 @@ class GLMaterial/* extends BaseItem why do we inherit base item here?*/{
 
   generateShaderBinding() {
     const params = this.__material.getParameters();
-    for (let param of params) {
+    for (const param of params) {
       bindParam(gl, param);
     }
   }
 
   bind(renderstate, warnMissingUnifs) {
-
     // console.log("Material:" + this.__material.getName());
     this.__boundTexturesBeforeMaterial = renderstate.boundTextures;
 
     let shaderBinding = this.__shaderBindings[renderstate.shaderkey];
     if (!shaderBinding) {
       const gl = this.__gl;
-      shaderBinding = new MaterialShaderBinding(gl, this, renderstate.unifs, warnMissingUnifs);
+      shaderBinding = new MaterialShaderBinding(
+        gl,
+        this,
+        renderstate.unifs,
+        warnMissingUnifs
+      );
       this.__shaderBindings[renderstate.shaderkey] = shaderBinding;
     }
     return shaderBinding.bind(renderstate);
@@ -62,9 +59,7 @@ class GLMaterial/* extends BaseItem why do we inherit base item here?*/{
     // to what it was.
     renderstate.boundTextures = this.__boundTexturesBeforeMaterial;
   }
-};
+}
 
-export {
-  GLMaterial
-};
+export { GLMaterial };
 // export default GLMaterial;

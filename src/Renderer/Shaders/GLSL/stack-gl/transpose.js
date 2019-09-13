@@ -1,6 +1,8 @@
 import { shaderLibrary } from '../../../ShaderLibrary.js';
 
-shaderLibrary.setShaderModule('stack-gl/transpose.glsl', `
+shaderLibrary.setShaderModule(
+  'stack-gl/transpose.glsl',
+  `
 
 
 #ifndef ENABLE_ES3
@@ -29,4 +31,5 @@ mat4 transpose(mat4 m) {
 
 #endif
 
-`);
+`
+);

@@ -1,5 +1,5 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
@@ -7,7 +7,9 @@ import './GLSL/stack-gl/transpose.js';
 class NormalsShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('NormalsShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'NormalsShader.vertexShader',
+      `
 precision highp float;
 
 instancedattribute vec3 positions;
@@ -38,9 +40,12 @@ void main(void) {
     v_weight = 0.0;
   }
 }
-`);
+`
+    );
 
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('NormalsShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'NormalsShader.fragmentShader',
+      `
 precision highp float;
 
 uniform color normalColor;
@@ -53,14 +58,9 @@ void main(void) {
   gl_FragColor = normalColor;
   gl_FragColor.a = v_weight;
 }
-`);
+`
+    );
   }
+}
 
-};
-
-export {
-  NormalsShader
-};
-
-
-
+export { NormalsShader };

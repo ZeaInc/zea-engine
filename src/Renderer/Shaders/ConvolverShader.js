@@ -1,12 +1,13 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 import './GLSL/utils/quadVertexFromID.js';
-
 
 class ConvolverShader extends GLShader {
   constructor(gl) {
     super(gl);
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('ConvolverShader.vertexShader', `
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'ConvolverShader.vertexShader',
+      `
 precision highp float;
 
 <%include file="utils/quadVertexFromID.glsl"/>
@@ -20,8 +21,11 @@ void main()
   v_texCoord = position+0.5;
   gl_Position = vec4(position*2.0, 0.0, 1.0);
 }
-`);
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('ConvolverShader.fragmentShader', `
+`
+    );
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'ConvolverShader.fragmentShader',
+      `
 precision highp float;
 
 <%include file="math/constants.glsl"/>
@@ -151,12 +155,9 @@ void main(void) {
 #endif
 }
 
-`);
+`
+    );
   }
-};
+}
 
-
-export {
-  ConvolverShader
-};
-
+export { ConvolverShader };

@@ -6,4 +6,3 @@ export * from './Lines.js';
 export * from './Mesh.js';
 export * from './GeomProxies.js';
 export * from './Shapes';
-

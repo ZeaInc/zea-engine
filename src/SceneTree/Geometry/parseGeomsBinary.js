@@ -1,15 +1,7 @@
-import {
-  Points
-} from './Points.js';
-import {
-  Lines
-} from './Lines.js';
-import {
-  Mesh
-} from './Mesh.js';
-import {
-  BinReader
-} from '../BinReader.js';
+import { Points } from './Points.js';
+import { Lines } from './Lines.js';
+import { Mesh } from './Mesh.js';
+import { BinReader } from '../BinReader.js';
 
 // key, toc, geomIndexOffset, geomsRange, isMobileDevice, bufferSlice, genBuffersOpts, context
 const parseGeomsBinary = (data, callback) => {
@@ -18,7 +10,11 @@ const parseGeomsBinary = (data, callback) => {
   // console.log("offset:" +  offset);
   const transferables = [];
   for (let i = data.geomsRange[0]; i < data.geomsRange[1]; i++) {
-    const reader = new BinReader(data.bufferSlice, data.toc[i] - offset, data.isMobileDevice);
+    const reader = new BinReader(
+      data.bufferSlice,
+      data.toc[i] - offset,
+      data.isMobileDevice
+    );
     const className = reader.loadStr();
     const pos = reader.pos();
     // let name = reader.loadStr();
@@ -35,24 +31,23 @@ const parseGeomsBinary = (data, callback) => {
         geom = new Mesh();
         break;
       default:
-        throw ("Unsupported Geom type:" + className);
+        throw 'Unsupported Geom type:' + className;
     }
     try {
       reader.seek(pos); // Reset the pointer to the start of the item data.
       geom.readBinary(reader, data.context);
-    } catch(e) {
-      console.warn("Error loading:" + geom.name + "\n:" + e);
+    } catch (e) {
+      console.warn('Error loading:' + geom.name + '\n:' + e);
       geomDatas.push({});
       continue;
     }
 
     const geomBuffers = geom.genBuffers(data.genBuffersOpts);
-    if (geomBuffers.indices)
-      transferables.push(geomBuffers.indices.buffer);
-    for (let name in geomBuffers.attrBuffers)
+    if (geomBuffers.indices) transferables.push(geomBuffers.indices.buffer);
+    for (const name in geomBuffers.attrBuffers)
       transferables.push(geomBuffers.attrBuffers[name].values.buffer);
 
-    if(geomBuffers.vertexNeighbors){
+    if (geomBuffers.vertexNeighbors) {
       transferables.push(geomBuffers.vertexNeighbors.buffer);
     }
 
@@ -60,18 +55,18 @@ const parseGeomsBinary = (data, callback) => {
       name: geom.name,
       type: className,
       geomBuffers,
-      bbox: geom.boundingBox
+      bbox: geom.boundingBox,
     });
   }
-  callback({
+  callback(
+    {
       key: data.key,
       geomIndexOffset: data.geomIndexOffset,
       geomsRange: data.geomsRange,
-      geomDatas
-    }, transferables);
-
-}
-
-export {
-  parseGeomsBinary
+      geomDatas,
+    },
+    transferables
+  );
 };
+
+export { parseGeomsBinary };

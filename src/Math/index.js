@@ -1,10 +1,9 @@
-
 export {
   SInt32,
   UInt32,
   Float32,
   hashStr,
-  JSON_stringify_fixedPrecision
+  JSON_stringify_fixedPrecision,
 } from './Common.js';
 export * from './AttrValue.js';
 export * from './Vec2.js';

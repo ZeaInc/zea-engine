@@ -1,56 +1,53 @@
-import {
-  Vec2,
-  Xfo
-} from '../Math';
+import { Vec2, Xfo } from '../Math';
 import {
   Parameter,
   BooleanParameter,
   NumberParameter,
   ColorParameter,
   Vec2Parameter,
-  XfoParameter
+  XfoParameter,
 } from './Parameters';
 
-import {
-  MaterialParameter
-} from './Parameters/MaterialParameter';
-import {
-  GeometryParameter
-} from './Parameters/GeometryParameter';
-import {
-  Signal
-} from '../Utilities';
-import {
-  sgFactory
-} from './SGFactory.js';
+import { MaterialParameter } from './Parameters/MaterialParameter';
+import { GeometryParameter } from './Parameters/GeometryParameter';
+import { Signal } from '../Utilities';
+import { sgFactory } from './SGFactory.js';
 
 import {
   LOADFLAGS_SKIP_MATERIALS,
-  LOADFLAGS_SKIP_GEOMETRIES
+  LOADFLAGS_SKIP_GEOMETRIES,
 } from './TreeItem.js';
 
-import {
-  BaseGeomItem
-} from './BaseGeomItem.js';
+import { BaseGeomItem } from './BaseGeomItem.js';
 
 class GeomItem extends BaseGeomItem {
   constructor(name, geom = undefined, material = undefined) {
     super(name);
 
-    this.__geomParam = this.insertParameter(new GeometryParameter('geometry'), 0);
+    this.__geomParam = this.insertParameter(
+      new GeometryParameter('geometry'),
+      0
+    );
     this.__geomParam.valueChanged.connect(this._setBoundingBoxDirty.bind(this));
-    this.__geomParam.boundingBoxDirtied.connect(this._setBoundingBoxDirty.bind(this));
-    this.__materialParam = this.insertParameter(new MaterialParameter('material'), 1);
+    this.__geomParam.boundingBoxDirtied.connect(
+      this._setBoundingBoxDirty.bind(this)
+    );
+    this.__materialParam = this.insertParameter(
+      new MaterialParameter('material'),
+      1
+    );
 
     this.__lightmapCoordOffset = new Vec2();
-    this.__geomOffsetXfoParam = this.addParameter(new XfoParameter('geomOffsetXfo'));
+    this.__geomOffsetXfoParam = this.addParameter(
+      new XfoParameter('geomOffsetXfo')
+    );
     this.__geomXfoParam = this.addParameter(new XfoParameter('geomXfo'));
 
-    this.__cleanGeomXfo = this.__cleanGeomXfo.bind(this)
-    this.__globalXfoParam.valueChanged.connect((mode)=>{
+    this.__cleanGeomXfo = this.__cleanGeomXfo.bind(this);
+    this.__globalXfoParam.valueChanged.connect(mode => {
       this.__geomXfoParam.setDirty(this.__cleanGeomXfo);
     });
-    this.__geomOffsetXfoParam.valueChanged.connect((mode)=>{
+    this.__geomOffsetXfoParam.valueChanged.connect(mode => {
       this.__geomXfoParam.setDirty(this.__cleanGeomXfo);
     });
 
@@ -58,14 +55,14 @@ class GeomItem extends BaseGeomItem {
     this.materialAssigned = this.__materialParam.valueChanged;
     this.geomAssigned = this.__geomParam.valueChanged;
 
-    if (geom)
-      this.setGeometry(geom);
-    if (material)
-      this.setMaterial(material);
+    if (geom) this.setGeometry(geom);
+    if (material) this.setMaterial(material);
   }
 
   __cleanGeomXfo() {
-    return this.__globalXfoParam.getValue().multiply(this.__geomOffsetXfoParam.getValue());
+    return this.__globalXfoParam
+      .getValue()
+      .multiply(this.__geomOffsetXfoParam.getValue());
   }
 
   destroy() {
@@ -87,7 +84,7 @@ class GeomItem extends BaseGeomItem {
     this.__geomXfoParam.setDirty(this.__cleanGeomXfo);
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Geometry
 
   getGeometry() {
@@ -99,18 +96,17 @@ class GeomItem extends BaseGeomItem {
   }
 
   getGeom() {
-    console.warn(("getGeom is deprectated. Please use 'getGeometry'"));
+    console.warn("getGeom is deprectated. Please use 'getGeometry'");
     return this.getGeometry();
   }
 
   setGeom(geom) {
-    console.warn(("setGeom is deprectated. Please use 'setGeometry'"));
+    console.warn("setGeom is deprectated. Please use 'setGeometry'");
     return this.setGeometry(geom);
   }
 
-
   getMaterial() {
-    return this.__materialParam.getValue();;
+    return this.__materialParam.getValue();
   }
 
   setMaterial(material, mode) {
@@ -126,9 +122,9 @@ class GeomItem extends BaseGeomItem {
     return bbox;
   }
 
-  //////////////////////////////////////////
+  // ////////////////////////////////////////
   // Xfos
-  
+
   getGeomOffsetXfo() {
     return this.__geomOffsetXfoParam.getValue();
   }
@@ -141,8 +137,7 @@ class GeomItem extends BaseGeomItem {
     return this.__geomXfoParam.getValue();
   }
 
-
-  /////////////////////////////
+  // ///////////////////////////
   // Lightmaps
 
   getLightmapName() {
@@ -160,12 +155,12 @@ class GeomItem extends BaseGeomItem {
     this.__lightmapCoordOffset.addInPlace(offset);
   }
 
-  /////////////////////////////
+  // ///////////////////////////
   // Debugging
 
   toJSON(context, flags) {
     const json = super.toJSON(context, flags);
-    return json
+    return json;
   }
 
   fromJSON(json, context) {
@@ -177,7 +172,7 @@ class GeomItem extends BaseGeomItem {
     super.readBinary(reader, context);
 
     context.numGeomItems++;
-    
+
     this.__lightmapName = context.assetItem.getName();
 
     const itemflags = reader.loadUInt8();
@@ -187,60 +182,60 @@ class GeomItem extends BaseGeomItem {
     if (geom) {
       this.setGeometry(geom);
     } else {
-      const onGeomLoaded = (range) => {
+      const onGeomLoaded = range => {
         if (geomIndex >= range[0] && geomIndex < range[1]) {
           const geom = geomLibrary.getGeom(geomIndex);
-          if(geom)
-            this.setGeometry(geom);
-          else
-            console.warn("Geom not loaded:", this.getName())
+          if (geom) this.setGeometry(geom);
+          else console.warn('Geom not loaded:', this.getName());
           geomLibrary.rangeLoaded.disconnectId(connid);
         }
-      }
+      };
       const connid = geomLibrary.rangeLoaded.connect(onGeomLoaded);
     }
 
-    //this.setVisibility(j.visibility);
-    // Note: to save space, some values are skipped if they are identity values 
+    // this.setVisibility(j.visibility);
+    // Note: to save space, some values are skipped if they are identity values
     const geomOffsetXfoFlag = 1 << 2;
     if (itemflags & geomOffsetXfoFlag) {
-      this.__geomOffsetXfoParam.setValue(new Xfo( reader.loadFloat32Vec3(),
-                            reader.loadFloat32Quat(),
-                            reader.loadFloat32Vec3()))
+      this.__geomOffsetXfoParam.setValue(
+        new Xfo(
+          reader.loadFloat32Vec3(),
+          reader.loadFloat32Quat(),
+          reader.loadFloat32Vec3()
+        )
+      );
     }
 
     // BaseGeomItem now handles loading materials.
-    if(context.version < 4) {
+    if (context.version < 4) {
       const materialFlag = 1 << 3;
       if (itemflags & materialFlag) {
         const materialLibrary = context.assetItem.getMaterialLibrary();
         const materialName = reader.loadStr();
         let material = materialLibrary.getMaterial(materialName);
         if (!material) {
-          console.warn("Geom :'" + this.name + "' Material not found:" + materialName);
+          console.warn(
+            "Geom :'" + this.name + "' Material not found:" + materialName
+          );
           material = materialLibrary.getMaterial('Default');
         }
         this.setMaterial(material);
-      }
-      else {
+      } else {
         // Force nodes to have a material so we can see them.
-        this.setMaterial(context.assetItem.getMaterialLibrary().getMaterial('Default'));
+        this.setMaterial(
+          context.assetItem.getMaterialLibrary().getMaterial('Default')
+        );
       }
     }
 
     this.__lightmapCoordOffset = reader.loadFloat32Vec2();
   }
 
-
   toString() {
-    return JSON.stringify(this.toJSON(), null, 2)
+    return JSON.stringify(this.toJSON(), null, 2);
   }
-
-
-};
+}
 
 sgFactory.registerClass('GeomItem', GeomItem);
 
-export {
-  GeomItem
-};
+export { GeomItem };

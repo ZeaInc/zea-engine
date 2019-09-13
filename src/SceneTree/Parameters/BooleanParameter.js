@@ -1,12 +1,6 @@
-import {
-  Signal
-} from '../../Utilities';
-import {
-  Parameter
-} from './Parameter.js';
-import {
-  sgFactory
-} from '../SGFactory';
+import { Signal } from '../../Utilities';
+import { Parameter } from './Parameter.js';
+import { sgFactory } from '../SGFactory';
 
 class BooleanParameter extends Parameter {
   constructor(name, value) {
@@ -17,10 +11,8 @@ class BooleanParameter extends Parameter {
     const clonedParam = new BooleanParameter(this.__name, this.__value);
     return clonedParam;
   }
-};
+}
 
 sgFactory.registerClass('BooleanParameter', BooleanParameter);
 
-export {
-  BooleanParameter
-};
+export { BooleanParameter };

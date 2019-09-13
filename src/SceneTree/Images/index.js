@@ -1,4 +1,3 @@
-
 export * from './DataImage.js';
 export * from './FileImage.js';
 export * from './LDRImage.js';
@@ -10,4 +9,3 @@ export * from './Label.js';
 export * from './VideoStreamImage2D.js';
 export * from './HDRImageMixer.js';
 export * from './ProceduralSky.js';
-

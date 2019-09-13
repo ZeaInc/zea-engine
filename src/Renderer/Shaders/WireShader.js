@@ -1,13 +1,15 @@
-import { shaderLibrary }  from '../ShaderLibrary';
-import { GLShader }  from '../GLShader.js';
+import { shaderLibrary } from '../ShaderLibrary';
+import { GLShader } from '../GLShader.js';
 
 import './GLSL/stack-gl/inverse.js';
 import './GLSL/stack-gl/transpose.js';
 
 class WireShader extends GLShader {
-    constructor(gl) {
-        super(gl);
-        this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader('WireShader.vertexShader', `
+  constructor(gl) {
+    super(gl);
+    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
+      'WireShader.vertexShader',
+      `
 precision highp float;
 
 attribute vec3 positions;    //(location = 0)
@@ -27,9 +29,12 @@ void main(void) {
     gl_Position.z -= 0.001 / gl_Position.w;
     //gl_Position.z *= 0.999;
 }
-`);
+`
+    );
 
-        this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader('WireShader.fragmentShader', `
+    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
+      'WireShader.fragmentShader',
+      `
 precision highp float;
 
 uniform color wireColor;
@@ -44,13 +49,9 @@ void main(void) {
     fragColor = color;
 #endif  
 }
-`);
-    }
-};
+`
+    );
+  }
+}
 
-export {
-    WireShader
-};
-
-
-
+export { WireShader };
