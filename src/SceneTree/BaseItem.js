@@ -45,35 +45,14 @@ class BaseItem extends ParameterOwner {
   }
 
   /**
-   * The destroy is called by the system to cause explicit resources cleanup. 
-   * Users should never need to call this method directly..
+   * The getNumBaseItems method returns the total number of base items created.
+   * This method is used in debugging memory consumption.
+   * @return {number} - The total number of base items created.
    */
-  destroy() {
-    super.destroy();
+  static getNumBaseItems() {
+    return numBaseItems;
   }
-
-  /**
-   * Clones this item returning a new item.
-   * Note: each class should implement clonse to be clonable.
-   * @param {number} flags - The flags param.
-   * @return {object} - The new cloned instance.
-   */
-  clone(flags) {
-    throw new Error(
-      this.constructor.name + ' does not implment its clone method'
-    );
-  }
-
-  /**
-   * The copyFrom method.
-   * @param {any} src - The src param.
-   * @param {number} flags - The flags param.
-   */
-  copyFrom(src, flags) {
-    super.copyFrom(src, flags);
-    this.setName(src.getName());
-  }
-
+  
   // ////////////////////////////////////////
   // Name and Path
 
@@ -343,14 +322,43 @@ class BaseItem extends ParameterOwner {
     super.readBinary(reader, context);
   }
 
+
   /**
-   * The getNumBaseItems method returns the total number of base items created.
-   * This method is used in debugging memory consumption.
-   * @return {number} - The total number of base items created.
+   * Clones this item returning a new item.
+   * Note: each class should implement clone to be clonable.
+   * @param {number} flags - The flags param.
+   * @return {object} - The new cloned instance.
    */
-  static getNumBaseItems() {
-    return numBaseItems;
+  clone(flags) {
+    throw new Error(
+      this.constructor.name + ' does not implment its clone method'
+    );
   }
+
+  /**
+   * When a BaseItem is cloned, initially the constructor is
+   * called to generate a new instance. This instance then copies
+   * its values from the source using this method.
+   * This method copies any relevant data from the source object to
+   * ensure that it represents a valid clone.
+   * Derived classes override this method to copy any releevant
+   * data from the source object.
+   * @param {BaseItem} src - The src param.
+   * @param {number} flags - The flags param.
+   */
+  copyFrom(src, flags) {
+    super.copyFrom(src, flags);
+    this.setName(src.getName());
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup. 
+   * Users should never need to call this method directly..
+   */
+  destroy() {
+    super.destroy();
+  }
+
 }
 
 export { ItemFlags, BaseItem };

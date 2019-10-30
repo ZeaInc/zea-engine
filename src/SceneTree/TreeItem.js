@@ -119,52 +119,58 @@ class TreeItem extends BaseItem {
   }
 
   /**
-   * The destroy method.
+   * Getter for SaveFlags.
    */
-  destroy() {
-    this.removeAllChildren();
-    super.destroy();
+  static get SaveFlags() {
+    return SaveFlags;
   }
 
   /**
-   * The clone method.
-   * @param {number} flags - The flags param.
+   * Getter for LoadFlags.
+   */
+  static get LoadFlags() {
+    return LoadFlags;
+  }
+
+  /**
+   * Getter for CloneFlags.
+   */
+  static get CloneFlags() {
+    return CloneFlags;
+  }
+
+  /**
+   * The getSelectionOutlineColor method.
    * @return {any} - The return value.
    */
-  clone(flags) {
-    const cloned = new TreeItem();
-    cloned.copyFrom(this, flags);
-    return cloned;
+  static getSelectionOutlineColor() {
+    return selectionOutlineColor;
   }
 
   /**
-   * The copyFrom method.
-   * @param {any} src - The src param.
-   * @param {number} flags - The flags param.
+   * The setSelectionOutlineColor method.
+   * @param {any} color - The color param.
    */
-  copyFrom(src, flags) {
-    super.copyFrom(src, flags);
-
-    // Share a local Xfo
-    // Note: disabled for now.
-    // When cloning instanced trees, the root item should
-    // have a unique LocalXfoParam, as it must be re-set.
-    // (The root of the tree is a cloned and attached to an Instance node that provides the transform)
-
-    // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE)
-    //     this.__localXfoParam = this.replaceParameter(src.getParameter('LocalXfo'));
-
-    src.getChildren().forEach(srcChildItem => {
-      if (srcChildItem)
-        this.addChild(srcChildItem.clone(flags), false, false);
-    // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE) {
-    //     src.childAdded.connect((childItem, index)=>{
-    //         this.addChild(childItem.clone(flags));
-    //     })
-    // }
-    })
+  static setSelectionOutlineColor(color) {
+    selectionOutlineColor = color;
   }
 
+  /**
+   * The getBranchSelectionOutlineColor method.
+   * @return {any} - The return value.
+   */
+  static getBranchSelectionOutlineColor() {
+    return branchSelectionOutlineColor;
+  }
+
+  /**
+   * The setBranchSelectionOutlineColor method.
+   * @param {any} color - The color param.
+   */
+  static setBranchSelectionOutlineColor(color) {
+    branchSelectionOutlineColor = color;
+  }
+  
   // ////////////////////////////////////////
   // Flags
 
@@ -1215,56 +1221,50 @@ class TreeItem extends BaseItem {
   }
 
   /**
-   * Getter for SaveFlags.
+   * The clone method constructs a new TreeItem, copies its values
+   * from this itema returns it.
+   * @param {number} flags - The flags param.
+   * @return {TreeItem} - The return value.
    */
-  static get SaveFlags() {
-    return SaveFlags;
+  clone(flags) {
+    const cloned = new TreeItem();
+    cloned.copyFrom(this, flags);
+    return cloned;
   }
 
   /**
-   * Getter for LoadFlags.
+   * The copyFrom method.
+   * @param {any} src - The src param.
+   * @param {number} flags - The flags param.
    */
-  static get LoadFlags() {
-    return LoadFlags;
+  copyFrom(src, flags) {
+    super.copyFrom(src, flags);
+
+    // Share a local Xfo
+    // Note: disabled for now.
+    // When cloning instanced trees, the root item should
+    // have a unique LocalXfoParam, as it must be re-set.
+    // (The root of the tree is a cloned and attached to an Instance node that provides the transform)
+
+    // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE)
+    //     this.__localXfoParam = this.replaceParameter(src.getParameter('LocalXfo'));
+
+    src.getChildren().forEach(srcChildItem => {
+      if (srcChildItem) this.addChild(srcChildItem.clone(flags), false, false);
+    // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE) {
+    //     src.childAdded.connect((childItem, index)=>{
+    //         this.addChild(childItem.clone(flags));
+    //     })
+    // }
+    })
   }
 
   /**
-   * Getter for CloneFlags.
+   * The destroy method.
    */
-  static get CloneFlags() {
-    return CloneFlags;
-  }
-
-  /**
-   * The getSelectionOutlineColor method.
-   * @return {any} - The return value.
-   */
-  static getSelectionOutlineColor() {
-    return selectionOutlineColor;
-  }
-
-  /**
-   * The setSelectionOutlineColor method.
-   * @param {any} color - The color param.
-   */
-  static setSelectionOutlineColor(color) {
-    selectionOutlineColor = color;
-  }
-
-  /**
-   * The getBranchSelectionOutlineColor method.
-   * @return {any} - The return value.
-   */
-  static getBranchSelectionOutlineColor() {
-    return branchSelectionOutlineColor;
-  }
-
-  /**
-   * The setBranchSelectionOutlineColor method.
-   * @param {any} color - The color param.
-   */
-  static setBranchSelectionOutlineColor(color) {
-    branchSelectionOutlineColor = color;
+  destroy() {
+    this.removeAllChildren();
+    super.destroy();
   }
 }
 

@@ -147,10 +147,10 @@ class Material extends BaseItem {
   /**
    * The clone method.
    * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * @return {Material} - The return value.
    */
   clone(flags) {
-    const cloned = new GeomItem();
+    const cloned = new Material();
     cloned.copyFrom(this, flags);
     return cloned;
   }
@@ -174,7 +174,7 @@ class Material extends BaseItem {
 
   /**
    * The getParamTextures method.
-   * @return {any} - The return value.
+   * @return {object} - The return value.
    */
   getParamTextures() {
     const textures = {};

@@ -37,30 +37,6 @@ class ParameterOwner extends RefCounted {
     this.parameterValueChanged = new Signal();
   }
 
-  /**
-   * The copyFrom method.
-   * @param {any} src - The src param.
-   * @param {number} flags - The flags param.
-   */
-  copyFrom(src, flags) {
-    // Note: Loop over the parameters in reverse order,
-    // this is because often, parameter depdenencies
-    // are bottom to top. (bottom params dependent on higher params)
-    // This means that as a parameter is set with a new value
-    // it will dirty the params below it.
-    let i = src.numParameters();
-    while (i--) {
-      const srcParam = src.getParameterByIndex(i);
-      const param = this.getParameter(srcParam.getName());
-      if (param) {
-        // Note: we are not cloning the values.
-        param.setValue(srcParam.getValue(), 2);
-      } else {
-        this.addParameter(srcParam.clone());
-      }
-    }
-  }
-
   // ////////////////////////////////////////
   // Params
 
@@ -335,6 +311,30 @@ class ParameterOwner extends RefCounted {
    */
   toString() {
     return JSON.stringify(this.toJSON(), null, 2);
+  }
+
+  /**
+   * The copyFrom method.
+   * @param {any} src - The src param.
+   * @param {number} flags - The flags param.
+   */
+  copyFrom(src, flags) {
+    // Note: Loop over the parameters in reverse order,
+    // this is because often, parameter depdenencies
+    // are bottom to top. (bottom params dependent on higher params)
+    // This means that as a parameter is set with a new value
+    // it will dirty the params below it.
+    let i = src.numParameters();
+    while (i--) {
+      const srcParam = src.getParameterByIndex(i);
+      const param = this.getParameter(srcParam.getName());
+      if (param) {
+        // Note: we are not cloning the values.
+        param.setValue(srcParam.getValue(), 2);
+      } else {
+        this.addParameter(srcParam.clone());
+      }
+    }
   }
 
   /**
