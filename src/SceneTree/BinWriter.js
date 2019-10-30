@@ -23,7 +23,7 @@ class BinWriter {
 
   /**
    * The seek method.
-   * @param {number} byteOffset - The byteOffset param.
+   * @param {number} byteOffset - The byteOffset value.
    */
   seek(byteOffset) {
     this.__byteOffset = byteOffset;
@@ -38,7 +38,7 @@ class BinWriter {
 
   /**
    * The getBuffer method.
-   * @return {any} - The return value.
+   * @return {ArrayBuffer} - Returns an array buffer.
    */
   getBuffer() {
     if (this.__data.byteLength == this.__byteOffset) {
@@ -66,7 +66,7 @@ class BinWriter {
 
   /**
    * The __reserve method.
-   * @param {any} offset - The offset param.
+   * @param {any} offset - The offset value.
    * @private
    */
   __reserve(offset) {
@@ -77,7 +77,7 @@ class BinWriter {
 
   /**
    * The __offset method.
-   * @param {any} byteCount - The byteCount param.
+   * @param {any} byteCount - The byteCount value.
    * @private
    */
   __offset(byteCount) {
@@ -149,7 +149,7 @@ class BinWriter {
   /**
    * The writeUInt8Array method.
    * @param {any} value - The value param.
-   * @param {boolean} writeSize - The writeSize param.
+   * @param {boolean} writeSize - The writeSize value.
    */
   writeUInt8Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
@@ -163,7 +163,7 @@ class BinWriter {
   /**
    * The writeUInt16Array method.
    * @param {any} value - The value param.
-   * @param {boolean} writeSize - The writeSize param.
+   * @param {boolean} writeSize - The writeSize value.
    */
   writeUInt16Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
@@ -177,7 +177,7 @@ class BinWriter {
   /**
    * The writeUInt32Array method.
    * @param {any} value - The value param.
-   * @param {boolean} writeSize - The writeSize param.
+   * @param {boolean} writeSize - The writeSize value.
    */
   writeUInt32Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
@@ -191,7 +191,7 @@ class BinWriter {
   /**
    * The writeFloat32Array method.
    * @param {any} value - The value param.
-   * @param {boolean} writeSize - The writeSize param.
+   * @param {boolean} writeSize - The writeSize value.
    */
   writeFloat32Array(value, writeSize = true) {
     const count = value.size ? value.size : value.length;
@@ -204,8 +204,8 @@ class BinWriter {
 
   /**
    * The writeStr method.
-   * @param {any} str - The str param.
-   * @param {boolean} writeSize - The writeSize param.
+   * @param {any} str - The str value.
+   * @param {boolean} writeSize - The writeSize value.
    */
   writeStr(str, writeSize = true) {
     const count = value.length;
@@ -218,7 +218,7 @@ class BinWriter {
 
   /**
    * The writeSInt32Vec2 method.
-   * @param {any} value - The value param.
+   * @param {Vec2} value - The Vec2 to write.
    */
   writeSInt32Vec2(value) {
     this.writeSInt32(value.x);
@@ -227,7 +227,7 @@ class BinWriter {
 
   /**
    * The writeUInt32Vec2 method.
-   * @param {any} value - The value param.
+   * @param {Vec2} value - The Vec2 to write.
    */
   writeUInt32Vec2(value) {
     this.writeUInt32(value.x);
@@ -236,7 +236,7 @@ class BinWriter {
 
   /**
    * The writeFloat16Vec2 method.
-   * @param {any} value - The value param.
+   * @param {Vec2} value - The Vec2 to write.
    */
   writeFloat16Vec2(value) {
     this.writeFloat16(value.x);
@@ -245,7 +245,7 @@ class BinWriter {
 
   /**
    * The writeFloat32Vec2 method.
-   * @param {any} value - The value param.
+   * @param {Vec2} value - The Vec2 to write.
    */
   writeFloat32Vec2(value) {
     this.writeFloat32(value.x);
@@ -254,7 +254,7 @@ class BinWriter {
 
   /**
    * The writeFloat16Vec3 method.
-   * @param {any} value - The value param.
+   * @param {Vec3} value - The Vec3 to write.
    */
   writeFloat16Vec3(value) {
     this.writeFloat16(value.x);
@@ -264,7 +264,7 @@ class BinWriter {
 
   /**
    * The writeFloat32Vec3 method.
-   * @param {any} value - The value param.
+   * @param {Vec3} value - The Vec3 to write.
    */
   writeFloat32Vec3(value) {
     this.writeFloat32(value.x);
@@ -274,7 +274,7 @@ class BinWriter {
 
   /**
    * The writeFloat16Quat method.
-   * @param {any} value - The value param.
+   * @param {Quat} value - The Quat to write.
    */
   writeFloat16Quat(value) {
     this.writeFloat16(value.x);
@@ -285,7 +285,7 @@ class BinWriter {
 
   /**
    * The writeFloat32Quat method.
-   * @param {any} value - The value param.
+   * @param {Quat} value - The Quat to write.
    */
   writeFloat32Quat(value) {
     this.writeFloat32(value.x);
@@ -296,7 +296,7 @@ class BinWriter {
 
   /**
    * The writeRGBFloat32Color method.
-   * @param {any} value - The value param.
+   * @param {Color} value - The Color to write.
    */
   writeRGBFloat32Color(value) {
     this.writeFloat32(value.r);
@@ -306,7 +306,7 @@ class BinWriter {
 
   /**
    * The writeRGBAFloat32Color method.
-   * @param {any} value - The value param.
+   * @param {Color} value - The Color to write.
    */
   writeRGBAFloat32Color(value) {
     this.writeFloat32(value.r);
@@ -317,7 +317,7 @@ class BinWriter {
 
   /**
    * The writeRGBUInt8Color method.
-   * @param {any} value - The value param.
+   * @param {Color} value - The Color to write.
    */
   writeRGBUInt8Color(value) {
     this.writeUInt8(value.r);
@@ -327,7 +327,7 @@ class BinWriter {
 
   /**
    * The writeRGBAUInt8Color method.
-   * @param {any} value - The value param.
+   * @param {Color} value - The Color to write.
    */
   writeRGBAUInt8Color(value) {
     this.writeUInt8(value.r);
@@ -338,7 +338,7 @@ class BinWriter {
 
   /**
    * The writeBox2 method.
-   * @param {any} value - The value param.
+   * @param {Box2} value - The Box2 to write.
    */
   writeBox2(value) {
     this.writeFloat32Vec2(value.p0);
@@ -347,7 +347,7 @@ class BinWriter {
 
   /**
    * The writeBox3 method.
-   * @param {any} value - The value param.
+   * @param {Box3} value - The Box3 to write.
    */
   writeBox3(value) {
     this.writeFloat32Vec3(value.p0);
@@ -356,7 +356,7 @@ class BinWriter {
 
   /**
    * The writePadd method.
-   * @param {any} size - The size param.
+   * @param {any} size - The size value.
    */
   writePadd(size) {
     const bytes = size - this.__byteOffset;
@@ -366,7 +366,7 @@ class BinWriter {
 
   /**
    * The writeAlignment method.
-   * @param {any} numBytes - The numBytes param.
+   * @param {any} numBytes - The numBytes value.
    */
   writeAlignment(numBytes) {
     const bytes = this.__byteOffset % numBytes;

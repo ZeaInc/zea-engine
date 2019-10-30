@@ -43,14 +43,14 @@ const generateParameterInstance = (
   }
 };
 
-/** Class representing a material.
+/** Class representing a material in a scene tree.
  * @extends BaseItem
  */
 class Material extends BaseItem {
   /**
-   * Create a base item.
-   * @param {string} name - The name value.
-   * @param {any} shaderName - The shaderName value.
+   * Create a material
+   * @param {string} name - The name of the material.
+   * @param {string} shaderName - The name of the shader.
    */
   constructor(name, shaderName) {
     super(name);
@@ -62,16 +62,16 @@ class Material extends BaseItem {
   }
 
   /**
-   * The getShaderName method.
-   * @return {any} - The return value.
+   * Getter for the shader name.
+   * @return {string} - Returns the shader name.
    */
   getShaderName() {
     return this.__shaderName;
   }
 
   /**
-   * The setShaderName method.
-   * @param {any} shaderName - The shaderName param.
+   * Setter for the shader name.
+   * @param {string} shaderName - The shader name.
    */
   setShaderName(shaderName) {
     if (this.__shaderName == shaderName) return;
@@ -125,15 +125,7 @@ class Material extends BaseItem {
   }
 
   /**
-   * The destroy method.
-   */
-  destroy() {
-    this.removeAllTextures();
-    super.destroy();
-  }
-
-  /**
-   * The removeAllTextures method.
+   * Remove all textures.
    */
   removeAllTextures() {
     for (const param of this.__params) {
@@ -141,31 +133,6 @@ class Material extends BaseItem {
         param.getImage().removeRef(this);
         param.setImage(undefined);
       }
-    }
-  }
-
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {Material} - The return value.
-   */
-  clone(flags) {
-    const cloned = new Material();
-    cloned.copyFrom(this, flags);
-    return cloned;
-  }
-
-  /**
-   * The copyFrom method.
-   * @param {any} src - The src param.
-   * @param {number} flags - The flags param.
-   */
-  copyFrom(src, flags) {
-    super.copyFrom(src, flags);
-    this.setShaderName(src.getShaderName());
-    for (const srcParam of src.getParameters()) {
-      const param = src.getParameter(srcParam.getName());
-      if (!srcParam.getImage) this.__makeParameterTexturable(param);
     }
   }
 
@@ -187,7 +154,7 @@ class Material extends BaseItem {
 
   /**
    * The __makeParameterTexturable method.
-   * @param {any} param - The param param.
+   * @param {any} param - The param value.
    * @private
    */
   __makeParameterTexturable(param) {
@@ -197,8 +164,8 @@ class Material extends BaseItem {
   }
 
   /**
-   * The isTransparent method.
-   * @return {boolean} - The return value.
+   * Checks if the material is transparent.
+   * @return {boolean} - Returns true if the material is transparent.
    */
   isTransparent() {
     const opacity = this.getParameter('Opacity');
@@ -224,8 +191,8 @@ class Material extends BaseItem {
 
   /**
    * The modifyParams method.
-   * @param {any} paramValues - The paramValues param.
-   * @param {any} shaderName - The shaderName param.
+   * @param {any} paramValues - The paramValues.
+   * @param {string} shaderName - The shader name.
    */
   modifyParams(paramValues, shaderName) {
     if (shaderName) this.setShaderName(shaderName);
@@ -248,20 +215,20 @@ class Material extends BaseItem {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes the current object as a json object.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags = 0) {
     return super.toJSON(context, flags);
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context = {}, flags = 0) {
     if (!j.shader) {
@@ -285,8 +252,8 @@ class Material extends BaseItem {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     let shaderName = reader.loadStr();
@@ -344,6 +311,43 @@ class Material extends BaseItem {
       super.readBinary(reader, context);
     }
   }
+
+  // ////////////////////////////////////////
+  // Clone and Destroy
+
+  /**
+   * The clone method constructs a new material, copies its values
+   * from this material and returns it.
+   * @param {number} flags - The flags value.
+   * @return {Material} - Returns a new cloned material.
+   */
+  clone(flags) {
+    const cloned = new Material();
+    cloned.copyFrom(this, flags);
+    return cloned;
+  }
+
+  /**
+   * The copyFrom method.
+   * @param {Material} src - The material to copy from.
+   * @param {number} flags - The flags value.
+   */
+  copyFrom(src, flags) {
+    super.copyFrom(src, flags);
+    this.setShaderName(src.getShaderName());
+    for (const srcParam of src.getParameters()) {
+      const param = src.getParameter(srcParam.getName());
+      if (!srcParam.getImage) this.__makeParameterTexturable(param);
+    }
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
+   */
+  destroy() {
+    this.removeAllTextures();
+    super.destroy();
+  }
 }
 export { Material };
-// Material;

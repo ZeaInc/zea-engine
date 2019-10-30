@@ -8,13 +8,13 @@ import { GeomLibrary } from './GeomLibrary.js';
 import { MaterialLibrary } from './MaterialLibrary.js';
 import { sgFactory } from './SGFactory.js';
 
-/** Class representing an asset item.
+/** Class representing an asset item in a scene tree.
  * @extends TreeItem
  */
 class AssetItem extends TreeItem {
   /**
    * Create an asset item.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the asset item.
    */
   constructor(name) {
     super(name);
@@ -77,8 +77,8 @@ class AssetItem extends TreeItem {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context = {}) {
     context.assetItem = this;
@@ -154,11 +154,14 @@ class AssetItem extends TreeItem {
     // console.log("numTreeItems:", context.numTreeItems, " numGeomItems:", context.numGeomItems)
   }
 
+  // ////////////////////////////////////////
+  // Persistence
+
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context = {}, flags = 0) {
     context.makeRelative = path => {
@@ -184,11 +187,11 @@ class AssetItem extends TreeItem {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @param {any} onDone - The onDone param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @param {any} onDone - The onDone value.
    */
   fromJSON(j, context = {}, flags = 0, onDone) {
     if (!context) context = {};

@@ -10,13 +10,13 @@ import {
 } from './Parameters';
 import { sgFactory } from './SGFactory';
 
-/** Class representing a camera.
+/** Class representing a camera in the scene tree.
  * @extends TreeItem
  */
 class Camera extends TreeItem {
   /**
    * Create a camera.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the camera.
    */
   constructor(name = undefined) {
     if (name == undefined) name = 'Camera';
@@ -93,7 +93,8 @@ class Camera extends TreeItem {
   }
 
   /**
-   * The getFov method.
+   * Getter for the camera field of view (FOV).
+   * The FOV is how much of the scene the camera can see at once.
    * @return {any} - The return value.
    */
   getFov() {
@@ -101,7 +102,8 @@ class Camera extends TreeItem {
   }
 
   /**
-   * The setFov method.
+   * Setter for the camera field of view (FOV).
+   * The FOV is how much of the scene the camera can see at once.
    * @param {any} value - The value param.
    */
   setFov(value) {
@@ -109,7 +111,7 @@ class Camera extends TreeItem {
   }
 
   /**
-   * The setLensFocalLength method.
+   * Setter for the camera lens focal length.
    * @param {any} value - The value param.
    */
   setLensFocalLength(value) {
@@ -160,7 +162,7 @@ class Camera extends TreeItem {
   }
 
   /**
-   * The getFocalDistance method.
+   * Getter for the camera focal length.
    * @return {any} - The return value.
    */
   getFocalDistance() {
@@ -168,9 +170,9 @@ class Camera extends TreeItem {
   }
 
   /**
-   * The setFocalDistance method.
-   * @param {any} dist - The dist param.
-   * @param {any} mode - The mode param.
+   * Setter for the camera focal length.
+   * @param {any} dist - The distance value.
+   * @param {number} mode - The mode value.
    */
   setFocalDistance(dist, mode = ValueSetMode.USER_SETVALUE) {
     this.__focalDistanceParam.setValue(dist, mode);
@@ -189,7 +191,7 @@ class Camera extends TreeItem {
   /**
    * The setIsOrthographic method.
    * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    */
   setIsOrthographic(value, mode = ValueSetMode.USER_SETVALUE) {
     this.__isOrthographicParam.setValue(value, mode);
@@ -213,17 +215,17 @@ class Camera extends TreeItem {
 
   /**
    * The setDefaultManipMode method.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    */
   setDefaultManipMode(mode) {
     this.__defaultManipulationState = mode;
   }
 
   /**
-   * The setPositionAndTarget method.
-   * @param {any} position - The position param.
-   * @param {any} target - The target param.
-   * @param {any} mode - The mode param.
+   * Setter for the camera postion and target.
+   * @param {Vec3} position - The position of the camera.
+   * @param {Vec3} target - The target of the camera.
+   * @param {number} mode - The mode value.
    */
   setPositionAndTarget(position, target, mode = ValueSetMode.USER_SETVALUE) {
     this.setFocalDistance(position.distanceTo(target), mode);
@@ -233,8 +235,8 @@ class Camera extends TreeItem {
   }
 
   /**
-   * The getTargetPostion method.
-   * @return {any} - The return value.
+   * Getter for the target position.
+   * @return {Vec3} - Returns the target position.
    */
   getTargetPostion() {
     const focalDistance = this.__focalDistanceParam.getValue();
@@ -249,8 +251,8 @@ class Camera extends TreeItem {
 
   /**
    * The frameView method.
-   * @param {any} viewport - The viewport param.
-   * @param {any} treeItems - The treeItems param.
+   * @param {any} viewport - The viewport value.
+   * @param {any} treeItems - The treeItems value.
    */
   frameView(viewport, treeItems) {
     const boundingBox = new Box3();
@@ -300,8 +302,8 @@ class Camera extends TreeItem {
 
   /**
    * The updateProjectionMatrix method.
-   * @param {any} mat - The mat param.
-   * @param {any} aspect - The aspect param.
+   * @param {any} mat - The mat value.
+   * @param {any} aspect - The aspect value.
    */
   updateProjectionMatrix(mat, aspect) {
     const isOrthographic = this.__isOrthographicParam.getValue();

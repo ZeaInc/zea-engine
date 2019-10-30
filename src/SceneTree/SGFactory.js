@@ -10,8 +10,8 @@ class SGFactory {
 
   /**
    * The registerClass method.
-   * @param {any} classname - The classname param.
-   * @param {any} cls - The cls param.
+   * @param {any} classname - The classname value.
+   * @param {any} cls - The cls value.
    */
   registerClass(classname, cls) {
     this.__registeredClasses[classname] = {
@@ -23,8 +23,8 @@ class SGFactory {
 
   /**
    * The registerCallback method.
-   * @param {any} classname - The classname param.
-   * @param {any} callback - The callback param.
+   * @param {any} classname - The classname value.
+   * @param {any} callback - The callback value.
    */
   registerCallback(classname, callback) {
     const classData = this.__registeredClasses[classname];
@@ -37,7 +37,7 @@ class SGFactory {
 
   /**
    * The getClass method.
-   * @param {any} classname - The classname param.
+   * @param {any} classname - The classname value.
    * @return {any} - The return value.
    */
   getClass(classname) {
@@ -47,7 +47,7 @@ class SGFactory {
 
   /**
    * The getClassName method.
-   * @param {any} inst - The inst param.
+   * @param {any} inst - The inst value.
    * @return {any} - The return value.
    */
   getClassName(inst) {
@@ -66,7 +66,7 @@ class SGFactory {
 
   /**
    * The constructClass method.
-   * @param {any} classname - The classname param.
+   * @param {any} classname - The classname value.
    * @return {any} - The return value.
    */
   constructClass(classname /* , ...args */) {
@@ -87,7 +87,7 @@ class SGFactory {
 
   /**
    * The invokeCallbacks method.
-   * @param {any} inst - The inst param.
+   * @param {any} inst - The inst value.
    */
   invokeCallbacks(inst) {
     if (this.__classNames[inst.constructor.name]) {

@@ -21,13 +21,13 @@ import {
 
 import { BaseGeomItem } from './BaseGeomItem.js';
 
-/** Class representing a geom item.
+/** Class representing a geometry item in a scene tree.
  * @extends BaseGeomItem
  */
 class GeomItem extends BaseGeomItem {
   /**
-   * Create a geom item.
-   * @param {string} name - The name value.
+   * Create a geometry item.
+   * @param {string} name - The name of the geom item.
    * @param {any} geom - The geom value.
    * @param {any} material - The material value.
    */
@@ -80,43 +80,11 @@ class GeomItem extends BaseGeomItem {
       .multiply(this.__geomOffsetXfoParam.getValue());
   }
 
-  /**
-   * The destroy method.
-   */
-  destroy() {
-    super.destroy();
-  }
-
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const cloned = new GeomItem();
-    cloned.copyFrom(this, flags);
-    return cloned;
-  }
-
-  /**
-   * The copyFrom method.
-   * @param {any} src - The src param.
-   * @param {number} flags - The flags param.
-   */
-  copyFrom(src, flags) {
-    super.copyFrom(src, flags);
-    this.__lightmapCoordOffset = src.__lightmapCoordOffset;
-    // Geom Xfo should be dirty after cloning.
-    // Note: this might not be necessary. It should
-    // always be dirty after cloning.
-    this.__geomXfoParam.setDirty(this.__cleanGeomXfo);
-  }
-
   // ////////////////////////////////////////
   // Geometry
 
   /**
-   * The getGeometry method.
+   * Getter for geometry.
    * @return {any} - The return value.
    */
   getGeometry() {
@@ -124,16 +92,16 @@ class GeomItem extends BaseGeomItem {
   }
 
   /**
-   * The setGeometry method.
-   * @param {any} geom - The geom param.
-   * @param {any} mode - The mode param.
+   * Setter for geometry.
+   * @param {any} geom - The geom value.
+   * @param {number} mode - The mode value.
    */
   setGeometry(geom, mode) {
     this.__geomParam.setValue(geom, mode);
   }
 
   /**
-   * The getGeom method.
+   * Getter for geometry (getGeom is deprectated. Please use getGeometry).
    * @return {any} - The return value.
    */
   getGeom() {
@@ -142,8 +110,8 @@ class GeomItem extends BaseGeomItem {
   }
 
   /**
-   * The setGeom method.
-   * @param {any} geom - The geom param.
+   * Setter for geometry. (setGeom is deprectated. Please use setGeometry).
+   * @param {any} geom - The geom value.
    * @return {any} - The return value.
    */
   setGeom(geom) {
@@ -152,17 +120,17 @@ class GeomItem extends BaseGeomItem {
   }
 
   /**
-   * The getMaterial method.
-   * @return {any} - The return value.
+   * Getter for material.
+   * @return {Material} - The return value.
    */
   getMaterial() {
     return this.__materialParam.getValue();
   }
 
   /**
-   * The setMaterial method.
-   * @param {any} material - The material param.
-   * @param {any} mode - The mode param.
+   * Setter for material.
+   * @param {Material} material - The material value.
+   * @param {any} mode - The mode value.
    */
   setMaterial(material, mode) {
     this.__materialParam.setValue(material, mode);
@@ -170,7 +138,7 @@ class GeomItem extends BaseGeomItem {
 
   /**
    * The _cleanBoundingBox method.
-   * @param {any} bbox - The bbox param.
+   * @param {Box3} bbox - The bounding box value.
    * @return {any} - The return value.
    * @private
    */
@@ -187,24 +155,24 @@ class GeomItem extends BaseGeomItem {
   // Xfos
 
   /**
-   * The getGeomOffsetXfo method.
-   * @return {any} - The return value.
+   * Getter for the geom offset Xfo translation.
+   * @return {Xfo} - Returns the geom offset Xfo.
    */
   getGeomOffsetXfo() {
     return this.__geomOffsetXfoParam.getValue();
   }
 
   /**
-   * The setGeomOffsetXfo method.
-   * @param {any} xfo - The xfo param.
+   * Setter for the geom offset Xfo translation.
+   * @param {Xfo} xfo - The Xfo value.
    */
   setGeomOffsetXfo(xfo) {
     this.__geomOffsetXfoParam.setValue(xfo);
   }
 
   /**
-   * The getGeomXfo method.
-   * @return {any} - The return value.
+   * Getter for the geom Xfo translation.
+   * @return {Xfo} - Returns the geom Xfo.
    */
   getGeomXfo() {
     return this.__geomXfoParam.getValue();
@@ -214,16 +182,16 @@ class GeomItem extends BaseGeomItem {
   // Lightmaps
 
   /**
-   * The getLightmapName method.
-   * @return {any} - The return value.
+   * Getter for a lightmap name.
+   * @return {string} - Returns the lightmap name.
    */
   getLightmapName() {
     return this.__lightmapName;
   }
 
   /**
-   * The getLightmapCoordsOffset method.
-   * @return {any} - The return value.
+   * Getter for a lightmap coordinate offset.
+   * @return {any} - Returns the lightmap coord offset.
    */
   getLightmapCoordsOffset() {
     return this.__lightmapCoordOffset;
@@ -231,9 +199,9 @@ class GeomItem extends BaseGeomItem {
 
   /**
    * The root asset item pushes its offset to the geom items in the
-   * tree. This offsets the light cooords for each geom.
-   * @param {any} lightmapName - The lightmapName param.
-   * @param {any} offset - The offset param.
+   * tree. This offsets the light coords for each geom.
+   * @param {string} lightmapName - The lightmap name.
+   * @param {any} offset - The offset value.
    */
   applyAssetLightmapSettings(lightmapName, offset) {
     this.__lightmap = lightmapName;
@@ -244,10 +212,10 @@ class GeomItem extends BaseGeomItem {
   // Debugging
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const json = super.toJSON(context, flags);
@@ -255,9 +223,9 @@ class GeomItem extends BaseGeomItem {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} json - The json param.
-   * @param {object} context - The context param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} json - The json object this item must decode.
+   * @param {object} context - The context value.
    */
   fromJSON(json, context) {
     super.fromJSON(json, context);
@@ -266,8 +234,8 @@ class GeomItem extends BaseGeomItem {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     super.readBinary(reader, context);
@@ -339,6 +307,43 @@ class GeomItem extends BaseGeomItem {
    */
   toString() {
     return JSON.stringify(this.toJSON(), null, 2);
+  }
+
+  // ////////////////////////////////////////
+  // Clone and Destroy
+
+  /**
+   * The clone method constructs a new geom item, copies its values
+   * from this item and returns it.
+   * @param {number} flags - The flags value.
+   * @return {GeomItem} - Returns a new cloned geom item.
+   */
+  clone(flags) {
+    const cloned = new GeomItem();
+    cloned.copyFrom(this, flags);
+    return cloned;
+  }
+
+  /**
+   * The copyFrom method.
+   * @param {GeomItem} src - The geom item to copy from.
+   * @param {number} flags - The flags value.
+   */
+  copyFrom(src, flags) {
+    super.copyFrom(src, flags);
+    this.__lightmapCoordOffset = src.__lightmapCoordOffset;
+    // Geom Xfo should be dirty after cloning.
+    // Note: this might not be necessary. It should
+    // always be dirty after cloning.
+    this.__geomXfoParam.setDirty(this.__cleanGeomXfo);
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
+   */
+  destroy() {
+    super.destroy();
   }
 }
 

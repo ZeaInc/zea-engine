@@ -4,13 +4,13 @@ import { TreeItem } from './TreeItem';
 import { Material } from './Material';
 import { ValueSetMode } from './Parameters';
 
-/** Class representing a base geom item.
+/** Class representing a base geometry item in a scene tree.
  * @extends TreeItem
  */
 class BaseGeomItem extends TreeItem {
   /**
-   * Create a base geom item.
-   * @param {string} name - The name value.
+   * Create a base geometry item.
+   * @param {string} name - The name of the base geom item.
    */
   constructor(name) {
     super(name);
@@ -23,8 +23,8 @@ class BaseGeomItem extends TreeItem {
   }
 
   /**
-   * The addLayer method.
-   * @param {string} name - The name param.
+   * Adds a layer.
+   * @param {string} name - The name of the layer.
    */
   addLayer(name) {
     // TODO: need to find the layer and add this item to it.
@@ -43,16 +43,16 @@ class BaseGeomItem extends TreeItem {
   // Cutaways
 
   /**
-   * The isCutawayEnabled method.
-   * @return {any} - The return value.
+   * Checks if cutways are enabled.
+   * @return {boolean} - Returns true if enabled.
    */
   isCutawayEnabled() {
     return this.__cutAway;
   }
 
   /**
-   * The setCutawayEnabled method.
-   * @param {any} state - The state param.
+   * Setter for enabling cutways.
+   * @param {any} state - The state of the cutway.
    */
   setCutawayEnabled(state) {
     this.__cutAway = state;
@@ -60,8 +60,8 @@ class BaseGeomItem extends TreeItem {
   }
 
   /**
-   * The getCutVector method.
-   * @param {any} cutAwayVector - The cutAwayVector param.
+   * Getter for cutway vectors.
+   * @param {any} cutAwayVector - The cutAwayVector value.
    * @return {any} - The return value.
    */
   getCutVector(cutAwayVector) {
@@ -69,8 +69,8 @@ class BaseGeomItem extends TreeItem {
   }
 
   /**
-   * The setCutVector method.
-   * @param {*} cutAwayVector - The cutAwayVector param.
+   * Setter for cutway vectors.
+   * @param {any} cutAwayVector - The cutAwayVector value.
    */
   setCutVector(cutAwayVector) {
     this.__cutAwayVector = cutAwayVector;
@@ -78,8 +78,8 @@ class BaseGeomItem extends TreeItem {
   }
 
   /**
-   * The getCutDist method.
-   * @param {any} cutAwayDist - The cutAwayDist param.
+   * Getter for the cutaway distance.
+   * @param {any} cutAwayDist - The cutAwayDist value.
    * @return {any} - The return value.
    */
   getCutDist(cutAwayDist) {
@@ -87,8 +87,8 @@ class BaseGeomItem extends TreeItem {
   }
 
   /**
-   * The setCutDist method.
-   * @param {any} cutAwayDist - The cutAwayDist param.
+   * Setter for the cutaway distance.
+   * @param {any} cutAwayDist - The cutAwayDist value.
    */
   setCutDist(cutAwayDist) {
     this.__cutAwayDist = cutAwayDist;
@@ -100,8 +100,8 @@ class BaseGeomItem extends TreeItem {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     super.readBinary(reader, context);

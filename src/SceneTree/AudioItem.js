@@ -11,13 +11,13 @@ import { TreeItem } from './TreeItem.js';
 import { GeomLibrary } from './GeomLibrary.js';
 import { MaterialLibrary } from './MaterialLibrary.js';
 
-/** Class representing an audio item.
+/** Class representing an audio item in a scene tree.
  * @extends TreeItem
  */
 class AudioItem extends TreeItem {
   /**
    * Create an audio item.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the audio item.
    */
   constructor(name) {
     super(name);
@@ -146,7 +146,7 @@ class AudioItem extends TreeItem {
 
   /**
    * The setAudioStream method.
-   * @param {any} audio - The audio param.
+   * @param {any} audio - The audio value.
    */
   setAudioStream(audio) {
     this.__loaded = true;
@@ -155,13 +155,13 @@ class AudioItem extends TreeItem {
   }
 }
 
-/** Class representing a file audio item.
+/** Class representing a audio file item in a scene tree.
  * @extends AudioItem
  */
 class FileAudioItem extends AudioItem {
   /**
-   * Create a file audio item..
-   * @param {string} name - The name value.
+   * Create a audio file item.
+   * @param {string} name - The name of the audio file.
    */
   constructor(name) {}
 }

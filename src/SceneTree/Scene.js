@@ -14,7 +14,7 @@ import { RendererParams } from './RendererParams.js';
 
 const defaultGridColor = new Color('#DCDCDC');
 
-/** Class representing a scene. */
+/** Class representing a scene in a scene tree. */
 class Scene {
   /**
    * Create a scene.
@@ -75,7 +75,7 @@ class Scene {
 
   /**
    * The loadCommonAssetResource method.
-   * @param {any} resourceId - The resourceId param.
+   * @param {any} resourceId - The resourceId value.
    * @return {any} - The return value.
    */
   loadCommonAssetResource(resourceId) {
@@ -98,7 +98,7 @@ class Scene {
 
   /**
    * The setEnvMapLOD method.
-   * @param {any} lod - The lod param.
+   * @param {any} lod - The lod value.
    */
   setEnvMapLOD(lod) {
     this.__envmapLOD = lod;
@@ -113,8 +113,8 @@ class Scene {
   }
 
   /**
-   * The setEnvMapName method.
-   * @param {any} envMapName - The envMapName param.
+   * Setter for the environment map name.
+   * @param {string} envMapName - The enironment map name.
    */
   setEnvMapName(envMapName) {
     if (envMapName.endsWith('.vlh'))
@@ -127,8 +127,8 @@ class Scene {
   }
 
   /**
-   * The setEnvMap method.
-   * @param {any} envMap - The envMap param.
+   * Setter for the environment map.
+   * @param {EnvMap} envMap - The environment map.
    */
   setEnvMap(envMap) {
     this.__envMap = envMap;
@@ -145,7 +145,7 @@ class Scene {
 
   /**
    * The setBackgroundMap method.
-   * @param {any} backgroundMap - The backgroundMap param.
+   * @param {any} backgroundMap - The backgroundMap value.
    */
   setBackgroundMap(backgroundMap) {
     this.__backgroundMap = backgroundMap;
@@ -154,7 +154,7 @@ class Scene {
 
   /**
    * The getCamera method.
-   * @param {number} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getCamera(index = 0) {
@@ -166,8 +166,8 @@ class Scene {
 
   /**
    * The resolvePath method.
-   * @param {any} path - The path param.
-   * @param {number} index - The index param.
+   * @param {any} path - The path value.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   resolvePath(path, index = 0) {
@@ -195,7 +195,7 @@ class Scene {
 
   /**
    * The setLightMapLOD method.
-   * @param {any} lod - The lod param.
+   * @param {any} lod - The lod value.
    */
   setLightMapLOD(lod) {
     this.__lightmapLOD = lod;
@@ -203,7 +203,7 @@ class Scene {
 
   /**
    * The getLightMap method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   getLightMap(name) {
@@ -212,8 +212,8 @@ class Scene {
 
   /**
    * The setLightMap method.
-   * @param {string} name - The name param.
-   * @param {any} lightmap - The lightmap param.
+   * @param {string} name - The name value.
+   * @param {any} lightmap - The lightmap value.
    */
   setLightMap(name, lightmap) {
     if (!(lightmap instanceof Lightmap || lightmap instanceof LightmapMixer)) {
@@ -235,7 +235,7 @@ class Scene {
 
   /**
    * The addAsset method.
-   * @param {any} asset - The asset param.
+   * @param {any} asset - The asset value.
    */
   addAsset(asset) {
     asset.loaded.connect(() => {
@@ -280,10 +280,10 @@ class Scene {
   }
 
   /**
-   * The setupGrid method.
-   * @param {number} gridSize - The gridSize param.
-   * @param {number} resolution - The resolution param.
-   * @param {any} gridColor - The gridColor param.
+   * Set up the scene grid.
+   * @param {number} gridSize - The size of the grid.
+   * @param {number} resolution - The resolution of the grid.
+   * @param {Color} gridColor - The color of the grid.
    * @return {any} - The return value.
    */
   setupGrid(gridSize = 5, resolution = 50, gridColor = defaultGridColor) {
@@ -329,10 +329,22 @@ class Scene {
   // Persistence
 
   /**
-   * The fromJSON method.
-   * @param {any} json - The json param.
-   * @param {object} context - The context param.
-   *
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
+   */
+  toJSON(context, flags) {
+    return {
+      root: this.__root.toJSON(context, flags),
+      boundingBox: this.boundingBox.toJSON(context, flags),
+    };
+  }
+
+  /**
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} json - The json object this item must decode.
+   * @param {object} context - The context value.
    */
   fromJSON(json, context) {
     if (j.envMap) {
@@ -340,19 +352,6 @@ class Scene {
       envMap.fromJSON(j.envMap);
       this.setEnvMap(envMap);
     }
-  }
-
-  /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  toJSON(context, flags) {
-    return {
-      root: this.__root.toJSON(context, flags),
-      boundingBox: this.boundingBox.toJSON(context, flags),
-    };
   }
 
   /**

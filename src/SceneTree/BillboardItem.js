@@ -14,13 +14,13 @@ import { GeomItem } from './GeomItem.js';
 import { Material } from './Material.js';
 import { Lines } from './Geometry/Lines.js';
 
-/** Class representing a billboard item.
+/** Class representing a billboard item in a scene tree.
  * @extends TreeItem
  */
 class BillboardItem extends TreeItem {
   /**
    * Create a billboard item.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the billboard item.
    * @param {any} image - The image value.
    */
   constructor(name, image) {
@@ -49,7 +49,7 @@ class BillboardItem extends TreeItem {
       lineGeom.setSegment(0, 0, 1);
 
       const line = new GeomItem('line' + index);
-      // Note: because the lines are generated geoms.
+      // Note: Because the lines are generated geoms
       // we do not want them being persisted in the JSON structure.
       line.setGeometry(lineGeom, ValueSetMode.OPERATOR_SETVALUE);
       line.setMaterial(linesMaterial, ValueSetMode.OPERATOR_SETVALUE);
@@ -85,21 +85,21 @@ class BillboardItem extends TreeItem {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     return super.toJSON(context, flags);
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   fromJSON(j, context, flags) {
     return super.fromJSON(j, context, flags);

@@ -6,7 +6,7 @@ class BinReader {
    * Create a bin reader.
    * @param {any} data - The data value.
    * @param {number} byteOffset - The byteOffset value.
-   * @param {boolean} isMobileDevice - The isMobileDevice value.
+   * @param {boolean} isMobileDevice - Boolean determining if on a mobile device.
    */
   constructor(data, byteOffset = 0, isMobileDevice = true) {
     this.__data = data;
@@ -17,6 +17,7 @@ class BinReader {
 
   /**
    * Getter for isMobileDevice.
+   * @return {boolean} - Returns true if on a mobile device.
    */
   get isMobileDevice() {
     return this.__isMobileDevice;
@@ -24,6 +25,7 @@ class BinReader {
 
   /**
    * Getter for data.
+   * @return {any} - The return value.
    */
   get data() {
     return this.__data;
@@ -31,6 +33,7 @@ class BinReader {
 
   /**
    * Getter for byteLength.
+   * @return {number} - The return value.
    */
   get byteLength() {
     return this.__dataView.byteLength;
@@ -38,6 +41,7 @@ class BinReader {
 
   /**
    * Getter for remainingByteLength.
+   * @return {number} - The return value.
    */
   get remainingByteLength() {
     return this.__dataView.byteLength - this.__byteOffset;
@@ -53,7 +57,7 @@ class BinReader {
 
   /**
    * The seek method.
-   * @param {number} byteOffset - The byteOffset param.
+   * @param {number} byteOffset - The byteOffset value.
    */
   seek(byteOffset) {
     this.__byteOffset = byteOffset;
@@ -61,7 +65,7 @@ class BinReader {
 
   /**
    * The advance method.
-   * @param {number} byteOffset - The byteOffset param.
+   * @param {number} byteOffset - The byteOffset value.
    */
   advance(byteOffset) {
     this.__byteOffset += byteOffset;
@@ -140,8 +144,8 @@ class BinReader {
 
   /**
    * The loadUInt8Array method.
-   * @param {any} size - The size param.
-   * @param {boolean} clone - The clone param.
+   * @param {number} size - The size value.
+   * @param {boolean} clone - The clone value.
    * @return {any} - The return value.
    */
   loadUInt8Array(size = undefined, clone = false) {
@@ -155,8 +159,8 @@ class BinReader {
 
   /**
    * The loadUInt16Array method.
-   * @param {any} size - The size param.
-   * @param {boolean} clone - The clone param.
+   * @param {number} size - The size value.
+   * @param {boolean} clone - The clone value.
    * @return {any} - The return value.
    */
   loadUInt16Array(size = undefined, clone = false) {
@@ -180,8 +184,8 @@ class BinReader {
 
   /**
    * The loadUInt32Array method.
-   * @param {any} size - The size param.
-   * @param {boolean} clone - The clone param.
+   * @param {number} size - The size value.
+   * @param {boolean} clone - The clone value.
    * @return {any} - The return value.
    */
   loadUInt32Array(size = undefined, clone = false) {
@@ -204,8 +208,8 @@ class BinReader {
 
   /**
    * The loadFloat32Array method.
-   * @param {any} size - The size param.
-   * @param {boolean} clone - The clone param.
+   * @param {number} size - The size value.
+   * @param {boolean} clone - The clone value.
    * @return {any} - The return value.
    */
   loadFloat32Array(size = undefined, clone = false) {
@@ -228,7 +232,7 @@ class BinReader {
 
   /**
    * The loadStr method.
-   * @return {any} - The return value.
+   * @return {string} - The return value.
    */
   loadStr() {
     const numChars = this.loadUInt32();
@@ -256,7 +260,7 @@ class BinReader {
 
   /**
    * The loadSInt32Vec2 method.
-   * @return {any} - The return value.
+   * @return {Vec2} - Returns a Vec2.
    */
   loadSInt32Vec2() {
     const x = this.loadSInt32();
@@ -266,7 +270,7 @@ class BinReader {
 
   /**
    * The loadUInt32Vec2 method.
-   * @return {any} - The return value.
+   * @return {Vec2} - Returns a Vec2.
    */
   loadUInt32Vec2() {
     const x = this.loadUInt32();
@@ -276,7 +280,7 @@ class BinReader {
 
   /**
    * The loadFloat16Vec2 method.
-   * @return {any} - The return value.
+   * @return {Vec2} - Returns a Vec2.
    */
   loadFloat16Vec2() {
     const x = this.loadFloat16();
@@ -286,7 +290,7 @@ class BinReader {
 
   /**
    * The loadFloat32Vec2 method.
-   * @return {any} - The return value.
+   * @return {Vec2} - Returns a Vec2.
    */
   loadFloat32Vec2() {
     const x = this.loadFloat32();
@@ -296,7 +300,7 @@ class BinReader {
 
   /**
    * The loadFloat16Vec3 method.
-   * @return {any} - The return value.
+   * @return {Vec3} - Returns a Vec3.
    */
   loadFloat16Vec3() {
     const x = this.loadFloat16();
@@ -307,7 +311,7 @@ class BinReader {
 
   /**
    * The loadFloat32Vec3 method.
-   * @return {any} - The return value.
+   * @return {Vec3} - Returns a Vec3.
    */
   loadFloat32Vec3() {
     const x = this.loadFloat32();
@@ -318,7 +322,7 @@ class BinReader {
 
   /**
    * The loadFloat16Quat method.
-   * @return {any} - The return value.
+   * @return {Quat} - Returns a Quat.
    */
   loadFloat16Quat() {
     const x = this.loadFloat16();
@@ -330,7 +334,7 @@ class BinReader {
 
   /**
    * The loadFloat32Quat method.
-   * @return {any} - The return value.
+   * @return {Quat} - Returns a Quat.
    */
   loadFloat32Quat() {
     const x = this.loadFloat32();
@@ -342,7 +346,7 @@ class BinReader {
 
   /**
    * The loadRGBFloat32Color method.
-   * @return {any} - The return value.
+   * @return {Color} - Returns a Color.
    */
   loadRGBFloat32Color() {
     const r = this.loadFloat32();
@@ -353,7 +357,7 @@ class BinReader {
 
   /**
    * The loadRGBAFloat32Color method.
-   * @return {any} - The return value.
+   * @return {Color} - Returns a Color.
    */
   loadRGBAFloat32Color() {
     const r = this.loadFloat32();
@@ -365,7 +369,7 @@ class BinReader {
 
   /**
    * The loadRGBUInt8Color method.
-   * @return {any} - The return value.
+   * @return {Color} - Returns a Color.
    */
   loadRGBUInt8Color() {
     const r = this.loadUInt8();
@@ -376,7 +380,7 @@ class BinReader {
 
   /**
    * The loadRGBAUInt8Color method.
-   * @return {any} - The return value.
+   * @return {Color} - Returns a Color.
    */
   loadRGBAUInt8Color() {
     const r = this.loadUInt8();
@@ -388,7 +392,7 @@ class BinReader {
 
   /**
    * The loadBox2 method.
-   * @return {any} - The return value.
+   * @return {Box2} - Returns a Box2.
    */
   loadBox2() {
     return new Box2(this.loadFloat32Vec2(), this.loadFloat32Vec2());
@@ -396,7 +400,7 @@ class BinReader {
 
   /**
    * The loadBox3 method.
-   * @return {any} - The return value.
+   * @return {Box3} - Returns a Box3.
    */
   loadBox3() {
     return new Box3(this.loadFloat32Vec3(), this.loadFloat32Vec3());
@@ -404,7 +408,7 @@ class BinReader {
 
   /**
    * The readPadd method.
-   * @param {any} stride - The stride param.
+   * @param {any} stride - The stride value.
    */
   readPadd(stride) {
     const padd = this.__byteOffset % stride;

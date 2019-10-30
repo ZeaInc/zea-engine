@@ -4,11 +4,11 @@ import { sgFactory } from './SGFactory.js';
 import { Material } from './Material.js';
 import { FileImage } from './Images';
 
-/** Class representing a material library. */
+/** Class representing a material library in a scene tree. */
 class MaterialLibrary {
   /**
    * Create a material library.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the material library.
    */
   constructor(name = 'MaterialLibrary') {
     this.__name = name;
@@ -68,7 +68,7 @@ class MaterialLibrary {
 
   /**
    * The hasMaterial method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   hasMaterial(name) {
@@ -76,8 +76,8 @@ class MaterialLibrary {
   }
 
   /**
-   * The addMaterial method.
-   * @param {any} material - The material param.
+   * Add a metrial.
+   * @param {Material} material - The material value.
    */
   addMaterial(material) {
     material.setOwner(this);
@@ -86,8 +86,8 @@ class MaterialLibrary {
 
   /**
    * The getMaterial method.
-   * @param {string} name - The name param.
-   * @param {Boolean} assert - The assert param.
+   * @param {string} name - The material name.
+   * @param {Boolean} assert - The assert value.
    * @return {any} - The return value.
    */
   getMaterial(name, assert = true) {
@@ -102,7 +102,7 @@ class MaterialLibrary {
 
   /**
    * The hasImage method.
-   * @param {string} name - The name param.
+   * @param {string} name - The material name.
    * @return {any} - The return value.
    */
   hasImage(name) {
@@ -111,7 +111,7 @@ class MaterialLibrary {
 
   /**
    * The addImage method.
-   * @param {any} image - The image param.
+   * @param {any} image - The image value.
    */
   addImage(image) {
     image.setOwner(this);
@@ -120,8 +120,8 @@ class MaterialLibrary {
 
   /**
    * The getImage method.
-   * @param {string} name - The name param.
-   * @param {boolean} assert - The assert param.
+   * @param {string} name - The material name.
+   * @param {boolean} assert - The assert value.
    * @return {any} - The return value.
    */
   getImage(name, assert = true) {
@@ -151,7 +151,7 @@ class MaterialLibrary {
 
   /**
    * The load method.
-   * @param {any} filePath - The filePath param.
+   * @param {any} filePath - The file path.
    */
   load(filePath) {
     const xhr = new XMLHttpRequest();
@@ -172,10 +172,22 @@ class MaterialLibrary {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The toJSON method encodes the current object as a json object.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
+   */
+  toJSON(context = {}, flags = 0) {
+    return {
+      numMaterials: this.geoms.length(),
+    };
+  }
+
+  /**
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context = {}, flags = 0) {
     context.lod = this.lod;
@@ -192,21 +204,9 @@ class MaterialLibrary {
   }
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  toJSON(context = {}, flags = 0) {
-    return {
-      numMaterials: this.geoms.length(),
-    };
-  }
-
-  /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context = {}) {
     if (context.version == undefined) context.version = 0;

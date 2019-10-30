@@ -9,14 +9,14 @@ import {
   ParameterSet,
 } from './Parameters';
 
-/** Class representing a base image.
+/** Class representing a base image in the scene tree.
  * @extends BaseItem
  */
 class BaseImage extends BaseItem {
   /**
    * Create a base image.
-   * @param {string} name - The name value.
-   * @param {any} params - The params value.
+   * @param {string} name - The name of the base image.
+   * @param {any} params - The parameters of the base image.
    */
   constructor(name, params = {}) {
     super(name);
@@ -38,8 +38,8 @@ class BaseImage extends BaseItem {
   }
 
   /**
-   * The isLoaded method.
-   * @return {boolean} - The return value.
+   * Returns true if loaded.
+   * @return {boolean} - Returns a boolean.
    */
   isLoaded() {
     return true;
@@ -55,7 +55,7 @@ class BaseImage extends BaseItem {
 
   /**
    * The setMapping method
-   * @param {any} mapping - The mapping param.
+   * @param {any} mapping - The mapping value.
    */
   setMapping(mapping) {
     this.__mapping = mapping;
@@ -63,7 +63,7 @@ class BaseImage extends BaseItem {
 
   /**
    * The isStream method.
-   * @return {boolean} - The return value.
+   * @return {boolean} - Returns a boolean.
    */
   isStream() {
     return false;
@@ -71,7 +71,7 @@ class BaseImage extends BaseItem {
 
   /**
    * The isStreamAtlas method.
-   * @return {any} - The return value.
+   * @return {boolean} - Returns a boolean.
    */
   isStreamAtlas() {
     return this.__streamAtlas;
