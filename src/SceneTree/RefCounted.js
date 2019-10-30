@@ -2,7 +2,12 @@ import { Signal } from '../Utilities';
 
 let counter = 0;
 
-/** Class representing ref counted. */
+/** Class representing ref counted object. RefCounted
+ *  objects track ownership and allow explicit cleanup
+ *  of resources. This is necessary when JavaScript
+ *  objects own references to GPU resources that need to
+ *  be cleaned up when the JavaScript object is ddestroyed.
+ */
 class RefCounted {
   /**
    * Create ref counted.
@@ -18,7 +23,8 @@ class RefCounted {
   }
 
   /**
-   * The getId method.
+   * Returns the unique id of the object. Every Object has a unique
+   * identifier which is based on a counter that is incremented.
    * @return {any} - The return value.
    */
   getId() {
@@ -87,7 +93,7 @@ class RefCounted {
   }
 
   /**
-   * The isDestroyed method.
+   * Returns true if this object has already been destroyed.
    * @return {any} - The return value.
    */
   isDestroyed() {
@@ -95,7 +101,11 @@ class RefCounted {
   }
 
   /**
-   * The destroy method.
+   * The destroy method is invoked when the last owner
+   * is removed from a RefCounted object. Derived objects can
+   * override this method to perform explicit cleanup.
+   * The destructing signal is triggered so observers can
+   * respond to this objects destruction.
    */
   destroy() {
     this.__destroyed = true;
