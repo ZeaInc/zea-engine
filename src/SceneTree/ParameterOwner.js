@@ -128,7 +128,7 @@ class ParameterOwner extends RefCounted {
 
   /**
    * Insert a parameter.
-   * @param {any} param - The paramater to insert.
+   * @param {any} param - The parameter to insert.
    * @param {number} index - The index value.
    * @return {any} - The return value.
    */
@@ -155,23 +155,23 @@ class ParameterOwner extends RefCounted {
 
   /**
    * Remove a parameter.
-   * @param {string} name - The parameter name.
+   * @param {string} paramName - The parameter name.
    */
-  removeParameter(name) {
-    if (this.__paramMapping[name] == undefined) {
-      console.throw('Unable to Remove Parameter:' + name);
+  removeParameter(paramName) {
+    if (this.__paramMapping[paramName] == undefined) {
+      console.throw('Unable to Remove Parameter:' + paramName);
     }
-    const index = this.__paramMapping[name];
-    const param = this.__params[this.__paramMapping[name]];
+    const index = this.__paramMapping[paramName];
+    const param = this.__params[this.__paramMapping[paramName]];
     param.removeRef(this);
-    param.valueChanged.disconnectId(this.__paramSignalIds[name]);
+    param.valueChanged.disconnectId(this.__paramSignalIds[paramName]);
     this.__params.splice(index, 1);
     const paramMapping = {};
     for (let i = 0; i < this.__params.length; i++) {
       paramMapping[this.__params[i].getName()] = i;
     }
     this.__paramMapping = paramMapping;
-    this.parameterRemoved.emit(name);
+    this.parameterRemoved.emit(paramName);
   }
 
   /**
