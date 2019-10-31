@@ -7,30 +7,20 @@ import { Parameter } from './Parameter.js';
 class ItemSetParameter extends Parameter {
   /**
    * Create an item set parameter.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the item set parameter.
    * @param {any} filterFn - The filterFn value.
    */
   constructor(name, filterFn) {
     super(name, undefined, 'BaseItem');
     this.__items = new Set();
-    this.__filterFn = filterFn; // Note: the filter Fn indicates that users will edit the set. 
+    this.__filterFn = filterFn; // Note: the filter Fn indicates that users will edit the set.
     this.itemAdded = new Signal();
     this.itemRemoved = new Signal();
   }
 
   /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new ItemSetParameter(this.__name, this.__filterFn);
-    return clonedParam;
-  }
-
-  /**
    * The setFilterFn method.
-   * @param {any} filterFn - The flags param.
+   * @param {any} filterFn - The filterFn value.
    */
   setFilterFn(filterFn) {
     this.__filterFn = filterFn;
@@ -46,7 +36,7 @@ class ItemSetParameter extends Parameter {
 
   /**
    * The getItem method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index param.
    * @return {any} - The return value.
    */
   getItem(index) {
@@ -55,41 +45,43 @@ class ItemSetParameter extends Parameter {
 
   /**
    * The addItem method.
-   * @param {any} item - The item param.
-   * @param {boolean} emit - The emit param.
-   * @return {any} - The return value.
+   * @param {any} item - The item value.
+   * @param {boolean} emit - The emit value.
+   * @return {boolean} - The return value.
    */
   addItem(item, emit = true) {
     if (this.__filterFn && !this.__filterFn(item)) {
-      console.warn("ItemSet __filterFn rejecting item:", item.getPath())
+      console.warn('ItemSet __filterFn rejecting item:', item.getPath());
       return false;
     }
     this.__items.add(item);
-    const index = Array.from(this.__items).indexOf(item)
-    this.itemAdded.emit(item, index)
-    if(emit)
-      this.valueChanged.emit()
+    const index = Array.from(this.__items).indexOf(item);
+    this.itemAdded.emit(item, index);
+    if (emit) this.valueChanged.emit();
     return index;
   }
 
+  /**
+   * The addItems method.
+   * @param {any} items - The index value.
+   * @param {boolean} emit - The emit value.
+   */
   addItems(items, emit = true) {
-    items.forEach( item => this.addItem(item, false));
-    if(emit)
-      this.valueChanged.emit()
+    items.forEach(item => this.addItem(item, false));
+    if (emit) this.valueChanged.emit();
   }
 
   /**
    * The removeItem method.
-   * @param {any} item - The item param.
+   * @param {any} index - The index value.
    * @param {boolean} emit - The emit param.
    * @return {any} - The return value.
    */
   removeItem(index, emit = true) {
     const item = Array.from(this.__items)[index];
     this.__items.delete(item);
-    this.itemRemoved.emit(item, index)
-    if(emit)
-      this.valueChanged.emit();
+    this.itemRemoved.emit(item, index);
+    if (emit) this.valueChanged.emit();
     return item;
   }
 
@@ -99,14 +91,14 @@ class ItemSetParameter extends Parameter {
    * @param {boolean} emit - The emit param.
    */
   setItems(items, emit = true) {
-    for (let i=this.__items.length-1; i >= 0; i--){
+    for (let i = this.__items.length - 1; i >= 0; i--) {
       const item = this.__items[i];
-      if(!items.has(item)) {
+      if (!items.has(item)) {
         this.removeItem(item, false);
       }
     }
-    for (const item of items){
-      if(!this.__items.has(item)) {
+    for (const item of items) {
+      if (!this.__items.has(item)) {
         this.addItem(item, false);
       }
     }
@@ -115,7 +107,7 @@ class ItemSetParameter extends Parameter {
 
   /**
    * The clearItems method.
-   * @param {boolean} emit - The emit param.
+   * @param {boolean} emit - The emit value.
    */
   clearItems(emit = true) {
     this.__items.clear();
@@ -142,9 +134,9 @@ class ItemSetParameter extends Parameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    * @return {any} - The return value.
    */
   toJSON(context, flags) {
@@ -152,12 +144,26 @@ class ItemSetParameter extends Parameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {}
+
+  // ////////////////////////////////////////
+  // Clone
+
+  /**
+   * The clone method constructs a new parameter, copies its values
+   * from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {ItemSetParameter} - Returns a new item set parameter.
+   */
+  clone(flags) {
+    const clonedParam = new ItemSetParameter(this.__name, this.__filterFn);
+    return clonedParam;
+  }
 }
 
 export { ItemSetParameter };

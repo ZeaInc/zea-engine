@@ -7,8 +7,8 @@ import { NumberParameter } from './NumberParameter.js';
 class MultiChoiceParameter extends NumberParameter {
   /**
    * Create a multi choice parameter.
-   * @param {string} name - The name value.
-   * @param {any} index - The index value.
+   * @param {string} name - The name of the multi choice parameter.
+   * @param {number} index - The index value.
    * @param {any} choices - The choices value.
    */
   constructor(name, index, choices) {
@@ -27,7 +27,7 @@ class MultiChoiceParameter extends NumberParameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    */
   setValue(value, mode) {
     if (typeof value === 'string') {

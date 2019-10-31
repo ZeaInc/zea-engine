@@ -36,7 +36,7 @@ class Command {
 
   /**
    * The setOwner method.
-   * @param {any} ownerItem - The ownerItem param.
+   * @param {any} ownerItem - The ownerItem value.
    */
   setOwner(ownerItem) {
     // this.__private.set(ownerItem, ownerItem);
@@ -64,7 +64,7 @@ class Command {
 
   /**
    * The setEnabled method.
-   * @param {any} state - The state param.
+   * @param {any} state - The state value.
    */
   setEnabled(state) {
     if (state) this.__flags &= ~CommandFlags.DISABLED;

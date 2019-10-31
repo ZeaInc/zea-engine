@@ -7,32 +7,19 @@ import { ColorParameter } from './ColorParameter.js';
 import { BaseImage } from '../BaseImage.js';
 
 /** Class representing a material color parameter.
- * @extends Parameter
+ * @extends ColorParameter
  */
 class MaterialColorParam extends ColorParameter {
   /**
    * Create a material color parameter.
-   * @param {string} name - The name value.
-   * @param {any} value - The value value.
+   * @param {string} name - The name of the material color parameter.
+   * @param {any} value - The value of the parameter.
    */
   constructor(name, value) {
     super(name, value);
     this.textureConnected = new Signal();
     this.textureDisconnected = new Signal();
     this.__imageUpdated = this.__imageUpdated.bind(this);
-  }
-
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new MaterialColorParam(
-      this.__name,
-      this.__value.clone()
-    );
-    return clonedParam;
   }
 
   /**
@@ -54,7 +41,7 @@ class MaterialColorParam extends ColorParameter {
   /**
    * The setImage method.
    * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode param.
    */
   setImage(value, mode = 0) {
     const disconnectImage = () => {
@@ -98,8 +85,8 @@ class MaterialColorParam extends ColorParameter {
   }
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     super.readBinary(reader, context);
@@ -108,6 +95,20 @@ class MaterialColorParam extends ColorParameter {
     if (textureName != '') {
       this.setImage(context.materialLibrary.getImage(textureName));
     }
+  }
+
+  /**
+   * The clone method constructs a new material color parameter,
+   * copies its values from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {MaterialColorParam} - Returns a new cloned material color parameter.
+   */
+  clone(flags) {
+    const clonedParam = new MaterialColorParam(
+      this.__name,
+      this.__value.clone()
+    );
+    return clonedParam;
   }
 }
 

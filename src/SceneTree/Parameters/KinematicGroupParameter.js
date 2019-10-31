@@ -10,7 +10,7 @@ import { TreeItemParameter } from './TreeItemParameter.js';
 class KinematicGroupParameter extends ListParameter {
   /**
    * Create a kinematic group parameter.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the kinematic group parameter.
    */
   constructor(name) {
     console.error('This class is deprecated. Use Groups instead.');
@@ -36,7 +36,7 @@ class KinematicGroupParameter extends ListParameter {
 
   /**
    * The __filter method.
-   * @param {any} item - The item param.
+   * @param {any} item - The item value.
    * @return {any} - The return value.
    * @private
    */
@@ -55,7 +55,7 @@ class KinematicGroupParameter extends ListParameter {
 
   /**
    * The getXfo method.
-   * @param {number} mode - The mode param.
+   * @param {number} mode - The mode value.
    * @return {any} - The return value.
    */
   getXfo(mode = 0) {
@@ -65,7 +65,7 @@ class KinematicGroupParameter extends ListParameter {
 
   /**
    * The getXfo method.
-   * @param {any} xfo - The xfo param.
+   * @param {any} xfo - The xfo value.
    * @param {number} mode - The mode param.
    */
   setXfo(xfo, mode) {
@@ -79,7 +79,7 @@ class KinematicGroupParameter extends ListParameter {
 
   /**
    * The setDirty method.
-   * @param {any} cleanerFn - The cleanerFn param.
+   * @param {any} cleanerFn - The cleanerFn value.
    * @return {any} - The return value.
    */
   setDirty(cleanerFn) {
@@ -92,7 +92,7 @@ class KinematicGroupParameter extends ListParameter {
 
   /**
    * The removeCleanerFn method.
-   * @param {any} cleanerFn - The cleanerFn param.
+   * @param {any} cleanerFn - The cleanerFn value.
    */
   removeCleanerFn(cleanerFn) {
     for (const p of this.__globalXfoParams) {
@@ -101,28 +101,14 @@ class KinematicGroupParameter extends ListParameter {
     this.__cleanerFn = undefined;
   }
 
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new KinematicGroupParameter(
-      this.__name,
-      clonedValue,
-      this.__dataType
-    );
-    return clonedParam;
-  }
-
   // ////////////////////////////////////////
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     // return super.toJSON(context, flags);
@@ -136,10 +122,10 @@ class KinematicGroupParameter extends ListParameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     if (j.treeItems == undefined) {
@@ -166,8 +152,27 @@ class KinematicGroupParameter extends ListParameter {
     }
   }
 
+  // ////////////////////////////////////////
+  // Clone and Destroy
+
   /**
-   * The destroy method.
+   * The clone method constructs a new kinematic group parameter,
+   * copies its values from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {FilePathParameter} - Returns a new cloned kinematic group parameter.
+   */
+  clone(flags) {
+    const clonedParam = new KinematicGroupParameter(
+      this.__name,
+      clonedValue,
+      this.__dataType
+    );
+    return clonedParam;
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     for (let i = 0; i < this.__value.length; i++) {

@@ -7,7 +7,7 @@ import { ValueSetMode, ParamFlags, Parameter } from './Parameter.js';
 class ListParameter extends Parameter {
   /**
    * Create a list parameter.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the list parameter.
    * @param {any} dataType - The dataType value.
    */
   constructor(name, dataType) {
@@ -19,7 +19,7 @@ class ListParameter extends Parameter {
 
   /**
    * The __filter method.
-   * @param {any} item - The item param.
+   * @param {any} item - The item value.
    * @return {boolean} - The return value.
    * @private
    */
@@ -37,7 +37,7 @@ class ListParameter extends Parameter {
 
   /**
    * The getElement method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getElement(index) {
@@ -46,8 +46,8 @@ class ListParameter extends Parameter {
 
   /**
    * The setElement method.
-   * @param {any} index - The index param.
-   * @param {any} value - The value param.
+   * @param {number} index - The index value.
+   * @param {any} value - The value value.
    */
   setElement(index, value) {
     this.__value[index] = value;
@@ -56,7 +56,7 @@ class ListParameter extends Parameter {
 
   /**
    * The addElement method.
-   * @param {any} elem - The elem param.
+   * @param {any} elem - The elem value.
    * @return {any} - The return value.
    */
   addElement(elem) {
@@ -74,7 +74,7 @@ class ListParameter extends Parameter {
 
   /**
    * The removeElement method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    */
   removeElement(index) {
     const elem = this.__value[index];
@@ -86,8 +86,8 @@ class ListParameter extends Parameter {
 
   /**
    * The insertElement method.
-   * @param {any} index - The index param.
-   * @param {any} elem - The elem param.
+   * @param {any} index - The index value.
+   * @param {any} elem - The elem value.
    */
   insertElement(index, elem) {
     if (!this.__filter(elem)) return;
@@ -98,26 +98,14 @@ class ListParameter extends Parameter {
     this.valueChanged.emit(ValueSetMode.USER_SETVALUE);
   }
 
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedValue = this.__value.slice(0);
-    const clonedParam = new ListParameter(this.__name, this.__dataType);
-    clonedParam.setValue(clonedValue);
-    return clonedParam;
-  }
-
   // ////////////////////////////////////////
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     if ((this.__flags & ParamFlags.USER_EDITED) == 0) return;
@@ -132,10 +120,10 @@ class ListParameter extends Parameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     if (j.items == undefined) {
@@ -161,8 +149,25 @@ class ListParameter extends Parameter {
     this.valueChanged.emit(ValueSetMode.DATA_LOAD);
   }
 
+  // ////////////////////////////////////////
+  // Clone and Destroy
+
   /**
-   * The destroy method.
+   * The clone method constructs a new list parameter, copies its values
+   * from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {ListParameter} - Returns a new list parameter.
+   */
+  clone(flags) {
+    const clonedValue = this.__value.slice(0);
+    const clonedParam = new ListParameter(this.__name, this.__dataType);
+    clonedParam.setValue(clonedValue);
+    return clonedParam;
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     for (let i = 0; i < this.__value.length; i++) {

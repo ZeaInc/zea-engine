@@ -6,7 +6,7 @@ import { ParamFlags, ValueSetMode, Parameter } from './Parameter.js';
 class StructParameter extends Parameter {
   /**
    * Create a struct parameter.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the struct parameter.
    */
   constructor(name) {
     super(name, {}, 'Struct');
@@ -15,7 +15,7 @@ class StructParameter extends Parameter {
 
   /**
    * The _addMember method.
-   * @param {any} parameter - The parameter param.
+   * @param {any} parameter - The parameter value.
    * @return {any} - The return value.
    * @private
    */
@@ -32,8 +32,8 @@ class StructParameter extends Parameter {
 
   /**
    * The getParameter method.
-   * @param {string} name - The name param.
-   * @return {any} - The name value.
+   * @param {string} name - The parameter name.
+   * @return {any} - The return value.
    */
   getParameter(name) {
     for (const p of this.__members) {
@@ -43,19 +43,22 @@ class StructParameter extends Parameter {
 
   /**
    * The getMember method.
-   * @param {string} name - The name param.
-   * @return {any} - The name value.
+   * @param {string} name - The parameter name.
+   * @return {any} - The return value.
    */
   getMember(name) {
     return this.getParameter(name);
   }
 
+  /**
+   * The getMemberNames method.
+   * @return {any} - The return value.
+   */
   getMemberNames() {
     const names = [];
     for (let i = 0; i < this.__members.length; i++) {
       const member = this.__members[i];
-      if (member != null)
-        names[i] = member.getName();
+      if (member != null) names[i] = member.getName();
     }
     return names;
   }
@@ -64,10 +67,10 @@ class StructParameter extends Parameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     if ((this.__flags & ParamFlags.USER_EDITED) == 0) return;
@@ -79,10 +82,10 @@ class StructParameter extends Parameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     if (j.members == undefined) {
@@ -100,8 +103,12 @@ class StructParameter extends Parameter {
     }
   }
 
+  // ////////////////////////////////////////
+  // Destroy
+
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();

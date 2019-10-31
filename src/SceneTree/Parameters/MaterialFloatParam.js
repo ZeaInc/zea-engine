@@ -11,27 +11,14 @@ import { BaseImage } from '../BaseImage.js';
 class MaterialFloatParam extends NumberParameter {
   /**
    * Create a material float parameter.
-   * @param {string} name - The name value.
-   * @param {any} value - The value value.
+   * @param {string} name - The name of the material color parameter.
+   * @param {any} value - The value of the parameter.
    * @param {any} range - The range value.
    */
   constructor(name, value, range) {
     super(name, value, range);
     this.textureConnected = new Signal();
     this.textureDisconnected = new Signal();
-  }
-
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new MaterialFloatParam(
-      this.__name,
-      this.__value.clone()
-    );
-    return clonedParam;
   }
 
   /**
@@ -48,8 +35,8 @@ class MaterialFloatParam extends NumberParameter {
 
   /**
    * The setImage method.
-   * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
+   * @param {any} value - The value value.
+   * @param {number} mode - The mode value.
    */
   setImage(value, mode = 0) {
     const disconnectImage = () => {
@@ -94,8 +81,8 @@ class MaterialFloatParam extends NumberParameter {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     super.readBinary(reader, context);
@@ -105,6 +92,20 @@ class MaterialFloatParam extends NumberParameter {
       console.log('Load Texture');
       this.setImage(context.materialLibrary.getImage(textureName));
     }
+  }
+
+  /**
+   * The clone method constructs a new material float parameter,
+   * copies its values from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {MaterialFloatParam} - Returns a new cloned material float parameter.
+   */
+  clone(flags) {
+    const clonedParam = new MaterialFloatParam(
+      this.__name,
+      this.__value.clone()
+    );
+    return clonedParam;
   }
 }
 

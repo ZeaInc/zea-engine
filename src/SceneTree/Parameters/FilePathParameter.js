@@ -8,7 +8,7 @@ import { resourceLoader } from '../ResourceLoader.js';
 class FilePathParameter extends Parameter {
   /**
    * Create a file path parameter.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the file path parameter.
    * @param {any} exts - The exts value.
    */
   constructor(name, exts) {
@@ -20,7 +20,7 @@ class FilePathParameter extends Parameter {
 
   /**
    * The setSupportedExts method.
-   * @param {any} exts - The exts param.
+   * @param {any} exts - The exts value.
    */
   setSupportedExts(exts) {
     // Note: supported Extensions should be in the format ext1|exts2|ext3
@@ -40,8 +40,8 @@ class FilePathParameter extends Parameter {
 
   /**
    * The setFilepath method.
-   * @param {any} filePath - The filePath param.
-   * @param {any} mode - The mode param.
+   * @param {any} filePath - The filePath value.
+   * @param {number} mode - The mode value.
    */
   setFilepath(filePath, mode) {
     const resourceId = resourceLoader.resolveFilePathToId(filePath);
@@ -127,8 +127,8 @@ class FilePathParameter extends Parameter {
 
   /**
    * The setUrl method.
-   * @param {any} url - The url param.
-   * @param {any} mode - The mode param.
+   * @param {any} url - The url value.
+   * @param {number} mode - The mode value.
    */
   setUrl(url, mode = ValueSetMode.USER_SETVALUE) {
     const parts = url.split('/');
@@ -155,19 +155,8 @@ class FilePathParameter extends Parameter {
   }
 
   /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new FilePathParameter(this.__name);
-    clonedParam.__file = this.__file;
-    return clonedParam;
-  }
-
-  /**
    * The setDirty method.
-   * @param {any} cleanerFn - The cleanerFn param.
+   * @param {any} cleanerFn - The cleanerFn value.
    */
   setDirty(cleanerFn) {
     throw new Error('Cannot drive a filepath param from an oporator');
@@ -176,11 +165,11 @@ class FilePathParameter extends Parameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
-   * @return {any} - The return value.
+   * @param {number} mode - The mode value.
+   * @return {boolean} - The return value.
    */
   setValue(value, mode = ValueSetMode.USER_SETVALUE) {
-    // 0 == normal set. 1 = changed via cleaner fn, 2=change by loading/cloning code.
+    // 0 == normal set. 1 = changed via cleaner fn, 2 = change by loading/cloning code.
     if (value == undefined) {
       throw new Error('Invalid value for setValue.');
     }
@@ -229,10 +218,10 @@ class FilePathParameter extends Parameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     if ((this.__flags & ParamFlags.USER_EDITED) == 0) return;
@@ -248,10 +237,10 @@ class FilePathParameter extends Parameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     if (j.value) {
@@ -277,8 +266,24 @@ class FilePathParameter extends Parameter {
     }
   }
 
+  // ////////////////////////////////////////
+  // Clone and Destroy
+
   /**
-   * The destroy method.
+   * The clone method constructs a new file path parameter,
+   * copies its values from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {FilePathParameter} - Returns a new cloned file path parameter.
+   */
+  clone(flags) {
+    const clonedParam = new FilePathParameter(this.__name);
+    clonedParam.__file = this.__file;
+    return clonedParam;
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();

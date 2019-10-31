@@ -2,13 +2,13 @@ import { sgFactory } from '../SGFactory.js';
 import { Parameter } from './Parameter.js';
 import { QueryParameter } from './QueryParameter.js';
 
-/** Class representing a query set.
+/** Class representing a query set parameter.
  * @extends Parameter
  */
 class QuerySet extends Parameter {
   /**
-   * Create a query set.
-   * @param {string} name - The name value.
+   * Create a query set parameter.
+   * @param {string} name - The name of the query set parameter.
    */
   constructor(name) {
     super(name, undefined, 'QueryParameter');
@@ -16,18 +16,8 @@ class QuerySet extends Parameter {
   }
 
   /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new QuerySet(this.__name, this.__filterFn);
-    return clonedParam;
-  }
-
-  /**
    * The getItem method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getItem(index) {
@@ -36,8 +26,8 @@ class QuerySet extends Parameter {
 
   /**
    * The addItem method.
-   * @param {any} item - The item param.
-   * @param {boolean} emit - The emit param.
+   * @param {any} item - The item value.
+   * @param {boolean} emit - The emit value.
    * @return {any} - The return value.
    */
   addItem(item, emit = true) {
@@ -50,8 +40,8 @@ class QuerySet extends Parameter {
 
   /**
    * The removeItem method.
-   * @param {any} item - The item param.
-   * @param {boolean} emit - The emit param.
+   * @param {any} item - The item value.
+   * @param {boolean} emit - The emit value.
    * @return {any} - The return value.
    */
   removeItem(item, emit = true) {
@@ -83,9 +73,9 @@ class QuerySet extends Parameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    * @return {any} - The return value.
    */
   toJSON(context, flags) {
@@ -93,12 +83,26 @@ class QuerySet extends Parameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {}
+
+  // ////////////////////////////////////////
+  // Clone
+
+  /**
+   * The clone method constructs a new query set parameter, copies its values
+   * from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {QuerySet} - Returns a new query set parameter.
+   */
+  clone(flags) {
+    const clonedParam = new QuerySet(this.__name, this.__filterFn);
+    return clonedParam;
+  }
 }
 
 sgFactory.registerClass('QuerySet', QuerySet);

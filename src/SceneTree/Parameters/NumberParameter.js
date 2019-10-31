@@ -7,9 +7,9 @@ import { ValueSetMode, Parameter } from './Parameter.js';
  */
 class NumberParameter extends Parameter {
   /**
-   * Create a color parameter.
-   * @param {string} name - The name value.
-   * @param {number} value - The value value.
+   * Create a number parameter.
+   * @param {string} name - The name of the number parameter.
+   * @param {number} value - The value of the parameter.
    * @param {any} range - The range value.
    * @param {any} step - The step value.
    */
@@ -25,7 +25,7 @@ class NumberParameter extends Parameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    */
   setValue(value, mode) {
     if (mode == ValueSetMode.USER_SETVALUE) {
@@ -41,7 +41,7 @@ class NumberParameter extends Parameter {
 
   /**
    * The getValue method.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    * @return {any} - The return value.
    */
   getValue(mode) {
@@ -62,7 +62,7 @@ class NumberParameter extends Parameter {
 
   /**
    * The setRange method.
-   * @param {any} range - The range param.
+   * @param {any} range - The range value.
    * @return {any} - The return value.
    */
   setRange(range) {
@@ -81,7 +81,7 @@ class NumberParameter extends Parameter {
 
   /**
    * The setStep method.
-   * @param {any} step - The step param.
+   * @param {any} step - The step value.
    * @return {any} - The return value.
    */
   setStep(step) {
@@ -89,26 +89,14 @@ class NumberParameter extends Parameter {
     return this;
   }
 
-  /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new NumberParameter(this.__name, this.__value);
-    clonedParam.__range = this.__range;
-    clonedParam.__step = this.__step;
-    return clonedParam;
-  }
-
   // ////////////////////////////////////////
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -118,10 +106,10 @@ class NumberParameter extends Parameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -131,12 +119,28 @@ class NumberParameter extends Parameter {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     const value = reader.loadFloat32();
     this.setValue(value, ValueSetMode.DATA_LOAD);
+  }
+
+  // ////////////////////////////////////////
+  // Clone
+
+  /**
+   * The clone method constructs a new number parameter, copies its values
+   * from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {NumberParameter} - Returns a new number parameter.
+   */
+  clone(flags) {
+    const clonedParam = new NumberParameter(this.__name, this.__value);
+    clonedParam.__range = this.__range;
+    clonedParam.__step = this.__step;
+    return clonedParam;
   }
 }
 
