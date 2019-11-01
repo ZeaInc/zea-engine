@@ -128,7 +128,7 @@ class GLBaseRenderer {
 
   /**
    * The addShaderPreprocessorDirective method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @param {any} value - The value param.
    */
   addShaderPreprocessorDirective(name, value) {
@@ -171,9 +171,9 @@ class GLBaseRenderer {
   // Viewports
 
   /**
-   * The addViewport method.
-   * @param {string} name - The name param.
-   * @return {any} - The return value.
+   * Add a viewport.
+   * @param {string} name - The name of the viewport.
+   * @return {GLViewport} - The return value.
    */
   addViewport(name) {
     const vp = new GLViewport(this, name, this.getWidth(), this.getHeight());
@@ -193,8 +193,8 @@ class GLBaseRenderer {
 
   /**
    * The getViewport method.
-   * @param {number} index - The index param.
-   * @return {any} - The return value.
+   * @param {number} index - The index value.
+   * @return {GLViewport} - The return value.
    */
   getViewport(index = 0) {
     return this.__viewports[index];
@@ -202,9 +202,9 @@ class GLBaseRenderer {
 
   /**
    * The getViewportAtPos method.
-   * @param {number} offsetX - The offsetX param.
-   * @param {number} offsetY - The offsetY param.
-   * @return {any} - The return value.
+   * @param {number} offsetX - The viewport offset in the X axis.
+   * @param {number} offsetY - The viewport offset in the Y axis.
+   * @return {GLViewport} - The return value.
    */
   getViewportAtPos(offsetX, offsetY) {
     for (const vp of this.__viewports) {
@@ -225,7 +225,7 @@ class GLBaseRenderer {
 
   /**
    * The activateViewport method.
-   * @param {any} vp - The vp param.
+   * @param {GLViewport} vp - The viewport.
    */
   activateViewport(vp) {
     if (this.__activeViewport == vp) return;
@@ -235,8 +235,8 @@ class GLBaseRenderer {
 
   /**
    * The activateViewportAtPos method.
-   * @param {number} offsetX - The offsetX param.
-   * @param {number} offsetY - The offsetY param.
+   * @param {number} offsetX - The viewport offset in the X axis.
+   * @param {number} offsetY - The viewport offset in the Y axis.
    */
   activateViewportAtPos(offsetX, offsetY) {
     if (this.__xrViewportPresenting) return;
@@ -274,7 +274,7 @@ class GLBaseRenderer {
   }
 
   /**
-   * The renderGeomDataFbos method.
+   * The renderGeomDataFbos method. Frame buffer (FBO).
    */
   renderGeomDataFbos() {
     if (this.__renderGeomDataFbosRequested == true) return;
@@ -291,11 +291,11 @@ class GLBaseRenderer {
   // Scene
 
   /**
-   * The setupGrid method.
-   * @param {any} gridSize - The gridSize param.
-   * @param {any} gridColor - The gridColor param.
-   * @param {any} resolution - The resolution param.
-   * @param {any} lineThickness - The lineThickness param.
+   * Setup the grid in the scene.
+   * @param {any} gridSize - The size of the grid.
+   * @param {Color} gridColor - The color of the grid.
+   * @param {any} resolution - The resolution of the grid.
+   * @param {any} lineThickness - The thickness of the grid lines.
    * @return {any} - The return value.
    */
   setupGrid(gridSize, gridColor, resolution, lineThickness) {
@@ -313,7 +313,7 @@ class GLBaseRenderer {
 
   /**
    * The setScene method.
-   * @param {any} scene - The scene param.
+   * @param {any} scene - The scene value.
    */
   setScene(scene) {
     this.__scene = scene;
@@ -326,13 +326,12 @@ class GLBaseRenderer {
   }
 
   /**
-   * The addTreeItem method.
-   * @param {any} treeItem - The treeItem param.
+   * Add tree items to the scene.
+   * @param {any} treeItem - The tree item to add.
    */
   addTreeItem(treeItem) {
-    // Note: we can have BaseItems in the tree now.
-    if (!(treeItem instanceof TreeItem))
-      return;
+    // Note: We can have BaseItems in the tree now.
+    if (!(treeItem instanceof TreeItem)) return;
     if (treeItem.isDestroyed()) {
       throw new Error('treeItem is destroyed:' + treeItem.getPath());
     }
@@ -348,7 +347,7 @@ class GLBaseRenderer {
       }
     }
 
-    // Traverse the tree adding items till we hit the leaves(which are usually GeomItems.)
+    // Traverse the tree adding items until we hit the leaves (which are usually GeomItems.)
     for (const childItem of treeItem.getChildren()) {
       if (childItem) this.addTreeItem(childItem);
     }
@@ -360,13 +359,12 @@ class GLBaseRenderer {
   }
 
   /**
-   * The removeTreeItem method.
-   * @param {any} treeItem - The treeItem param.
+   * Remove tree items from the scene.
+   * @param {any} treeItem - The tree item to remove.
    */
   removeTreeItem(treeItem) {
-    // Note: we can have BaseItems in the tree now.
-    if (!(treeItem instanceof TreeItem))
-      return;
+    // Note: We can have BaseItems in the tree now.
+    if (!(treeItem instanceof TreeItem)) return;
 
     treeItem.childAdded.disconnect(this.addTreeItem);
     treeItem.childRemoved.disconnect(this.removeTreeItem);
@@ -383,7 +381,7 @@ class GLBaseRenderer {
       }
     }
 
-    // Traverse the tree adding items till we hit the leaves(which are usually GeomItems.)
+    // Traverse the tree adding items till we hit the leaves (which are usually GeomItems).
     for (const childItem of treeItem.getChildren()) {
       if (childItem) this.removeTreeItem(childItem);
     }
@@ -409,9 +407,9 @@ class GLBaseRenderer {
   }
 
   /**
-   * The resizeFbos method.
-   * @param {any} width - The width param.
-   * @param {any} height - The height param.
+   * The resizeFbos method. Frame buffer (FBO).
+   * @param {any} width - The width of the frame buffer.
+   * @param {any} height - The height of the frame buffer.
    */
   resizeFbos(width, height) {}
 
@@ -446,8 +444,8 @@ class GLBaseRenderer {
 
   /**
    * The setupWebGL method.
-   * @param {any} canvasDiv - The canvasDiv param.
-   * @param {any} webglOptions - The webglOptions param.
+   * @param {any} canvasDiv - The canvasDiv value.
+   * @param {any} webglOptions - The webglOptions value.
    */
   setupWebGL(canvasDiv, webglOptions) {
     this.__glcanvas = document.createElement('canvas');
@@ -488,22 +486,22 @@ class GLBaseRenderer {
 
     // Note: Mobile devices don't provide much support for reading data back from float textures,
     // and checking compatibility is patchy at best.
-    // Note: we are now pushing on high end mobile devices.
-    // Galaxy and above. We need this. We need ot accuratley determine
+    // Note: We are now pushing on high-end mobile devices.
+    // Galaxy and above. We need this. We need to accurately determine
     // if the float buffer is not supported.
     this.__floatGeomBuffer =
       this.__gl.floatTexturesSupported && SystemDesc.browserName != 'Safari';
     this.__gl.floatGeomBuffer = this.__floatGeomBuffer;
-    // Note: the following returns UNSIGNED_BYTE even if the browser supports float.
+    // Note: The following returns UNSIGNED_BYTE even if the browser supports float.
     // const implType = this.__gl.getParameter(this.__gl.IMPLEMENTATION_COLOR_READ_TYPE);
     // this.__floatGeomBuffer = (implType == this.__gl.FLOAT);
 
     // //////////////////////////////////
     // Bind a default texture.
-    // Note: if shaders have sampler2D uniforms, but we don't bind textures, then
+    // Note: If shaders have sampler2D uniforms, but we don't bind textures, then
     // they get assigned texture0. If we have no textures bound at all, then
     // we get warnings saying.
-    // there is no texture bound to the unit 0
+    // There is no texture bound to the unit 0
     // Bind a default texture to unit 0 simply to avoid these warnings.
     // this.__texture0 = new GLTexture2D(this.__gl, {
     //     format: 'RGB',
@@ -546,8 +544,7 @@ class GLBaseRenderer {
       }
     });
     this.__glcanvas.addEventListener('mouseleave', event => {
-      if (activeGLRenderer != this || !isValidCanvas())
-        return;
+      if (activeGLRenderer != this || !isValidCanvas()) return;
       event.stopPropagation();
       event.undoRedoManager = this.undoRedoManager;
       if (!mouseIsDown) {
@@ -576,8 +573,7 @@ class GLBaseRenderer {
       return false;
     });
     document.addEventListener('mouseup', event => {
-      if (activeGLRenderer != this || !isValidCanvas())
-        return;
+      if (activeGLRenderer != this || !isValidCanvas()) return;
       event.stopPropagation();
       event.undoRedoManager = this.undoRedoManager;
       // if(mouseIsDown && mouseMoveDist < 0.01)
@@ -609,8 +605,7 @@ class GLBaseRenderer {
     // });
 
     document.addEventListener('mousemove', event => {
-      if (activeGLRenderer != this || !isValidCanvas())
-        return;
+      if (activeGLRenderer != this || !isValidCanvas()) return;
       event.preventDefault();
       event.stopPropagation();
       event.undoRedoManager = this.undoRedoManager;
@@ -633,7 +628,7 @@ class GLBaseRenderer {
       if (activeGLRenderer) {
         event.stopPropagation();
         event.undoRedoManager = this.undoRedoManager;
-        if(!window.addEventListener) event.preventDefault();
+        if (!window.addEventListener) event.preventDefault();
         this.onWheel(event);
       }
       return false;
@@ -677,45 +672,61 @@ class GLBaseRenderer {
       }
     });
 
-    this.__glcanvas.addEventListener("touchstart", (event) => {
-      event.stopPropagation();
-      event.undoRedoManager = this.undoRedoManager;
-      for (let i = 0; i < event.touches.length; i++) {
-        calcRendererCoords(event.touches[i]);
-      }
-      this.getViewport().onTouchStart(event);
-    }, false);
+    this.__glcanvas.addEventListener(
+      'touchstart',
+      event => {
+        event.stopPropagation();
+        event.undoRedoManager = this.undoRedoManager;
+        for (let i = 0; i < event.touches.length; i++) {
+          calcRendererCoords(event.touches[i]);
+        }
+        this.getViewport().onTouchStart(event);
+      },
+      false
+    );
 
-    this.__glcanvas.addEventListener("touchmove", (event) => {
-      event.stopPropagation();
-      event.undoRedoManager = this.undoRedoManager;
-      for (let i = 0; i < event.touches.length; i++) {
-        calcRendererCoords(event.touches[i]);
-      }
-      this.getViewport().onTouchMove(event);
-    }, false);
+    this.__glcanvas.addEventListener(
+      'touchmove',
+      event => {
+        event.stopPropagation();
+        event.undoRedoManager = this.undoRedoManager;
+        for (let i = 0; i < event.touches.length; i++) {
+          calcRendererCoords(event.touches[i]);
+        }
+        this.getViewport().onTouchMove(event);
+      },
+      false
+    );
 
-    this.__glcanvas.addEventListener("touchend", (event) => {
-      event.stopPropagation();
-      event.undoRedoManager = this.undoRedoManager;
-      for (let i = 0; i < event.touches.length; i++) {
-        calcRendererCoords(event.touches[i]);
-      }
-      this.getViewport().onTouchEnd(event);
-    }, false);
+    this.__glcanvas.addEventListener(
+      'touchend',
+      event => {
+        event.stopPropagation();
+        event.undoRedoManager = this.undoRedoManager;
+        for (let i = 0; i < event.touches.length; i++) {
+          calcRendererCoords(event.touches[i]);
+        }
+        this.getViewport().onTouchEnd(event);
+      },
+      false
+    );
 
-    this.__glcanvas.addEventListener("touchcancel", (event) => {
-      event.stopPropagation();
-      event.undoRedoManager = this.undoRedoManager;
-      this.getViewport().onTouchCancel(event);
-    }, false);
+    this.__glcanvas.addEventListener(
+      'touchcancel',
+      event => {
+        event.stopPropagation();
+        event.undoRedoManager = this.undoRedoManager;
+        this.getViewport().onTouchCancel(event);
+      },
+      false
+    );
   }
 
   /**
    * The setUndoRedoManager method.
-   * @param {object} - The undoRedoManager object.
+   * @param {object} undoRedoManager - The undoRedoManager state.
    */
-  setUndoRedoManager(undoRedoManager){
+  setUndoRedoManager(undoRedoManager) {
     this.undoRedoManager = undoRedoManager;
   }
 
@@ -736,8 +747,8 @@ class GLBaseRenderer {
   }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the mouse wheel is rolled up or down over an element.
+   * @param {any} event - The event that occurs.
    */
   onWheel(event) {
     this.__viewports[0].onWheel(event);
@@ -745,18 +756,18 @@ class GLBaseRenderer {
 
   /**
    * The frameAll method.
-   * @param {number} viewportIndex - The viewportIndex param.
+   * @param {number} viewportIndex - The viewportIndex value.
    */
   frameAll(viewportIndex = 0) {
     this.__viewports[viewportIndex].frameView([this.__scene.getRoot()]);
   }
 
   // ///////////////////////
-  // Render Items setup
+  // Render Items Setup
 
   /**
    * The getOrCreateShader method.
-   * @param {any} shaderName - The shaderName param.
+   * @param {string} shaderName - The shader name.
    * @return {any} - The return value.
    */
   getOrCreateShader(shaderName) {
@@ -772,9 +783,9 @@ class GLBaseRenderer {
 
   /**
    * The addPass method.
-   * @param {any} pass - The pass param.
-   * @param {number} passtype - The passtype param.
-   * @param {boolean} updateIndices - The updateIndices param.
+   * @param {any} pass - The pass value.
+   * @param {number} passtype - The passtype value.
+   * @param {boolean} updateIndices - The updateIndices value.
    * @return {any} - The return value.
    */
   addPass(pass, passtype = 0, updateIndices = true) {
@@ -810,8 +821,8 @@ class GLBaseRenderer {
 
   /**
    * The registerPass method.
-   * @param {any} itemAddedFn - The itemAddedFn param.
-   * @param {any} itemRemovedFn - The itemRemovedFn param.
+   * @param {any} itemAddedFn - The itemAddedFn value.
+   * @param {any} itemRemovedFn - The itemRemovedFn value.
    */
   registerPass(itemAddedFn, itemRemovedFn) {
     // insert at the beginning so it is called first.
@@ -823,7 +834,7 @@ class GLBaseRenderer {
 
   /**
    * The getPass method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getPass(index) {
@@ -837,7 +848,7 @@ class GLBaseRenderer {
 
   /**
    * The findPass method.
-   * @param {any} constructor - The constructor param.
+   * @param {any} constructor - The constructor value.
    * @return {any} - The return value.
    */
   findPass(constructor) {
@@ -996,7 +1007,7 @@ class GLBaseRenderer {
 
   /**
    * Request a single redraw, usually in response to a signal/event.
-   * @return {any} - The return value.
+   * @return {boolean} - The return value.
    */
   requestRedraw() {
     // If a redraw has already been requested, then simply return and wait.
@@ -1020,22 +1031,26 @@ class GLBaseRenderer {
 
   /**
    * The bindGLBaseRenderer method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindGLBaseRenderer(renderstate) {
     renderstate.shaderopts = this.__preproc;
 
     const gl = this.__gl;
     if (!renderstate.viewports || renderstate.viewports.length == 1) {
-      renderstate.bindRendererUnifs = (unifs)=>{
+      renderstate.bindRendererUnifs = unifs => {
         {
           const unif = unifs.cameraMatrix;
           if (unif) {
-            gl.uniformMatrix4fv(unif.location, false, renderstate.cameraMatrix.asArray());
+            gl.uniformMatrix4fv(
+              unif.location,
+              false,
+              renderstate.cameraMatrix.asArray()
+            );
           }
-        } 
-        
-        const vp = renderstate.viewports[0]; 
+        }
+
+        const vp = renderstate.viewports[0];
         {
           const unif = unifs.viewMatrix;
           if (unif) {
@@ -1059,21 +1074,24 @@ class GLBaseRenderer {
             gl.uniform1i(unif.location, 0);
           }
         }
-      }
-      renderstate.bindViewports = (unifs, cb)=> cb();
+      };
+      renderstate.bindViewports = (unifs, cb) => cb();
     } else {
-
-      renderstate.bindRendererUnifs = (unifs)=>{
+      renderstate.bindRendererUnifs = unifs => {
         // Note: the camera matrix should be the head position instead
         // of the eye position. The inverse(viewMatrix) can be used
-        // when we want the eye pos. 
+        // when we want the eye pos.
         {
           const unif = unifs.cameraMatrix;
           if (unif) {
-            gl.uniformMatrix4fv(unif.location, false, renderstate.cameraMatrix.asArray());
+            gl.uniformMatrix4fv(
+              unif.location,
+              false,
+              renderstate.cameraMatrix.asArray()
+            );
           }
-        } 
-      }
+        }
+      };
 
       renderstate.bindViewports = (unifs, cb) => {
         renderstate.viewports.forEach((vp, index) => {
@@ -1113,10 +1131,10 @@ class GLBaseRenderer {
 
   /**
    * The drawScene method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawScene(renderstate) {
-    // Bind already called by GLRenderer
+    // Bind already called by GLRenderer.
     for (const key in this.__passes) {
       const passSet = this.__passes[key];
       for (const pass of passSet) {
@@ -1127,7 +1145,7 @@ class GLBaseRenderer {
 
   /**
    * The drawHighlightedGeoms method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawHighlightedGeoms(renderstate) {
     this.bindGLBaseRenderer(renderstate);
@@ -1141,7 +1159,7 @@ class GLBaseRenderer {
 
   /**
    * The drawSceneGeomData method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawSceneGeomData(renderstate) {
     this.bindGLBaseRenderer(renderstate);
@@ -1158,8 +1176,8 @@ class GLBaseRenderer {
 
   /**
    * The registerPass method.
-   * @param {any} cls - The cls param.
-   * @param {any} passtype - The passtype param.
+   * @param {any} cls - The cls value.
+   * @param {any} passtype - The passtype value.
    */
   static registerPass(cls, passtype) {
     if (!registeredPasses[passtype]) registeredPasses[passtype] = [];

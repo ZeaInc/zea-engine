@@ -32,8 +32,8 @@ class GLPass extends ParameterOwner {
 
   /**
    * The __parameterValueChanged method.
-   * @param {any} param - The param param.
-   * @param {any} mode - The mode param.
+   * @param {any} param - The param value.
+   * @param {number} mode - The mode value.
    * @private
    */
   __parameterValueChanged(param, mode) {
@@ -43,8 +43,8 @@ class GLPass extends ParameterOwner {
 
   /**
    * The init method.
-   * @param {any} renderer - The renderer param.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} renderer - The renderer value.
+   * @param {any} passIndex - The passIndex value.
    */
   init(renderer, passIndex) {
     if (passIndex == undefined)
@@ -57,7 +57,7 @@ class GLPass extends ParameterOwner {
 
   /**
    * The setPassIndex method.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} passIndex - The passIndex value.
    */
   setPassIndex(passIndex) {
     this.__passIndex = passIndex;
@@ -78,28 +78,27 @@ class GLPass extends ParameterOwner {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {}
 
   /**
    * The drawHighlightedGeoms method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawHighlightedGeoms(renderstate) {}
 
   /**
    * The drawGeomData method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawGeomData(renderstate) {}
 
   /**
    * The getGeomItemAndDist method.
-   * @param {any} geomData - The geomData param.
+   * @param {any} geomData - The geomData value.
    */
   getGeomItemAndDist(geomData) {}
 }
 
 export { GLPass, PassType };
-// export default GLPass;

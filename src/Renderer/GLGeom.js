@@ -54,7 +54,7 @@ class GLGeom {
 
   /**
    * The updateBuffers method.
-   * @param {any} opts - The opts param.
+   * @param {any} opts - The opts value.
    */
   updateBuffers(opts) {}
 
@@ -63,7 +63,7 @@ class GLGeom {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bind(renderstate) {
@@ -86,7 +86,7 @@ class GLGeom {
 
   /**
    * The unbind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   unbind(renderstate) {
     // Unbinding a geom is important as it puts back some important
@@ -122,7 +122,7 @@ class GLGeom {
 
   /**
    * The bindAndDraw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindAndDraw(renderstate) {
     this.bind(renderstate);
@@ -141,7 +141,8 @@ class GLGeom {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     this.__geom.deleteMetadata('glgeom');
@@ -161,4 +162,3 @@ class GLGeom {
 }
 
 export { GLGeom };
-// export default GLGeom;

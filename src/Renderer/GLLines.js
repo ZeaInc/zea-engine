@@ -126,7 +126,7 @@ class GLLines extends GLGeom {
 
   /**
    * The updateBuffers method.
-   * @param {any} opts - The opts param.
+   * @param {any} opts - The opts value.
    */
   updateBuffers(opts) {
     const gl = this.__gl;
@@ -212,7 +212,7 @@ class GLLines extends GLGeom {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bind(renderstate) {
@@ -275,7 +275,7 @@ class GLLines extends GLGeom {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     const gl = this.__gl;
@@ -302,7 +302,7 @@ class GLLines extends GLGeom {
 
   /**
    * The drawInstanced method.
-   * @param {any} instanceCount - The instanceCount param.
+   * @param {any} instanceCount - The instanceCount value.
    */
   drawInstanced(instanceCount) {
     this.__gl.drawElementsInstanced(
@@ -316,4 +316,3 @@ class GLLines extends GLGeom {
 }
 
 export { GLLines };
-// export default GLLines;

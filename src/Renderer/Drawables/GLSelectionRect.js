@@ -64,4 +64,3 @@ class GLSelectionRect extends GLGeomItem {
 }
 
 export { GLSelectionRect };
-// export default GLSelectionRect;

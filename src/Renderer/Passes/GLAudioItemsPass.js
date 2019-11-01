@@ -35,8 +35,8 @@ class GLAudioItemsPass extends GLPass {
 
   /**
    * The init method.
-   * @param {any} renderer - The renderer param.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} renderer - The renderer value.
+   * @param {any} passIndex - The passIndex value.
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
@@ -83,9 +83,9 @@ class GLAudioItemsPass extends GLPass {
 
   /**
    * The addAudioSource method.
-   * @param {any} treeItem - The treeItem param.
-   * @param {any} audioSource - The audioSource param.
-   * @param {any} parameterOwner - The parameterOwner param.
+   * @param {any} treeItem - The treeItem value.
+   * @param {any} audioSource - The audioSource value.
+   * @param {any} parameterOwner - The parameterOwner value.
    */
   addAudioSource(treeItem, audioSource, parameterOwner) {
     if (audioSource.addedToCollector) return;
@@ -197,7 +197,7 @@ class GLAudioItemsPass extends GLPass {
 
   /**
    * The __updateListenerPosition method.
-   * @param {any} viewXfo - The viewXfo param.
+   * @param {any} viewXfo - The viewXfo value.
    * @private
    */
   __updateListenerPosition(viewXfo) {
@@ -244,7 +244,7 @@ class GLAudioItemsPass extends GLPass {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     if (this.__audioItems.length == 0) return;
@@ -255,4 +255,3 @@ class GLAudioItemsPass extends GLPass {
 GLRenderer.registerPass(GLAudioItemsPass, PassType.OVERLAY);
 
 export { GLAudioItemsPass, audioCtx };
-// export default GLAudioItemsPass;

@@ -12,7 +12,7 @@ class ShaderLibrary {
 
   /**
    * The hasShaderModule method.
-   * @param {any} shaderName - The shaderName param.
+   * @param {string} shaderName - The shader name.
    * @return {any} - The return value.
    */
   hasShaderModule(shaderName) {
@@ -21,8 +21,8 @@ class ShaderLibrary {
 
   /**
    * The setShaderModule method.
-   * @param {any} shaderName - The shaderName param.
-   * @param {any} shader - The shader param.
+   * @param {string} shaderName - The shader name.
+   * @param {any} shader - The shader value.
    * @return {any} - The return value.
    */
   setShaderModule(shaderName, shader) {
@@ -32,7 +32,7 @@ class ShaderLibrary {
 
   /**
    * The getShaderModule method.
-   * @param {any} shaderName - The shaderName param.
+   * @param {string} shaderName - The shader name.
    * @return {any} - The return value.
    */
   getShaderModule(shaderName) {
@@ -51,7 +51,7 @@ class ShaderLibrary {
 
   /**
    * The parseShader method.
-   * @param {any} shaderName - The shaderName param.
+   * @param {string} shaderName - The shader name.
    * @param {any} glsl - The glsl param.
    * @return {any} - The return value.
    */

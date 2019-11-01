@@ -83,7 +83,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The __bindEnvMap method.
-   * @param {any} env - The env param.
+   * @param {any} env - The env value.
    * @private
    */
   __bindEnvMap(env) {
@@ -130,7 +130,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The setScene method.
-   * @param {any} scene - The scene param.
+   * @param {any} scene - The scene value.
    */
   setScene(scene) {
     super.setScene(scene);
@@ -215,7 +215,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The addViewport method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   addViewport(name) {
@@ -226,8 +226,8 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The onKeyPressed method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * @param {any} key - The key value.
+   * @param {any} event - The event value.
    */
   onKeyPressed(key, event) {
     switch (key) {
@@ -252,7 +252,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * Setter for exposure.
-   * @param {number} val - The val param.
+   * @param {number} val - The val value.
    */
   set exposure(val) {
     this.__exposure = val;
@@ -268,7 +268,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * Setter for gamma.
-   * @param {number} val - The val param.
+   * @param {number} val - The val value.
    */
   set gamma(val) {
     this.__gamma = val;
@@ -284,7 +284,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * Setter for displayEnvironment.
-   * @param {number} val - The val param.
+   * @param {number} val - The val value.
    */
   set displayEnvironment(val) {
     this.__displayEnvironment = val;
@@ -300,7 +300,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * Setter for planeDist.
-   * @param {number} val - The val param.
+   * @param {number} val - The val value.
    */
   set planeDist(val) {
     this._planeDist = val;
@@ -316,7 +316,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * Setter for cutPlaneNormal.
-   * @param {number} val - The val param.
+   * @param {number} val - The val value.
    */
   set cutPlaneNormal(val) {
     this.__cutPlaneNormal = val;
@@ -328,8 +328,8 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The resizeFbos method.
-   * @param {any} width - The width param.
-   * @param {any} height - The height param.
+   * @param {any} width - The width value.
+   * @param {any} height - The height value.
    */
   resizeFbos(width, height) {
     super.resizeFbos();
@@ -374,7 +374,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The createOffscreenFbo method.
-   * @param {any} format - The format param.
+   * @param {any} format - The format value.
    */
   createOffscreenFbo(format = 'RGB') {
     const targetWidth = this.__glcanvas.width;
@@ -397,7 +397,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The drawBackground method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawBackground(renderstate) {
     if (this.__glBackgroundMap) {
@@ -419,7 +419,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The bindGLRenderer method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindGLRenderer(renderstate) {
     super.bindGLBaseRenderer(renderstate);
@@ -469,7 +469,7 @@ class GLRenderer extends GLBaseRenderer {
 
   /**
    * The drawScene method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawScene(renderstate) {
     this.bindGLRenderer(renderstate);
@@ -499,11 +499,10 @@ class GLRenderer extends GLBaseRenderer {
 
       // Unbind and restore the bound fbo
       this.__highlightedGeomsBufferFbo.unbindForWriting(renderstate);
-      
 
       // Now render the outlines to the entire screen.
       gl.viewport(...renderstate.region);
-      
+
       // Turn this on to debug the hilight data buffer.
       // {
       //   gl.screenQuad.bindShader(renderstate);

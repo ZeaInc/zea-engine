@@ -43,8 +43,8 @@ class GLLightmapMixer extends GLTexture2D {
     this.__srcTextures = [];
 
     const async = new Async();
-    // increment the count, so its not zero.
-    // (so an already loaded image doesn't trigger the ready signal)
+    // Increment the count, so it's not zero
+    // (so an already loaded image doesn't trigger the ready signal).
     async.incAsyncCount();
     const genGLTex = index => {
       const image = this.__lightmapMixer.getSubImage(index);
@@ -130,7 +130,8 @@ class GLLightmapMixer extends GLTexture2D {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
@@ -149,4 +150,3 @@ class GLLightmapMixer extends GLTexture2D {
 }
 
 export { GLLightmapMixer };
-// export default GLLightmapMixer;

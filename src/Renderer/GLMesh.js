@@ -78,7 +78,7 @@ class GLMesh extends GLGeom {
 
   /**
    * The updateBuffers method.
-   * @param {any} opts - The opts param.
+   * @param {any} opts - The opts value.
    */
   updateBuffers(opts) {
     const gl = this.__gl;
@@ -120,7 +120,7 @@ class GLMesh extends GLGeom {
 
     if (!this.__geom.edgeVerts) this.__geom.genTopologyInfo();
 
-    // generate the wireframes VAO.
+    // Generate the wireframes VAO.
     // It can share buffers with the regular VAO, but provide a different index buffer.
     if (this.__wireframesVao)
       this.__ext.deleteVertexArrayOES(this.__wireframesVao);
@@ -144,7 +144,7 @@ class GLMesh extends GLGeom {
 
   /**
    * The bindWireframeVAO method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bindWireframeVAO(renderstate) {
@@ -157,7 +157,7 @@ class GLMesh extends GLGeom {
    * The unbindWireframeVAO method.
    */
   unbindWireframeVAO() {
-    this.__ext.bindVertexArrayOES(null); // Note: is this necessary?
+    this.__ext.bindVertexArrayOES(null); // Note: Is this necessary?
   }
 
   /**
@@ -211,7 +211,7 @@ class GLMesh extends GLGeom {
 
   /**
    * The bindHardEdgesVAO method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bindHardEdgesVAO(renderstate) {
@@ -267,7 +267,7 @@ class GLMesh extends GLGeom {
 
   /**
    * The drawInstanced method.
-   * @param {any} instanceCount - The instanceCount param.
+   * @param {any} instanceCount - The instanceCount value.
    */
   drawInstanced(instanceCount) {
     this.__gl.drawElementsInstanced(
@@ -280,7 +280,8 @@ class GLMesh extends GLGeom {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
@@ -295,4 +296,3 @@ class GLMesh extends GLGeom {
 }
 
 export { GLMesh };
-// export default GLMesh;

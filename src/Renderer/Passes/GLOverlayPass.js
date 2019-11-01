@@ -16,8 +16,8 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
 
   /**
    * The init method.
-   * @param {any} renderer - The renderer param.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} renderer - The renderer value.
+   * @param {any} passIndex - The passIndex value.
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
@@ -28,7 +28,7 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
 
   /**
    * The filterGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {any} - The return value.
    */
   filterGeomItem(geomItem) {
@@ -41,7 +41,7 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     if (this.newItemsReadyForLoading()) this.finalize();
@@ -73,7 +73,7 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
 
   /**
    * The drawGeomData method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawGeomData(renderstate) {
     const gl = this.__gl;

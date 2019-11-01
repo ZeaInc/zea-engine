@@ -45,8 +45,8 @@ class GLImageStream {
 
   /**
    * The preBind method.
-   * @param {any} unif - The unif param.
-   * @param {any} unifs - The unifs param.
+   * @param {any} unif - The unif value.
+   * @param {any} unifs - The unifs value.
    * @return {any} - The return value.
    */
   preBind(unif, unifs) {
@@ -58,9 +58,9 @@ class GLImageStream {
 
   /**
    * The bindToUniform method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} unif - The unif param.
-   * @param {any} bindings - The bindings param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} unif - The unif value.
+   * @param {any} bindings - The bindings value.
    * @return {boolean} - The return value.
    */
   bindToUniform(renderstate, unif, bindings) {

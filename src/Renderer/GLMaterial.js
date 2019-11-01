@@ -53,8 +53,8 @@ class GLMaterial /* extends BaseItem why do we inherit base item here?*/ {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} warnMissingUnifs - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} warnMissingUnifs - The renderstate value.
    * @return {any} - The return value.
    */
   bind(renderstate, warnMissingUnifs) {
@@ -79,7 +79,7 @@ class GLMaterial /* extends BaseItem why do we inherit base item here?*/ {
 
   /**
    * The unbind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   unbind(renderstate) {
     // Enable texture units to be re-used by resetting the count back
@@ -89,4 +89,3 @@ class GLMaterial /* extends BaseItem why do we inherit base item here?*/ {
 }
 
 export { GLMaterial };
-// export default GLMaterial;

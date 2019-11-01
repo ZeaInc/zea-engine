@@ -160,8 +160,8 @@ class GLRenderTarget {
 
   /**
    * The bindForWriting method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {boolean} clear - The clear param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {boolean} clear - The clear value.
    */
   bindForWriting(renderstate, clear = false) {
     if (renderstate) {
@@ -178,7 +178,7 @@ class GLRenderTarget {
 
   /**
    * The clear method.
-   * @param {boolean} clearDepth - The clearDepth param.
+   * @param {boolean} clearDepth - The clearDepth value.
    */
   clear(clearDepth = true) {
     const gl = this.__gl;
@@ -202,9 +202,9 @@ class GLRenderTarget {
 
   /**
    * The bindColorTexture method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} unif - The unif param.
-   * @param {number} channelId - The channelId param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} unif - The unif value.
+   * @param {number} channelId - The channelId value.
    * @return {boolean} - The return value.
    */
   bindColorTexture(renderstate, unif, channelId = 0) {
@@ -218,8 +218,8 @@ class GLRenderTarget {
 
   /**
    * The bindDepthTexture method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} unif - The unif param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} unif - The unif value.
    * @return {boolean} - The return value.
    */
   bindDepthTexture(renderstate, unif) {
@@ -241,9 +241,9 @@ class GLRenderTarget {
 
   /**
    * The resize method.
-   * @param {any} width - The width param.
-   * @param {any} height - The height param.
-   * @param {boolean} preserveData - The preserveData param.
+   * @param {any} width - The width value.
+   * @param {any} height - The height value.
+   * @param {boolean} preserveData - The preserveData value.
    */
   resize(width, height, preserveData = false) {
     /*

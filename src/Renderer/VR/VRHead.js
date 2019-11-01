@@ -5,7 +5,7 @@ import { TreeItem } from '../../SceneTree';
 class VRHead {
   /**
    * Create a VR head.
-   * @param {any} vrviewport - The vrviewport value.
+   * @param {any} vrviewport - The VR viewport.
    * @param {any} stageTreeItem - The stageTreeItem value.
    */
   constructor(vrviewport, stageTreeItem) {
@@ -19,7 +19,7 @@ class VRHead {
 
   /**
    * The update method.
-   * @param {any} pose - The pose param.
+   * @param {any} pose - The pose value.
    */
   update(pose) {
     // Old
@@ -48,7 +48,7 @@ class VRHead {
 
   /**
    * The getXfo method.
-   * @return {any} - The return value.
+   * @return {Xfo} - The return value.
    */
   getXfo() {
     return this.__localXfo;
@@ -56,4 +56,3 @@ class VRHead {
 }
 
 export { VRHead };
-// export default VRHead;

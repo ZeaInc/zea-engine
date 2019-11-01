@@ -37,7 +37,7 @@ class GLFbo {
 
   /**
    * The setClearColor method.
-   * @param {any} clearColor - The clearColor param.
+   * @param {any} clearColor - The clearColor value.
    */
   setClearColor(clearColor) {
     this.__clearColor = clearColor;
@@ -113,7 +113,7 @@ class GLFbo {
 
   /**
    * The setColorTexture method.
-   * @param {any} colorTexture - The colorTexture param.
+   * @param {any} colorTexture - The colorTexture value.
    */
   setColorTexture(colorTexture) {
     this.__colorTexture = colorTexture;
@@ -272,7 +272,7 @@ class GLFbo {
   /**
    * Triggered Automatically when the texture resizes.
    * TODO: fbos should manage the textures assigned to them
-   * e.g. resizing and preserving data.
+   * E.g. resizing and preserving data.
    */
   resize() {
     const gl = this.__gl;
@@ -370,7 +370,7 @@ class GLFbo {
 
   /**
    * The bindForWriting method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindForWriting(renderstate) {
     if (renderstate) {
@@ -386,7 +386,7 @@ class GLFbo {
 
   /**
    * The unbindForWriting method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   unbindForWriting(renderstate) {
     if (renderstate) renderstate.boundRendertarget = this.__prevBoundFbo;
@@ -398,7 +398,7 @@ class GLFbo {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
     this.bindForWriting(renderstate);
@@ -406,7 +406,7 @@ class GLFbo {
 
   /**
    * The unbind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   unbind(renderstate) {
     this.unbindForWriting(renderstate);
@@ -414,7 +414,7 @@ class GLFbo {
 
   /**
    * The bindForReading method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindForReading() {
     const gl = this.__gl;
@@ -425,7 +425,7 @@ class GLFbo {
 
   /**
    * The unbindForReading method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   unbindForReading() {
     const gl = this.__gl;
@@ -449,7 +449,7 @@ class GLFbo {
 
   /**
    * The bindAndClear method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindAndClear(renderstate) {
     this.bind(renderstate);
@@ -465,7 +465,8 @@ class GLFbo {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     const gl = this.__gl;

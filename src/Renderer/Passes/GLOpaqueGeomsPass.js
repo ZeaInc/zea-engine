@@ -21,7 +21,7 @@ class GLShaderMaterials {
 
   /**
    * The findMaterialGeomItemSets method.
-   * @param {any} glmaterial - The glmaterial param.
+   * @param {any} glmaterial - The glmaterial value.
    * @return {any} - The return value.
    */
   findMaterialGeomItemSets(glmaterial) {
@@ -32,7 +32,7 @@ class GLShaderMaterials {
 
   /**
    * The addMaterialGeomItemSets method.
-   * @param {any} glmaterialGeomItemSets - The glmaterialGeomItemSets param.
+   * @param {any} glmaterialGeomItemSets - The glmaterialGeomItemSets value.
    */
   addMaterialGeomItemSets(glmaterialGeomItemSets) {
     this.glmaterialGeomItemSets.push(glmaterialGeomItemSets);
@@ -40,7 +40,7 @@ class GLShaderMaterials {
 
   /**
    * The removeMaterialGeomItemSets method.
-   * @param {any} glmaterialGeomItemSets - The glmaterialGeomItemSets param.
+   * @param {any} glmaterialGeomItemSets - The glmaterialGeomItemSets value.
    */
   removeMaterialGeomItemSets(glmaterialGeomItemSets) {
     const index = this.glmaterialGeomItemSets.indexOf(glmaterialGeomItemSets);
@@ -80,7 +80,7 @@ class GLMaterialGeomItemSets {
 
   /**
    * The __drawCountChanged method.
-   * @param {any} change - The change param.
+   * @param {any} change - The change value.
    * @private
    */
   __drawCountChanged(change) {
@@ -89,7 +89,7 @@ class GLMaterialGeomItemSets {
 
   /**
    * The addGeomItemSet method.
-   * @param {any} geomItemSet - The geomItemSet param.
+   * @param {any} geomItemSet - The geomItemSet value.
    */
   addGeomItemSet(geomItemSet) {
     if (this.geomItemSets.indexOf(geomItemSet) == -1) {
@@ -107,7 +107,7 @@ class GLMaterialGeomItemSets {
 
   /**
    * The removeGeomItemSet method.
-   * @param {any} geomItemSet - The geomItemSet param.
+   * @param {any} geomItemSet - The geomItemSet value.
    */
   removeGeomItemSet(geomItemSet) {
     const index = this.geomItemSets.indexOf(geomItemSet);
@@ -117,7 +117,7 @@ class GLMaterialGeomItemSets {
 
   /**
    * The removeGeomItemSet method.
-   * @param {any} glgeom - The glgeom param.
+   * @param {any} glgeom - The glgeom value.
    * @return {any} - The return value.
    */
   findGeomItemSet(glgeom) {
@@ -154,8 +154,8 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The init method.
-   * @param {any} renderer - The renderer param.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} renderer - The renderer value.
+   * @param {any} passIndex - The passIndex value.
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
@@ -166,7 +166,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The filterGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {boolean} - The return value.
    */
   filterGeomItem(geomItem) {
@@ -181,7 +181,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The addGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {boolean} - The return value.
    */
   addGeomItem(geomItem) {
@@ -234,7 +234,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The removeGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {boolean} - The return value.
    */
   removeGeomItem(geomItem) {
@@ -255,7 +255,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The removeMaterial method.
-   * @param {any} material - The material param.
+   * @param {any} material - The material value.
    */
   removeMaterial(material) {
     const glshaderMaterials = this.__glshadermaterials[material.hash];
@@ -275,7 +275,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The __traverseTreeAndDraw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @private
    */
   __traverseTreeAndDraw(renderstate) {
@@ -310,7 +310,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     if (this.newItemsReadyForLoading()) this.finalize();
@@ -336,7 +336,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The drawHighlightedGeoms method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawHighlightedGeoms(renderstate) {
     const gl = this.__gl;
@@ -365,7 +365,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The getGeomItemAndDist method.
-   * @param {any} geomData - The geomData param.
+   * @param {any} geomData - The geomData value.
    * @return {any} - The return value.
    */
   getGeomItemAndDist(geomData) {
@@ -391,7 +391,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The drawGeomData method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   drawGeomData(renderstate) {
     if (this.newItemsReadyForLoading()) this.finalize();

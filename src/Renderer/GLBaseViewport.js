@@ -20,44 +20,46 @@ class GLBaseViewport extends ParameterOwner {
   constructor(renderer) {
     super();
     this.__renderer = renderer;
-    this.__doubleClickTimeMSParam = this.addParameter(new NumberParameter('DoubleClickTimeMS', 200));
+    this.__doubleClickTimeMSParam = this.addParameter(
+      new NumberParameter('DoubleClickTimeMS', 200)
+    );
     this.__fbo = undefined;
     this.updated = new Signal();
     this.resized = new Signal();
 
-    this.__renderer.sceneSet.connect(()=>{
-      const rp = renderer.getScene().getRoot().getChildByName('Renderer Params')
+    this.__renderer.sceneSet.connect(() => {
+      const rp = renderer
+        .getScene()
+        .getRoot()
+        .getChildByName('Renderer Params');
 
-      const bgColorPAram = rp.getParameter('BackgroundColor')
-      const processBGValue = (mode)=>{
+      const bgColorPAram = rp.getParameter('BackgroundColor');
+      const processBGValue = mode => {
         const value = bgColorPAram.getValue();
-        let gl = this.__renderer.gl;
-        if (value instanceof BaseImage){
-          if (value.type === 'FLOAT'){
+        const gl = this.__renderer.gl;
+        if (value instanceof BaseImage) {
+          if (value.type === 'FLOAT') {
             this.__backgroundTexture = value;
             this.__backgroundGLTexture = new GLHDRImage(gl, value);
-          }
-          else{
+          } else {
             this.__backgroundTexture = value;
             this.__backgroundGLTexture = new GLTexture2D(gl, value);
           }
-        }
-        else if (value instanceof Color){
-          if(this.__backgroundGLTexture) {
+        } else if (value instanceof Color) {
+          if (this.__backgroundGLTexture) {
             this.__backgroundGLTexture.destroy();
             this.__backgroundGLTexture = undefined;
             this.__backgroundTexture = undefined;
           }
           this.__backgroundColor = value;
-        }
-        else{
-          console.warn("Invalid background:" + value);
+        } else {
+          console.warn('Invalid background:' + value);
         }
         this.updated.emit();
-      }
+      };
       processBGValue(bgColorPAram.getValue());
       bgColorPAram.valueChanged.connect(processBGValue);
-    })
+    });
   }
 
   /**
@@ -86,7 +88,7 @@ class GLBaseViewport extends ParameterOwner {
 
   /**
    * The setBl method.
-   * @param {any} bl - The bl param.
+   * @param {any} bl - The bl value.
    */
   setBl(bl) {
     this.__bl = bl;
@@ -103,7 +105,7 @@ class GLBaseViewport extends ParameterOwner {
 
   /**
    * The setTr method.
-   * @param {any} tr - The tr param.
+   * @param {any} tr - The tr value.
    */
   setTr(tr) {
     this.__tr = tr;
@@ -147,26 +149,32 @@ class GLBaseViewport extends ParameterOwner {
    * @return {any} - The return value.
    */
   getBackground() {
-    const rp = this.__renderer.getScene().getRoot().getChildByName('Renderer Params')
-    const bgColorPAram = rp.getParameter('BackgroundColor')
+    const rp = this.__renderer
+      .getScene()
+      .getRoot()
+      .getChildByName('Renderer Params');
+    const bgColorPAram = rp.getParameter('BackgroundColor');
     return bgColorPAram.getValue();
   }
 
   /**
    * The setBackground method.
-   * @param {any} background - The background param.
+   * @param {any} background - The background value.
    */
   setBackground(background) {
-    const rp = this.__renderer.getScene().getRoot().getChildByName('Renderer Params')
-    const bgColorPAram = rp.getParameter('BackgroundColor')
+    const rp = this.__renderer
+      .getScene()
+      .getRoot()
+      .getChildByName('Renderer Params');
+    const bgColorPAram = rp.getParameter('BackgroundColor');
     bgColorPAram.setValue(background);
     this.updated.emit();
   }
 
   /**
    * The resize method.
-   * @param {any} width - The src param.
-   * @param {any} height - The flags param.
+   * @param {any} width - The src value.
+   * @param {any} height - The flags value.
    */
   resize(width, height) {
     this.__canvasWidth = width;
@@ -186,8 +194,8 @@ class GLBaseViewport extends ParameterOwner {
   // Events
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when a user presses a mouse button over an element.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onMouseDown(event) {
@@ -195,8 +203,8 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * The onMouseUp method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when a user releases a mouse button over a element.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onMouseUp(event) {
@@ -204,8 +212,8 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the mouse pointer is moving while over an element.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onMouseMove(event) {
@@ -213,8 +221,8 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * The onMouseLeave method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the mouse pointer is moved out of an element.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onMouseLeave(event) {
@@ -222,9 +230,9 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * The onKeyPressed method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Causes an event to occurs when the user presses a key on the keyboard.
+   * @param {any} key - The key the user presses.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onKeyPressed(key, event) {
@@ -232,9 +240,9 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * The onKeyDown method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user is pressing a key on the keyboard.
+   * @param {any} key - The key the user is pressing.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onKeyDown(key, event) {
@@ -242,9 +250,9 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * The onKeyUp method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Causes an event to occur  when the user releases a key on the keyboard.
+   * @param {any} key - The key the user releases
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onKeyUp(key, event) {
@@ -253,4 +261,3 @@ class GLBaseViewport extends ParameterOwner {
 }
 
 export { GLBaseViewport };
-// export default GLBaseViewport;

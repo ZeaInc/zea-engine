@@ -3,14 +3,14 @@ import { GLHDRImage } from './GLHDRImage.js';
 import { OctahedralEnvMapShader } from './Shaders/EnvMapShader.js';
 import { generateShaderGeomBinding } from './GeomShaderBinding.js';
 
-/** Class representing a GL env map.
+/** Class representing a GL environment map.
  * @extends GLProbe
  */
 class GLEnvMap extends GLProbe {
   /**
    * Create a GL env map.
    * @param {any} renderer - The renderer value.
-   * @param {any} envMap - The envMap value.
+   * @param {any} envMap - The environment map.
    * @param {any} preproc - The preproc value.
    */
   constructor(renderer, envMap, preproc) {
@@ -85,7 +85,7 @@ class GLEnvMap extends GLProbe {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     if (this.__envMap.isLoaded()) {
@@ -147,9 +147,9 @@ class GLEnvMap extends GLProbe {
    * The bindToUniform method.
    * An EnvMap can be bound as a regular texture, but we want the
    * original source data, not the atlas of convolved images.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} unif - The unif param.
-   * @param {any} bindings - The bindings param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} unif - The unif value.
+   * @param {any} bindings - The bindings value.
    * @return {any} - The return value.
    */
   bindToUniform(renderstate, unif, bindings) {
@@ -157,7 +157,8 @@ class GLEnvMap extends GLProbe {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
@@ -168,4 +169,3 @@ class GLEnvMap extends GLProbe {
 }
 
 export { GLEnvMap };
-// export default GLEnvMap;

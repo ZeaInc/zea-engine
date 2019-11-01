@@ -132,7 +132,7 @@ class GLGeomItem {
 
   /**
    * The setCullState method.
-   * @param {any} culled - The culled param.
+   * @param {any} culled - The culled value.
    */
   setCullState(culled) {
     this.culled = culled;
@@ -160,7 +160,7 @@ class GLGeomItem {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bind(renderstate) {
@@ -213,7 +213,8 @@ class GLGeomItem {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     this.geomItem.visibilityChanged.disconnect(this.updateVisibility);

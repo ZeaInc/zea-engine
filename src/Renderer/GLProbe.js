@@ -27,7 +27,7 @@ class GLProbe extends ImageAtlas {
 
   /**
    * The generateHammersleySamples method.
-   * @param {any} numSamples - The numSamples param.
+   * @param {any} numSamples - The numSamples value.
    * @return {any} - The return value.
    */
   generateHammersleySamples(numSamples) {
@@ -56,7 +56,7 @@ class GLProbe extends ImageAtlas {
 
   /**
    * The convolveProbe method.
-   * @param {any} srcGLTex - The srcGLTex param.
+   * @param {any} srcGLTex - The srcGLTex value.
    */
   convolveProbe(srcGLTex) {
     const gl = this.__gl;
@@ -152,8 +152,8 @@ class GLProbe extends ImageAtlas {
 
   /**
    * The bindProbeToUniform method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} unif - The unif param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} unif - The unif value.
    */
   bindProbeToUniform(renderstate, unif) {
     // this.__lodPyramid.getSubImage(3).bind(renderstate, unif);
@@ -161,7 +161,8 @@ class GLProbe extends ImageAtlas {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
@@ -174,4 +175,3 @@ class GLProbe extends ImageAtlas {
 }
 
 export { GLProbe };
-// export default GLProbe;

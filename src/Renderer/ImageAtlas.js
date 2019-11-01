@@ -173,7 +173,7 @@ class ImageAtlas extends GLTexture2D {
 
   /**
    * The addSubImage method.
-   * @param {any} subImage - The subImage param.
+   * @param {any} subImage - The subImage value.
    * @return {any} - The return value.
    */
   addSubImage(subImage) {
@@ -200,7 +200,7 @@ class ImageAtlas extends GLTexture2D {
 
   /**
    * The removeSubImage method.
-   * @param {any} subImage - The subImage param.
+   * @param {any} subImage - The subImage value.
    */
   removeSubImage(subImage) {
     let index;
@@ -219,7 +219,7 @@ class ImageAtlas extends GLTexture2D {
 
   /**
    * The getSubImage method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getSubImage(index) {
@@ -367,7 +367,7 @@ class ImageAtlas extends GLTexture2D {
 
   /**
    * The getLayoutData method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getLayoutData(index) {
@@ -376,8 +376,8 @@ class ImageAtlas extends GLTexture2D {
 
   /**
    * The renderAtlas method.
-   * @param {boolean} cleanup - The cleanup param.
-   * @param {number} off - The off param.
+   * @param {boolean} cleanup - The cleanup value.
+   * @param {number} off - The off value.
    */
   renderAtlas(cleanup = false, off = 0) {
     if (this.__layoutNeedsRegeneration) {
@@ -427,8 +427,8 @@ class ImageAtlas extends GLTexture2D {
 
   /**
    * The bindToUniform method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} unif - The unif param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} unif - The unif value.
    * @return {any} - The return value.
    */
   bindToUniform(renderstate, unif) {
@@ -467,7 +467,8 @@ class ImageAtlas extends GLTexture2D {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     this.cleanup();

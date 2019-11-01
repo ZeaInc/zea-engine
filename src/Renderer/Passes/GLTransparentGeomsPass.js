@@ -16,8 +16,8 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The init method.
-   * @param {any} renderer - The renderer param.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} renderer - The renderer value.
+   * @param {any} passIndex - The passIndex value.
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
@@ -31,7 +31,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The init method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {boolean} - The return value.
    */
   filterGeomItem(geomItem) {
@@ -46,7 +46,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The addGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    */
   addGeomItem(geomItem) {
     const material = geomItem.getMaterial();
@@ -88,7 +88,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The removeGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    */
   removeGeomItem(geomItem) {
     if (!super.removeGeomItem(geomItem)) return;
@@ -104,7 +104,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The sortItems method.
-   * @param {any} viewPos - The viewPos param.
+   * @param {any} viewPos - The viewPos value.
    */
   sortItems(viewPos) {
     for (const transparentItem of this.visibleItems)
@@ -120,7 +120,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The _drawItems method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @private
    */
   _drawItems(renderstate) {
@@ -171,7 +171,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     if (this.visibleItems.length == 0) return;

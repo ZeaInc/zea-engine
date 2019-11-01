@@ -104,7 +104,7 @@ class ImagePyramid extends ImageAtlas {
 
   /**
    * The generateAtlasLayout method.
-   * @param {any} minTileSize - The minTileSize param.
+   * @param {any} minTileSize - The minTileSize value.
    */
   generateAtlasLayout(minTileSize) {
     const gl = this.__gl;
@@ -136,7 +136,7 @@ class ImagePyramid extends ImageAtlas {
 
   /**
    * The renderAtlas method.
-   * @param {boolean} cleanup - The cleanup param.
+   * @param {boolean} cleanup - The cleanup value.
    */
   renderAtlas(cleanup = true) {
     const gl = this.__gl;
@@ -152,7 +152,8 @@ class ImagePyramid extends ImageAtlas {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
@@ -163,4 +164,3 @@ class ImagePyramid extends ImageAtlas {
 }
 
 export { ImagePyramid };
-// export default ImagePyramid;

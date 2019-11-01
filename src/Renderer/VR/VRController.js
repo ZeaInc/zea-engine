@@ -9,8 +9,8 @@ import { GLFbo } from '../GLFbo.js';
 class VRController {
   /**
    * Create a VR controller.
-   * @param {any} vrviewport - The vrviewport value.
-   * @param {any} inputSource - The inputSource value.
+   * @param {any} vrviewport - The Vr viewport.
+   * @param {any} inputSource - The input source.
    * @param {any} id - The id value.
    */
   constructor(vrviewport, inputSource, id) {
@@ -52,7 +52,7 @@ class VRController {
       this.__tip.setLocalXfo(new Xfo(new Vec3(0.0, -0.05, -0.13)));
       this.__treeItem.addChild(this.__tip, false);
       vrviewport.getTreeItem().addChild(this.__treeItem);
-      
+
       this.__projMatrix = new Mat4();
       this.__activeVolumeSize = 0.04;
       this.__projMatrix.setOrthographicMatrix(
@@ -68,22 +68,24 @@ class VRController {
       vrviewport.loadHMDResources().then(asset => {
         asset.loaded.connect(() => {
           let srcControllerTree;
-          if(id==0)
+          if (id == 0)
             srcControllerTree = asset.getChildByName('LeftController');
-          else if(id==1)
+          else if (id == 1)
             srcControllerTree = asset.getChildByName('RightController');
-          if(!srcControllerTree)
+          if (!srcControllerTree)
             srcControllerTree = asset.getChildByName('Controller');
           const controllerTree = srcControllerTree.clone();
 
-          controllerTree.setLocalXfo(new Xfo(
-            new Vec3(0, -0.035, -0.085), 
-            new Quat({ setFromAxisAndAngle: [new Vec3(0, 1, 0), Math.PI] }),
-            new Vec3(0.001, 0.001, 0.001) // VRAsset units are in mm. 
-            ));
+          controllerTree.setLocalXfo(
+            new Xfo(
+              new Vec3(0, -0.035, -0.085),
+              new Quat({ setFromAxisAndAngle: [new Vec3(0, 1, 0), Math.PI] }),
+              new Vec3(0.001, 0.001, 0.001) // VRAsset units are in mm.
+            )
+          );
           this.__treeItem.addChild(controllerTree);
         });
-      })
+      });
     }
   }
 
@@ -137,7 +139,7 @@ class VRController {
 
   /**
    * The isButtonPressed method.
-   * @return {any} - The return value.
+   * @return {boolean} - The return value.
    */
   isButtonPressed() {
     return this.__buttonPressed;
@@ -163,9 +165,9 @@ class VRController {
 
   /**
    * The updatePose method.
-   * @param {any} refSpace - The refSpace param.
-   * @param {any} xrFrame - The xrFrame param.
-   * @param {any} inputSource - The inputSource param.
+   * @param {any} refSpace - The refSpace value.
+   * @param {any} xrFrame - The xrFrame value.
+   * @param {any} inputSource - The inputSource value.
    */
   updatePose(refSpace, xrFrame, inputSource) {
     const inputPose = xrFrame.getPose(inputSource.gripSpace, refSpace);
@@ -179,7 +181,6 @@ class VRController {
 
     this.__mat4.setDataArray(inputPose.transform.matrix);
     this.__xfo.fromMat4(this.__mat4);
-
 
     // const pos = inputPose.transform.position;
     // this.__xfo.tr.set(pos.x, pos.y,pos.z);

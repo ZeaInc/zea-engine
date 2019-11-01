@@ -22,7 +22,7 @@ class GLLightmap {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
     const gl = this.__gl;
@@ -45,4 +45,3 @@ class GLLightmap {
 }
 
 export { GLLightmap };
-// export default GLLightmap;

@@ -58,10 +58,10 @@ class GLShader extends BaseItem {
 
   /**
    * The __compileShaderStage method.
-   * @param {any} glsl - The glsl param.
-   * @param {any} stageID - The stageID param.
-   * @param {string} name - The name param.
-   * @param {any} shaderopts - The shaderopts param.
+   * @param {any} glsl - The glsl value.
+   * @param {any} stageID - The stageID value.
+   * @param {string} name - The name value.
+   * @param {any} shaderopts - The shaderopts value.
    * @return {any} - The return value.
    * @private
    */
@@ -145,7 +145,7 @@ class GLShader extends BaseItem {
 
   /**
    * The __createProgram method.
-   * @param {any} shaderopts - The shaderopts param.
+   * @param {any} shaderopts - The shaderopts value.
    * @return {any} - The return value.
    * @private
    */
@@ -225,8 +225,8 @@ class GLShader extends BaseItem {
 
   /**
    * The __extractAttributeAndUniformLocations method.
-   * @param {any} shaderProgramHdl - The shaderProgramHdl param.
-   * @param {any} shaderopts - The shaderopts param.
+   * @param {any} shaderProgramHdl - The shaderProgramHdl value.
+   * @param {any} shaderopts - The shaderopts value.
    * @return {any} - The return value.
    * @private
    */
@@ -328,8 +328,8 @@ class GLShader extends BaseItem {
 
   /**
    * The compileForTarget method.
-   * @param {any} key - The key param.
-   * @param {any} shaderopts - The shaderopts param.
+   * @param {any} key - The key value.
+   * @param {any} shaderopts - The shaderopts value.
    * @return {any} - The return value.
    */
   compileForTarget(key, shaderopts) {
@@ -355,8 +355,8 @@ class GLShader extends BaseItem {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} key - The key param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} key - The key value.
    * @return {any} - The return value.
    */
   bind(renderstate, key) {
@@ -398,7 +398,7 @@ class GLShader extends BaseItem {
 
   /**
    * The unbind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   unbind(renderstate) {
@@ -430,7 +430,8 @@ class GLShader extends BaseItem {
   // Destroy
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     const gl = this.__gl;
@@ -443,4 +444,3 @@ class GLShader extends BaseItem {
 }
 
 export { GLShader };
-// export default GLShader;

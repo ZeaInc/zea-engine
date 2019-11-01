@@ -50,7 +50,7 @@ class SimpleUniformBinding {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
     this.uniformXX(this.__unif.location, this.__val);
@@ -100,7 +100,7 @@ class ComplexUniformBinding {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
     this.uniformXX(this.__unif.location, this.__vals);
@@ -147,7 +147,7 @@ class MatrixUniformBinding {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
     this.uniformMatrixXXX(this.__unif.location, false, this.__val);
@@ -275,7 +275,7 @@ class ColorUniformBinding {
 
   /**
    * The bindValue method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindValue(renderstate) {
     this.uniform4fv(this.__unif.location, this.__vals);
@@ -285,7 +285,7 @@ class ColorUniformBinding {
 
   /**
    * The bindTexture method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   bindTexture(renderstate) {
     this.gltexture.bindToUniform(
@@ -379,7 +379,7 @@ class MaterialShaderBinding {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bind(renderstate) {
@@ -399,7 +399,8 @@ class MaterialShaderBinding {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     for (const uniformBinding of this.__uniformBindings) {

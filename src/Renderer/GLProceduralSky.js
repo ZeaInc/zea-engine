@@ -399,7 +399,7 @@ class GLProceduralSky extends GLProbe {
 
   /**
    * The draw method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
     const gl = this.__gl;
@@ -443,4 +443,3 @@ class GLProceduralSky extends GLProbe {
 }
 
 export { GLProceduralSky };
-// export default GLProceduralSky;

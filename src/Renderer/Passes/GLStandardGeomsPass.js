@@ -38,8 +38,8 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The init method.
-   * @param {any} renderer - The renderer param.
-   * @param {any} passIndex - The passIndex param.
+   * @param {any} renderer - The renderer value.
+   * @param {any} passIndex - The passIndex value.
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex);
@@ -98,7 +98,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The filterGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {any} - The return value.
    */
   filterGeomItem(geomItem) {
@@ -107,7 +107,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The addShader method.
-   * @param {any} material - The material param.
+   * @param {any} material - The material value.
    * @return {any} - The return value.
    */
   addShader(material) {
@@ -116,7 +116,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The addMaterial method.
-   * @param {any} material - The material param.
+   * @param {any} material - The material value.
    * @return {any} - The return value.
    */
   addMaterial(material) {
@@ -141,7 +141,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The addGeom method.
-   * @param {any} geom - The geom param.
+   * @param {any} geom - The geom value.
    * @return {any} - The return value.
    */
   addGeom(geom) {
@@ -165,7 +165,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The addGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {any} - The return value.
    */
   addGeomItem(geomItem) {
@@ -221,7 +221,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The removeGeomItem method.
-   * @param {any} geomItem - The geomItem param.
+   * @param {any} geomItem - The geomItem value.
    * @return {any} - The return value.
    */
   removeGeomItem(geomItem) {
@@ -259,8 +259,8 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The removeGLGeom method.
-   * @param {any} geomItemMapping - The geomItemMapping param.
-   * @param {any} materialGeomMapping - The materialGeomMapping param.
+   * @param {any} geomItemMapping - The geomItemMapping value.
+   * @param {any} materialGeomMapping - The materialGeomMapping value.
    */
   removeGLGeom(geomItemMapping, materialGeomMapping) {
     const index = materialGeomMapping.geomItemMappings.indexOf(geomItemMapping);
@@ -277,7 +277,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The getGeomItem method.
-   * @param {any} id - The id param.
+   * @param {any} id - The id value.
    * @return {any} - The return value.
    */
   getGeomItem(id) {
@@ -298,9 +298,9 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The __populateDrawItemDataArray method.
-   * @param {any} geomItem - The geomItem param.
-   * @param {any} index - The index param.
-   * @param {any} dataArray - The dataArray param.
+   * @param {any} geomItem - The geomItem value.
+   * @param {number} index - The index value.
+   * @param {any} dataArray - The dataArray value.
    * @private
    */
   __populateDrawItemDataArray(geomItem, index, dataArray) {
@@ -487,7 +487,7 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The bind method.
-   * @param {any} renderstate - The renderstate param.
+   * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
    */
   bind(renderstate) {
@@ -508,8 +508,8 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The bindShader method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} glshader - The glshader param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} glshader - The glshader value.
    * @return {any} - The return value.
    */
   bindShader(renderstate, glshader) {
@@ -520,9 +520,9 @@ class GLStandardGeomsPass extends GLPass {
 
   /**
    * The bindMaterial method.
-   * @param {any} renderstate - The renderstate param.
-   * @param {any} glmaterial - The glmaterial param.
-   * @param {any} warnMissingUnifs - The warnMissingUnifs param.
+   * @param {any} renderstate - The renderstate value.
+   * @param {any} glmaterial - The glmaterial value.
+   * @param {any} warnMissingUnifs - The warnMissingUnifs value.
    * @return {any} - The return value.
    */
   bindMaterial(renderstate, glmaterial, warnMissingUnifs) {
@@ -531,4 +531,3 @@ class GLStandardGeomsPass extends GLPass {
 }
 
 export { GLStandardGeomsPass };
-// export default GLPass;

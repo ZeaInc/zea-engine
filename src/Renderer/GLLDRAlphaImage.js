@@ -3,7 +3,7 @@ import { UnpackLDRAlphaImageShader } from './Shaders/UnpackLDRAlphaImageShader.j
 import { GLFbo } from './GLFbo.js';
 import { generateShaderGeomBinding } from './GeomShaderBinding.js';
 
-/** Class representing a GL LDR alpha image.
+/** Class representing a GL (low dynamic range) LDR alpha image.
  * @extends GLTexture2D
  */
 class GLLDRAlphaImage extends GLTexture2D {
@@ -124,7 +124,8 @@ class GLLDRAlphaImage extends GLTexture2D {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
