@@ -1,10 +1,12 @@
 import { sgFactory } from '../SceneTree/SGFactory.js';
 
-/** Class representing a state. */
+/** Class representing a state in a state machine. A model can only be
+ * in one state at a time.
+ */
 class State {
   /**
    * Create a state.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the state.
    */
   constructor(name) {
     this.__name = name ? name : this.constructor.name;
@@ -15,16 +17,16 @@ class State {
   }
 
   /**
-   * The getName method.
-   * @return {any} - The return value.
+   * Getter for the name of the state.
+   * @return {string} - Returns the name.
    */
   getName() {
     return this.__name;
   }
 
   /**
-   * The setName method.
-   * @param {string} name - The name param.
+   * Setter for the name of the state.
+   * @param {string} name - The name of the state.
    */
   setName(name) {
     this.__name = name;
@@ -32,7 +34,7 @@ class State {
 
   /**
    * The setStateMachine method.
-   * @param {any} stateMachine - The stateMachine param.
+   * @param {any} stateMachine - The stateMachine value.
    */
   setStateMachine(stateMachine) {
     this.__stateMachine = stateMachine;
@@ -47,7 +49,7 @@ class State {
   }
 
   /**
-   * The activate method.
+   * Activates the state.
    */
   activate() {
     this.__stateEvents.forEach(stateEvent => {
@@ -59,7 +61,7 @@ class State {
   }
 
   /**
-   * The deactivate method.
+   * Deactivates the state.
    */
   deactivate() {
     this.__stateEvents.forEach(stateEvent => {
@@ -71,8 +73,8 @@ class State {
   }
 
   /**
-   * The addStateEvent method.
-   * @param {any} stateEvent - The stateEvent param.
+   * Add an event to the state.
+   * @param {any} stateEvent - The event to add.
    */
   addStateEvent(stateEvent) {
     stateEvent.setState(this);
@@ -80,8 +82,8 @@ class State {
   }
 
   /**
-   * The getStateEvent method.
-   * @param {any} index - The index param.
+   * Getter for the state event.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getStateEvent(index) {
@@ -90,7 +92,7 @@ class State {
 
   /**
    * The addActivationAction method.
-   * @param {any} action - The action param.
+   * @param {any} action - The action value.
    */
   addActivationAction(action) {
     action.setState(this);
@@ -99,7 +101,7 @@ class State {
 
   /**
    * The getActivationAction method.
-   * @param {any} index - The index param.
+   * @param {number} index - The index value.
    * @return {any} - The return value.
    */
   getActivationAction(index) {
@@ -107,8 +109,8 @@ class State {
   }
 
   /**
-   * The addDeactivationAction method.
-   * @param {any} action - The action param.
+   * The getActivationAction method.
+   * @param {any} action - The action value.
    */
   addDeactivationAction(action) {
     action.setState(this);
@@ -119,10 +121,10 @@ class State {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = {
@@ -152,10 +154,10 @@ class State {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     this.__name = j.name;

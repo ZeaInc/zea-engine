@@ -8,7 +8,7 @@ import { ParameterOwner } from '../SceneTree/ParameterOwner.js';
 class StateAction extends ParameterOwner {
   /**
    * Create a state action.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the state action.
    */
   constructor(name) {
     super();
@@ -20,7 +20,7 @@ class StateAction extends ParameterOwner {
 
   /**
    * The addOutput method.
-   * @param {any} output - The output param.
+   * @param {any} output - The output value.
    * @return {any} - The return value.
    */
   addOutput(output) {
@@ -30,7 +30,7 @@ class StateAction extends ParameterOwner {
 
   /**
    * The getOutput method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   getOutput(name) {
@@ -39,7 +39,7 @@ class StateAction extends ParameterOwner {
 
   /**
    * The setState method.
-   * @param {any} state - The state param.
+   * @param {any} state - The state value.
    */
   setState(state) {
     this.__state = state;
@@ -50,7 +50,7 @@ class StateAction extends ParameterOwner {
 
   /**
    * The addChild method.
-   * @param {any} childAction - The childAction param.
+   * @param {any} childAction - The childAction value.
    */
   addChild(childAction) {
     this.__childActions.push(childAction);
@@ -59,7 +59,7 @@ class StateAction extends ParameterOwner {
 
   /**
    * The getChild method.
-   * @param {any} index - The index param.
+   * @param {annumbery} index - The index value.
    * @return {any} - The return value.
    */
   getChild(index) {
@@ -78,7 +78,7 @@ class StateAction extends ParameterOwner {
 
   /**
    * The addChild method.
-   * @param {any} childAction - The childAction param.
+   * @param {any} childAction - The childAction value.
    */
   addChild(childAction) {
     this.__childActions.push(childAction);
@@ -104,10 +104,10 @@ class StateAction extends ParameterOwner {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     let j = super.toJSON(context, flags);
@@ -132,10 +132,10 @@ class StateAction extends ParameterOwner {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -165,7 +165,8 @@ class StateAction extends ParameterOwner {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();

@@ -4,7 +4,7 @@ import { StringParameter } from '../../SceneTree/Parameters';
 
 import { StateAction } from '../StateAction.js';
 
-/** Class representing switching a state.
+/** A state machine action that switches between states.
  * @extends StateAction
  */
 class SwitchState extends StateAction {
@@ -19,7 +19,7 @@ class SwitchState extends StateAction {
   }
 
   /**
-   * The activate method.
+   * Activate the action.
    */
   activate() {
     this.__state

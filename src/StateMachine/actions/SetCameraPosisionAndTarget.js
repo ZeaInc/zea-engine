@@ -8,7 +8,7 @@ import {
 } from '../../SceneTree/Parameters';
 import { StateAction } from '../StateAction.js';
 
-/** Class representing setting camera position and target.
+/** A state machine action that sets the camera position and target.
  * @extends StateAction
  */
 class SetCameraPosisionAndTarget extends StateAction {
@@ -28,9 +28,9 @@ class SetCameraPosisionAndTarget extends StateAction {
   }
 
   /**
-   * The setCameraPosisionAndTarget method.
-   * @param {any} pos - The pos param.
-   * @param {any} target - The target param.
+   * Sets the camera's position and target.
+   * @param {any} pos - The position of the camera.
+   * @param {any} target - The target of the camera.
    */
   setCameraPosisionAndTarget(pos, target) {
     this.getParameter('cameraPos').setValue(pos);
@@ -38,7 +38,7 @@ class SetCameraPosisionAndTarget extends StateAction {
   }
 
   /**
-   * The activate method.
+   * Activates the action.
    */
   activate() {
     const camera = this.getParameter('Camera').getValue();
@@ -117,7 +117,7 @@ class SetCameraPosisionAndTarget extends StateAction {
   }
 
   /**
-   * The cancel method.
+   * Cancels the action.
    */
   cancel() {
     if (this.__timeoutId) {

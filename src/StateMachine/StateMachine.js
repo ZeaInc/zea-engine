@@ -1,13 +1,16 @@
 import { Signal } from '../Utilities';
 import { BaseItem, ItemFlags, sgFactory } from '../SceneTree';
 
-/** Class representing a state machine
+/** A state machine is a mathematical model that describes the behavior of
+ * a system that can be in only one state at a time. For example, a door with
+ * two states can be "open" and "closed", but it cannot be both open and closed
+ * at the same time.
  * @extends BaseItem
  */
 class StateMachine extends BaseItem {
   /**
    * Create a state machine.
-   * @param {string} name - The name value.
+   * @param {string} name - The name of the state machine.
    */
   constructor(name) {
     super(name);
@@ -30,7 +33,7 @@ class StateMachine extends BaseItem {
 
   /**
    * The addState method.
-   * @param {any} state - The state param.
+   * @param {any} state - The state value.
    */
   addState(state) {
     state.setStateMachine(this);
@@ -46,7 +49,7 @@ class StateMachine extends BaseItem {
 
   /**
    * The getState method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   getState(name) {
@@ -55,7 +58,7 @@ class StateMachine extends BaseItem {
 
   /**
    * The activateState method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    */
   activateState(name) {
     // console.log("StateMachine.activateState:" + name)
@@ -78,7 +81,7 @@ class StateMachine extends BaseItem {
   }
 
   /**
-   * The getActiveStateName method.
+   * Getter for the currently active state's name.
    * @return {any} - The return value.
    */
   getActiveStateName() {
@@ -86,7 +89,7 @@ class StateMachine extends BaseItem {
   }
 
   /**
-   * The getInitialState method.
+   * Getter for the initial state of the state machine.
    * @return {any} - The return value.
    */
   getInitialState() {
@@ -94,8 +97,8 @@ class StateMachine extends BaseItem {
   }
 
   /**
-   * The setInitialState method.
-   * @param {string} name - The name param.
+   * Setter for the initial state of the state machine.
+   * @param {string} name - The name value.
    */
   setInitialState(name) {
     this.__initialStateName = name;
@@ -105,10 +108,10 @@ class StateMachine extends BaseItem {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -123,10 +126,10 @@ class StateMachine extends BaseItem {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -147,7 +150,7 @@ class StateMachine extends BaseItem {
     context.addPLCB(() => {
       // Disabling for now.
       // We can have state machines that are not active at all.
-      // e.g. in the 850 E-Tec project.
+      // E.g. in the 850 E-Tec project.
       // this.activateState(this.__initialStateName);
     });
   }

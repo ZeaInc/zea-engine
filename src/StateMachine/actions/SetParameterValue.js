@@ -5,12 +5,12 @@ import { OperatorOutput } from '../../SceneTree/Operators';
 
 import { StateAction } from '../StateAction.js';
 
-/** Class representing setting a parameter value.
+/** A state machine action that sets parameter values.
  * @extends StateAction
  */
 class SetParameterValue extends StateAction {
   /**
-   * Create a sett parameter value.
+   * Create a set parameter value.
    */
   constructor() {
     super();
@@ -40,7 +40,7 @@ class SetParameterValue extends StateAction {
   }
 
   /**
-   * The activate method.
+   * Activate the action.
    */
   activate() {
     if (this.__outParam.isConnected()) {
@@ -90,7 +90,7 @@ class SetParameterValue extends StateAction {
   }
 
   /**
-   * The cancel method.
+   * The cancel the action.
    */
   cancel() {
     if (this.__timeoutId) {
@@ -103,10 +103,10 @@ class SetParameterValue extends StateAction {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -117,10 +117,10 @@ class SetParameterValue extends StateAction {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     if (j.valueParamType) {
