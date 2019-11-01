@@ -43,8 +43,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The setDefaultManipulationMode method.
-   * @param {any} mode - The mode param.
+   * Setter for the default manipulation mode.
+   * @param {mode} mode - The mode value.
    */
   setDefaultManipulationMode(mode) {
     this.__defaultManipulationState = mode;
@@ -52,8 +52,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The look method.
-   * @param {any} event - The event param.
-   * @param {any} dragVec - The dragVec param.
+   * @param {any} event - The event value.
+   * @param {any} dragVec - The drag vector value.
    */
   look(event, dragVec) {
     const { viewport } = event;
@@ -95,8 +95,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The orbit method.
-   * @param {any} event - The event param.
-   * @param {any} dragVec - The dragVec param.
+   * @param {any} event - The event value.
+   * @param {any} dragVec - The drag vector value.
    */
   orbit(event, dragVec) {
     const { viewport } = event;
@@ -142,8 +142,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The pan method.
-   * @param {any} event - The event param.
-   * @param {any} dragVec - The dragVec param.
+   * @param {any} event - The event value.
+   * @param {any} dragVec - The drag vector value.
    */
   pan(event, dragVec) {
     console.log('Pab');
@@ -171,8 +171,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The dolly method.
-   * @param {any} event - The event param.
-   * @param {any} dragVec - The dragVec param.
+   * @param {any} event - The event value.
+   * @param {any} dragVec - The drag vector value.
    */
   dolly(event, dragVec) {
     const { viewport } = event;
@@ -186,9 +186,9 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The panAndZoom method.
-   * @param {any} event - The event param.
-   * @param {any} panDelta - The panDelta param.
-   * @param {any} dragDist - The dragDist param.
+   * @param {any} event - The event value.
+   * @param {any} panDelta - The pan delta value.
+   * @param {any} dragDist - The drag distance value.
    */
   panAndZoom(event, panDelta, dragDist) {
     const { viewport } = event;
@@ -219,7 +219,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The initDrag method.
-   * @param {any} event - The event param.
+   * @param {any} event - The event value.
    */
   initDrag(event) {
     const { viewport } = event;
@@ -235,8 +235,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The aimFocus method.
-   * @param {any} event - The event param.
-   * @param {any} pos - The pos param.
+   * @param {any} event - The event value.
+   * @param {any} pos - The position value.
    */
   aimFocus(event, pos) {
     const { viewport } = event;
@@ -306,14 +306,14 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the mouse pointer is moving while over an element.
+   * @param {any} event - The event that occurs.
    */
   onMouseMove(event) {}
 
   /**
-   * The onDoubleClick method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when a user double clicks a mouse button over an element.
+   * @param {any} event - The event that occurs.
    */
   onDoubleClick(event) {
     if (event.intersectionData) {
@@ -326,8 +326,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user starts to drag an element.
+   * @param {any} event - The event that occurs.
    */
   onDragStart(event) {
     this.__mouseDownPos = event.mousePos;
@@ -345,8 +345,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when an element is being dragged.
+   * @param {any} event - The event that occurs.
    */
   onDrag(event) {
     const mousePos = event.mousePos;
@@ -383,8 +383,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user has finished dragging an element.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onDragEnd(event) {
@@ -393,8 +393,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the mouse wheel is rolled up or down over an element.
+   * @param {any} event - The event that occurs.
    */
   onWheel(event) {
     const { viewport } = event;
@@ -428,7 +428,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The __integrateVelocityChange method.
-   * @param {any} event - The event param.
+   * @param {any} event - The event value.
    * @private
    */
   __integrateVelocityChange(event) {
@@ -440,9 +440,9 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onKeyPressed method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Causes an event to occurs when the user presses a key on the keyboard.
+   * @param {any} key - The key the user presses.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onKeyPressed(key, event) {
@@ -489,18 +489,17 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onKeyDown method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user is pressing a key on the keyboard.
+   * @param {any} key - The key the user is pressing.
+   * @param {any} event - The event that occurs.
    */
   onKeyDown(key, event) {}
 
   /**
-   * The onKeyUp method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user releases a key on the keyboard.
+   * @param {any} key - The key the user releases.
+   * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
-   */
   onKeyUp(key, event) {
     // (TODO: move this logic to a special controller)
     /*
@@ -533,7 +532,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The __startTouch method.
-   * @param {any} touch - The touch param.
+   * @param {any} touch - The touch value.
    * @private
    */
   __startTouch(touch) {
@@ -545,7 +544,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * The __endTouch method.
-   * @param {any} touch - The touch param.
+   * @param {any} touch - The touch value.
    * @private
    */
   __endTouch(touch) {
@@ -557,8 +556,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   // Touch events
 
   /**
-   * The onTouchStart method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user touches an element on a touch screen.
+   * @param {any} event - The event that occurs.
    */
   onTouchStart(event) {
     console.log('onTouchStart');
@@ -576,8 +575,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onTouchMove method.
-   * @param {any} event - The event param.
+   * The event that occurs when the user moves his/her finger across a touch screen.
+   * @param {any} event - The event that occurs.
    */
   onTouchMove(event) {
     event.preventDefault();
@@ -620,8 +619,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onTouchEnd method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user removes his/her finger from an element.
+   * @param {any} event - The event that occurs.
    */
   onTouchEnd(event) {
     event.preventDefault();
@@ -640,8 +639,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onTouchCancel method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the touch event gets interrupted.
+   * @param {any} event - The event that occurs.
    */
   onTouchCancel(event) {
     event.preventDefault();
@@ -652,8 +651,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   }
 
   /**
-   * The onDoubleTap method.
-   * @param {any} event - The event param.
+   * Causes an event to occur when the user double taps an element on a touch screen.
+   * @param {any} event - The event that occurs.
    */
   onDoubleTap(event) {
     if (event.intersectionData) {
@@ -669,4 +668,3 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 }
 
 export { CameraMouseAndKeyboard };
-// export default Camera;
