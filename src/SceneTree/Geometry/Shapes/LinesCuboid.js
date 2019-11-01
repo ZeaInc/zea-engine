@@ -2,15 +2,15 @@ import { Lines } from '../Lines.js';
 import { NumberParameter } from '../../Parameters/NumberParameter.js';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a lines cuboid.
+/** A class for generating a lines cuboid shape.
  * @extends Lines
  */
 class LinesCuboid extends Lines {
   /**
    * Create a lines cuboid.
-   * @param {number} x - The x value.
-   * @param {number} y - The y value.
-   * @param {number} z - The z value.
+   * @param {number} x - The length of the line cuboid along the X axis.
+   * @param {number} y - The length of the line cuboid along the Y axis.
+   * @param {number} z - The length of the line cuboid along the Z axis.
    * @param {boolean} baseZAtZero - The baseZAtZero value.
    */
   constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero = false) {
@@ -56,7 +56,7 @@ class LinesCuboid extends Lines {
 
   /**
    * The __resize method.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    * @private
    */
   __resize(mode) {
@@ -84,8 +84,8 @@ class LinesCuboid extends Lines {
   }
 
   /**
-   * The toJSON method.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @return {object} - Returns the json object.
    */
   toJSON() {
     const json = super.toJSON();

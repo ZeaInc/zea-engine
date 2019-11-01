@@ -4,16 +4,16 @@ import { Mesh } from '../Mesh.js';
 import { BooleanParameter, NumberParameter } from '../../Parameters';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a cone.
+/** A class for generating a cone geometry.
  * @extends Mesh
  */
 class Cone extends Mesh {
   /**
-   * Create a circle.
-   * @param {number} radius - The radius value.
-   * @param {number} height - The height value.
-   * @param {number} detail - The detail value.
-   * @param {boolean} cap - The cap value.
+   * Create a cone.
+   * @param {number} radius - The radius of the cone at the base.
+   * @param {number} height - The height of the cone.
+   * @param {number} detail - The detail of the cone.
+   * @param {boolean} cap -  A boolean indicating whether the base of the cone is capped or open.
    */
   constructor(radius = 0.5, height = 1.0, detail = 32, cap = true) {
     super();
@@ -49,15 +49,16 @@ class Cone extends Mesh {
   }
 
   /**
-   * Getter for radius.
+   * Getter for the cone radius.
+   * @return {number} - Returns the radius.
    */
   get radius() {
     return this.__radiusParam.getValue();
   }
 
   /**
-   * Setter for radius.
-   * @param {number} val - The val param.
+   * Setter for the cone radius.
+   * @param {number} val - The radius value.
    */
   set radius(val) {
     this.__radiusParam.setValue(val);
@@ -65,15 +66,16 @@ class Cone extends Mesh {
   }
 
   /**
-   * Getter for height.
+   * Getter for the cone height.
+   * @return {number} - Returns the height.
    */
   get height() {
     return this.__heightParam.getValue();
   }
 
   /**
-   * Setter for height.
-   * @param {number} val - The val param.
+   * Setter for the cone height.
+   * @param {number} val - The height value.
    */
   set height(val) {
     this.__heightParam.setValue(val);
@@ -81,15 +83,16 @@ class Cone extends Mesh {
   }
 
   /**
-   * Getter for detail.
+   * Getter for the cone detail.
+   * @return {number} - Returns the detail.
    */
   get detail() {
     return this.__detailParam.getValue();
   }
 
   /**
-   * Setter for detail.
-   * @param {number} val - The val param.
+   * Setter for the cone detail.
+   * @param {number} val - The detail value.
    */
   set detail(val) {
     this.__detailParam.setValue(val);
@@ -97,14 +100,15 @@ class Cone extends Mesh {
   }
 
   /**
-   * Getter for cap.
+   * Getter for the cone cap.
+   * @return {any} - The return value.
    */
   get cap() {
     return this.__capParam.getValue();
   }
 
   /**
-   * Setter for cap.
+   * Setter for the cone cap.
    * @param {number} val - The val param.
    */
   set cap(val) {
@@ -136,7 +140,7 @@ class Cone extends Mesh {
 
     this.getVertex(tipPoint).set(0.0, 0.0, height);
     for (let i = 0; i < nbSides; i++) {
-      let theta = (i / nbSides) * 2.0 * Math.PI;
+      const theta = (i / nbSides) * 2.0 * Math.PI;
       this.getVertex(i).set(
         radius * Math.cos(theta),
         radius * Math.sin(theta),
@@ -151,31 +155,31 @@ class Cone extends Mesh {
     // build the topology
     this.setFaceCounts([nbSides + (cap ? nbSides : 0)]);
     for (let i = 0; i < nbSides; i++) {
-      let j = (i + 1) % nbSides;
+      const j = (i + 1) % nbSides;
       this.setFaceVertexIndices(i, j, i, tipPoint);
     }
     if (cap) {
       for (let i = 0; i < nbSides; i++) {
-        let j = (i + 1) % nbSides;
+        const j = (i + 1) % nbSides;
         this.setFaceVertexIndices(nbSides + i, i, j, basePoint);
       }
     }
 
     // ////////////////////////////
     // setNormals
-    let normals = this.getVertexAttribute('normals');
+    const normals = this.getVertexAttribute('normals');
 
     let normalElevation;
-    let divider = height;
+    const divider = height;
     if (Math.abs(height) < 1.0e-12)
       normalElevation = height < 0 ? -1.0e-12 : 1.0e-12;
     normalElevation = radius / divider;
 
     let tri = 0;
     for (let i = 0; i < nbSides; i++) {
-      let theta1 = ((i + 1) / nbSides) * 2.0 * Math.PI;
-      let theta2 = (i / nbSides) * 2.0 * Math.PI;
-      let theta = (theta1 + theta2) * 0.5;
+      const theta1 = ((i + 1) / nbSides) * 2.0 * Math.PI;
+      const theta2 = (i / nbSides) * 2.0 * Math.PI;
+      const theta = (theta1 + theta2) * 0.5;
 
       normals.setFaceVertexValue(
         tri,
@@ -203,7 +207,7 @@ class Cone extends Mesh {
       tri++;
     }
     if (cap) {
-      let normal = new Vec3(0.0, -1.0, 0.0);
+      const normal = new Vec3(0.0, -1.0, 0.0);
       for (let i = 0; i < nbSides; i++) {
         normals.setFaceVertexValue(tri, 0, normal);
         normals.setFaceVertexValue(tri, 1, normal);
@@ -214,7 +218,7 @@ class Cone extends Mesh {
 
     // ////////////////////////////
     // setUVs
-    let texCoords = this.getVertexAttribute('texCoords');
+    const texCoords = this.getVertexAttribute('texCoords');
 
     // Now set the attrbute values
     tri = 0;
@@ -254,7 +258,7 @@ class Cone extends Mesh {
 
     this.getVertex(tipPoint).set(0.0, 0.0, height);
     for (let i = 0; i < nbSides; i++) {
-      let theta = (i / nbSides) * 2.0 * Math.PI;
+      const theta = (i / nbSides) * 2.0 * Math.PI;
       this.getVertex(i).set(
         radius * Math.cos(theta),
         radius * Math.sin(theta),

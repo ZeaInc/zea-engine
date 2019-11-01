@@ -68,7 +68,7 @@ class PistonParameter extends StructParameter {
 
   /**
    * The setCrankXfo method.
-   * @param {any} baseCrankXfo - The baseCrankXfo param.
+   * @param {Xfo} baseCrankXfo - The baseCrankXfo value.
    */
   setCrankXfo(baseCrankXfo) {
     this.__baseCrankXfo = baseCrankXfo;
@@ -111,9 +111,9 @@ class PistonParameter extends StructParameter {
 
   /**
    * The evaluate method.
-   * @param {any} quat - The quat param.
-   * @param {any} crankAxis - The crankAxis param.
-   * @param {any} revolutions - The revolutions param.
+   * @param {Quat} quat - The quat value.
+   * @param {any} crankAxis - The crankAxis value.
+   * @param {any} revolutions - The revolutions value.
    */
   evaluate(quat, crankAxis, revolutions) {
     const camPhase = this.__camPhaseParam.getValue();
@@ -152,18 +152,8 @@ class PistonParameter extends StructParameter {
   }
 
   /**
-   * The clone method.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
-   */
-  clone(flags) {
-    const clonedParam = new PistonParameter(this.__name, this.__value);
-    return clonedParam;
-  }
-
-  /**
    * The setOwner method.
-   * @param {any} owner - The owner param.
+   * @param {any} owner - The owner value.
    */
   setOwner(owner) {
     this.__owner = owner;
@@ -181,10 +171,10 @@ class PistonParameter extends StructParameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -192,13 +182,27 @@ class PistonParameter extends StructParameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
+  }
+
+  // ////////////////////////////////////////
+  // Clone
+
+  /**
+   * The clone method constructs a new pistom parameter, copies its values
+   * from this parameter and returns it.
+   * @param {number} flags - The flags value.
+   * @return {PistonParameter} - Returns a new cloned piston parameter.
+   */
+  clone(flags) {
+    const clonedParam = new PistonParameter(this.__name, this.__value);
+    return clonedParam;
   }
 }
 
@@ -274,7 +278,7 @@ class PistonOperator extends Operator {
 
   /**
    * The setOwner method.
-   * @param {any} ownerItem - The ownerItem param.
+   * @param {any} ownerItem - The ownerItem value.
    */
   setOwner(ownerItem) {
     super.setOwner(ownerItem);
@@ -334,20 +338,20 @@ class PistonOperator extends Operator {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     return super.toJSON(context, flags);
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -358,7 +362,8 @@ class PistonOperator extends Operator {
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     clearTimeout(this.__timeoutId);

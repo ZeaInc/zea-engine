@@ -2,7 +2,7 @@ import { Signal } from '../../Utilities';
 import { Box3 } from '../../Math';
 import { RefCounted } from '../RefCounted.js';
 
-/** Class representing a base proxy.
+/** Class representing a base geometry proxy.
  * @extends RefCounted
  */
 class BaseProxy extends RefCounted {
@@ -62,7 +62,7 @@ class BaseProxy extends RefCounted {
 
   /**
    * The getMetadata method.
-   * @param {any} key - The key param.
+   * @param {any} key - The key value.
    * @return {any} - The return value.
    */
   getMetadata(key) {
@@ -71,7 +71,7 @@ class BaseProxy extends RefCounted {
 
   /**
    * The hasMetadata method.
-   * @param {any} key - The key param.
+   * @param {any} key - The key value.
    * @return {any} - The return value.
    */
   hasMetadata(key) {
@@ -80,8 +80,8 @@ class BaseProxy extends RefCounted {
 
   /**
    * The setMetadata method.
-   * @param {any} key - The key param.
-   * @param {object} metaData - The metaData param.
+   * @param {any} key - The key value.
+   * @param {object} metaData - The metaData value.
    */
   setMetadata(key, metaData) {
     this.__metaData.set(key, metaData);

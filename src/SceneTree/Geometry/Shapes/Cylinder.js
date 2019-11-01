@@ -5,17 +5,17 @@ import { Mesh } from '../Mesh.js';
 import { BooleanParameter, NumberParameter } from '../../Parameters';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a cylinder.
+/** A class for generating a cylinder geometry.
  * @extends Mesh
  */
 class Cylinder extends Mesh {
   /**
    * Create a cylinder.
-   * @param {number} radius - The radius value.
-   * @param {number} height - The height value.
-   * @param {number} sides - The sides value.
-   * @param {number} loops - The loops value.
-   * @param {boolean} caps - The caps value.
+   * @param {number} radius - The radius of the cylinder.
+   * @param {number} height - The height of the cylinder.
+   * @param {number} sides - The number of sides.
+   * @param {number} loops - The number of loops.
+   * @param {boolean} caps - A boolean indicating whether the ends of the cylinder are capped or open.
    * @param {boolean} baseZAtZero - The baseZAtZero value.
    */
   constructor(

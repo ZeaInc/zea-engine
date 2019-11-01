@@ -65,7 +65,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The setFaceCounts method.
-   * @param {any} faceCounts - The faceCounts param.
+   * @param {any} faceCounts - The faceCounts value.
    */
   setFaceCounts(faceCounts) {
     if (this.__numPopulatedFaceVertexIndices) {
@@ -92,7 +92,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The setFaceVertexIndices method.
-   * @param {any} faceIndex - The faceIndex param.
+   * @param {any} faceIndex - The faceIndex value.
    */
   setFaceVertexIndices(faceIndex) {
     const vertexIndices = Array.prototype.slice.call(arguments, 1);
@@ -108,7 +108,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The getFaceVertexIndices method.
-   * @param {any} faceIndex - The faceIndex param.
+   * @param {any} faceIndex - The faceIndex value.
    * @return {any} - The return value.
    */
   getFaceVertexIndices(faceIndex) {
@@ -123,8 +123,8 @@ class Mesh extends BaseGeom {
 
   /**
    * The getFaceVertexIndex method.
-   * @param {any} faceIndex - The faceIndex param.
-   * @param {any} facevertex - The facevertex param.
+   * @param {any} faceIndex - The faceIndex value.
+   * @param {any} facevertex - The facevertex value.
    * @return {any} - The return value.
    */
   getFaceVertexIndex(faceIndex, facevertex) {
@@ -145,10 +145,10 @@ class Mesh extends BaseGeom {
 
   /**
    * The addVertexAttribute method.
-   * @param {string} name - The name param.
-   * @param {any} dataType - The dataType param.
-   * @param {any} defaultScalarValue - The defaultScalarValue param.
-   * @return {any} - The return value.
+   * @param {string} name - The name value.
+   * @param {any} dataType - The dataType value.
+   * @param {number} defaultScalarValue - The default scalar value.
+   * @return {VertexAttribute} - Returns a vertex attribute.
    */
   addVertexAttribute(name, dataType, defaultScalarValue = undefined) {
     const attr = new VertexAttribute(
@@ -166,10 +166,10 @@ class Mesh extends BaseGeom {
 
   /**
    * The addFaceAttribute method.
-   * @param {string} name - The name param.
-   * @param {any} dataType - The dataType param.
-   * @param {any} count - The defaultScalarValue param.
-   * @return {any} - The return value.
+   * @param {string} name - The name of the face attribute.
+   * @param {any} dataType - The data type.
+   * @param {any} count - The count value.
+   * @return {Attribute} - Returns an attribute.
    */
   addFaceAttribute(name, dataType, count = undefined) {
     const attr = new Attribute(
@@ -182,7 +182,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The hasFaceAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the face attribute.
    * @return {any} - The return value.
    */
   hasFaceAttribute(name) {
@@ -191,7 +191,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The getFaceAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the face attribute.
    * @return {any} - The return value.
    */
   getFaceAttribute(name) {
@@ -203,10 +203,10 @@ class Mesh extends BaseGeom {
 
   /**
    * The addEdgeAttribute method.
-   * @param {string} name - The name param.
-   * @param {any} dataType - The dataType param.
-   * @param {any} count - The defaultScalarValue param.
-   * @return {any} - The return value.
+   * @param {string} name - The name of the edge attribute.
+   * @param {any} dataType - The data type.
+   * @param {number} count - The default scalar value.
+   * @return {Attribute} - Returns an attribute.
    */
   addEdgeAttribute(name, dataType, count = undefined) {
     const attr = new Attribute(
@@ -219,7 +219,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The hasEdgeAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the edge attribute.
    * @return {any} - The return value.
    */
   hasEdgeAttribute(name) {
@@ -228,7 +228,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The getEdgeAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the edge attribute.
    * @return {any} - The return value.
    */
   getEdgeAttribute(name) {
@@ -402,8 +402,8 @@ class Mesh extends BaseGeom {
   }
 
   /**
-   * The computeVertexNormals method.
-   * @param {number} hardAngle - The hardAngle param.
+   * Compute vertex normals.
+   * @param {number} hardAngle - The hardAngle value in radans.
    * @return {any} - The return value.
    */
   computeVertexNormals(hardAngle = 1.0 /* radians */) {
@@ -534,8 +534,8 @@ class Mesh extends BaseGeom {
   }
 
   /**
-   * The computeNumTriangles method.
-   * @return {any} - The return value.
+   * Compute the number of triangles.
+   * @return {number} - Returns the number of triangles.
    */
   computeNumTriangles() {
     let numVertsPerFace = 3;
@@ -548,10 +548,10 @@ class Mesh extends BaseGeom {
   }
 
   /**
-   * The computeNumTriangles method.
-   * @param {any} totalNumVertices - The totalNumVertices param.
-   * @param {any} numUnSplitVertices - The numUnSplitVertices param.
-   * @param {any} splitIndices - The splitIndices param.
+   * The generateTriangulatedIndices method.
+   * @param {number} totalNumVertices - The total number of vertices.
+   * @param {number} numUnSplitVertices - The total number of unsplit vertices.
+   * @param {any} splitIndices - The splitIndices value.
    * @return {any} - The return value.
    */
   generateTriangulatedIndices(
@@ -595,7 +595,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The computeHardEdgesIndices method.
-   * @param {number} hardAngle - The hardAngle param.
+   * @param {number} hardAngle - The hardAngle value in radians.
    * @return {any} - The return value.
    */
   computeHardEdgesIndices(hardAngle = 1.0) {
@@ -627,7 +627,7 @@ class Mesh extends BaseGeom {
 
   /**
    * The genBuffers method.
-   * @param {any} opts - The opts param.
+   * @param {any} opts - The opts value.
    * @return {any} - The return value.
    */
   genBuffers(opts) {
@@ -830,8 +830,8 @@ class Mesh extends BaseGeom {
 
   /**
    * The readBinary method.
-   * @param {object} reader - The reader param.
-   * @param {object} context - The context param.
+   * @param {object} reader - The reader value.
+   * @param {object} context - The context value.
    */
   readBinary(reader, context) {
     super.loadBaseGeomBinary(reader);
@@ -926,10 +926,10 @@ class Mesh extends BaseGeom {
   }
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -941,10 +941,10 @@ class Mesh extends BaseGeom {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -955,4 +955,3 @@ class Mesh extends BaseGeom {
 }
 
 export { Mesh };
-// export default Mesh;

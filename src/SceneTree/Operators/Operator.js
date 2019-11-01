@@ -3,7 +3,6 @@ import { ValueSetMode } from '../Parameters';
 import { sgFactory } from '../SGFactory';
 import { ItemFlags, BaseItem } from '../BaseItem.js';
 
-
 /** Class representing an operator output. */
 class OperatorOutput {
   /**
@@ -38,7 +37,7 @@ class OperatorOutput {
 
   /**
    * The isConnected method.
-   * @return {any} - The return value.
+   * @return {boolean} - The return value.
    */
   isConnected() {
     return this._param != undefined;
@@ -54,7 +53,7 @@ class OperatorOutput {
 
   /**
    * The setParam method.
-   * @param {any} param - The param param.
+   * @param {any} param - The param value.
    */
   setParam(param) {
     this._param = param;
@@ -63,7 +62,7 @@ class OperatorOutput {
 
   /**
    * The getValue method.
-   * @param {any} mode - The mode param.
+   * @param {boolean} mode - The mode param.
    * @return {any} - The return value.
    */
   getValue(mode = ValueSetMode.OPERATOR_GETVALUE) {
@@ -72,10 +71,10 @@ class OperatorOutput {
 
   /**
    * The setValue method.
-   * Note: sometimes outputs are used in places like statemachines,
+   * Note: Sometimes outputs are used in places like statemachines,
    * where we would want the change to cause an event.
    * @param {any} value - The value param.
-   * @param {any} mode - The mode param.
+   * @param {boolean} mode - The mode value.
    */
   setValue(value, mode = ValueSetMode.OPERATOR_SETVALUE) {
     if (this._param) {
@@ -85,7 +84,7 @@ class OperatorOutput {
 
   /**
    * The setDirty method.
-   * @param {any} fn - The fn param.
+   * @param {any} fn - The fn value.
    */
   setDirty(fn) {
     if (this._param) {
@@ -95,7 +94,7 @@ class OperatorOutput {
 
   /**
    * The removeCleanerFn method.
-   * @param {any} fn - The fn param.
+   * @param {any} fn - The fn value.
    */
   removeCleanerFn(fn) {
     if (this._param) this._param.removeCleanerFn(fn);
@@ -105,24 +104,27 @@ class OperatorOutput {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const paramPath = this._param ? this._param.getPath() : '';
     return {
       type: this.constructor.name,
-      paramPath: ((context && context.makeRelative) ? context.makeRelative(paramPath) : paramPath)
+      paramPath:
+        context && context.makeRelative
+          ? context.makeRelative(paramPath)
+          : paramPath,
     };
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     if (j.paramPath) {
@@ -145,19 +147,18 @@ class OperatorOutput {
       );
     }
   }
-  
-  detach(){
+
+  detach() {
     // This function is called when we want to suspend an operator
     // from functioning because it is deleted and on the undo stack.
-    // Once operators have persistent connections, 
-    // we will simply uninstall the output from the parameter. 
+    // Once operators have persistent connections,
+    // we will simply uninstall the output from the parameter.
     this.detached = true;
   }
 
-  reattach(){
+  reattach() {
     this.detached = false;
   }
-
 }
 sgFactory.registerClass('OperatorOutput', OperatorOutput);
 
@@ -183,7 +184,7 @@ class XfoOperatorOutput extends OperatorOutput {
 
   /**
    * The setParam method.
-   * @param {any} param - The param param.
+   * @param {any} param - The param value.
    */
   setParam(param) {
     // Note: sometimes the param value is changed after binding.
@@ -222,7 +223,7 @@ class Operator extends BaseItem {
     super(name);
 
     // Items which can be constructed by a user(not loaded in binary data.)
-    // Should always have this flag set. 
+    // Should always have this flag set.
     this.setFlag(ItemFlags.USER_EDITED);
 
     this.__outputs = [];
@@ -235,7 +236,7 @@ class Operator extends BaseItem {
 
   /**
    * The addOutput method.
-   * @param {any} output - The output param.
+   * @param {any} output - The output value.
    * @return {any} - The return value.
    */
   addOutput(output) {
@@ -248,23 +249,23 @@ class Operator extends BaseItem {
 
   /**
    * The removeOutput method.
-   * @param {any} output - The output param.
+   * @param {any} output - The output value.
    */
   removeOutput(output) {
     this.__outputs.splice(this.__outputs.indexOf(output), 1);
   }
 
   /**
-   * The getNumOutputs method.
-   * @return {number} - The number of outputs on thie operator.
+   * Getter for the number of putputs in this operator.
+   * @return {number} - Returns he number of outputs.
    */
   getNumOutputs() {
-    return this.__outputs.length
+    return this.__outputs.length;
   }
 
   /**
    * The getOutput method.
-   * @param {number} index - The index param.
+   * @param {number} index - The index value.
    * @return {object} - The return value.
    */
   getOutput(index) {
@@ -273,7 +274,7 @@ class Operator extends BaseItem {
 
   /**
    * The getOutputByName method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   getOutputByName(name) {
@@ -284,7 +285,7 @@ class Operator extends BaseItem {
 
   /**
    * The __evalOutput method.
-   * @param {any} cleanedParam - The cleanedParam param.
+   * @param {any} cleanedParam - The cleanedParam value.
    * @private
    */
   __evalOutput(cleanedParam /* value, getter */) {
@@ -321,10 +322,10 @@ class Operator extends BaseItem {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -340,10 +341,10 @@ class Operator extends BaseItem {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -364,19 +365,20 @@ class Operator extends BaseItem {
   /**
    * The detach method.
    */
-  detach(){
+  detach() {
     this.__outputs.forEach(output => output.detach());
   }
 
   /**
    * The reattach method.
    */
-  reattach(){
+  reattach() {
     this.__outputs.forEach(output => output.reattach());
   }
 
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
   destroy() {
     super.destroy();
@@ -385,4 +387,3 @@ class Operator extends BaseItem {
 }
 
 export { Operator, OperatorOutput, XfoOperatorOutput };
-// export default AssetItem;

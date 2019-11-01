@@ -2,13 +2,13 @@ import { Lines } from '../Lines.js';
 import { NumberParameter } from '../../Parameters/NumberParameter.js';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a cross.
+/** A class for generating a cross shape.
  * @extends Lines
  */
 class Cross extends Lines {
   /**
    * Create a cross.
-   * @param {number} size - The size value.
+   * @param {number} size - The size of the cross.
    */
   constructor(size = 1.0) {
     super();
@@ -25,15 +25,16 @@ class Cross extends Lines {
   }
 
   /**
-   * Getter for size.
+   * Getter for the cross size.
+   * @return {number} - Returns the size.
    */
   get size() {
     return this.__size;
   }
 
   /**
-   * Setter for size.
-   * @param {number} val - The val param.
+   * Setter for the cross size.
+   * @param {number} val - The size value.
    */
   set size(val) {
     this.__size = val;

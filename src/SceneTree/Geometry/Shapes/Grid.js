@@ -5,17 +5,17 @@ import { Lines } from '../Lines.js';
 import { BooleanParameter, NumberParameter } from '../../Parameters';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a grid.
+/** A class for generating a grid.
  * @extends Lines
  */
 class Grid extends Lines {
   /**
    * Create a grid.
-   * @param {number} x - The x value.
-   * @param {number} y - The y value.
-   * @param {number} xDivisions - The xDivisions value.
-   * @param {number} yDivisions - The yDivisions value.
-   * @param {boolean} skipCenterLines - The skipCenterLines value.
+   * @param {number} x - The length of the grid along the X axis.
+   * @param {number} y - The length of the grid along the Y axis.
+   * @param {number} xDivisions - The number of divisions along the X axis.
+   * @param {number} yDivisions - The number of divisions along the X axis.
+   * @param {boolean} skipCenterLines - A boolean indicating whether to display the center grid lines or not.
    */
   constructor(
     x = 1.0,
@@ -45,15 +45,16 @@ class Grid extends Lines {
   }
 
   /**
-   * Getter for sizeX.
+   * Getter for the length of the grid along the X axis.
+   * @return {number} - Returns the length.
    */
   get sizeX() {
     return this.__x;
   }
 
   /**
-   * Setter for sizeX.
-   * @param {number} val - The val param.
+   * Setter for the length of the grid along the X axis.
+   * @param {number} val - The length along the X axis.
    */
   set sizeX(val) {
     this.__x = val;
@@ -61,15 +62,16 @@ class Grid extends Lines {
   }
 
   /**
-   * Getter for sizeY.
+   * Getter for the length of the grid along the Y axis.
+   * @return {number} - Returns the length.
    */
   get sizeY() {
     return this.__y;
   }
 
   /**
-   * Setter for sizeY.
-   * @param {number} val - The val param.
+   * Setter for the length of the grid along the U axis.
+   * @param {number} val - The length along the Y axis.
    */
   set sizeY(val) {
     this.__y = val;
@@ -77,15 +79,16 @@ class Grid extends Lines {
   }
 
   /**
-   * Getter for divisionsX.
+   * Getter for the number of divisions along the X axis.
+   * @return {number} - Returns the number of divisions.
    */
   get divisionsX() {
     return this.__xDivisions;
   }
 
   /**
-   * Setter for divisionsX.
-   * @param {number} val - The val param.
+   * Setter for the number of divisions along the X axis.
+   * @param {number} val - The number of divisions.
    */
   set divisionsX(val) {
     this.__xDivisions = val;
@@ -93,15 +96,16 @@ class Grid extends Lines {
   }
 
   /**
-   * Getter for divisionsY.
+   * Getter for the number of divisions along the Y axis.
+   * @return {number} - Returns the number of divisions.
    */
   get divisionsY() {
     return this.__yDivisions;
   }
 
   /**
-   * Setter for divisionsY.
-   * @param {number} val - The val param.
+   * Setter for the number of divisions along the Y axis.
+   * @param {number} val - The number of divisions.
    */
   set divisionsY(val) {
     this.__yDivisions = val;
@@ -109,13 +113,13 @@ class Grid extends Lines {
   }
 
   /**
-   * The setSize method.
-   * @param {number} x - The x param.
-   * @param {number} z - The z param.
+   * Setter for the size of the grid.
+   * @param {number} x - The length along the X axis.
+   * @param {number} y - The length along the Y axis.
    */
-  setSize(x, z) {
+  setSize(x, y) {
     this.__x = x;
-    this.__y = z;
+    this.__y = y;
     this.__resize();
   }
 
@@ -193,8 +197,8 @@ class Grid extends Lines {
   }
 
   /**
-   * The toJSON method.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @return {object} - Returns the json object.
    */
   toJSON() {
     const json = super.toJSON();

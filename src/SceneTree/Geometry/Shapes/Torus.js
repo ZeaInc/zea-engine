@@ -2,15 +2,15 @@ import { Vec2 } from '../../../Math/Vec2';
 import { Vec3 } from '../../../Math/Vec3';
 import { Mesh } from '../Mesh.js';
 
-/** Class representing a torus.
+/** A class for generating a torus geometry.
  * @extends Mesh
  */
 class Torus extends Mesh {
   /**
    * Create a torus.
-   * @param {number} innerRadius - The innerRadius value.
-   * @param {number} outerRadius - The outerRadius value.
-   * @param {number} detail - The detail value.
+   * @param {number} innerRadius - The inner radius of the torus.
+   * @param {number} outerRadius - The outer radius of the torus.
+   * @param {number} detail - The detail of the cone.
    */
   constructor(innerRadius = 0.5, outerRadius = 1.0, detail = 32) {
     super();
@@ -28,15 +28,16 @@ class Torus extends Mesh {
   }
 
   /**
-   * Getter for innerRadius.
+   * Getter for the inner radius.
+   * @return {number} - Returns the radius.
    */
   get innerRadius() {
     return this.__innerRadius;
   }
 
   /**
-   * Setter for innerRadius.
-   * @param {number} val - The val param.
+   * Setter for the inner radius.
+   * @param {number} val - The radius value.
    */
   set innerRadius(val) {
     this.__innerRadius = val;
@@ -44,15 +45,16 @@ class Torus extends Mesh {
   }
 
   /**
-   * Getter for outerRadius.
+   * Getter for the outer radius.
+   * @return {number} - Returns the radius.
    */
   get outerRadius() {
     return this.__outerRadius;
   }
 
   /**
-   * Setter for outerRadius.
-   * @param {number} val - The val param.
+   * Setter for the outer radius.
+   * @param {number} val - The radius value.
    */
   set outerRadius(val) {
     this.__outerRadius = val;
@@ -60,15 +62,16 @@ class Torus extends Mesh {
   }
 
   /**
-   * Getter for detail.
+   * Getter for the torus detail.
+   * @return {number} - Returns the detail.
    */
   get detail() {
     return this.__detail;
   }
 
   /**
-   * Setter for detail.
-   * @param {number} val - The val param.
+   * Setter for the torus detail.
+   * @param {number} val - The detail value.
    */
   set detail(val) {
     this.__detail = val >= 3 ? val : 3;
@@ -116,7 +119,7 @@ class Torus extends Mesh {
     }
 
     // ////////////////////////////
-    // build the topology and texCoords
+    // Build the topology and texCoords
     const texCoords = this.getVertexAttribute('texCoords');
     let faceIndex = 0;
     for (let i = 0; i < nbLoops; i++) {
@@ -196,8 +199,8 @@ class Torus extends Mesh {
   }
 
   /**
-   * The toJSON method.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @return {object} - Returns the json object.
    */
   toJSON() {
     const json = super.toJSON();
@@ -209,4 +212,3 @@ class Torus extends Mesh {
 }
 
 export { Torus };
-// export default Torus;

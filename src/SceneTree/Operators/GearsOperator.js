@@ -36,16 +36,16 @@ class GearParameter extends StructParameter {
   }
 
   /**
-   * The getRatio method.
-   * @return {any} - The return value.
+   * Getter for the gear ratio.
+   * @return {number} - Returns the ratio.
    */
   getRatio() {
     return this.__ratioParam.getValue();
   }
 
   /**
-   * The getOffset method.
-   * @return {any} - The return value.
+   * getter for the gear offset.
+   * @return {number} - Returns the offset.
    */
   getOffset() {
     return this.__offsetParam.getValue();
@@ -63,10 +63,10 @@ class GearParameter extends StructParameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -77,10 +77,10 @@ class GearParameter extends StructParameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -171,27 +171,33 @@ class GearsOperator extends Operator {
     }
   }
 
-
-  detach(){
+  /**
+   * The detach method.
+   */
+  detach() {
     super.detach();
-    if(this.__timeoutId) {
+    if (this.__timeoutId) {
       clearTimeout(this.__timeoutId);
       this.__timeoutId = null;
     }
   }
 
-  reattach(){
+  /**
+   * The reattach method.
+   */
+  reattach() {
     super.reattach();
 
     // Restart the operator.
     this.getParameter('RPM').valueChanged.emit();
   }
-  
+
   /**
-   * The destroy method.
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
    */
-  destroy(){
-    if(this.__timeoutId) {
+  destroy() {
+    if (this.__timeoutId) {
       clearTimeout(this.__timeoutId);
       this.__timeoutId = null;
     }

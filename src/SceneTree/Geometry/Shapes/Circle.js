@@ -3,14 +3,14 @@ import { Lines } from '../Lines.js';
 import { NumberParameter } from '../../Parameters';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a circle.
+/** A class for generating a circle shape.
  * @extends Lines
  */
 class Circle extends Lines {
   /**
    * Create a circle.
-   * @param {number} radius - The radius value.
-   * @param {number} numSegments - The numSegments value.
+   * @param {number} radius - The radius of the circle.
+   * @param {number} numSegments - The number of segments.
    */
   constructor(radius = 1.0, numSegments = 32) {
     super();
@@ -47,7 +47,7 @@ class Circle extends Lines {
 
   /**
    * The __resize method.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    * @private
    */
   __resize(mode) {

@@ -46,8 +46,8 @@ class ExplodePartParameter extends StructParameter {
 
   /**
    * The setStage method.
-   * @param {any} stage - The stage param.
-   * @param {any} mode - The mode param.
+   * @param {any} stage - The stage value.
+   * @param {number} mode - The mode value.
    */
   setStage(stage, mode = ValueSetMode.USER_SETVALUE) {
     this.__stageParam.setValue(stage, mode);
@@ -63,38 +63,44 @@ class ExplodePartParameter extends StructParameter {
 
   /**
    * The evaluate method.
-   * @param {any} explode - The explode param.
-   * @param {any} explodeDist - The explodeDist param.
-   * @param {any} offset - The offset param.
-   * @param {any} stages - The stages param.
-   * @param {any} cascade - The cascade param.
-   * @param {any} centered - The centered param.
-   * @param {any} parentXfo - The parentXfo param.
-   * @param {any} parentDelta - The parentDelta param.
+   * @param {any} explode - The explode value.
+   * @param {any} explodeDist - The distance that the parts explode to.
+   * @param {any} offset - The offset value.
+   * @param {any} stages - The stages value.
+   * @param {any} cascade - In "cascade" mode, the parts move in a cascade.
+   * @param {any} centered - The centered value.
+   * @param {Xfo} parentXfo - The parentXfo value.
+   * @param {any} parentDelta - The parentDelta value.
    */
-  evaluate(explode, explodeDist, offset, stages, cascade, centered, parentXfo, parentDelta){
-
+  evaluate(
+    explode,
+    explodeDist,
+    offset,
+    stages,
+    cascade,
+    centered,
+    parentXfo,
+    parentDelta
+  ) {
     // Note: during interactive setup of the operator we
-    // can have evaluations before anhthing is connected.
-    if(!this.__output.isConnected())
-      return;
+    // can have evaluations before anything is connected.
+    if (!this.__output.isConnected()) return;
 
     const stage = this.__stageParam.getValue();
     const movement = this.__movementParam.getValue();
     let dist;
     if (cascade) {
-      // in 'cascade' mode, the parts move in a cascade,
+      // In 'cascade' mode, the parts move in a cascade,
       // starting with stage 0. then 1 ...
-      let t = (stage / stages);
-      if(centered)
-        t -= 0.5;
-      dist = explodeDist * Math.linStep(movement.x, movement.y, Math.max(0, explode-t));
-    }
-    else {
-      // Else all the parts are spread out across the explode distance. 
-      let t = 1.0 - (stage / stages);
-      if(centered)
-        t -= 0.5;
+      let t = stage / stages;
+      if (centered) t -= 0.5;
+      dist =
+        explodeDist *
+        Math.linStep(movement.x, movement.y, Math.max(0, explode - t));
+    } else {
+      // Else all the parts are spread out across the explode distance.
+      let t = 1.0 - stage / stages;
+      if (centered) t -= 0.5;
       dist = explodeDist * Math.linStep(movement.x, movement.y, explode) * t;
     }
     dist += offset;
@@ -119,10 +125,10 @@ class ExplodePartParameter extends StructParameter {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -133,10 +139,10 @@ class ExplodePartParameter extends StructParameter {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -242,20 +248,20 @@ class ExplodePartsOperator extends Operator {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     return super.toJSON(context, flags);
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -273,4 +279,3 @@ class ExplodePartsOperator extends Operator {
 sgFactory.registerClass('ExplodePartsOperator', ExplodePartsOperator);
 
 export { ExplodePartsOperator };
-// export default AssetItem;

@@ -5,15 +5,15 @@ import { Mesh } from '../Mesh.js';
 import { NumberParameter } from '../../Parameters/NumberParameter.js';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a sphere.
+/** A class for generating a sphere geometry.
  * @extends Mesh
  */
 class Sphere extends Mesh {
   /**
    * Create a sphere.
-   * @param {number} radius - The radius value.
-   * @param {number} sides - The sides value.
-   * @param {number} loops - The loops value.
+   * @param {number} radius - The radius of the sphere.
+   * @param {number} sides - The number of sides.
+   * @param {number} loops - The number of loops.
    */
   constructor(radius = 1.0, sides = 12, loops = 12) {
     super();
@@ -92,7 +92,7 @@ class Sphere extends Mesh {
     vertex++;
 
     // ////////////////////////////
-    // build the topology
+    // Build the topology
     const texCoords = this.getVertexAttribute('texCoords');
 
     // build the fan at the first pole.
@@ -112,7 +112,7 @@ class Sphere extends Mesh {
 
       faceIndex++;
     }
-    // build the fan at the second pole.
+    // Build the fan at the second pole.
     for (let j = 0; j < nbSides; j++) {
       const v0 = numVertices - 1;
       const v1 = nbSides * (nbLoops - 1) + j + 1;

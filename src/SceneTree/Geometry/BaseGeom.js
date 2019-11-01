@@ -7,7 +7,7 @@ import { sgFactory } from '../SGFactory.js';
 // Defines used to explicity specify types for WebGL.
 const SAVE_FLAG_SKIP_GEOMDATA = 1 << 10;
 
-/** Class representing a base geom.
+/** Class representing a base geometry.
  * @extends ParameterOwner
  */
 class BaseGeom extends ParameterOwner {
@@ -29,7 +29,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The setDebugName method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    */
   setDebugName(name) {
     this.__name = name;
@@ -37,10 +37,10 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The addVertexAttribute method.
-   * @param {string} name - The name param.
-   * @param {any} dataType - The dataType param.
-   * @param {any} defaultScalarValue - The defaultScalarValue param.
-   * @return {any} - The return value.
+   * @param {string} name - The name of the vertex attribute.
+   * @param {any} dataType - The dataType value.
+   * @param {number} defaultScalarValue - Thedefault scalar value.
+   * @return {Attribute} - Returns an attribute.
    */
   addVertexAttribute(name, dataType, defaultScalarValue = undefined) {
     const attr = new Attribute(
@@ -54,7 +54,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The hasVertexAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the vertex attribute.
    * @return {any} - The return value.
    */
   hasVertexAttribute(name) {
@@ -63,7 +63,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The getVertexAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the vertex attribute.
    * @return {any} - The return value.
    */
   getVertexAttribute(name) {
@@ -72,7 +72,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The getVertexAttributes method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name of the vertex attribute.
    * @return {any} - The return value.
    */
   getVertexAttributes(name) {
@@ -99,7 +99,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The getNumVertices method.
-   * @return {any} - The return value.
+   * @return {number} - The return value.
    */
   getNumVertices() {
     return this.vertices.length;
@@ -107,7 +107,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The setNumVertices method.
-   * @param {any} count - The count param.
+   * @param {number} count - The count param.
    */
   setNumVertices(count) {
     // If this works, remove the old version.
@@ -118,8 +118,8 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The getVertex method.
-   * @param {any} index - The index param.
-   * @return {any} - The return value.
+   * @param {number} index - The index value.
+   * @return {Vec3} - Returns a Vec3.
    */
   getVertex(index) {
     return Vec3.createFromFloat32Buffer(this.vertices.data.buffer, index * 3);
@@ -127,9 +127,9 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The setVertex method.
-   * @param {any} index - The index param.
-   * @param {any} vec3 - The vec3 param.
-   * @return {any} - The return value.
+   * @param {index} index - The index value.
+   * @param {Vec3} vec3 - The vec3 value.
+   * @return {Vec3} - Returns a Vec3.
    */
   setVertex(index, vec3) {
     return Vec3.createFromFloat32Buffer(
@@ -140,7 +140,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The moveVertices method.
-   * @param {any} delta - The delta param.
+   * @param {any} delta - The delta value.
    */
   moveVertices(delta) {
     const vertices = this.vertices;
@@ -151,7 +151,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The transformVertices method.
-   * @param {any} xfo - The xfo param.
+   * @param {Xfo} xfo - The xfo tranform.
    */
   transformVertices(xfo) {
     const vertices = this.vertices;
@@ -200,7 +200,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The getMetadata method.
-   * @param {any} key - The key param.
+   * @param {any} key - The key value.
    * @return {any} - The return value.
    */
   getMetadata(key) {
@@ -209,7 +209,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The hasMetadata method.
-   * @param {any} key - The key param.
+   * @param {any} key - The key value.
    * @return {any} - The return value.
    */
   hasMetadata(key) {
@@ -218,8 +218,8 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The setMetadata method.
-   * @param {any} key - The key param.
-   * @param {object} metaData - The metaData param.
+   * @param {any} key - The key value.
+   * @param {object} metaData - The metaData value.
    */
   setMetadata(key, metaData) {
     this.__metaData.set(key, metaData);
@@ -227,7 +227,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The deleteMetadata method.
-   * @param {any} key - The key param.
+   * @param {any} key - The key value.
    */
   deleteMetadata(key) {
     this.__metaData.delete(key);
@@ -238,7 +238,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The genBuffers method.
-   * @param {any} opts - The opts param.
+   * @param {any} opts - The opts value.
    * @return {any} - The return value.
    */
   genBuffers(opts) {
@@ -274,7 +274,7 @@ class BaseGeom extends ParameterOwner {
 
   /**
    * The loadBaseGeomBinary method.
-   * @param {object} reader - The reader param.
+   * @param {object} reader - The reader value.
    */
   loadBaseGeomBinary(reader) {
     this.name = reader.loadStr();
@@ -466,10 +466,10 @@ class BaseGeom extends ParameterOwner {
   }
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     let json = super.toJSON(context, flags);
@@ -488,10 +488,10 @@ class BaseGeom extends ParameterOwner {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} json - The json param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} json - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(json, context, flags) {
     super.fromJSON(json, context, flags);

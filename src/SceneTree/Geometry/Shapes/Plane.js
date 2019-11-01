@@ -2,16 +2,16 @@ import { Vec2 } from '../../../Math/Vec2';
 import { Vec3 } from '../../../Math/Vec3';
 import { Mesh } from '../Mesh.js';
 
-/** Class representing a plane.
+/** A class for generating a plane geometry.
  * @extends Mesh
  */
 class Plane extends Mesh {
   /**
    * Create a plane.
-   * @param {number} x - The x value.
-   * @param {number} y - The y value.
-   * @param {number} xDivisions - The xDivisions value.
-   * @param {number} yDivisions - The yDivisions value.
+   * @param {number} x - The length of the plane along the X axis.
+   * @param {number} y - The length of the plane along the Y axis.
+   * @param {number} xDivisions - The number of divisions along the X axis.
+   * @param {number} yDivisions - The number of divisions along the Y axis.
    * @param {boolean} addNormals - The addNormals value.
    * @param {boolean} addTextureCoords - The addTextureCoords value.
    */
@@ -39,6 +39,8 @@ class Plane extends Mesh {
 
   /**
    * Getter for x.
+   * Is deprectated. Please use "getX".
+   * @return {number} - Returns the length.
    */
   get x() {
     console.warn("getter is deprectated. Please use 'getX'");
@@ -47,7 +49,8 @@ class Plane extends Mesh {
 
   /**
    * Setter for x.
-   * @param {number} val - The val param.
+   * Is deprectated. Please use "setX".
+   * @param {number} val - The length along the X axis.
    */
   set x(val) {
     console.warn("getter is deprectated. Please use 'setX'");
@@ -56,6 +59,8 @@ class Plane extends Mesh {
 
   /**
    * Getter for y.
+   * Is deprectated. Please use "getY".
+   * @return {number} - Returns the length.
    */
   get y() {
     console.warn("getter is deprectated. Please use 'getY'");
@@ -64,7 +69,8 @@ class Plane extends Mesh {
 
   /**
    * Setter for y.
-   * @param {number} val - The val param.
+   * Is deprectated. Please use "setY".
+   * @param {number} val - The length along the Y axis.
    */
   set y(val) {
     console.warn("getter is deprectated. Please use 'setY'");
@@ -72,16 +78,16 @@ class Plane extends Mesh {
   }
 
   /**
-   * The getX method.
-   * @return {any} - The return value.
+   * Getter for the length of the plane along the X axis.
+   * @return {number} - Returns the length.
    */
   getX() {
     return this.__x;
   }
 
   /**
-   * The setX method.
-   * @param {any} val - The val param.
+   * Setter for the length of the plane along the X axis.
+   * @param {number} val - The length along the X axis.
    */
   setX(val) {
     this.__x = val;
@@ -89,16 +95,16 @@ class Plane extends Mesh {
   }
 
   /**
-   * The getY method.
-   * @return {any} - The return value.
+   * Getter for the length of the plane along the Y axis.
+   * @return {number} - Returns the length.
    */
   getY() {
     return this.__y;
   }
 
   /**
-   * The setY method.
-   * @param {any} val - The val param.
+   * Setter for the length of the plane along the Y axis.
+   * @param {number} val - The length along the Y axis.
    */
   setY(val) {
     this.__y = val;
@@ -106,9 +112,9 @@ class Plane extends Mesh {
   }
 
   /**
-   * The setY method.
-   * @param {number} x - The x param.
-   * @param {number} y - The y param.
+   * Setter for the size of the plane.
+   * @param {number} x - The length along the X axis.
+   * @param {number} y - The length along the Z axis.
    */
   setSize(x, y) {
     this.__x = x;
@@ -182,8 +188,8 @@ class Plane extends Mesh {
   }
 
   /**
-   * The toJSON method.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @return {object} - Returns the json object.
    */
   toJSON() {
     const json = super.toJSON();
@@ -196,4 +202,3 @@ class Plane extends Mesh {
 }
 
 export { Plane };
-// export default Plane;

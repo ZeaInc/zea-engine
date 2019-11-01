@@ -23,16 +23,16 @@ class Lines extends BaseGeom {
   }
 
   /**
-   * The getNumSegments method.
-   * @return {any} - The return value.
+   * Getter for the number of segments.
+   * @return {number} - Returns the number of segments.
    */
   getNumSegments() {
     return this.__indices.length / 2;
   }
 
   /**
-   * The setNumSegments method.
-   * @param {any} count - The count param.
+   * Getter for the number of segments.
+   * @param {number} count - The count value.
    */
   setNumSegments(count) {
     const indices = new Uint32Array(count * 2);
@@ -45,9 +45,9 @@ class Lines extends BaseGeom {
 
   /**
    * The setSegment method.
-   * @param {any} index - The index param.
-   * @param {any} p0 - The p0 param.
-   * @param {any} p1 - The p1 param.
+   * @param {number} index - The index value.
+   * @param {any} p0 - The p0 value.
+   * @param {any} p1 - The p1 value.
    */
   setSegment(index, p0, p1) {
     if (index >= this.__indices.length / 2)
@@ -63,8 +63,8 @@ class Lines extends BaseGeom {
 
   /**
    * The getSegmentVertexIndex method.
-   * @param {any} line - The line param.
-   * @param {any} linevertex - The linevertex param.
+   * @param {any} line - The line value.
+   * @param {any} linevertex - The linevertex value.
    * @return {any} - The return value.
    */
   getSegmentVertexIndex(line, linevertex) {
@@ -74,9 +74,9 @@ class Lines extends BaseGeom {
 
   /**
    * The addSegmentAttribute method.
-   * @param {string} name - The name param.
-   * @param {any} dataType - The dataType param.
-   * @param {any} count - The count param.
+   * @param {string} name - The name value.
+   * @param {any} dataType - The dataType value.
+   * @param {number} count - The count value.
    * @return {any} - The return value.
    */
   addSegmentAttribute(name, dataType, count = undefined) {
@@ -90,7 +90,7 @@ class Lines extends BaseGeom {
 
   /**
    * The hasSegmentAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   hasSegmentAttribute(name) {
@@ -99,7 +99,7 @@ class Lines extends BaseGeom {
 
   /**
    * The getSegmentAttribute method.
-   * @param {string} name - The name param.
+   * @param {string} name - The name value.
    * @return {any} - The return value.
    */
   getSegmentAttribute(name) {
@@ -138,10 +138,10 @@ class Lines extends BaseGeom {
   // Persistence
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags);
@@ -152,10 +152,10 @@ class Lines extends BaseGeom {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags);
@@ -164,4 +164,3 @@ class Lines extends BaseGeom {
 }
 
 export { Lines };
-// export default Lines;

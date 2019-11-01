@@ -10,7 +10,7 @@ class VertexAttribute extends Attribute {
    * @param {any} geom - The geom value.
    * @param {any} dataType - The dataType value.
    * @param {any} expectedSize - The expectedSize value.
-   * @param {any} defaultScalarValue - The defaultScalarValue value.
+   * @param {number} defaultScalarValue - The default scalar value.
    */
   constructor(geom, dataType, expectedSize, defaultScalarValue) {
     super(dataType, expectedSize, defaultScalarValue);
@@ -22,8 +22,8 @@ class VertexAttribute extends Attribute {
 
   /**
    * The getFaceVertexValueRef method.
-   * @param {any} face - The face param.
-   * @param {any} facevertex - The facevertex param.
+   * @param {any} face - The face value.
+   * @param {any} facevertex - The facevertex value.
    * @return {any} - The return value.
    */
   getFaceVertexValueRef(face, facevertex) {
@@ -36,9 +36,9 @@ class VertexAttribute extends Attribute {
 
   /**
    * The setFaceVertexValue method.
-   * @param {any} face - The face param.
-   * @param {any} facevertex - The facevertex param.
-   * @param {any} value - The value param.
+   * @param {any} face - The face value.
+   * @param {any} facevertex - The facevertex value.
+   * @param {any} value - The value value.
    */
   setFaceVertexValue(face, facevertex, value) {
     const vertex = this.__geom.getFaceVertexIndex(face, facevertex);
@@ -47,9 +47,9 @@ class VertexAttribute extends Attribute {
 
   /**
    * The setFaceVertexValue_ByVertexIndex method.
-   * @param {any} face - The face param.
-   * @param {any} vertex - The vertex param.
-   * @param {any} value - The value param.
+   * @param {any} face - The face value.
+   * @param {any} vertex - The vertex value.
+   * @param {any} value - The value value.
    */
   setFaceVertexValue_ByVertexIndex(face, vertex, value) {
     const valueRef = this.getValueRef(vertex);
@@ -92,9 +92,9 @@ class VertexAttribute extends Attribute {
 
   /**
    * The setSplitVertexValue method.
-   * @param {any} vertex - The vertex param.
-   * @param {any} face - The face param.
-   * @param {any} value - The value param.
+   * @param {any} vertex - The vertex value.
+   * @param {any} face - The face value.
+   * @param {any} value - The value value.
    */
   setSplitVertexValue(vertex, face, value) {
     if (!(vertex in this.__splits)) this.__splits[vertex] = {};
@@ -109,9 +109,9 @@ class VertexAttribute extends Attribute {
 
   /**
    * The setSplitVertexValues method.
-   * @param {any} vertex - The vertex param.
-   * @param {any} faceGroup - The faceGroup param.
-   * @param {any} value - The value param.
+   * @param {any} vertex - The vertex value.
+   * @param {any} faceGroup - The faceGroup value.
+   * @param {any} value - The value value.
    */
   setSplitVertexValues(vertex, faceGroup, value) {
     if (!(vertex in this.__splits)) this.__splits[vertex] = {};
@@ -149,8 +149,8 @@ class VertexAttribute extends Attribute {
 
   /**
    * The generateSplitValues method.
-   * @param {any} splitIndices - The splitIndices param.
-   * @param {any} splitCount - The splitCount param.
+   * @param {any} splitIndices - The splitIndices value.
+   * @param {number} splitCount - The splitCount value.
    * @return {any} - The return value.
    */
   generateSplitValues(splitIndices, splitCount) {
@@ -198,10 +198,10 @@ class VertexAttribute extends Attribute {
   }
 
   /**
-   * The toJSON method.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
    */
   toJSON(context, flags) {
     const json = super.toJSON(context, flags);
@@ -211,10 +211,10 @@ class VertexAttribute extends Attribute {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} json - The json param.
-   * @param {object} context - The context param.
-   * @param {number} flags - The flags param.
+   * The fromJSON method decodes a json object for this type.
+   * @param {object} json - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
    */
   fromJSON(json, context, flags) {
     super.fromJSON(json, context, flags);
@@ -226,7 +226,7 @@ class VertexAttribute extends Attribute {
 
   /**
    * The loadSplitValues method.
-   * @param {object} reader - The reader param.
+   * @param {object} reader - The reader value.
    */
   loadSplitValues(reader) {
     const splitIndices = reader.loadUInt32Array();
@@ -260,4 +260,3 @@ class VertexAttribute extends Attribute {
 }
 
 export { VertexAttribute };
-// export default VertexAttribute;

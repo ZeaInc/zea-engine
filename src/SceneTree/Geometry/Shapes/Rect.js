@@ -2,14 +2,14 @@ import { Lines } from '../Lines.js';
 import { NumberParameter } from '../../Parameters/NumberParameter.js';
 import { sgFactory } from '../../SGFactory.js';
 
-/** Class representing a rect.
+/** A class for generating a rectangle shape.
  * @extends Lines
  */
 class Rect extends Lines {
   /**
-   * Create a circle.
-   * @param {number} x - The x value.
-   * @param {number} y - The y value.
+   * Create a rect.
+   * @param {number} x - The length of the rect along the X axis.
+   * @param {number} y - The length of the rect along the Y axis.
    */
   constructor(x = 1.0, y = 1.0) {
     super();
@@ -24,39 +24,41 @@ class Rect extends Lines {
   }
 
   /**
-   * Getter for x.
+   * Getter for the length of the rect along the X axis.
+   * @return {number} - Returns the length.
    */
   get x() {
     return this.__x.getValue();
   }
 
   /**
-   * Setter for x.
-   * @param {number} val - The val param.
+   * Setter for the length of the rect along the X axis.
+   * @param {number} val - The length along the X axis.
    */
   set x(val) {
     this.__x.setValue(val);
   }
 
   /**
-   * Getter for y.
+   * Getter for the length of the rect along the Y axis.
+   * @return {number} - Returns the length.
    */
   get y() {
     return this.__y.getValue();
   }
 
   /**
-   * Setter for y.
-   * @param {number} val - The val param.
+   * Setter for the length of the rect along the U axis.
+   * @param {number} val - The length along the Y axis.
    */
   set y(val) {
     this.__y.setValue(val);
   }
 
   /**
-   * The setSize method.
-   * @param {number} x - The x param.
-   * @param {number} y - The y param.
+   * Setter for the size of the rect.
+   * @param {number} x - The length along the X axis.
+   * @param {number} y - The length along the Y axis.
    */
   setSize(x, y) {
     this.__x.setValue(x, -1);
@@ -81,7 +83,7 @@ class Rect extends Lines {
 
   /**
    * The __resize method.
-   * @param {any} mode - The mode param.
+   * @param {number} mode - The mode value.
    * @private
    */
   __resize(mode) {
@@ -97,8 +99,8 @@ class Rect extends Lines {
   }
 
   /**
-   * The toJSON method.
-   * @return {any} - The return value.
+   * The toJSON method encodes this type as a json object for persistences.
+   * @return {object} - Returns the json object.
    */
   toJSON() {
     const json = super.toJSON();
@@ -110,4 +112,3 @@ class Rect extends Lines {
 sgFactory.registerClass('Rect', Rect);
 
 export { Rect };
-// export default Rect;
