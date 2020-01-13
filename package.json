@@ -15,9 +15,14 @@
     "build:dev": "webpack --watch --config webpack-dev.config.js",
     "build": "webpack --config webpack-prod.config.js",
     "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public",
-    "docs": "jsdoc -c .jsdoc.json"
+    "docs": "jsdoc -c .jsdoc.json",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook -c .storybook -o docs/storybook"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@storybook/html": "^5.3.2",
+    "babel-loader": "^8.0.6",
     "chai": "3.4.1",
     "documentation": "^12.1.1",
     "eslint": "^6.5.1",
@@ -32,5 +37,6 @@
     "webpack-cli": "^3.3.9",
     "worker-loader": "^2.0.0",
     "yargs": "3.32.0"
-  }
+  },
+  "dependencies": {}
 }
