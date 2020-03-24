@@ -10,7 +10,7 @@
   "author": "Zea Inc.",
   "license": "ISC",
   "files": [
-    "/dist/zea-engine.js",
+    "/dist/",
     "/public-resources/**"
   ],
   "scripts": {
