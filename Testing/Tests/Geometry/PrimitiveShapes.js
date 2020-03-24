@@ -1,3 +1,4 @@
+import ZeaEngine from '../../node_modules/@zeainc/zea-engine/dist/zea-engine.esm.js'
 
 testingHarness.registerTest('Geometry/PrimitiveShapes', (domElement, resources)=> {
     const Z = ZeaEngine;

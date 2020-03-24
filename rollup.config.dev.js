@@ -16,7 +16,11 @@ export default [
     plugins: [
       resolve(), // so Rollup can find `dependencies`
       commonjs(), // so Rollup can convert `dependencies` to ES modules
-      webWorkerLoader(),
+      webWorkerLoader({
+        inline:true,
+        forceInlne:true,
+        forceInline:true
+      }),
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.

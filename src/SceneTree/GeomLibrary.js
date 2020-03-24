@@ -9,7 +9,7 @@ import { PointsProxy, LinesProxy, MeshProxy } from './Geometry/GeomProxies.js'
 // by setting the following boolena to false, and uncommenting
 // the import of parseGeomsBinary
 const multiThreadParsing = true
-const GeomParserWorker = require('worker-loader?inline!./Geometry/GeomParserWorker.js')
+// const GeomParserWorker = require('worker-loader?inline!./Geometry/GeomParserWorker.js')
 // import {
 //     parseGeomsBinary
 // } from './Geometry/parseGeomsBinary.js';

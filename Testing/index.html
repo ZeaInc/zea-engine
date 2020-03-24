@@ -6,17 +6,17 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     </head>
     <body text-align: left;>
-        <script src="node_modules/@zeainc/zea-engine/dist/zea-engine.js"></script>
+        <script type="module" src="node_modules/@zeainc/zea-engine/dist/zea-engine.esm.js"></script>
         <script type="text/javascript" src="TestingHarness.js"></script>
         <!-- <script type="text/javascript" src="index.js"></script> -->
         
-        <script src="Tests/Basic/HelloWorld.js"></script>
+        <script type="module" src="Tests/Basic/HelloWorld.js"></script>
 
 <!-- 
          <script src="Tests/Geometry/PointsRendering.js"></script>
         <script src="Tests/Geometry/LinesRendering.js"></script>
         <script src="Tests/Geometry/MeshRendering.js"></script> -->
-        <script src="Tests/Geometry/PrimitiveShapes.js"></script>
+        <script type="module" src="Tests/Geometry/PrimitiveShapes.js"></script>
         <!--
         <script src="Tests/Geometry/Billboards.js"></script>
         <script src="Tests/Geometry/Grids.js"></script>
@@ -25,7 +25,7 @@
         <script src="Tests/Geometry/GridCloud.js"></script>
         <script src="Tests/Geometry/Instancing.js"></script>
         <script src="Tests/Geometry/Highlights.js"></script>
-    -->
+    - ->
         <script src="Tests/Groups/GroupMaterials.js"></script>
         <script src="Tests/Groups/GroupKinematics.js"></script>
 <!-- 
@@ -54,13 +54,13 @@
         <script src="Tests/DualFisheyeBackgroundLoading.js"></script>
         <script src="Tests/MultipleViewports.js"></script>
         <script src="Tests/WebCam.js"></script>
-        <script src="Tests/VideoTextureWithAudio.js"></script> -->
+        <script src="Tests/VideoTextureWithAudio.js"></script> - ->
         <script src="Tests/System/AddRemoveItemsFromRenderer.js"></script>
         <script src="Tests/System/MemoryTest.js"></script>
         <script src="Tests/System/GPUTest.js"></script>
         <script src="Tests/System/WebVR.js"></script>
         <script src="Tests/System/WebVR_HMDs.js"></script>
-
+        -->
         <div id='viewport'></div>
 
         <style>
