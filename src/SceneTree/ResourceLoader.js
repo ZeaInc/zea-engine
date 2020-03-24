@@ -3,7 +3,7 @@ import { Signal } from '../Utilities/index'
 // import { VLAAsset } from './VLAAsset.js'
 
 // const asyncLoading = true;
-const ResourceLoaderWorker = require('worker-loader?inline!./ResourceLoader/ResourceLoaderWorker.js')
+const ResourceLoaderWorker = require('web-worker:./ResourceLoader/ResourceLoaderWorker.js')
 // For synchronous loading, uncomment these lines.
 // import {
 //     ResourceLoaderWorker_onmessage
@@ -127,7 +127,7 @@ class ResourceLoader {
    * @private
    */
   __applyCallbacks(resourcesDict) {
-    const applyCallbacks = resource => {
+    const applyCallbacks = (resource) => {
       for (const filter in this.__resourceRegisterCallbacks) {
         if (resource.name.includes(filter))
           this.__resourceRegisterCallbacks[filter](resource)
@@ -145,7 +145,7 @@ class ResourceLoader {
    * @private
    */
   __buildTree(resources) {
-    const buildEntity = resourceId => {
+    const buildEntity = (resourceId) => {
       if (this.__resourcesTreeEntities[resourceId]) return
 
       const resource = resources[resourceId]
@@ -271,7 +271,7 @@ class ResourceLoader {
    */
   __getWorker() {
     const __constructWorker = () => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const worker = new ResourceLoaderWorker()
         // const worker = new Worker(this.__resourceLoaderFile.url);
 
@@ -279,7 +279,7 @@ class ResourceLoader {
           type: 'init',
           wasmUrl: this.wasmUrl,
         })
-        worker.onmessage = event => {
+        worker.onmessage = (event) => {
           if (event.data.type === 'WASM_LOADED') {
             resolve(worker)
           } else if (event.data.type === 'FINISHED') {
@@ -501,21 +501,21 @@ class ResourceLoader {
 
     function checkStatus(response) {
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        throw new Error(`HTTP ${response.status} - ${response.statusText}`)
       }
-      return response;
+      return response
     }
     fetch(url)
-    .then(response => checkStatus(response) && response.arrayBuffer())
-    .then(buffer => {
-      this.__getWorker().then(worker => {
-        worker.postMessage({
-          type: 'unpack',
-          resourceId,
-          buffer,
+      .then((response) => checkStatus(response) && response.arrayBuffer())
+      .then((buffer) => {
+        this.__getWorker().then((worker) => {
+          worker.postMessage({
+            type: 'unpack',
+            resourceId,
+            buffer,
+          })
         })
       })
-    });
   }
 
   /**
@@ -537,20 +537,22 @@ class ResourceLoader {
       }
 
       if (!(resourceId in this.__callbacks)) this.__callbacks[resourceId] = []
-      if (callback)
-        this.__callbacks[resourceId].push(callback)
-      this.__callbacks[resourceId].push(entries => {
+      if (callback) this.__callbacks[resourceId].push(callback)
+      this.__callbacks[resourceId].push((entries) => {
         resolve(entries)
       })
 
-      this.__getWorker().then(worker => {
-        worker.postMessage({
-          type: 'unpack',
-          resourceId,
-          buffer,
-        }, [buffer])
+      this.__getWorker().then((worker) => {
+        worker.postMessage(
+          {
+            type: 'unpack',
+            resourceId,
+            buffer,
+          },
+          [buffer]
+        )
       })
-    });
+    })
   }
 
   /**
@@ -584,12 +586,12 @@ class ResourceLoader {
    * @param {any} callback - The callback value.
    */
   traverse(callback) {
-    const __c = fsItem => {
+    const __c = (fsItem) => {
       for (const childItemName in fsItem.children) {
         __t(fsItem.children[childItemName])
       }
     }
-    const __t = fsItem => {
+    const __t = (fsItem) => {
       if (callback(fsItem) == false) return false
       if (fsItem.children) __c(fsItem)
     }

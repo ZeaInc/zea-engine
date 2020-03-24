@@ -1,5 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import webWorkerLoader from 'rollup-plugin-web-worker-loader'
 
 import pkg from './package.json'
 
@@ -15,6 +16,7 @@ export default [
     plugins: [
       resolve(), // so Rollup can find `dependencies`
       commonjs(), // so Rollup can convert `dependencies` to ES modules
+      webWorkerLoader(),
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.
