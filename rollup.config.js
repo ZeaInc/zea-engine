@@ -15,7 +15,7 @@ export default [
     },
     plugins: [
       resolve(), // so Rollup can find `dependencies`
-      commonjs(), // so Rollup can convert `dependencies` to an ES module
+      commonjs(), // so Rollup can convert `dependencies` to ES modules
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.
