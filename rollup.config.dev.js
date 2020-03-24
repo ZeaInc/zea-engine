@@ -13,8 +13,8 @@ export default [
       format: 'umd',
     },
     plugins: [
-      resolve(), // so Rollup can find `ms`
-      commonjs(), // so Rollup can convert `ms` to an ES module
+      resolve(), // so Rollup can find `dependencies`
+      commonjs(), // so Rollup can convert `dependencies` to ES modules
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.
@@ -25,6 +25,7 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/index.js',
+    external: [...Object.keys(pkg.dependencies)],
     plugins: [],
     output: [
       { file: pkg.main, format: 'cjs' },

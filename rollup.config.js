@@ -9,13 +9,13 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      name: 'zea-engine',
+      name: 'ZeaEngine',
       file: pkg.browser,
       format: 'umd',
     },
     plugins: [
-      resolve(), // so Rollup can find `ms`
-      commonjs(), // so Rollup can convert `ms` to an ES module
+      resolve(), // so Rollup can find `dependencies`
+      commonjs(), // so Rollup can convert `dependencies` to ES modules
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.
