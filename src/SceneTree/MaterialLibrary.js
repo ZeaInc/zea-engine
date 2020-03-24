@@ -1,8 +1,8 @@
 import { SystemDesc } from '../BrowserDetection.js'
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { sgFactory } from './SGFactory.js'
 import { Material } from './Material.js'
-import { FileImage } from './Images'
+import { FileImage } from './Images/index'
 
 /** Class representing a material library in a scene tree. */
 class MaterialLibrary {

@@ -1,7 +1,7 @@
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { BaseItem } from './BaseItem.js'
 
-import { BooleanParameter } from './Parameters'
+import { BooleanParameter } from './Parameters/index'
 
 /** Class representing a base image in the scene tree.
  * @extends BaseItem

@@ -1,7 +1,7 @@
 import { sgFactory } from '../../SceneTree/SGFactory.js'
 
-import { ValueSetMode, NumberParameter } from '../../SceneTree/Parameters'
-import { OperatorOutput } from '../../SceneTree/Operators'
+import { ValueSetMode, NumberParameter } from '../../SceneTree/Parameters/index'
+import { OperatorOutput } from '../../SceneTree/Operators/index'
 
 import { StateAction } from '../StateAction.js'
 

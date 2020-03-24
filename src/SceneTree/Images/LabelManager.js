@@ -1,4 +1,4 @@
-import { Signal } from '../../Utilities'
+import { Signal } from '../../Utilities/index'
 import { resourceLoader } from '../ResourceLoader.js'
 import { loadTextfile, loadBinfile } from '../Utils.js'
 

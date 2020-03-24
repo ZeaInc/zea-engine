@@ -1,11 +1,11 @@
-import { Vec2, Vec3, Ray, Mat4 } from '../Math'
-import { Signal } from '../Utilities'
-import { Camera } from '../SceneTree'
+import { Vec2, Vec3, Ray, Mat4 } from '../Math/index'
+import { Signal } from '../Utilities/index'
+import { Camera } from '../SceneTree/index'
 import { GLBaseViewport } from './GLBaseViewport.js'
 import { GLFbo } from './GLFbo.js'
 import { GLTexture2D } from './GLTexture2D.js'
 
-import { CameraMouseAndKeyboard } from '../SceneTree'
+import { CameraMouseAndKeyboard } from '../SceneTree/index'
 
 /** Class representing a GL viewport.
  * @extends GLBaseViewport

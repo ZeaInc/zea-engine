@@ -1,4 +1,4 @@
-export * from './GLSL'
+export * from './GLSL/index'
 
 export * from './BillboardShader.js'
 export * from './ConvolverShader.js'

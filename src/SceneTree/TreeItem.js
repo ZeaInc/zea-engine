@@ -1,5 +1,5 @@
-import { Xfo, Box3 } from '../Math'
-import { Signal } from '../Utilities'
+import { Xfo, Box3 } from '../Math/index'
+import { Signal } from '../Utilities/index'
 import { sgFactory } from './SGFactory.js'
 import {
   ParamFlags,
@@ -7,7 +7,7 @@ import {
   Parameter,
   BooleanParameter,
   XfoParameter,
-} from './Parameters'
+} from './Parameters/index'
 import { ItemFlags, BaseItem } from './BaseItem.js'
 
 // Defines used to explicity specify types for WebGL.

@@ -1,4 +1,4 @@
-import { Signal } from '../../Utilities'
+import { Signal } from '../../Utilities/index'
 import { sgFactory } from '../SGFactory'
 import { ItemFlags, BaseItem } from '../BaseItem.js'
 

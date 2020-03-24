@@ -1,4 +1,4 @@
-import { Vec3, Xfo, Color } from '../Math'
+import { Vec3, Xfo, Color } from '../Math/index'
 import { Material } from './Material.js'
 import { TreeItem } from './TreeItem.js'
 import { Lines } from './Geometry/Lines.js'

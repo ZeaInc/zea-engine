@@ -1,5 +1,5 @@
 import { shaderLibrary } from '../ShaderLibrary'
-import { sgFactory } from '../../SceneTree'
+import { sgFactory } from '../../SceneTree/index'
 import { StandardSurfaceGeomDataShader } from './StandardSurfaceGeomDataShader'
 
 class HandleGeomDataShader extends StandardSurfaceGeomDataShader {

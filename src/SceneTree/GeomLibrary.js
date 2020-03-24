@@ -1,5 +1,5 @@
 import { SystemDesc } from '../BrowserDetection.js'
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { BinReader } from './BinReader.js'
 import { loadBinfile } from './Utils.js'
 import { PointsProxy, LinesProxy, MeshProxy } from './Geometry/GeomProxies.js'

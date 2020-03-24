@@ -1,4 +1,4 @@
-import { Signal } from '../../Utilities'
+import { Signal } from '../../Utilities/index'
 import { Parameter } from './Parameter.js'
 
 /** Class representing an item set parameter.

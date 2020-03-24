@@ -1,4 +1,4 @@
-import { Float32, UInt32, SInt32 } from '../../Math'
+import { Float32, UInt32, SInt32 } from '../../Math/index'
 import { typeRegistry } from '../../Math/TypeRegistry.js'
 
 function isTypedArray(obj) {

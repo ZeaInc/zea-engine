@@ -1,5 +1,5 @@
-import { Vec3, Color, Xfo } from '../Math'
-import { Signal } from '../Utilities'
+import { Vec3, Color, Xfo } from '../Math/index'
+import { Signal } from '../Utilities/index'
 import {
   ValueSetMode,
   BooleanParameter,
@@ -8,7 +8,7 @@ import {
   ColorParameter,
   ItemSetParameter,
   MultiChoiceParameter,
-} from './Parameters'
+} from './Parameters/index'
 import { MaterialParameter } from './Parameters/MaterialParameter.js'
 import { ItemFlags } from './BaseItem'
 import { TreeItem } from './TreeItem'

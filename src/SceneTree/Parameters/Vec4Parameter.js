@@ -1,4 +1,4 @@
-import { Vec4 } from '../../Math'
+import { Vec4 } from '../../Math/index'
 import { Parameter } from './Parameter.js'
 
 /** Class representing a Vec4 parameter.

@@ -1,4 +1,4 @@
-import { Color } from '../../Math'
+import { Color } from '../../Math/index'
 import { sgFactory } from '../SGFactory'
 import { Parameter, ValueSetMode } from './Parameter.js'
 

@@ -1,4 +1,4 @@
-import { AttrValue } from '../Math'
+import { AttrValue } from '../Math/index'
 import { ScreenQuadShader } from './Shaders/ScreenQuadShader.js'
 import { generateShaderGeomBinding } from './GeomShaderBinding.js'
 

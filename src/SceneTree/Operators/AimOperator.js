@@ -1,11 +1,11 @@
-import { Quat } from '../../Math'
+import { Quat } from '../../Math/index'
 import { Operator } from './Operator.js'
 import { XfoOperatorOutput } from './OperatorOutput.js'
 import {
   NumberParameter,
   MultiChoiceParameter,
   XfoParameter,
-} from '../Parameters'
+} from '../Parameters/index'
 import { sgFactory } from '../SGFactory.js'
 
 /** An operator for aiming items at targets.

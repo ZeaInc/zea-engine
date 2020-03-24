@@ -1,5 +1,5 @@
-import { Signal } from '../Utilities'
-import { TreeItem, sgFactory } from '../SceneTree'
+import { Signal } from '../Utilities/index'
+import { TreeItem, sgFactory } from '../SceneTree/index'
 import { SystemDesc } from '../BrowserDetection.js'
 import { onResize } from '../external/onResize.js'
 import { create3DContext } from './GLContext.js'

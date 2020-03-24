@@ -1,7 +1,7 @@
 import { GLPass, PassType } from './GLPass.js'
 import { GLRenderer } from '../GLRenderer.js'
 
-import { AudioItem, GeomItem } from '../../SceneTree'
+import { AudioItem, GeomItem } from '../../SceneTree/index'
 
 const AudioContext =
   window.AudioContext || // Default

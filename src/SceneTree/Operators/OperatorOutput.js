@@ -1,5 +1,5 @@
-import { Signal } from '../../Utilities'
-import { ValueSetMode, ValueGetMode } from '../Parameters'
+import { Signal } from '../../Utilities/index'
+import { ValueSetMode, ValueGetMode } from '../Parameters/index'
 import { sgFactory } from '../SGFactory'
 
 /** Class representing an operator output. */

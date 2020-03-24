@@ -1,5 +1,5 @@
-import { Signal } from '../Utilities'
-import { BaseItem } from '../SceneTree'
+import { Signal } from '../Utilities/index'
+import { BaseItem } from '../SceneTree/index'
 
 /** Class representing a GL shader.
  * @extends BaseItem

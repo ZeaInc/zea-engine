@@ -1,4 +1,4 @@
-import { sgFactory } from '../../SceneTree'
+import { sgFactory } from '../../SceneTree/index'
 import { FlatSurfaceShader } from './FlatSurfaceShader.js'
 
 class FlatAlphaSurfaceShader extends FlatSurfaceShader {

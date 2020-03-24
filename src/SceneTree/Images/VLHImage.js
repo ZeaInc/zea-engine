@@ -1,9 +1,9 @@
-import { Color } from '../../Math'
+import { Color } from '../../Math/index'
 import { sgFactory } from '../SGFactory.js'
 import { BaseImage } from '../BaseImage.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
-import { FilePathParameter } from '../Parameters'
+import { FilePathParameter } from '../Parameters/index'
 
 /** Class representing a VLH image.
  * @extends BaseImage

@@ -1,5 +1,5 @@
-import { Xfo } from '../Math'
-import { ValueSetMode } from './Parameters'
+import { Xfo } from '../Math/index'
+import { ValueSetMode } from './Parameters/index'
 import { TreeItem, CloneFlags } from './TreeItem.js'
 import { sgFactory } from './SGFactory.js'
 

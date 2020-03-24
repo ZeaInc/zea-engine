@@ -1,5 +1,5 @@
-import { Vec2, Vec3, Box2, Box3, typeRegistry } from '../../Math'
-import { Signal } from '../../Utilities'
+import { Vec2, Vec3, Box2, Box3, typeRegistry } from '../../Math/index'
+import { Signal } from '../../Utilities/index'
 import { ParameterOwner } from '../ParameterOwner.js'
 import { Attribute } from './Attribute.js'
 import { sgFactory } from '../SGFactory.js'

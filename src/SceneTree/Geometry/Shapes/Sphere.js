@@ -1,4 +1,4 @@
-import { Vec2, Vec3 } from '../../../Math'
+import { Vec2, Vec3 } from '../../../Math/index'
 import { Mesh } from '../Mesh.js'
 
 import { NumberParameter } from '../../Parameters/NumberParameter.js'

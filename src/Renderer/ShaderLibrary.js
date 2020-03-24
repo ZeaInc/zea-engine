@@ -1,4 +1,4 @@
-import { hashStr } from '../Math'
+import { hashStr } from '../Math/index'
 import { glslTypes } from './GLSLConstants.js'
 
 /** Class representing a shader library. */

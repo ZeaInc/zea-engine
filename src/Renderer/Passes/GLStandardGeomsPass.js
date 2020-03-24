@@ -1,6 +1,6 @@
 import { GLPass } from './GLPass'
 
-import { Vec4 } from '../../Math'
+import { Vec4 } from '../../Math/index'
 
 import {
   GeomItem,
@@ -10,7 +10,7 @@ import {
   PointsProxy,
   LinesProxy,
   MeshProxy,
-} from '../../SceneTree'
+} from '../../SceneTree/index'
 
 import { GLPoints } from '../GLPoints.js'
 import { GLLines } from '../GLLines.js'

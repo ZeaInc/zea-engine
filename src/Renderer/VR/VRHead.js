@@ -1,5 +1,5 @@
-import { Mat4, Xfo } from '../../Math'
-import { TreeItem } from '../../SceneTree'
+import { Mat4, Xfo } from '../../Math/index'
+import { TreeItem } from '../../SceneTree/index'
 
 /** Class representing a VR head. */
 class VRHead {

@@ -1,4 +1,4 @@
-import { Vec4 } from '../../Math'
+import { Vec4 } from '../../Math/index'
 import { loadBinfile } from '../Utils.js'
 import { sgFactory } from '../SGFactory.js'
 import { FileImage } from './FileImage.js'
@@ -6,7 +6,7 @@ import { FileImage } from './FileImage.js'
 import { GIF } from '../../external/gifuct-js.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
-import { NumberParameter, Vec4Parameter } from '../Parameters'
+import { NumberParameter, Vec4Parameter } from '../Parameters/index'
 
 /** Class representing a GIF image.
  * @extends FileImage

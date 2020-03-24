@@ -1,4 +1,4 @@
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { shaderLibrary } from './ShaderLibrary'
 import { GLShader } from './GLShader.js'
 import { GLTexture2D } from './GLTexture2D.js'

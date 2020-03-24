@@ -1,8 +1,8 @@
 import { Color } from '../Math/Color.js'
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { TreeItem } from './TreeItem'
 import { Material } from './Material'
-import { ValueSetMode } from './Parameters'
+import { ValueSetMode } from './Parameters/index'
 
 /** Class representing a base geometry item in a scene tree.
  * @extends TreeItem

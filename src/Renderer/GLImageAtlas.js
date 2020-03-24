@@ -1,8 +1,8 @@
-import { Vec2, Vec4, Color } from '../Math'
+import { Vec2, Vec4, Color } from '../Math/index'
 
-import { Async, GrowingPacker } from '../Utilities'
+import { Async, GrowingPacker } from '../Utilities/index'
 
-import { BaseImage } from '../SceneTree'
+import { BaseImage } from '../SceneTree/index'
 import { shaderLibrary } from './ShaderLibrary'
 import { GLShader } from './GLShader.js'
 import { GLTexture2D } from './GLTexture2D.js'

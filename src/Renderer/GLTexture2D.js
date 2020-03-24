@@ -1,5 +1,5 @@
-import { Signal } from '../Utilities'
-import { BaseImage, RefCounted } from '../SceneTree'
+import { Signal } from '../Utilities/index'
+import { BaseImage, RefCounted } from '../SceneTree/index'
 
 /** Class representing a GL texture 2D.
  * @extends RefCounted

@@ -5,7 +5,7 @@ import {
   NumberParameter,
   Vec3Parameter,
   TreeItemParameter,
-} from '../../SceneTree/Parameters'
+} from '../../SceneTree/Parameters/index'
 import { StateAction } from '../StateAction.js'
 
 /** A state machine action that sets the camera position and target.

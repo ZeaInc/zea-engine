@@ -1,6 +1,6 @@
 import { Lines } from '../Lines.js'
 
-import { NumberParameter } from '../../Parameters'
+import { NumberParameter } from '../../Parameters/index'
 import { sgFactory } from '../../SGFactory.js'
 
 /** A class for generating a circle shape.

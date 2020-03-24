@@ -1,4 +1,4 @@
-import { Vec3, Quat, Xfo } from '../../Math'
+import { Vec3, Quat, Xfo } from '../../Math/index'
 import { Operator } from './Operator.js'
 import { XfoOperatorOutput } from './OperatorOutput.js'
 import {
@@ -7,7 +7,7 @@ import {
   Vec3Parameter,
   StructParameter,
   ListParameter,
-} from '../Parameters'
+} from '../Parameters/index'
 
 import { sgFactory } from '../SGFactory.js'
 

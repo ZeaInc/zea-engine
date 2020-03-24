@@ -1,4 +1,4 @@
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { MaterialShaderBinding } from './MaterialShaderBinding.js'
 
 /** Class representing a GL material. */

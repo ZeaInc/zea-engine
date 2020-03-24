@@ -1,4 +1,4 @@
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { Version } from './Version.js'
 import { TreeItem } from './TreeItem.js'
 import { Group } from './Group.js'

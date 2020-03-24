@@ -1,5 +1,5 @@
-import { Vec2, Vec3 } from '../../Math'
-import { decodeText } from '../../Utilities'
+import { Vec2, Vec3 } from '../../Math/index'
+import { decodeText } from '../../Utilities/index'
 import { sgFactory } from '../SGFactory.js'
 import { VLHImage } from './VLHImage.js'
 

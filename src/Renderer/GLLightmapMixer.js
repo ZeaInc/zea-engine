@@ -1,4 +1,4 @@
-import { Async } from '../Utilities'
+import { Async } from '../Utilities/index'
 import { GLTexture2D } from './GLTexture2D.js'
 import { GLHDRImage } from './GLHDRImage.js'
 import { ImageMixerShader } from './Shaders/ImageMixerShader.js'

@@ -1,8 +1,8 @@
 import { SystemDesc } from '../../BrowserDetection.js'
-import { Vec2, Vec3, Quat, Xfo } from '../../Math'
-import { Signal } from '../../Utilities'
+import { Vec2, Vec3, Quat, Xfo } from '../../Math/index'
+import { Signal } from '../../Utilities/index'
 import { ParameterOwner } from '../ParameterOwner.js'
-import { NumberParameter } from '../Parameters'
+import { NumberParameter } from '../Parameters/index'
 
 /** Class representing a camera, mouse and keyboard.
  * @extends ParameterOwner

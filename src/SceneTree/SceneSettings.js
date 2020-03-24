@@ -1,6 +1,6 @@
-import { Color } from '../Math'
+import { Color } from '../Math/index'
 import { BaseItem } from './BaseItem.js'
-import { BooleanParameter, NumberParameter, ColorParameter, ImageParameter } from './Parameters'
+import { BooleanParameter, NumberParameter, ColorParameter, ImageParameter } from './Parameters/index'
 
 /** Class representing scene settings in a scene tree.
  * @extends BaseItem

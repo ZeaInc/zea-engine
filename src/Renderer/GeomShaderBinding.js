@@ -11,7 +11,7 @@ import {
   Vec3,
   Vec4,
   RGBA,
-} from '../Math'
+} from '../Math/index'
 
 /** Class representing a geom shader binding. */
 class GeomShaderBinding {

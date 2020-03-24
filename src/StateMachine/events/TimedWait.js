@@ -1,6 +1,6 @@
 import { sgFactory } from '../../SceneTree/SGFactory.js'
 
-import { NumberParameter } from '../../SceneTree/Parameters'
+import { NumberParameter } from '../../SceneTree/Parameters/index'
 import { StateEvent } from '../StateEvent.js'
 
 /** Triggers an state machine event to occur after a certain time has passed.

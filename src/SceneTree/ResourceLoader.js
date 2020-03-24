@@ -1,5 +1,5 @@
-import { hashStr } from '../Math'
-import { Signal } from '../Utilities'
+import { hashStr } from '../Math/index'
+import { Signal } from '../Utilities/index'
 // import { VLAAsset } from './VLAAsset.js'
 
 // const asyncLoading = true;

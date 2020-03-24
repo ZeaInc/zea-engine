@@ -1,4 +1,4 @@
-import { Mat4 } from '../../Math'
+import { Mat4 } from '../../Math/index'
 import { Parameter } from './Parameter.js'
 
 /** Class representing a Mat4 (4x4 matrix) parameter.

@@ -1,4 +1,4 @@
-import { Color, Vec3 } from '../Math'
+import { Color, Vec3 } from '../Math/index'
 import {
   ValueSetMode,
   BooleanParameter,
@@ -7,7 +7,7 @@ import {
   Vec3Parameter,
   ListParameter,
   ImageParameter,
-} from './Parameters'
+} from './Parameters/index'
 import { TreeItem } from './TreeItem.js'
 import { GeomItem } from './GeomItem.js'
 import { Material } from './Material.js'

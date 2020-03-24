@@ -1,7 +1,7 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
 import { Mesh } from '../Mesh.js'
-import { NumberParameter } from '../../Parameters'
+import { NumberParameter } from '../../Parameters/index'
 
 /** A class for generating a plane geometry.
  * @extends Mesh

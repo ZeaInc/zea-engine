@@ -1,6 +1,6 @@
 import { sgFactory } from '../SGFactory.js'
 import { SystemDesc } from '../../BrowserDetection.js'
-import { NumberParameter } from '../Parameters'
+import { NumberParameter } from '../Parameters/index'
 import { FileImage } from './FileImage.js'
 
 const supportWebp = navigator.userAgent.indexOf('Chrome') !== -1 // || navigator.userAgent.indexOf("Samsung");

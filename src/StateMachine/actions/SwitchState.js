@@ -1,6 +1,6 @@
 import { sgFactory } from '../../SceneTree/SGFactory.js'
 
-import { StringParameter } from '../../SceneTree/Parameters'
+import { StringParameter } from '../../SceneTree/Parameters/index'
 
 import { StateAction } from '../StateAction.js'
 

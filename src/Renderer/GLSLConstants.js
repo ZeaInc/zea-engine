@@ -8,7 +8,7 @@ import {
   Mat3,
   Mat4,
   Color,
-} from '../Math'
+} from '../Math/index'
 import { BaseImage } from '../SceneTree/BaseImage.js'
 
 const glslTypes = {

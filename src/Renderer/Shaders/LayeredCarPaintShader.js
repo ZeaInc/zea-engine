@@ -1,5 +1,5 @@
-import { Color } from '../../Math'
-import { FileImage, sgFactory } from '../../SceneTree'
+import { Color } from '../../Math/index'
+import { FileImage, sgFactory } from '../../SceneTree/index'
 import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 import './GLSL/constants.js'

@@ -1,5 +1,5 @@
 import { Attribute } from './Attribute.js'
-import { Float32 } from '../../Math'
+import { Float32 } from '../../Math/index'
 
 /** Class representing vertex attributes.
  * @extends Attribute

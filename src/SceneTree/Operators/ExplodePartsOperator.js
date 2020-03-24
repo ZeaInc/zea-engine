@@ -1,4 +1,4 @@
-import { Vec2, Vec3 } from '../../Math'
+import { Vec2, Vec3 } from '../../Math/index'
 import { Operator } from './Operator.js'
 import { XfoOperatorOutput } from './OperatorOutput.js'
 import {
@@ -11,7 +11,7 @@ import {
   ListParameter,
   StructParameter,
   TreeItemParameter,
-} from '../Parameters'
+} from '../Parameters/index'
 
 import { sgFactory } from '../SGFactory.js'
 

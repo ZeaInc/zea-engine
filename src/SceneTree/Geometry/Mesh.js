@@ -1,4 +1,4 @@
-import { Vec2, Vec3, Xfo } from '../../Math'
+import { Vec2, Vec3, Xfo } from '../../Math/index'
 import { BaseGeom, SAVE_FLAG_SKIP_GEOMDATA } from './BaseGeom.js'
 import { Attribute } from './Attribute.js'
 

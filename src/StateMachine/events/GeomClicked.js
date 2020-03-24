@@ -1,6 +1,6 @@
 import { sgFactory } from '../../SceneTree/SGFactory.js'
 
-import { TreeItemParameter } from '../../SceneTree/Parameters'
+import { TreeItemParameter } from '../../SceneTree/Parameters/index'
 import { StateEvent } from '../StateEvent.js'
 
 /** Triggers an state machine event to occur when geometry is clicked.

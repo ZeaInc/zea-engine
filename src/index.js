@@ -4,8 +4,8 @@ if (window.ZeaEngine) {
 
 export { onResize } from './external/onResize.js'
 export * from './BrowserDetection.js'
-export * from './Math'
-export * from './Utilities'
-export * from './SceneTree'
-export * from './Renderer'
-export * from './StateMachine'
+export * from './Math/index'
+export * from './Utilities/index'
+export * from './SceneTree/index'
+export * from './Renderer/index'
+export * from './StateMachine/index'

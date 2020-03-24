@@ -1,6 +1,6 @@
 import { Lines } from '../Lines.js'
 
-import { BooleanParameter, NumberParameter } from '../../Parameters'
+import { BooleanParameter, NumberParameter } from '../../Parameters/index'
 import { sgFactory } from '../../SGFactory.js'
 
 /** A class for generating a grid.

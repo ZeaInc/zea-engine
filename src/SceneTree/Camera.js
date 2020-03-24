@@ -1,7 +1,7 @@
-import { Vec3, Box3, Xfo } from '../Math'
-import { Signal } from '../Utilities'
+import { Vec3, Box3, Xfo } from '../Math/index'
+import { Signal } from '../Utilities/index'
 import { TreeItem } from './TreeItem.js'
-import { ValueSetMode, BooleanParameter, NumberParameter } from './Parameters'
+import { ValueSetMode, BooleanParameter, NumberParameter } from './Parameters/index'
 import { sgFactory } from './SGFactory'
 
 /** Class representing a camera in the scene tree.

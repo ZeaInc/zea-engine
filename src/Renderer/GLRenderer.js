@@ -1,11 +1,11 @@
 import { SystemDesc } from '../BrowserDetection.js'
-import { Signal } from '../Utilities'
-import { Vec3, Xfo, Mat4, Ray } from '../Math'
+import { Signal } from '../Utilities/index'
+import { Vec3, Xfo, Mat4, Ray } from '../Math/index'
 import {
   Plane,
   VLAAsset,
   EnvMap,
-} from '../SceneTree'
+} from '../SceneTree/index'
 import { GLFbo } from './GLFbo.js'
 import { GLRenderTarget } from './GLRenderTarget.js'
 import { GLHDRImage } from './GLHDRImage.js'

@@ -1,7 +1,7 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
 import { Mesh } from '../Mesh.js'
-import { BooleanParameter, NumberParameter } from '../../Parameters'
+import { BooleanParameter, NumberParameter } from '../../Parameters/index'
 import { sgFactory } from '../../SGFactory.js'
 
 /** A class for generating a cuboid geometry.

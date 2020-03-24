@@ -1,4 +1,4 @@
-import { Signal } from '../Utilities'
+import { Signal } from '../Utilities/index'
 import { RefCounted } from './RefCounted.js'
 import { sgFactory } from './SGFactory.js'
 

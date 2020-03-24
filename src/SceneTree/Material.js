@@ -1,5 +1,5 @@
-import { Vec2, Vec3, Color } from '../Math'
-import { Signal } from '../Utilities'
+import { Vec2, Vec3, Color } from '../Math/index'
+import { Signal } from '../Utilities/index'
 import { BaseItem } from './BaseItem.js'
 import { sgFactory } from './SGFactory.js'
 import {
@@ -10,7 +10,7 @@ import {
   ColorParameter,
   MaterialFloatParam,
   MaterialColorParam,
-} from './Parameters'
+} from './Parameters/index'
 
 const generateParameterInstance = (
   paramName,

@@ -1,5 +1,5 @@
-import { Vec2, Vec3, Xfo, Color } from '../Math'
-import { Signal, Async } from '../Utilities'
+import { Vec2, Vec3, Xfo, Color } from '../Math/index'
+import { Signal, Async } from '../Utilities/index'
 import { GeomItem } from './GeomItem'
 import { AssetItem } from './AssetItem'
 import { Mesh } from './Geometry/Mesh.js'
@@ -13,7 +13,7 @@ import {
   NumberParameter,
   StringParameter,
   FilePathParameter,
-} from './Parameters'
+} from './Parameters/index'
 
 // AssetItem.registerDataLoader('.obj', ObjDataLoader);
 

@@ -1,4 +1,4 @@
-import { Xfo } from '../../Math'
+import { Xfo } from '../../Math/index'
 import { Parameter } from './Parameter.js'
 
 /** Class representing a Xfo transform parameter.

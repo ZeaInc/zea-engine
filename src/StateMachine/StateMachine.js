@@ -1,5 +1,5 @@
-import { Signal } from '../Utilities'
-import { BaseItem, ItemFlags, sgFactory } from '../SceneTree'
+import { Signal } from '../Utilities/index'
+import { BaseItem, ItemFlags, sgFactory } from '../SceneTree/index'
 
 /** A state machine is a mathematical model that describes the behavior of
  * a system that can be in only one state at a time. For example, a door with

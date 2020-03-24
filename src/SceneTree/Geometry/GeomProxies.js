@@ -1,5 +1,5 @@
-import { Signal } from '../../Utilities'
-import { Box3 } from '../../Math'
+import { Signal } from '../../Utilities/index'
+import { Box3 } from '../../Math/index'
 import { RefCounted } from '../RefCounted.js'
 import { typeRegistry } from '../../Math/TypeRegistry.js'
 

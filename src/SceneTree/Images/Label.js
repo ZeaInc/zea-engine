@@ -1,14 +1,14 @@
-import { Color } from '../../Math'
+import { Color } from '../../Math/index'
 import {
   BooleanParameter,
   NumberParameter,
   ColorParameter,
   StringParameter,
-} from '../Parameters'
+} from '../Parameters/index'
 import { sgFactory } from '../SGFactory.js'
 import { DataImage } from './DataImage.js'
 import { labelManager } from './LabelManager.js'
-import { Signal } from '../../Utilities'
+import { Signal } from '../../Utilities/index'
 
 // http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
 /**

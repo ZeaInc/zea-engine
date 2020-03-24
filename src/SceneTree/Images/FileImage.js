@@ -1,4 +1,4 @@
-import { Vec4, Color } from '../../Math'
+import { Vec4, Color } from '../../Math/index'
 import { loadBinfile } from '../Utils.js'
 import { sgFactory } from '../SGFactory.js'
 import { BaseImage } from '../BaseImage.js'
@@ -12,7 +12,7 @@ import {
   NumberParameter,
   Vec4Parameter,
   FilePathParameter,
-} from '../Parameters'
+} from '../Parameters/index'
 
 const imageDataLibrary = {}
 

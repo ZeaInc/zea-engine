@@ -1,7 +1,7 @@
 import { sgFactory } from '../SGFactory.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
-import { BooleanParameter, NumberParameter } from '../Parameters'
+import { BooleanParameter, NumberParameter } from '../Parameters/index'
 
 import { FileImage } from './FileImage.js'
 

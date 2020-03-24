@@ -1,4 +1,4 @@
-import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math'
+import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math/index'
 
 /** Class representing a bin reader. */
 class BinReader {

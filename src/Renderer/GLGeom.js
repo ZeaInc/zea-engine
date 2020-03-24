@@ -1,5 +1,5 @@
-import { Signal } from '../Utilities'
-import { RefCounted } from '../SceneTree'
+import { Signal } from '../Utilities/index'
+import { RefCounted } from '../SceneTree/index'
 import { generateShaderGeomBinding } from './GeomShaderBinding.js'
 
 /** Class representing a GL geom. */

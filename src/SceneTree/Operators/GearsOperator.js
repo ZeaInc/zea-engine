@@ -1,4 +1,4 @@
-import { Vec3, Quat } from '../../Math'
+import { Vec3, Quat } from '../../Math/index'
 import { Operator } from './Operator.js'
 import { XfoOperatorOutput } from './OperatorOutput.js'
 import {
@@ -6,7 +6,7 @@ import {
   NumberParameter,
   Vec3Parameter,
   ListParameter,
-} from '../Parameters'
+} from '../Parameters/index'
 import { sgFactory } from '../SGFactory.js'
 
 /** Class representing a gear parameter.

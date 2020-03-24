@@ -1,4 +1,4 @@
-import { Signal } from '../../Utilities'
+import { Signal } from '../../Utilities/index'
 import { ParamFlags, ValueSetMode, Parameter } from './Parameter.js'
 
 /** Class representing a tree item parameter.

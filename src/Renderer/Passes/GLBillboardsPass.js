@@ -1,5 +1,5 @@
-import { Vec3, Vec4 } from '../../Math'
-import { BillboardItem } from '../../SceneTree'
+import { Vec3, Vec4 } from '../../Math/index'
+import { BillboardItem } from '../../SceneTree/index'
 import { BillboardShader } from '../Shaders/BillboardShader.js'
 import { GLPass, PassType } from './GLPass.js'
 import { GLImageAtlas } from '../GLImageAtlas.js'

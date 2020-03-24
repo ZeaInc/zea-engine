@@ -1,13 +1,13 @@
-import { Color } from '../Math'
-import { Signal } from '../Utilities'
+import { Color } from '../Math/index'
+import { Signal } from '../Utilities/index'
 import { SystemDesc } from '../BrowserDetection.js'
-import { FilePathParameter, ColorParameter } from './Parameters'
+import { FilePathParameter, ColorParameter } from './Parameters/index'
 import { AssetItem } from './AssetItem.js'
 import { BinReader } from './BinReader.js'
 import { resourceLoader } from './ResourceLoader.js'
 import { sgFactory } from './SGFactory.js'
 import { Version } from './Version.js'
-// import { EnvMap, Lightmap, LightmapMixer } from './Images'
+// import { EnvMap, Lightmap, LightmapMixer } from './Images/index'
 
 /** Class representing a VLA asset.
  * @extends AssetItem

@@ -1,6 +1,6 @@
-import { Color } from '../Math'
-import { Signal } from '../Utilities'
-import { ParameterOwner, BaseImage, NumberParameter } from '../SceneTree'
+import { Color } from '../Math/index'
+import { Signal } from '../Utilities/index'
+import { ParameterOwner, BaseImage, NumberParameter } from '../SceneTree/index'
 import { GLHDRImage } from './GLHDRImage.js'
 import { GLTexture2D } from './GLTexture2D.js'
 

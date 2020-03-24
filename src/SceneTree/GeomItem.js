@@ -1,5 +1,5 @@
-import { Vec2, Xfo } from '../Math'
-import { ValueSetMode, XfoParameter, Mat4Parameter } from './Parameters'
+import { Vec2, Xfo } from '../Math/index'
+import { ValueSetMode, XfoParameter, Mat4Parameter } from './Parameters/index'
 import { MaterialParameter } from './Parameters/MaterialParameter'
 import { GeometryParameter } from './Parameters/GeometryParameter'
 import { sgFactory } from './SGFactory.js'
