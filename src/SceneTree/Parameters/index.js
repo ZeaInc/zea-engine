@@ -20,11 +20,11 @@ export * from './TreeItemParameter.js'
 export * from './ItemSetParameter.js'
 // export * from './KinematicGroupParameter.js';
 
-export * from './MaterialFloatParam.js'
-export * from './MaterialColorParam.js'
 export * from './ProxyParameter.js'
 
 // Note: can't be imported, because ParameterOwner imports these Parameters
 // MaterialParameter imports MaterialLibraryManager which leads to circular imports
 // export * from './MaterialParameter.js';
+// export * from './MaterialFloatParam.js'
+// export * from './MaterialColorParam.js'
 export * from './GeometryParameter.js'

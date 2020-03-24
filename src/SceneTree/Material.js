@@ -8,9 +8,15 @@ import {
   Vec2Parameter,
   Vec3Parameter,
   ColorParameter,
-  MaterialFloatParam,
-  MaterialColorParam,
 } from './Parameters/index'
+
+
+// Explicit export of parameters that are not included in the
+// moduled defined by the index file in the folder. (see Parameters/index.js)
+// These parameters depend on classes that ar ParameterOwners. 
+// TOOD: Move to this folder.
+import { MaterialFloatParam } from './Parameters/MaterialFloatParam'
+import { MaterialColorParam } from './Parameters/MaterialColorParam'
 
 const generateParameterInstance = (
   paramName,
