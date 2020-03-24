@@ -25,6 +25,7 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/index.js',
+    external: [...Object.keys(pkg.dependencies)],
     plugins: [],
     output: [
       { file: pkg.main, format: 'cjs' },

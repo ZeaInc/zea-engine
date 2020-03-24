@@ -9,7 +9,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      name: 'zea-engine',
+      name: 'ZeaEngine',
       file: pkg.browser,
       format: 'umd',
     },
