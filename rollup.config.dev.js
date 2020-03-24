@@ -13,8 +13,8 @@ export default [
       format: 'umd',
     },
     plugins: [
-      resolve(), // so Rollup can find `ms`
-      commonjs(), // so Rollup can convert `ms` to an ES module
+      resolve(), // so Rollup can find `dependencies`
+      commonjs(), // so Rollup can convert `dependencies` to an ES module
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.
