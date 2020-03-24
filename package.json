@@ -18,7 +18,7 @@
     "test": "jest",
     "test:dev": "jest --verbose --watch",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --verbose --watch",
-    "dist": "rollup -c && yarn publish --access=public",
+    "dist": "yarn build && yarn publish --access=public",
     "docs": "jsdoc -c .jsdoc.json"
   },
   "devDependencies": {
