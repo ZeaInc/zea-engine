@@ -4,7 +4,9 @@
   "libraryName": "ZeaEngine",
   "version": "0.1.4",
   "description": "Zea Engine",
-  "main": "dist/zea-engine.js",
+  "main": "dist/zea-engine.cjs.js",
+  "module": "dist/zea-engine.esm.js",
+  "browser": "dist/zea-engine.umd.js",
   "author": "Zea Inc.",
   "license": "ISC",
   "files": [
@@ -15,13 +17,11 @@
     "build": "rollup -c",
     "start": "rollup -c rollup.config.dev.js -w",
     "prepare": "yarn run build",
-    "test": "jest",
-    "test:dev": "jest --verbose --watch",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --verbose --watch",
     "dist": "yarn build && yarn publish --access=public",
     "docs": "jsdoc -c .jsdoc.json"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "chai": "3.4.1",
     "documentation": "^12.1.1",

@@ -1,20 +1,22 @@
-  
-import resolve from '@rollup/plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+
 import pkg from './package.json'
 
 export default [
+  // browser-friendly UMD build
   {
-		input: 'src/index.js',
-		output: {
-			name: 'zea-engine',
-			file: pkg.browser,
-			format: 'umd'
-		},
-		plugins: [
-			resolve(), // so Rollup can find `ms`
-			commonjs() // so Rollup can convert `ms` to an ES module
-		]
-	},
+    input: 'src/index.js',
+    output: {
+      name: 'zeaEngine',
+      file: pkg.browser,
+      format: 'umd',
+    },
+    plugins: [
+      resolve(), // so Rollup can find `ms`
+      commonjs(), // so Rollup can convert `ms` to an ES module
+    ],
+  },
   // CommonJS (for Node) and ES module (for bundlers) build.
   // (We could have three entries in the configuration array
   // instead of two, but it's quicker to generate multiple
@@ -23,7 +25,6 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/index.js',
-    //external: [...Object.keys(pkg.dependencies)],
     plugins: [],
     output: [
       { file: pkg.main, format: 'cjs' },
