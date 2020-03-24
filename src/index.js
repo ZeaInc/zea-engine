@@ -1,4 +1,3 @@
-
 export { onResize } from './external/onResize.js'
 export * from './BrowserDetection.js'
 export * from './Math/index'
@@ -22,6 +21,7 @@ const ZeaEngine = {
   ...Utilities,
   ...SceneTree,
   ...Renderer,
-  ...StateMachine
+  ...StateMachine,
 }
+
 export default ZeaEngine

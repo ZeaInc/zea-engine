@@ -1,6 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import webWorkerLoader from 'rollup-plugin-web-worker-loader'
+import bundleWorker from 'rollup-plugin-bundle-worker'
 import { terser } from 'rollup-plugin-terser'
 
 import pkg from './package.json'
@@ -17,7 +17,7 @@ export default [
     plugins: [
       resolve(), // so Rollup can find `dependencies`
       commonjs(), // so Rollup can convert `dependencies` to ES modules
-      webWorkerLoader(),
+      bundleWorker(),
     ],
   },
   // CommonJS (for Node) and ES module (for bundlers) build.
@@ -29,7 +29,7 @@ export default [
   {
     input: 'src/index.js',
     external: [...Object.keys(pkg.dependencies)],
-    plugins: [terser()],
+    plugins: [bundleWorker(), terser()],
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
