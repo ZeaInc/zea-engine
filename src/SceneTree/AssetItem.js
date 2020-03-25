@@ -72,7 +72,7 @@ class AssetItem extends TreeItem {
     context.numGeomItems = 0
 
     if (!context.versions['zea-engine']) {
-      context.versions['zea-engine'] = new ZeaEngine.Version(reader.loadStr())
+      context.versions['zea-engine'] = new Version(reader.loadStr())
     }
     console.log("Loading Engine File version:", context.versions['zea-engine'])
 
