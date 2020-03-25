@@ -1,4 +1,4 @@
-import bundleWorker from 'rollup-plugin-bundle-worker'
+import webWorkerLoader from 'rollup-plugin-web-worker-loader'
 
 import pkg from './package.json'
 
@@ -12,7 +12,7 @@ export default [
   {
     input: 'src/index.js',
     external: [...Object.keys(pkg.dependencies)],
-    plugins: [bundleWorker()],
+    plugins: [webWorkerLoader()],
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },

@@ -3,7 +3,7 @@ import { Signal } from '../Utilities/index'
 // import { VLAAsset } from './VLAAsset.js'
 
 // const asyncLoading = true;
-import ResourceLoaderWorker from 'worker!./ResourceLoader/ResourceLoaderWorker.js'
+import ResourceLoaderWorker from 'web-worker:./ResourceLoader/ResourceLoaderWorker.js'
 // For synchronous loading, uncomment these lines.
 // import {
 //     ResourceLoaderWorker_onmessage
