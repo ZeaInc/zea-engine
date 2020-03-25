@@ -6,7 +6,6 @@
   "description": "Zea Engine",
   "main": "dist/zea-engine.cjs.js",
   "module": "dist/zea-engine.esm.js",
-  "browser": "dist/zea-engine.umd.js",
   "author": "Zea Inc.",
   "license": "ISC",
   "files": [
@@ -22,8 +21,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-node-resolve": "^7.1.1",
     "chai": "3.4.1",
     "documentation": "^12.1.1",
     "eslint": "^6.5.1",
