@@ -427,7 +427,7 @@ class Parameter extends BaseParameter {
     }
 
     if (!value.fromJSON) {
-      // Note: equality tests on anything but simple values is going to be super expenseive.
+      // Note: equality tests on anything but simple values is going to be super expensive.
       if (this.__value == value) return
     }
     this.__value = value
@@ -478,7 +478,8 @@ class Parameter extends BaseParameter {
       console.warn('Invalid Parameter JSON')
       return
     }
-    // Since JSON data is only used to store user edits,
+
+    // Note: JSON data is only used to store user edits, so
     // parameters loaded from JSON are considered user edited.
     this.setFlag(ParamFlags.USER_EDITED)
 

@@ -17,8 +17,10 @@ expose getters and setters for the component values.
     * [y](#y)
     * [set(x, y)](#set)
     * [setFromOther(other)](#setFromOther)
-    * [equal(other) ⇒ <code>boolean</code>](#equal)
-    * [notEquals(other) ⇒ <code>boolean</code>](#notEquals)
+    * ~~[.equal(other)](#Vec2+equal) ⇒ <code>boolean</code>~~
+    * [isEqual(other) ⇒ <code>boolean</code>](#isEqual)
+    * ~~[.notEquals(other)](#Vec2+notEquals) ⇒ <code>boolean</code>~~
+    * [notEqual(other) ⇒ <code>boolean</code>](#notEqual)
     * [approxEqual(other, precision) ⇒ <code>boolean</code>](#approxEqual)
     * [add(other)](#add)
     * [addInPlace(other)](#addInPlace)
@@ -165,7 +167,21 @@ Replaces this Vec2 data with the Vec2 data passed as parameter.
 
 <a name="Vec2+equal"></a>
 
-### equal
+### ~~vec2.equal(other) ⇒ <code>boolean</code>~~
+***Deprecated***
+
+Checks if this Vec2 is exactly the same as another Vec2.
+
+
+**Returns**: <code>boolean</code> - - Returns `true` if are the same Vector, otherwise, `false`.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vec2</code>](#Vec2) | The other Vec2 to compare with. |
+
+<a name="Vec2+isEqual"></a>
+
+### isEqual
 Checks if this Vec2 is exactly the same as another Vec2.
 
 
@@ -177,7 +193,21 @@ Checks if this Vec2 is exactly the same as another Vec2.
 
 <a name="Vec2+notEquals"></a>
 
-### notEquals
+### ~~vec2.notEquals(other) ⇒ <code>boolean</code>~~
+***Deprecated***
+
+Checks if this Vec2 is different from another Vec2.
+
+
+**Returns**: <code>boolean</code> - - Returns `true` if the Vec2s are different, otherwise, `false`.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vec2</code>](#Vec2) | The other Vec2 to compare with. |
+
+<a name="Vec2+notEqual"></a>
+
+### notEqual
 Checks if this Vec2 is different from another Vec2.
 
 

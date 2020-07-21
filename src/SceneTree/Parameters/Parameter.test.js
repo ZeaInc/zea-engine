@@ -1,60 +1,88 @@
 import { Parameter } from './Parameter'
 import { ParameterOwner } from '../ParameterOwner'
+import { BaseItem } from '../BaseItem'
 
-describe('ParameterOwner', () => {
-  it('has empty params count', () => {
-    const parameterOwner = new ParameterOwner()
+describe('Parameter', () => {
+  it('has name', () => {
+    const NAME = 'TestParameter'
+    const parameter = new Parameter(NAME)
 
-    expect(parameterOwner.getNumParameters()).toEqual(0)
+    expect(parameter.getName()).toEqual(NAME)
   })
 
-  it('it emits an event when a parameter is added.', () => {
-    const parameterOwner = new ParameterOwner()
+  it('emits event on name set', () => {
+    const parameter = new Parameter('param1')
 
     const mockFn = jest.fn()
+    const event = { mode: 'param2', prevName: 'param1' }
+    parameter.on('nameChanged', mockFn)
 
-    parameterOwner.on('parameterAdded', mockFn)
+    parameter.setName('param2')
 
-    const name = 'foo'
-    const parameter = new Parameter(name)
-
-    parameterOwner.addParameter(parameter)
-
-    expect(mockFn).toHaveBeenCalledTimes(1)
+    expect(mockFn).toHaveBeenCalledWith(event)
   })
 
-  test('name can be setted', () => {
-    const name1 = 'foo'
-    const name2 = 'bar'
-    const parameter = new Parameter(name1)
-    parameter.setName(name2)
+  it('emits event on value change', () => {
+    const parameter = new Parameter('param1', '', 'String')
 
-    expect(parameter.getName()).toEqual(name2)
+    const mockFn = jest.fn()
+    const event = { mode: 0 }
+    parameter.on('valueChanged', mockFn)
+
+    parameter.setValue('Test')
+
+    expect(mockFn).toHaveBeenCalledWith(event)
   })
 
-  test('Saving to JSON (serialization).', () => {
-    const parameter = new Parameter('name', 'value')
+  it('sets owner item', () => {
+    const item = new BaseItem('item1')
 
-    const expOutput = '{"value":"value"}'
+    const parameter = new Parameter('param1')
+    parameter.setOwner(item)
+
+    expect(parameter.getOwner()).toEqual(item)
+  })
+
+  it('has path to parameter', () => {
+    const parameter = new Parameter('param1')
+
+    expect(parameter.getPath()).toEqual(['param1'])
+  })
+
+  it('Has path to parameter when owned', () => {
+    const item = new BaseItem('item1')
+
+    const parameter = new Parameter('param1')
+    parameter.setOwner(item)
+
+    expect(parameter.getPath()).toEqual(['item1', 'param1'])
+  })
+
+  it('Has data type', () => {
+    const parameter = new Parameter('param1', '', 'String')
+
+    expect(parameter.getDataType()).toEqual('String')
+  })
+
+  it('save to JSON(serialization).', () => {
+    const parameter = new Parameter('TestParameter', 'test', 'String')
+    const expOutput = '{"value":"test"}'
 
     expect(JSON.stringify(parameter.toJSON())).toEqual(expOutput)
   })
 
-  test('Loading from JSON (deserialization).', () => {
-    const edited = 'Edited'
-    const json = { value: edited }
+  it('load from JSON(serialization).', () => {
+    const parameter = new Parameter('TestParameter', '', 'String')
+    const input = { value: 'test' }
+    parameter.fromJSON(input)
 
-    const parameter = new Parameter('name', 'value')
-    parameter.fromJSON(json)
-
-    // TODO: test that the USER_EDITED flag was set.
-
-    expect(parameter.getValue()).toEqual(edited)
+    expect(parameter.getValue()).toEqual(input.value)
   })
 
-  it('add a param at a given index.', () => {})
+  it('clones parameter object', () => {
+    const parameter = new Parameter('TestParameter', '', 'String')
+    const parameter2 = parameter.clone()
 
-  it('removing a nonexisting param.', () => {})
-
-  it('replacing a nonexisting param.', () => {})
+    expect(parameter.toJSON()).toEqual(parameter2.toJSON())
+  })
 })

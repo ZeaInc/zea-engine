@@ -21,8 +21,10 @@ expose getters and setters for the component values.
     * [xyz ⇒ <code>number</code>](#xyz)
     * [set(x, y, z, t)](#set)
     * [setFromOther(other)](#setFromOther)
-    * [equal(other) ⇒ <code>boolean</code>](#equal)
-    * [notEquals(other) ⇒ <code>boolean</code>](#notEquals)
+    * ~~[.equal(other)](#Vec4+equal) ⇒ <code>boolean</code>~~
+    * [isEqual(other) ⇒ <code>boolean</code>](#isEqual)
+    * ~~[.notEquals(other)](#Vec4+notEquals) ⇒ <code>boolean</code>~~
+    * [notEqual(other) ⇒ <code>boolean</code>](#notEqual)
     * [approxEqual(other, precision) ⇒ <code>boolean</code>](#approxEqual)
     * [add(other)](#add)
     * [addInPlace(other)](#addInPlace)
@@ -47,6 +49,7 @@ expose getters and setters for the component values.
     * [toVec3() ⇒ <code>Vec3</code>](#toVec3)
     * [asArray() ⇒ <code>aray</code>](#asArray)
     * [toJSON() ⇒ <code>object</code>](#toJSON)
+    * [fromJSON(j)](#fromJSON)
 
 <a name="new_Vec4_new"></a>
 
@@ -183,7 +186,21 @@ Sets the state of a Vec4 Object from another Vec4.
 
 <a name="Vec4+equal"></a>
 
-### equal
+### ~~vec4.equal(other) ⇒ <code>boolean</code>~~
+***Deprecated***
+
+Checks if this Vec4 is exactly the same as another Vec4.
+
+
+**Returns**: <code>boolean</code> - - Returns true or false.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vec4</code>](#Vec4) | The other Vec4 to compare with. |
+
+<a name="Vec4+isEqual"></a>
+
+### isEqual
 Checks if this Vec4 is exactly the same as another Vec4.
 
 
@@ -195,7 +212,21 @@ Checks if this Vec4 is exactly the same as another Vec4.
 
 <a name="Vec4+notEquals"></a>
 
-### notEquals
+### ~~vec4.notEquals(other) ⇒ <code>boolean</code>~~
+***Deprecated***
+
+Checks if this Vec4 is different from another Vec4.
+
+
+**Returns**: <code>boolean</code> - - Returns true or false.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vec4</code>](#Vec4) | The other Vec4 to compare with. |
+
+<a name="Vec4+notEqual"></a>
+
+### notEqual
 Checks if this Vec4 is different from another Vec4.
 
 
@@ -446,7 +477,18 @@ Returns the type as an array. Often used to pass types to the GPU.
 <a name="Vec4+toJSON"></a>
 
 ### toJSON
-The toJSON method encodes this type as a json object for persistences.
+The toJSON method encodes this type as a json object for persistence.
 
 
 **Returns**: <code>object</code> - - The json object.  
+<a name="Vec4+fromJSON"></a>
+
+### fromJSON
+Decodes a JSON object to set the state of this class.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| j | <code>object</code> | The json object. |
+

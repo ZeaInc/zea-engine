@@ -261,7 +261,7 @@ class Xfo {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    *
    * @return {object} - The json object.
    */
