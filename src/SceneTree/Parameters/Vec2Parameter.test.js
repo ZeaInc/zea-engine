@@ -1,5 +1,6 @@
 import { Vec2 } from '../../Math/Vec2'
 import { Vec2Parameter } from './Vec2Parameter'
+import { BinReader } from '../../SceneTree/BinReader'
 
 describe('Vec2Parameter', () => {
   it('has an initial value.', () => {
@@ -38,6 +39,16 @@ describe('Vec2Parameter', () => {
     vec2Parameter.fromJSON(input)
 
     expect(vec2Parameter.getValue().toJSON()).toEqual(input.value)
+  })
+
+  it('loads from binary (serialization).', () => {
+    const vec2Parameter = new Vec2Parameter()
+
+    const data = Float32Array.of(1, 2)
+    const reader = new BinReader(data.buffer)
+    vec2Parameter.readBinary(reader)
+
+    expect(vec2Parameter.getValue().toJSON()).toEqual({ x: 1, y: 2})
   })
 
   it('clones parameter object', () => {
