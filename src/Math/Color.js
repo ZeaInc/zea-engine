@@ -672,6 +672,18 @@ class Color extends AttrValue {
   }
 
   /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.r = reader.loadFloat32()
+    this.g = reader.loadFloat32()
+    this.b = reader.loadFloat32()
+    this.a = reader.loadFloat32()
+  }
+
+  /**
    * Returns the CSS rgba string.
    *
    * @return {string} - The return value.

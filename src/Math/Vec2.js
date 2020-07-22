@@ -545,6 +545,16 @@ class Vec2 extends AttrValue {
     this.x = j.x
     this.y = j.y
   }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.x = reader.loadFloat32()
+    this.y = reader.loadFloat32()
+  }
 }
 
 typeRegistry.registerType('Vec2', Vec2)
