@@ -1,5 +1,5 @@
 import { Xfo } from '../../Math/index'
-import { Parameter } from './Parameter.js'
+import { Parameter, ValueSetMode } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores `Xfo` transform values.
@@ -22,6 +22,24 @@ class XfoParameter extends Parameter {
   constructor(name, value) {
     super(name, value ? value : new Xfo(), 'Xfo')
   }
+
+  // ////////////////////////////////////////
+  // Persistence
+
+  /**
+   * Extracts a number value from a buffer, updating current parameter state.
+   *
+   * @param {BinReader} reader - The reader value.
+   * @param {object} context - The context value.
+   */
+  readBinary(reader, context) {
+    const value = new Xfo()
+    value.readBinary(reader)
+    this.setValue(value, ValueSetMode.DATA_LOAD)
+  }
+
+  // ////////////////////////////////////////
+  // Clone
 
   /**
    * The clone method constructs a new Xfo parameter, copies its values
