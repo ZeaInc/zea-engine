@@ -1,5 +1,6 @@
 import { NumberParameter } from './NumberParameter'
 import '../../Math/Common'
+import { BinReader } from '../../SceneTree/BinReader'
 
 describe('NumberParameter', () => {
   it('has an initial value.', () => {
@@ -57,6 +58,18 @@ describe('NumberParameter', () => {
     numberParameter.fromJSON(input)
 
     expect(numberParameter.getValue()).toEqual(input.value)
+  })
+
+  it('loads from binary (serialization).', () => {
+    const numberParameter = new NumberParameter()
+
+    const value = 1356
+    const data = new Float32Array(1)
+    data[0] = value
+    const reader = new BinReader(data.buffer)
+    numberParameter.readBinary(reader)
+
+    expect(numberParameter.getValue()).toEqual(value)
   })
 
   it('clones parameter object', () => {
