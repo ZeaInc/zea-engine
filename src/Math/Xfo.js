@@ -288,6 +288,17 @@ class Xfo {
   }
 
   /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.tr.readBinary(reader)
+    this.ori.readBinary(reader)
+    this.sc.readBinary(reader)
+  }
+
+  /**
    * The fromJSON method decodes a json object for this type.
    *
    * @return {string} - The return value.
