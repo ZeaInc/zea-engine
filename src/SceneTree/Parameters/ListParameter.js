@@ -24,7 +24,7 @@ class ListParameter extends Parameter {
    * @param {string} name - The name of the list parameter.
    * @param {string|Parameter} dataType - The dataType value.
    */
-  constructor(name, dataType) {
+    constructor(name, dataType) {
     super(name, [])
     this.__dataType = dataType
   }
@@ -161,6 +161,7 @@ class ListParameter extends Parameter {
       if (typeof this.__dataType === 'string') {
         elem = j.items[i]
       } else {
+        console.log(this.__dataType)
         elem = new this.__dataType()
         elem.fromJSON(j.items[i], context)
       }
