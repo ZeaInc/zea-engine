@@ -496,13 +496,11 @@ class Parameter extends BaseParameter {
   /**
    * The readBinary method.
    *
-   * @private
    * @param {object} reader - The reader value.
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    console.warn('@todo-review')
-    console.error('TODO')
+    console.warn(`TODO: Parameter: ${this.constructor.name} with name: ${this.__name} does not implement readBinary`)
   }
 
   // ////////////////////////////////////////
