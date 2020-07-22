@@ -547,7 +547,16 @@ class Mat3 extends AttrValue {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.__data = reader.loadFloat32Array(9)
+  }
+
+  /**
+   * The toJSON method encodes this type as a json object for persistence.
    *
    * @return {object} - The json object.
    */

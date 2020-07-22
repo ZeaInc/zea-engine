@@ -1,5 +1,5 @@
 import { Mat4 } from '../../Math/index'
-import { Parameter } from './Parameter.js'
+import { Parameter, ValueSetMode } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores Mat4(4x4 matrix) values.
@@ -23,6 +23,18 @@ class Mat4Parameter extends Parameter {
    */
   constructor(name, value) {
     super(name, value ? value : new Mat4(), 'Mat4')
+  }
+
+  /**
+   * Extracts a number value from a buffer, updating current parameter state.
+   *
+   * @param {BinReader} reader - The reader value.
+   * @param {object} context - The context value.
+   */
+  readBinary(reader, context) {
+    const value = new Mat4()
+    value.readBinary(reader)
+    this.setValue(value, ValueSetMode.DATA_LOAD)
   }
 
   /**
