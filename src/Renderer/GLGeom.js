@@ -23,14 +23,14 @@ class GLGeom extends RefCounted {
       this.updateBuffers(opts)
       this.emit('updated', {})
     }
-    this.__geom.addListener('geomDataChanged', updateBuffers)
+    this.__geom.on('geomDataChanged', updateBuffers)
 
     const regenBuffers = opts => {
       this.clearShaderBindings()
       this.updateBuffers(opts)
       this.emit('updated', {})
     }
-    this.__geom.addListener('geomDataTopologyChanged', regenBuffers)
+    this.__geom.on('geomDataTopologyChanged', regenBuffers)
   }
 
   /**

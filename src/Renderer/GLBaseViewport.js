@@ -47,10 +47,10 @@ class GLBaseViewport extends ParameterOwner {
         this.emit('updated', {})
       }
       processBGValue(bgColorParam.getValue())
-      bgColorParam.addListener('valueChanged', processBGValue)
+      bgColorParam.on('valueChanged', processBGValue)
     }
 
-    this.__renderer.addListener('sceneSet', sceneSet)
+    this.__renderer.on('sceneSet', sceneSet)
   }
 
   /**

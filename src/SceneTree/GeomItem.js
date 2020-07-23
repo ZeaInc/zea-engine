@@ -33,8 +33,8 @@ class GeomItem extends BaseGeomItem {
 
     this.__geomParam = this.insertParameter(new GeometryParameter('Geometry'), 0)
     this._setBoundingBoxDirty = this._setBoundingBoxDirty.bind(this)
-    this.__geomParam.addListener('valueChanged', this._setBoundingBoxDirty)
-    this.__geomParam.addListener('boundingBoxChanged', this._setBoundingBoxDirty)
+    this.__geomParam.on('valueChanged', this._setBoundingBoxDirty)
+    this.__geomParam.on('boundingBoxChanged', this._setBoundingBoxDirty)
     this.__materialParam = this.insertParameter(new MaterialParameter('Material'), 1)
     this.__paramMapping['material'] = this.getParameterIndex(this.__materialParam)
 
@@ -43,19 +43,19 @@ class GeomItem extends BaseGeomItem {
     this.__geomMatParam = this.addParameter(new Mat4Parameter('GeomMat'))
 
     this.__cleanGeomMat = this.__cleanGeomMat.bind(this)
-    this.__globalXfoParam.addListener('valueChanged', () => {
+    this.__globalXfoParam.on('valueChanged', () => {
       this.__geomMatParam.setDirty(this.__cleanGeomMat)
     })
-    this.__geomOffsetXfoParam.addListener('valueChanged', () => {
+    this.__geomOffsetXfoParam.on('valueChanged', () => {
       this.__geomMatParam.setDirty(this.__cleanGeomMat)
     })
-    this.__geomMatParam.addListener('valueChanged', (event) => {
+    this.__geomMatParam.on('valueChanged', (event) => {
       this.emit('geomXfoChanged', event)
     })
-    this.__materialParam.addListener('valueChanged', (event) => {
+    this.__materialParam.on('valueChanged', (event) => {
       this.emit('materialAssigned', event)
     })
-    this.__geomParam.addListener('valueChanged', (event) => {
+    this.__geomParam.on('valueChanged', (event) => {
       this.emit('geomAssigned', event)
     })
 
@@ -269,10 +269,10 @@ class GeomItem extends BaseGeomItem {
           const geom = geomLibrary.getGeom(geomIndex)
           if (geom) this.setGeometry(geom, ValueSetMode.DATA_LOAD)
           else console.warn('Geom not loaded:', this.getName())
-          geomLibrary.removeListenerById('rangeLoaded', connid)
+          geomLibrary.off('rangeLoaded', onGeomLoaded)
         }
       }
-      const connid = geomLibrary.addListener('rangeLoaded', onGeomLoaded)
+      geomLibrary.on('rangeLoaded', onGeomLoaded)
     }
 
     // this.setVisibility(j.visibility);
@@ -350,10 +350,10 @@ class GeomItem extends BaseGeomItem {
           const geom = geomLibrary.getGeom(geomIndex)
           if (geom) this.setGeometry(geom, ValueSetMode.DATA_LOAD)
           else console.warn('Geom not loaded:', this.getName())
-          geomLibrary.removeListenerById('rangeLoaded', connid)
+          geomLibrary.off('rangeLoaded', onGeomLoaded)
         }
       }
-      const connid = geomLibrary.addListener('rangeLoaded', onGeomLoaded)
+      geomLibrary.on('rangeLoaded', onGeomLoaded)
     }
 
     // Geom Xfo should be dirty after cloning.

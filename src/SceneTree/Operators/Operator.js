@@ -53,7 +53,7 @@ class Operator extends BaseItem {
    */
   addOutput(output) {
     this.__outputs.push(output)
-    output.addListener('paramSet', (event) => {
+    output.on('paramSet', (event) => {
       const { param } = event
       // output.setDirty(this.__evalOutput)
       param.bindOperator(this)

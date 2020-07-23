@@ -65,7 +65,7 @@ class TreeItem extends BaseItem {
     this.__highlights = []
 
     this.__childItems = []
-    this.__childItemsSignalIds = []
+    this.__childItemsEventHandlers = []
     this.__childItemsMapping = {}
 
     // /////////////////////////////////////
@@ -81,6 +81,7 @@ class TreeItem extends BaseItem {
     this._setGlobalXfoDirty = this._setGlobalXfoDirty.bind(this)
     this._setBoundingBoxDirty = this._setBoundingBoxDirty.bind(this)
     this._cleanBoundingBox = this._cleanBoundingBox.bind(this)
+    this._childNameChanged = this._childNameChanged.bind(this)
 
     this.__localXfoParam.on('valueChanged', this._setGlobalXfoDirty)
 
@@ -217,7 +218,7 @@ class TreeItem extends BaseItem {
    */
   setOwner(parentItem) {
     if (this.__ownerItem) {
-      this.__ownerItem.removeListener('globalXfoChanged', this._setGlobalXfoDirty)
+      this.__ownerItem.off('globalXfoChanged', this._setGlobalXfoDirty)
 
       // The effect of the invisible owner is removed.
       if (!this.__ownerItem.isVisible()) this.__visibleCounter++
@@ -621,6 +622,18 @@ class TreeItem extends BaseItem {
   }
 
   /**
+   * The _childNameChanged event hander.
+   * @param {any} start - The start value.
+   * @private
+   */
+  _childNameChanged(event) {
+    // Update the acceleration structure.
+    const index = this.__childItemsMapping[event.oldName]
+    delete this.__childItemsMapping[event.oldName]
+    this.__childItemsMapping[event.newName] = index
+  }
+
+  /**
    * Inserts a child. It accepts all kind of `BaseItem`, not only `TreeItem`.
    *
    * @param {BaseItem} childItem - The child BaseItem to insert.
@@ -642,27 +655,18 @@ class TreeItem extends BaseItem {
       throw new Error('Object is is not a tree item :' + childItem.constructor.name)
     }
 
-    const signalIds = {}
-    signalIds.nameChangedId = childItem.on('nameChanged', (event) => {
-      // Update the acceleration structure.
-      const index = this.__childItemsMapping[event.oldName]
-      delete this.__childItemsMapping[event.oldName]
-      this.__childItemsMapping[event.newName] = index
-    })
+    childItem.on('nameChanged', this._childNameChanged)
 
     let newLocalXfo
     if (childItem instanceof TreeItem) {
       if (maintainXfo) {
         newLocalXfo = this.getGlobalXfo().inverse().multiply(childItem.getGlobalXfo())
       }
-      signalIds.bboxChangedId = childItem.on('boundingChanged', () => {
-        this._setBoundingBoxDirty()
-      })
-      signalIds.visChangedId = childItem.on('visibilityChanged', this._setBoundingBoxDirty)
+      childItem.on('boundingChanged', this._setBoundingBoxDirty)
+      childItem.on('visibilityChanged', this._setBoundingBoxDirty)
     }
 
     this.__childItems.splice(index, 0, childItem)
-    this.__childItemsSignalIds.splice(index, 0, signalIds)
     this.__childItemsMapping[childItem.getName()] = index
     this.__updateMapping(index)
 
@@ -748,16 +752,15 @@ class TreeItem extends BaseItem {
    * @private
    */
   __unbindChild(index, childItem) {
-    const signalIds = this.__childItemsSignalIds[index]
-    childItem.removeListenerById('nameChanged', signalIds.nameChangedId)
+    childItem.off('nameChanged', this._childNameChanged)
 
     if (childItem instanceof TreeItem) {
-      childItem.removeListenerById('boundingChanged', signalIds.bboxChangedId)
-      childItem.removeListenerById('visibilityChanged', signalIds.visChangedId)
+      childItem.off('boundingChanged', this._setBoundingBoxDirty)
+      childItem.off('visibilityChanged', this._setBoundingBoxDirty)
     }
 
     this.__childItems.splice(index, 1)
-    this.__childItemsSignalIds.splice(index, 1)
+    this.__childItemsEventHandlers.splice(index, 1)
     delete this.__childItemsMapping[childItem.getName()]
     this.__updateMapping(index)
 
@@ -1266,7 +1269,7 @@ class TreeItem extends BaseItem {
     src.getChildren().forEach((srcChildItem) => {
       if (srcChildItem) this.addChild(srcChildItem.clone(flags), false, false)
       // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE) {
-      //     src.addListener('childAdded', (childItem, index)=>{
+      //     src.on('childAdded', (childItem, index)=>{
       //         this.addChild(childItem.clone(flags), false);
       //     })
       // }

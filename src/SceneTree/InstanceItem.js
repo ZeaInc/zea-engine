@@ -40,7 +40,7 @@ class InstanceItem extends TreeItem {
       })
     }
 
-    // this.__srcTree.addListener('childAdded', event => {
+    // this.__srcTree.on('childAdded', event => {
     //     this.addChild(event.child.clone(CloneFlags.CLONE_FLAG_INSTANCED_TREE), false)
     // })
   }

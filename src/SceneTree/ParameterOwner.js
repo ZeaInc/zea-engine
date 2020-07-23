@@ -28,7 +28,7 @@ class ParameterOwner extends EventEmitter {
 
     this.__params = []
     this.__paramMapping = {}
-    this.__paramSignalIds = {}
+    this.__paramEventHandlers = {}
   }
 
   /**
@@ -132,17 +132,7 @@ class ParameterOwner extends EventEmitter {
    * @return {Parameter} - With `owner` and `valueChanged` event set.
    */
   addParameter(param) {
-    const name = param.getName()
-    if (this.__paramMapping[name] != undefined) {
-      console.warn('Replacing Parameter:' + name)
-      this.removeParameter(name)
-    }
-    this.__paramSignalIds[name] = param.on('valueChanged', (event) => this.__parameterValueChanged({ ...event, param }))
-    this.__params.push(param)
-    this.__paramMapping[name] = this.__params.length - 1
-    param.setOwner(this)
-    this.emit('parameterAdded', { name })
-    return param
+    return this.insertParameter(param, this.__params.length)
   }
 
   /**
@@ -161,14 +151,14 @@ class ParameterOwner extends EventEmitter {
       console.warn('Replacing Parameter:' + name)
       this.removeParameter(name)
     }
-    this.__paramSignalIds[name] = param.on('valueChanged', (event) => this.__parameterValueChanged({ ...event, param }))
+    const paramChangedHandler = (event) => this.__parameterValueChanged({ ...event, param })
+    param.on('valueChanged', paramChangedHandler)
+    this.__paramEventHandlers[name] = paramChangedHandler
     this.__params.splice(index, 0, param)
 
-    const paramMapping = {}
-    for (let i = 0; i < this.__params.length; i++) {
-      paramMapping[this.__params[i].getName()] = i
+    for (let i = index; i < this.__params.length; i++) {
+      this.__paramMapping[this.__params[i].getName()] = i
     }
-    this.__paramMapping = paramMapping
     this.emit('parameterAdded', { name })
     return param
   }
@@ -180,18 +170,19 @@ class ParameterOwner extends EventEmitter {
    */
   removeParameter(paramName) {
     if (this.__paramMapping[paramName] == undefined) {
-      console.throw('Unable to Remove Parameter:' + paramName)
+      console.throw('Unable to remove Parameter:' + paramName)
     }
     const index = this.__paramMapping[paramName]
     const param = this.__params[this.__paramMapping[paramName]]
 
-    param.removeListenerById('valueChanged', this.__paramSignalIds[paramName])
+    param.off('valueChanged', this.__paramEventHandlers[paramName])
     this.__params.splice(index, 1)
-    const paramMapping = {}
-    for (let i = 0; i < this.__params.length; i++) {
-      paramMapping[this.__params[i].getName()] = i
+
+    delete this.__paramMapping[paramName]
+    for (let i = index; i < this.__params.length; i++) {
+      this.__paramMapping[this.__params[i].getName()] = i
     }
-    this.__paramMapping = paramMapping
+
     this.emit('parameterRemoved', { name })
   }
 
@@ -203,12 +194,12 @@ class ParameterOwner extends EventEmitter {
    */
   replaceParameter(param) {
     const name = param.getName()
+    if (this.__paramMapping[paramName] == undefined) {
+      console.throw('Unable to replace Parameter:' + paramName)
+    }
     const index = this.__paramMapping[name]
-    const prevparam = this.__params[this.__paramMapping[name]]
-    prevparam.removeListenerById('valueChanged', this.__paramSignalIds[name])
-
-    this.__paramSignalIds[name] = param.on('valueChanged', (event) => this.__parameterValueChanged({ ...event, param }))
-    this.__params[index] = param
+    this.removeParameter(name)
+    this.insertParameter(param, index)
     return param
   }
 

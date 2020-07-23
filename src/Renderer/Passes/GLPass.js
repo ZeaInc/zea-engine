@@ -23,7 +23,7 @@ class GLPass extends ParameterOwner {
     const enabledParam = this.addParameter(
       new BooleanParameter('Enabled', true)
     )
-    enabledParam.addListener('valueChanged', 
+    enabledParam.on('valueChanged', 
       mode => (this.enabled = enabledParam.getValue())
     )
   }

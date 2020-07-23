@@ -60,8 +60,8 @@ class MaterialColorParam extends ColorParameter {
    */
   setImage(value, mode = 0) {
     const disconnectImage = () => {
-      this.__image.removeListener('loaded', this.__imageUpdated)
-      this.__image.removeListener('updated', this.__imageUpdated)
+      this.__image.off('loaded', this.__imageUpdated)
+      this.__image.off('updated', this.__imageUpdated)
       this.__image = null
       this.emit('textureDisconnected', {})
     }
@@ -70,7 +70,7 @@ class MaterialColorParam extends ColorParameter {
         disconnectImage()
       }
       this.__image = value
-      this.__image.addListener('updated', this.__imageUpdated)
+      this.__image.on('updated', this.__imageUpdated)
       this.emit('textureConnected', {})
       this.emit('valueChanged', { mode })
     } else {

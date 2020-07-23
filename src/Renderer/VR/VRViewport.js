@@ -194,7 +194,7 @@ class VRViewport extends GLBaseViewport {
           this.__vrAsset = this.__renderer
             .getScene()
             .loadCommonAssetResource(hmdAssetId)
-          this.__vrAsset.addListener('loaded', () => {
+          this.__vrAsset.on('loaded', () => {
             const materialLibrary = this.__vrAsset.getMaterialLibrary()
             const materialNames = materialLibrary.getMaterialNames()
             for (const name of materialNames) {
@@ -208,7 +208,7 @@ class VRViewport extends GLBaseViewport {
           })
         } else reject()
       }
-      this.__renderer.addListener('sceneSet', sceneSet)
+      this.__renderer.on('sceneSet', sceneSet)
     })
     return this.__hmdAssetPromise
   }
@@ -246,14 +246,14 @@ class VRViewport extends GLBaseViewport {
               .getDiv()
               .replaceChild(mirrorCanvas, this.__renderer.getGLCanvas())
 
-            session.addListener('end', event => {
+            session.on('end', event => {
                 this.__renderer
                   .getDiv()
                   .replaceChild(this.__renderer.getGLCanvas(), mirrorCanvas)
             })
           }
 
-          session.addListener('end', event => {
+          session.on('end', event => {
             this.__stageTreeItem.setVisible(false)
             this.__session = null
             this.emit('presentingChanged', { state: false })
@@ -315,8 +315,8 @@ class VRViewport extends GLBaseViewport {
               )
             }
           }
-          session.addListener('selectstart', onSelectStart)
-          session.addListener('selectend', onSelectEnd)
+          session.on('selectstart', onSelectStart)
+          session.on('selectend', onSelectEnd)
 
           this.__session = session
 

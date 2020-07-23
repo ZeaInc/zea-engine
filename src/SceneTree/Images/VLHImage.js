@@ -39,7 +39,7 @@ class VLHImage extends BaseImage {
     this.type = 'FLOAT'
 
     const fileParam = this.addParameter(new FilePathParameter('FilePath'))
-    fileParam.addListener('valueChanged', () => {
+    fileParam.on('valueChanged', () => {
       this.loaded = false
 
       if (this.getName() == '') {

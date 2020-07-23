@@ -51,10 +51,10 @@ class Plane extends Mesh {
     const rebuild = () => {
       this.__rebuild()
     }
-    this.__sizeXParam.addListener('valueChanged', resize)
-    this.__sizeYParam.addListener('valueChanged', resize)
-    this.__detailXParam.addListener('valueChanged', rebuild)
-    this.__detailYParam.addListener('valueChanged', rebuild)
+    this.__sizeXParam.on('valueChanged', resize)
+    this.__sizeYParam.on('valueChanged', resize)
+    this.__detailXParam.on('valueChanged', rebuild)
+    this.__detailYParam.on('valueChanged', rebuild)
   }
 
   /**

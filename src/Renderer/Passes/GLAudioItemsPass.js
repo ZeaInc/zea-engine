@@ -47,7 +47,7 @@ class GLAudioItemsPass extends GLPass {
     this.__renderer.registerPass(
       treeItem => {
         if (treeItem instanceof AudioItem) {
-          treeItem.addListener('audioSourceCreated', event => {
+          treeItem.on('audioSourceCreated', event => {
             const { audioSource } = event
             this.addAudioSource(treeItem, audioSource, treeItem)
           })
@@ -63,7 +63,7 @@ class GLAudioItemsPass extends GLPass {
               baseColorParam.getImage()
             ) {
               const image = baseColorParam.getImage()
-              image.addListener('loaded', () => {
+              image.on('loaded', () => {
                 if (image.getAudioSource) {
                   const audioSource = image.getAudioSource()
                   if (
@@ -104,7 +104,7 @@ class GLAudioItemsPass extends GLPass {
       // param.value = vlParam.getValue();
       param.setValueAtTime(vlParam.getValue(), 0)
       param.setValueAtTime(vlParam.getValue(), 5)
-      vlParam.addListener('valueChanged', () => {
+      vlParam.on('valueChanged', () => {
         // param.setTargetAtTime(vlParam.getValue(), audioCtx.currentTime);
         param.value = vlParam.getValue()
       })
@@ -132,7 +132,7 @@ class GLAudioItemsPass extends GLPass {
         const vlParam = parameterOwner.getParameter(paramName)
         if (!vlParam) return
         panner[paramName] = vlParam.getValue()
-        vlParam.addListener('valueChanged', () => {
+        vlParam.on('valueChanged', () => {
           panner[paramName] = vlParam.getValue()
         })
       }
@@ -183,7 +183,7 @@ class GLAudioItemsPass extends GLPass {
         // setVelocity()
       }
       updatePannerNodePosition()
-      treeItem.addListener('globalXfoChanged', event => {
+      treeItem.on('globalXfoChanged', event => {
         updatePannerNodePosition()
       })
     }

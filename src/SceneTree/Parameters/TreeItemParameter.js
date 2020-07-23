@@ -81,11 +81,11 @@ class TreeItemParameter extends Parameter {
     if (this.__filterFn && !this.__filterFn(treeItem)) return false
     if (this.__value !== treeItem) {
       if (this.__value) {
-        this.__value.removeListener('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
+        this.__value.off('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
       }
       this.__value = treeItem
       if (this.__value) {
-        this.__value.addListener('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
+        this.__value.on('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
       }
       if (mode == ValueSetMode.USER_SETVALUE || mode == ValueSetMode.REMOTEUSER_SETVALUE) {
         this.__flags |= ParamFlags.USER_EDITED
@@ -156,7 +156,7 @@ class TreeItemParameter extends Parameter {
    */
   destroy() {
     if (this.__value) {
-      this.__value.removeListener('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
+      this.__value.off('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
     }
   }
 }

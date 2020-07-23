@@ -41,7 +41,7 @@ class FileImage extends BaseImage {
     this.__loaded = false
 
     const fileParam = this.addParameter(new FilePathParameter('FilePath'))
-    fileParam.addListener('valueChanged', () => {
+    fileParam.on('valueChanged', () => {
       this.loaded = false
       if (this.getName() == '') {
         // Generate a name from the file path.
@@ -154,7 +154,7 @@ class FileImage extends BaseImage {
       if (imageElem.complete) {
         loaded()
       } else {
-        imageElem.addListener('load', loaded)
+        imageElem.addEventListener('load', loaded)
       }
     } else {
       resourceLoader.addWork(fileDesc.id, 1)
@@ -236,8 +236,8 @@ class FileImage extends BaseImage {
       imageElem.crossOrigin = 'anonymous'
       imageElem.src = url
 
-      imageElem.addListener('load', loaded)
-      imageElem.addListener('load', () => {
+      imageElem.addEventListener('load', loaded)
+      imageElem.addEventListener('load', () => {
         resourceLoader.addWorkDone(fileDesc.id, 1)
       })
       imageDataLibrary[fileDesc.id] = imageElem
@@ -290,17 +290,17 @@ class FileImage extends BaseImage {
     }
 
     document.body.appendChild(videoElem)
-    videoElem.addListener(
+    videoElem.on(
       'loadedmetadata',
       () => {
         // videoElem.play();
 
         videoElem.muted = muteParam.getValue()
-        muteParam.addListener('valueChanged', () => {
+        muteParam.on('valueChanged', () => {
           videoElem.muted = muteParam.getValue()
         })
         videoElem.loop = loopParam.getValue()
-        loopParam.addListener('valueChanged', () => {
+        loopParam.on('valueChanged', () => {
           videoElem.loop = loopParam.getValue()
         })
 
@@ -440,17 +440,17 @@ class FileImage extends BaseImage {
         resourceLoader.addWork(fileDesc.id, 1)
 
         if (fileDesc.assets && fileDesc.assets.atlas) {
-          const image = new Image()
-          image.crossOrigin = 'anonymous'
-          image.src = fileDesc.assets.atlas.url
-          image.addListener('load', () => {
+          const imageElem = new Image()
+          imageElem.crossOrigin = 'anonymous'
+          imageElem.src = fileDesc.assets.atlas.url
+          imageElem.addEventListener('load', () => {
             resolve({
               width: fileDesc.assets.atlas.width,
               height: fileDesc.assets.atlas.height,
               atlasSize: fileDesc.assets.atlas.atlasSize,
               frameDelays: fileDesc.assets.atlas.frameDelays,
               frameRange: [0, fileDesc.assets.atlas.frameDelays.length],
-              imageData: image,
+              imageData: imageElem,
             })
             resourceLoader.addWorkDone(fileDesc.id, 1)
           })

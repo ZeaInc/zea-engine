@@ -8,7 +8,7 @@
  * ```javascript
  *  const ee = new EventEmitter()
  * 
- *  ee.addListener('myEvent', (event) => {
+ *  ee.on('myEvent', (event) => {
  *    console.log('My Event was emitted:', event)
  *  })
  * 
@@ -90,6 +90,7 @@ class EventEmitter {
     }
 
     if (typeof listener == 'number') {
+      console.warn('Deprecated. Un-register using the original listener instead.')
       this.removeListenerById(eventName, listener)
       return
     }

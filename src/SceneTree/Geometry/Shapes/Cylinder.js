@@ -58,12 +58,12 @@ class Cylinder extends Mesh {
     const rebuild = () => {
       this.__rebuild()
     }
-    this.__radiusParam.addListener('valueChanged', resize)
-    this.__heightParam.addListener('valueChanged', resize)
-    this.__sidesParam.addListener('valueChanged', rebuild)
-    this.__loopsParam.addListener('valueChanged', rebuild)
-    this.__capsParam.addListener('valueChanged', rebuild)
-    this.__baseZAtZeroParam.addListener('valueChanged', resize)
+    this.__radiusParam.on('valueChanged', resize)
+    this.__heightParam.on('valueChanged', resize)
+    this.__sidesParam.on('valueChanged', rebuild)
+    this.__loopsParam.on('valueChanged', rebuild)
+    this.__capsParam.on('valueChanged', rebuild)
+    this.__baseZAtZeroParam.on('valueChanged', resize)
   }
 
   /**

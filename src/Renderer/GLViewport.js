@@ -91,7 +91,7 @@ class GLViewport extends GLBaseViewport {
       this.__viewMat = this.__cameraMat.inverse()
     }
     getCameraParams()
-    globalXfoParam.addListener('valueChanged', () => {
+    globalXfoParam.on('valueChanged', () => {
       getCameraParams()
       this.invalidateGeomDataBuffer()
       this.emit('updated', {})
@@ -101,7 +101,7 @@ class GLViewport extends GLBaseViewport {
         focalDistance: this.__camera.getFocalDistance(),
       })
     })
-    this.__camera.addListener('projectionParamChanged', () => {
+    this.__camera.on('projectionParamChanged', () => {
       this.__updateProjectionMatrix()
       this.emit('updated', {})
     })

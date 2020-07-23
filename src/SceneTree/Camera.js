@@ -40,17 +40,17 @@ class Camera extends TreeItem {
     // const _cleanViewMat = (xfo)=>{
     //     return this.__globalXfoParam.getValue().inverse().toMat4();
     // }
-    // this.__globalXfoParam.addListener('valueChanged', (changeType)=>{
+    // this.__globalXfoParam.on('valueChanged', (changeType)=>{
     //     this.__viewMatParam.setDirty(_cleanViewMat);
     // });
 
     const emitProjChanged = (event) => {
       this.emit('projectionParamChanged', event)
     }
-    this.__isOrthographicParam.addListener('valueChanged', emitProjChanged)
-    this.__fovParam.addListener('valueChanged', emitProjChanged)
-    this.__nearParam.addListener('valueChanged', emitProjChanged)
-    this.__farParam.addListener('valueChanged', emitProjChanged)
+    this.__isOrthographicParam.on('valueChanged', emitProjChanged)
+    this.__fovParam.on('valueChanged', emitProjChanged)
+    this.__nearParam.on('valueChanged', emitProjChanged)
+    this.__farParam.on('valueChanged', emitProjChanged)
 
     // Initial viewing coords of a person standing 3 meters away from the
     // center of the stage looking at something 1 meter off the ground.

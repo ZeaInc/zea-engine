@@ -108,7 +108,7 @@ class GearsOperator extends Operator {
     )
     const rpmParam = this.addParameter(new NumberParameter('RPM', 0.0)) // revolutions per minute
     this.__timeoutId
-    rpmParam.addListener('valueChanged', () => {
+    rpmParam.on('valueChanged', () => {
       const rpm = rpmParam.getValue()
       if (Math.abs(rpm) > 0.0) {
         if (!this.__timeoutId) {
@@ -130,10 +130,10 @@ class GearsOperator extends Operator {
     this.__gearsParam = this.addParameter(
       new ListParameter('Gears', GearParameter)
     )
-    this.__gearsParam.addListener('elementAdded', event => {
+    this.__gearsParam.on('elementAdded', event => {
       this.addOutput(event.elem.getOutput())
     })
-    this.__gearsParam.addListener('elementRemoved', event => {
+    this.__gearsParam.on('elementRemoved', event => {
       this.removeOutput(event.index)
     })
 

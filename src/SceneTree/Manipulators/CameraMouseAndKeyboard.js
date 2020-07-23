@@ -42,6 +42,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
     this.__ongoingTouches = {}
 
+    this.__globalXfoChangedDuringDrag = this.__globalXfoChangedDuringDrag.bind(this)
+
     this.__orbitRateParam = this.addParameter(new NumberParameter('orbitRate', SystemDesc.isMobileDevice ? -0.3 : 1))
     this.__dollySpeedParam = this.addParameter(new NumberParameter('dollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('mouseWheelDollySpeed', 0.0005))
@@ -233,9 +235,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     this.__mouseDownCameraTarget = camera.getGlobalXfo().tr.add(targetOffset)
     this.__mouseDownFocalDist = focalDistance
 
-    this.__dragListenerId = camera
-      .getParameter('GlobalXfo')
-      .on('valueChanged', this.__globalXfoChangedDuringDrag.bind(this))
+    camera.getParameter('GlobalXfo').on('valueChanged', this.__globalXfoChangedDuringDrag)
   }
 
   /**
@@ -245,10 +245,10 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    */
   __globalXfoChangedDuringDrag(mode) {
     if (!this.__calculatingDragAction) {
-      if (this.__dragListenerId != null) {
+      if (this.__dragging) {
         const camera = this.__mouseDownViewport.getCamera()
-        camera.getParameter('GlobalXfo').removeListenerById('valueChanged', this.__dragListenerId)
-        this.__dragListenerId = null
+        camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
+        this.__dragging = false
       }
       this.initDrag({ viewport: this.__mouseDownViewport, mousePos: this.__mouseDownPos })
     }
@@ -261,14 +261,13 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {MouseEvent} event - The event value.
    */
   endDrag(event) {
-    if (this.__dragListenerId != null) {
+    if (this.__dragging) {
       const { viewport } = event
       const camera = viewport.getCamera()
-      camera.getParameter('GlobalXfo').removeListenerById('valueChanged', this.__dragListenerId)
-      this.__dragListenerId = null
+      camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
+      this.__dragging = false
     }
     this.__mouseDown = false
-    this.__dragging = false
   }
 
   /**

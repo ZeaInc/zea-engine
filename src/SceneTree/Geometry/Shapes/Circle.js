@@ -45,9 +45,9 @@ class Circle extends Lines {
     const rebuild = () => {
       this.__rebuild()
     }
-    this.__radius.addListener('valueChanged', resize)
-    this.__angle.addListener('valueChanged', rebuild)
-    this.__numSegments.addListener('valueChanged', rebuild)
+    this.__radius.on('valueChanged', resize)
+    this.__angle.on('valueChanged', rebuild)
+    this.__numSegments.on('valueChanged', rebuild)
     this.__rebuild()
   }
 

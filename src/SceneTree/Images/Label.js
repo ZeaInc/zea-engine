@@ -125,7 +125,7 @@ class Label extends DataImage {
     //     const text = textParam.getValue();
     //     labelManager.setLabelTextToLibrary(library, name, text);
     // }
-    // textParam.addListener('valueChanged', setLabelText);
+    // textParam.on('valueChanged', setLabelText);
 
     this.addParameter(new ColorParameter('FontColor', new Color(0, 0, 0)))
     // this.addParameter(new StringParameter('TextAlign', 'left'))
@@ -146,7 +146,7 @@ class Label extends DataImage {
     const reload = () => {
       this.loadLabelData()
     }
-    this.addListener('nameChanged', reload)
+    this.on('nameChanged', reload)
 
     if (library) libraryParam.setValue(library)
 
@@ -211,7 +211,7 @@ class Label extends DataImage {
           resolve()
         }
         if (!labelManager.isLibraryLoaded(library)) {
-          labelManager.addListener('labelLibraryLoaded', (event) => {
+          labelManager.on('labelLibraryLoaded', (event) => {
             const loadedLibrary = event.library
             if (loadedLibrary == library) getLibraryText()
           })

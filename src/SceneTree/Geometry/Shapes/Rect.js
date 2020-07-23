@@ -32,9 +32,9 @@ class Rect extends Lines {
     if (isNaN(x) || isNaN(y)) throw new Error('Invalid geom args')
 
     this.__x = this.addParameter(new NumberParameter('x', x))
-    this.__x.addListener('valueChanged', this.__resize.bind(this))
+    this.__x.on('valueChanged', this.__resize.bind(this))
     this.__y = this.addParameter(new NumberParameter('y', y))
-    this.__y.addListener('valueChanged', this.__resize.bind(this))
+    this.__y.on('valueChanged', this.__resize.bind(this))
     this.__rebuild()
   }
 

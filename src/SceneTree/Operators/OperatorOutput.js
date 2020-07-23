@@ -221,7 +221,7 @@ class XfoOperatorOutput extends OperatorOutput {
       if (this._initialParamValue == undefined) throw new Error('WTF?')
     }
     init()
-    // param.addListener('valueChanged', event => {
+    // param.on('valueChanged', event => {
     //   if (
     //     event.mode == ValueSetMode.USER_SETVALUE ||
     //     event.mode == ValueSetMode.REMOTEUSER_SETVALUE ||

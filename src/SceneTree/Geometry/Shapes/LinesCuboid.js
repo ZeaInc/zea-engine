@@ -41,10 +41,10 @@ class LinesCuboid extends Lines {
     const rebuild = () => {
       this.__rebuild()
     }
-    this.__x.addListener('valueChanged', resize)
-    this.__y.addListener('valueChanged', resize)
-    this.__z.addListener('valueChanged', resize)
-    this.__baseZAtZero.addListener('valueChanged', rebuild)
+    this.__x.on('valueChanged', resize)
+    this.__y.on('valueChanged', resize)
+    this.__z.on('valueChanged', resize)
+    this.__baseZAtZero.on('valueChanged', rebuild)
   }
 
   /**

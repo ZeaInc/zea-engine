@@ -56,8 +56,8 @@ class MaterialFloatParam extends NumberParameter {
    */
   setImage(value, mode = 0) {
     const disconnectImage = () => {
-      // image.removeListener('loaded', imageUpdated);
-      // image.removeListener('updated', imageUpdated);
+      // image.off('loaded', imageUpdated);
+      // image.off('updated', imageUpdated);
       this.emit('textureDisconnected', {})
     }
     if (value) {
@@ -65,8 +65,8 @@ class MaterialFloatParam extends NumberParameter {
         disconnectImage()
       }
       this.__image = value
-      // image.addListener('loaded', imageUpdated);
-      // image.addListener('updated', imageUpdated);
+      // image.on('loaded', imageUpdated);
+      // image.on('updated', imageUpdated);
       this.emit('textureConnected', {})
       this.emit('valueChanged', { mode })
     } else {
