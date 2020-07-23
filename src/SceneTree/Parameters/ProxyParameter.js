@@ -1,7 +1,7 @@
 import { sgFactory } from '../SGFactory'
 import { Parameter } from './Parameter.js'
 
-/** Class representing a proxy parameter. Proxies are used to connect 
+/** Class representing a proxy parameter. Proxies are used to connect
  * a parameter on one object with another. An existing parameter is
  * replaced with a proxy that binds to a parameter on another object.
  * @extends Parameter

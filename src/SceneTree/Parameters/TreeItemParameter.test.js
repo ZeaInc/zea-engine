@@ -1,12 +1,11 @@
-// import { TreeItem } from '../TreeItem'
+import { TreeItem } from '../TreeItem'
 import { TreeItemParameter } from './TreeItemParameter'
-//import { BinReader } from '../BinReader'
 
 describe('TreeItemParameter', () => {
-  it.skip('has an initial value.', () => {
+  it  ('has an initial value.', () => {
     const treeItemParameter = new TreeItemParameter()
 
-    expect(treeItemParameter.getValue()).isEqual('')
+    expect(treeItemParameter.getValue()).toBeUndefined()
   })
 
   it('checks value type.', () => {
@@ -15,21 +14,26 @@ describe('TreeItemParameter', () => {
     expect(treeItemParameter.getDataType()).toEqual('TreeItem')
   })
 
-  /*it('sets value.', () => {
+  it('sets value.', () => {
     const treeItemParameter = new TreeItemParameter()
-    const value = new TreeItem()
+    const value = new TreeItem('fooItem')
+    value.setVisible(false)
     treeItemParameter.setValue(value)
+
     expect(treeItemParameter.getValue()).toEqual(value)
   })
 
-  it('saves to JSON (serialization).', () => {
+  /*it('saves to JSON (serialization).', () => {
     const treeItemParameter = new TreeItemParameter()
-    const value = new TreeItem(1, 2)
+
+    const scene = new Scene()
+    const value = new TreeItem('fooItem')
+
     treeItemParameter.setValue(value)
 
     const expOutput = '{"value":{"x":1,"y":2}}'
 
-    expect(JSON.stringify(treeItemParameter.toJSON())).toEqual(expOutput)
+    expect(JSON.stringify(treeItemParameter.toJSON(scene))).toEqual(expOutput)
   })
 
   it('loads from JSON (serialization).', () => {
@@ -52,7 +56,7 @@ describe('TreeItemParameter', () => {
 
   it('clones parameter object', () => {
     const parameter = new TreeItemParameter('TestParameter')
-    const value = new TreeItem(1, 2)
+    const value = new TreeItem('fooItem')
     parameter.setValue(value)
 
     const parameter2 = parameter.clone()

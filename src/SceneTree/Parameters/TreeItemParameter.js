@@ -85,7 +85,7 @@ class TreeItemParameter extends Parameter {
       }
       this.__value = treeItem
       if (this.__value) {
-        this.__value.addListener('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
+        this.__value.on('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
       }
       if (mode == ValueSetMode.USER_SETVALUE || mode == ValueSetMode.REMOTEUSER_SETVALUE) {
         this.__flags |= ParamFlags.USER_EDITED

@@ -155,6 +155,6 @@ describe('TreeItem', () => {
 
     const expOutput = '{"x":1,"y":2,"z":3}'
 
-    console.log(parent.toJSON())
+    //console.log(parent.toJSON())
   })
 })
