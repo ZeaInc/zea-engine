@@ -43,6 +43,7 @@
 - Technical Overview 
   * Release Notes
     * [zea-engine-1.1.0](release-notes/zea-engine-1.1.0.md)
+  * [Acknowledgements](acknowledgements.md)
 
 - API Reference
 [//]: <> (API)
@@ -167,3 +168,4 @@
   * [BaseEvent](api/Utilities/BaseEvent)
   * [EventEmitter](api/Utilities/EventEmitter)
 [//]: <> (API)
+
