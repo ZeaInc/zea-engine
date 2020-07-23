@@ -126,7 +126,6 @@ class BaseGeom extends ParameterOwner {
     // If this works, remove the old version.
     // for (let [key, attr] of this.__vertexAttributes.entries())
     //     attr.resize(count);
-    console.warn('@todo-review', 'Is this setting numVertices?')
     this.__vertexAttributes.forEach((attr) => attr.resize(count))
   }
 

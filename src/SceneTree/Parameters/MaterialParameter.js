@@ -1,5 +1,4 @@
 import { ParamFlags, ValueSetMode, Parameter } from './Parameter.js'
-import { string } from 'yargs'
 
 /**
  * Represents a specific type of parameter, that only stores `Material` values.
