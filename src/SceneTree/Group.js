@@ -57,6 +57,7 @@ class Group extends TreeItem {
     this.groupXfoDirty = false
     this.calculatingGroupXfo = false
     this.dirty = false
+    this.searchRoot = null
 
     this.invGroupXfo = undefined
     this.__initialXfos = []
@@ -385,6 +386,21 @@ class Group extends TreeItem {
   // Items
 
   /**
+   *  sets the root item to be used as the search root.
+   * @param {TreeItem} treeItem
+   */
+
+  setSearchRoot(treeItem) {
+    this.searchRoot = treeItem
+  }
+
+  setOwner(owner) {
+    if (!this.searchRoot || this.searchRoot == this.getOwner())
+      this.searchRoot = owner
+    super.setOwner(owner)
+  }
+
+  /**
    * This method is mostly used in our demos,
    * and should be removed from the interface.
    *
@@ -396,13 +412,13 @@ class Group extends TreeItem {
     this.clearItems(false)
 
     const searchRoot = this.getOwner()
-    if (searchRoot == undefined) {
+    if (this.searchRoot == undefined) {
       console.warn('Group does not have an owner and so cannot resolve paths:', this.getName())
       return
     }
     const items = []
     paths.forEach((path) => {
-      const treeItem = searchRoot.resolvePath(path)
+      const treeItem = this.searchRoot.resolvePath(path)
       if (treeItem) items.push(treeItem)
       else {
         console.warn('Path does not resolve to an Item:', path, ' group:', this.getName())
