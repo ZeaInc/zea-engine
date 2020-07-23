@@ -351,13 +351,13 @@ class Parameter extends BaseParameter {
    *
    * ```javascript
    *  // Creating a parameter object
-   *  const param = new Parameter('Title', 'Awesome Parameter', 'String')
+   *  const param = new Parameter('Title', 'Awesome Parameter Value', 'String')
    *
    *   // Capturing events
    *  param.on('valueChanged', (...params) => console.log('Value changed!'))
    *
    *  // Changing parameter's value will cause `valueChanged` event to trigger.
-   *  param.setValue('A New Awesome Parameter')
+   *  param.setValue('A New Awesome Parameter Value')
    *  // As result the console log code will execute: Value Changed!
    * ```
    *
@@ -454,7 +454,8 @@ class Parameter extends BaseParameter {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistence.
+   * The toJSON method serializes this instance as a JSON.
+   * It can be used for persistence, data transfer, etc.
    *
    * @param {object} context - The context value.
    * @param {number} flags - The flags value.
@@ -466,7 +467,7 @@ class Parameter extends BaseParameter {
   }
 
   /**
-   * The fromJSON method decodes a json object for this type.
+   * The fromJSON method takes a JSON and deserializes into an instance of this type.
    *
    * @param {object} j - The json object this item must decode.
    * @param {object} context - The context value.
@@ -477,8 +478,8 @@ class Parameter extends BaseParameter {
       console.warn('Invalid Parameter JSON')
       return
     }
-    // Note: JSON data is only used to store user edits, so
-    // parameters loaed from JSON are considered user edited.
+    // Since JSON data is only used to store user edits,
+    // parameters loaded from JSON are considered user edited.
     this.setFlag(ParamFlags.USER_EDITED)
 
     if (j.value.type && this.__value == undefined) {

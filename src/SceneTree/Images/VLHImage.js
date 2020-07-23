@@ -3,7 +3,7 @@ import { sgFactory } from '../SGFactory.js'
 import { BaseImage } from '../BaseImage.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
-import { FilePathParameter } from '../Parameters/index'
+import { FilePathParameter } from '../index'
 
 /**
  * Class representing a VLH image.

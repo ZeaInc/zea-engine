@@ -1,5 +1,6 @@
 /* eslint-disable constructor-super */
-import { ValueSetMode, FilePathParameter, BooleanParameter, NumberParameter } from './Parameters/index'
+import { ValueSetMode, BooleanParameter, NumberParameter } from './Parameters/index'
+import { FilePathParameter } from './index'
 import { TreeItem } from './TreeItem.js'
 
 /**

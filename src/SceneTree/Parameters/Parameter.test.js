@@ -32,8 +32,24 @@ describe('ParameterOwner', () => {
     expect(parameter.getName()).toEqual(name2)
   })
 
-  it('save to JSON and load from JSON (serialization).', () => {
-    // test param without data type.
+  test('Saving to JSON (serialization).', () => {
+    const parameter = new Parameter('name', 'value')
+
+    const expOutput = '{"value":"value"}'
+
+    expect(JSON.stringify(parameter.toJSON())).toEqual(expOutput)
+  })
+
+  test('Loading from JSON (deserialization).', () => {
+    const edited = 'Edited'
+    const json = { value: edited }
+
+    const parameter = new Parameter('name', 'value')
+    parameter.fromJSON(json)
+
+    // TODO: test that the USER_EDITED flag was set.
+
+    expect(parameter.getValue()).toEqual(edited)
   })
 
   it('add a param at a given index.', () => {})

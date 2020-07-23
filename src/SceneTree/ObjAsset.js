@@ -11,7 +11,8 @@ import { Material } from './Material.js'
 import { resourceLoader } from './ResourceLoader.js'
 import { GeomLibrary } from './GeomLibrary.js'
 import { MaterialLibrary } from './MaterialLibrary.js'
-import { BooleanParameter, NumberParameter, StringParameter, FilePathParameter } from './Parameters/index'
+import { BooleanParameter, NumberParameter, StringParameter } from './Parameters/index'
+import { FilePathParameter } from './index'
 
 // AssetItem.registerDataLoader('.obj', ObjDataLoader);
 
