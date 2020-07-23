@@ -1066,7 +1066,7 @@ class TreeItem extends BaseItem {
   fromJSON(j, context, flags) {
     super.fromJSON(j, context, flags)
 
-    context.numTreeItems++
+    if (context && !Number.isNaN(context.numTreeItems)) context.numTreeItems++
 
     // Note: JSON data is only used to store user edits, so
     // parameters loaded from JSON are considered user edited.

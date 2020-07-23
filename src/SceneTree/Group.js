@@ -735,6 +735,9 @@ class Group extends TreeItem {
       console.warn('Invalid Parameter JSON')
       return
     }
+    if (!context) {
+      throw new Error('Unable to load JSON on a Group without a load context')
+    }
     let count = j.treeItems.length
 
     const addItem = (path) => {
