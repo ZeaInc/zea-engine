@@ -31,11 +31,11 @@
     "test:visual:watch": "karma start --auto-watch --browsers ChromeHeadless karma.conf.js",
     "test:visual:debug": "karma start --auto-watch --single-run karma.conf.js"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "@zeainc/jsdocs2md": "^0.0.3",
     "chai": "^4.2.0",
-    "documentation": "^12.1.1",
     "eslint": "^6.5.1",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.3.0",
@@ -43,9 +43,6 @@
     "ink-docstrap": "^1.3.2",
     "jest": "^26.1.0",
     "jest-coverage-badges": "^1.1.2",
-    "jsdoc": "^3.6.3",
-    "jsdoc-inheritance-diagram": "^1.2.3",
-    "jsdoc-to-markdown": "^5.0.3",
     "karma": "^5.0.4",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
@@ -56,6 +53,7 @@
     "rollup": "^2.2.0",
     "rollup-plugin-terser": "^5.3.0",
     "rollup-plugin-web-worker-loader": "^1.3.0",
-    "yargs": "3.32.0"
+    "yargs": "3.32.0",
+    "@babel/preset-env": "^7.10.4"
   }
 }
