@@ -278,6 +278,7 @@ class TreeItem extends BaseItem {
    * @return {Xfo} - Returns the local Xfo.
    */
   getLocalXfo() {
+    console.warn(`deprecated. use "getParameter('LocalXfo').getValue()"`)
     return this.__localXfoParam.getValue()
   }
 
@@ -288,6 +289,7 @@ class TreeItem extends BaseItem {
    * @param {number} mode - The mode value. **See:** `ValueSetMode` enum in `Parameter` class.
    */
   setLocalXfo(xfo, mode) {
+    console.warn(`deprecated. use "getParameter('LocalXfo').setValue(xfo)"`)
     this.__localXfoParam.setValue(xfo, mode)
   }
 
@@ -298,6 +300,7 @@ class TreeItem extends BaseItem {
    * @return {Xfo} - Returns the global Xfo.
    */
   getGlobalXfo(mode) {
+    console.warn(`deprecated. use "getParameter('GlobalXfo').getValue()"`)
     return this.__globalXfoParam.getValue(mode)
   }
 
@@ -307,6 +310,7 @@ class TreeItem extends BaseItem {
    * @param {number} mode - The mode value. **See:** `ValueSetMode` enum in `Parameter` class.
    */
   setGlobalXfo(xfo, mode) {
+    console.warn(`deprecated. use "getParameter('GlobalXfo').setValue(xfo)"`)
     const owner = this.getOwner()
     if (owner) {
       const parentXfo = owner.getGlobalXfo()
