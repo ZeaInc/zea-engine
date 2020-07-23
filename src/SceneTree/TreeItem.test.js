@@ -17,6 +17,17 @@ describe('TreeItem', () => {
     expect(treeItem.isVisible()).toBe(false)
   })
 
+  test('Changing tree visibility.', () => {
+    const parent = new TreeItem('Parent')
+    const child = new TreeItem('Child')
+
+    parent.addChild(child)
+
+    parent.setVisible(false)
+
+    expect(child.isVisible()).toBe(false)
+  })
+
   it("doesn't have children by default.", () => {
     const parent = new TreeItem('Parent')
 
