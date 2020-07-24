@@ -327,41 +327,45 @@ class TreeItem extends BaseItem {
   // Global Matrix
 
   /**
+   * @deprecated
    * Returns the value of local Xfo transform parameter.
    *
    * @return {Xfo} - Returns the local Xfo.
    */
   getLocalXfo() {
-    console.warn(`deprecated. use "getParameter('LocalXfo').getValue()"`)
+    console.warn(`Deprecated. use "getParameter('LocalXfo').getValue()"`)
     return this.__localXfoParam.getValue()
   }
 
   /**
+   * @deprecated
    * Sets the local Xfo transform parameter.
    *
    * @param {Xfo} xfo - The local xfo transform.
    */
   setLocalXfo(xfo) {
-    console.warn(`deprecated. use "getParameter('LocalXfo').setValue(xfo)"`)
+    console.warn(`Deprecated. use "getParameter('LocalXfo').setValue(xfo)"`)
     this.__localXfoParam.setValue(xfo)
   }
 
   /**
+   * @deprecated
    * Returns the global Xfo transform.
    *
    * @return {Xfo} - Returns the global Xfo.
    */
   getGlobalXfo() {
-    console.warn(`deprecated. use "getParameter('GlobalXfo').getValue()"`)
+    console.warn(`Deprecated. use "getParameter('GlobalXfo').getValue()"`)
     return this.__globalXfoParam.getValue()
   }
 
   /**
+   * @deprecated
    * Sets the global Xfo transform.
    * @param {Xfo} xfo - The global xfo transform.
    */
   setGlobalXfo(xfo) {
-    console.warn(`deprecated. use "getParameter('GlobalXfo').setValue(xfo)"`)
+    console.warn(`Deprecated. use "getParameter('GlobalXfo').setValue(xfo)"`)
     this.__globalXfoParam.setValue(xfo)
   }
 
@@ -393,6 +397,7 @@ class TreeItem extends BaseItem {
 
   /**
    * @deprecated
+   * Returns visible parameter value for current TreeItem.
    *
    * @return {boolean} - The visible param value.
    */
@@ -527,8 +532,8 @@ class TreeItem extends BaseItem {
   }
 
   /**
-   * Returns bounding box parameter value.
    * @deprecated
+   * Returns bounding box parameter value.
    * @private
    * @return {Box3} - The return value.
    */
@@ -845,10 +850,9 @@ class TreeItem extends BaseItem {
   }
 
   /**
-   * Remove a child BasItem by passing in actual item object.
+   * @deprecated
    *
    * @param {BaseItem} childItem - The child TreeItem to remove.
-   * @deprecated
    */
   removeChildByHandle(childItem) {
     console.warn('Deprecated. Use #removeChild')
@@ -879,9 +883,9 @@ class TreeItem extends BaseItem {
   }
 
   /**
+   * @deprecated
    * Returns index position of the specified item.
    *
-   * @deprecated
    * @param {object} childItem - The child TreeItem value.
    * @return {number} - The return value.
    */
