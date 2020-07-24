@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.94% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.94% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -126,10 +126,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-yes">74x</span>
+<span class="cline-any cline-yes">74x</span>
+<span class="cline-any cline-yes">74x</span>
+<span class="cline-any cline-yes">74x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -137,28 +137,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">90x</span>
+<span class="cline-any cline-yes">90x</span>
+<span class="cline-any cline-yes">90x</span>
+<span class="cline-any cline-yes">90x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,14 +191,14 @@ class CalcGlobalXfoOperator extends Operator {
    * The setValue method.
    * @param {Xfo} value - the new value being set on the GlobalXfo
    */
-<span class="fstat-no" title="function not covered" >  se</span>tValue(value) {
-    const localXfoParam = <span class="cstat-no" title="statement not covered" >this.getInput('LocalXfo').getParam()</span>
-    const parentGlobalInput = <span class="cstat-no" title="statement not covered" >this.getInput('ParentGlobal')</span>
-<span class="cstat-no" title="statement not covered" >    if (parentGlobalInput.isConnected()) {</span>
-      const parentGlobalXfo = <span class="cstat-no" title="statement not covered" >parentGlobalInput.getValue()</span>
-<span class="cstat-no" title="statement not covered" >      localXfoParam.setValue(parentGlobalXfo.inverse().multiply(value))</span>
+  setValue(value) {
+    const localXfoParam = this.getInput('LocalXfo').getParam()
+    const parentGlobalInput = this.getInput('ParentGlobal')
+    if (parentGlobalInput.isConnected()) {
+      const parentGlobalXfo = parentGlobalInput.getValue()
+      localXfoParam.setValue(parentGlobalXfo.inverse().multiply(value))
     } else {
-<span class="cstat-no" title="statement not covered" >      localXfoParam.setValue(value)</span>
+      localXfoParam.setValue(value)
     }
   }
 &nbsp;
@@ -209,9 +209,9 @@ class CalcGlobalXfoOperator extends Operator {
     const localXfo = this.getInput('LocalXfo').getValue()
     const parentGlobalInput = this.getInput('ParentGlobal')
     const globalXfoOutput = this.getOutput('GlobalXfo')
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (parentGlobalInput.isConnected()) {
-      const parentGlobalXfo = <span class="cstat-no" title="statement not covered" >parentGlobalInput.getValue()</span>
-<span class="cstat-no" title="statement not covered" >      globalXfoOutput.setClean(parentGlobalXfo.multiply(localXfo), this)</span>
+    if (parentGlobalInput.isConnected()) {
+      const parentGlobalXfo = parentGlobalInput.getValue()
+      globalXfoOutput.setClean(parentGlobalXfo.multiply(localXfo), this)
     } else {
       globalXfoOutput.setClean(localXfo, this)
     }
@@ -229,7 +229,7 @@ export { CalcGlobalXfoOperator }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jul 24 2020 12:55:04 GMT-0500 (Colombia Standard Time)
+                at Fri Jul 24 2020 13:02:41 GMT-0500 (Colombia Standard Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

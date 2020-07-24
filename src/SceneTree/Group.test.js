@@ -4,8 +4,6 @@ import { Material } from './Material'
 import { GeomItem } from './GeomItem'
 import { Vec3, Xfo } from '../Math'
 
-console.warn = () => {}
-
 describe('Group', () => {
   it('is visible by default.', () => {
     const group = new Group('Foo')
@@ -181,7 +179,7 @@ describe('Group', () => {
 
     group.addItem(treeItem2)
 
-    const expOutput = "{\"params\":{\"LocalXfo\":{\"value\":{\"tr\":{\"x\":0,\"y\":0,\"z\":0},\"ori\":{\"x\":0,\"y\":0,\"z\":0,\"w\":1}}}},\"name\":\"Foo\",\"type\":\"Group\",\"treeItems\":[[\"treeItem1\",\"treeItem2\"]]}"
+    const expOutput = '{"name":"Foo","type":"Group","treeItems":[["treeItem1","treeItem2"]]}'
     expect(JSON.stringify(group.toJSON())).toEqual(expOutput)
   })
 

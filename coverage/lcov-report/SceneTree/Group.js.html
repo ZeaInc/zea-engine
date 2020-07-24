@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for Math/Vec4.js</title>
+    <title>Code coverage report for SceneTree/Group.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">Math</a> Vec4.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">SceneTree</a> Group.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.19% </span>
+                <span class="strong">57.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/131</span>
+                <span class='fraction'>154/270</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.71% </span>
+                <span class="strong">33.94% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/31</span>
+                <span class='fraction'>37/109</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">54.55% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>15/45</span>
+                <span class='fraction'>30/55</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.19% </span>
+                <span class="strong">56.92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/131</span>
+                <span class='fraction'>148/260</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -675,7 +675,134 @@
 <a name='L616'></a><a href='#L616'>616</a>
 <a name='L617'></a><a href='#L617'>617</a>
 <a name='L618'></a><a href='#L618'>618</a>
-<a name='L619'></a><a href='#L619'>619</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L619'></a><a href='#L619'>619</a>
+<a name='L620'></a><a href='#L620'>620</a>
+<a name='L621'></a><a href='#L621'>621</a>
+<a name='L622'></a><a href='#L622'>622</a>
+<a name='L623'></a><a href='#L623'>623</a>
+<a name='L624'></a><a href='#L624'>624</a>
+<a name='L625'></a><a href='#L625'>625</a>
+<a name='L626'></a><a href='#L626'>626</a>
+<a name='L627'></a><a href='#L627'>627</a>
+<a name='L628'></a><a href='#L628'>628</a>
+<a name='L629'></a><a href='#L629'>629</a>
+<a name='L630'></a><a href='#L630'>630</a>
+<a name='L631'></a><a href='#L631'>631</a>
+<a name='L632'></a><a href='#L632'>632</a>
+<a name='L633'></a><a href='#L633'>633</a>
+<a name='L634'></a><a href='#L634'>634</a>
+<a name='L635'></a><a href='#L635'>635</a>
+<a name='L636'></a><a href='#L636'>636</a>
+<a name='L637'></a><a href='#L637'>637</a>
+<a name='L638'></a><a href='#L638'>638</a>
+<a name='L639'></a><a href='#L639'>639</a>
+<a name='L640'></a><a href='#L640'>640</a>
+<a name='L641'></a><a href='#L641'>641</a>
+<a name='L642'></a><a href='#L642'>642</a>
+<a name='L643'></a><a href='#L643'>643</a>
+<a name='L644'></a><a href='#L644'>644</a>
+<a name='L645'></a><a href='#L645'>645</a>
+<a name='L646'></a><a href='#L646'>646</a>
+<a name='L647'></a><a href='#L647'>647</a>
+<a name='L648'></a><a href='#L648'>648</a>
+<a name='L649'></a><a href='#L649'>649</a>
+<a name='L650'></a><a href='#L650'>650</a>
+<a name='L651'></a><a href='#L651'>651</a>
+<a name='L652'></a><a href='#L652'>652</a>
+<a name='L653'></a><a href='#L653'>653</a>
+<a name='L654'></a><a href='#L654'>654</a>
+<a name='L655'></a><a href='#L655'>655</a>
+<a name='L656'></a><a href='#L656'>656</a>
+<a name='L657'></a><a href='#L657'>657</a>
+<a name='L658'></a><a href='#L658'>658</a>
+<a name='L659'></a><a href='#L659'>659</a>
+<a name='L660'></a><a href='#L660'>660</a>
+<a name='L661'></a><a href='#L661'>661</a>
+<a name='L662'></a><a href='#L662'>662</a>
+<a name='L663'></a><a href='#L663'>663</a>
+<a name='L664'></a><a href='#L664'>664</a>
+<a name='L665'></a><a href='#L665'>665</a>
+<a name='L666'></a><a href='#L666'>666</a>
+<a name='L667'></a><a href='#L667'>667</a>
+<a name='L668'></a><a href='#L668'>668</a>
+<a name='L669'></a><a href='#L669'>669</a>
+<a name='L670'></a><a href='#L670'>670</a>
+<a name='L671'></a><a href='#L671'>671</a>
+<a name='L672'></a><a href='#L672'>672</a>
+<a name='L673'></a><a href='#L673'>673</a>
+<a name='L674'></a><a href='#L674'>674</a>
+<a name='L675'></a><a href='#L675'>675</a>
+<a name='L676'></a><a href='#L676'>676</a>
+<a name='L677'></a><a href='#L677'>677</a>
+<a name='L678'></a><a href='#L678'>678</a>
+<a name='L679'></a><a href='#L679'>679</a>
+<a name='L680'></a><a href='#L680'>680</a>
+<a name='L681'></a><a href='#L681'>681</a>
+<a name='L682'></a><a href='#L682'>682</a>
+<a name='L683'></a><a href='#L683'>683</a>
+<a name='L684'></a><a href='#L684'>684</a>
+<a name='L685'></a><a href='#L685'>685</a>
+<a name='L686'></a><a href='#L686'>686</a>
+<a name='L687'></a><a href='#L687'>687</a>
+<a name='L688'></a><a href='#L688'>688</a>
+<a name='L689'></a><a href='#L689'>689</a>
+<a name='L690'></a><a href='#L690'>690</a>
+<a name='L691'></a><a href='#L691'>691</a>
+<a name='L692'></a><a href='#L692'>692</a>
+<a name='L693'></a><a href='#L693'>693</a>
+<a name='L694'></a><a href='#L694'>694</a>
+<a name='L695'></a><a href='#L695'>695</a>
+<a name='L696'></a><a href='#L696'>696</a>
+<a name='L697'></a><a href='#L697'>697</a>
+<a name='L698'></a><a href='#L698'>698</a>
+<a name='L699'></a><a href='#L699'>699</a>
+<a name='L700'></a><a href='#L700'>700</a>
+<a name='L701'></a><a href='#L701'>701</a>
+<a name='L702'></a><a href='#L702'>702</a>
+<a name='L703'></a><a href='#L703'>703</a>
+<a name='L704'></a><a href='#L704'>704</a>
+<a name='L705'></a><a href='#L705'>705</a>
+<a name='L706'></a><a href='#L706'>706</a>
+<a name='L707'></a><a href='#L707'>707</a>
+<a name='L708'></a><a href='#L708'>708</a>
+<a name='L709'></a><a href='#L709'>709</a>
+<a name='L710'></a><a href='#L710'>710</a>
+<a name='L711'></a><a href='#L711'>711</a>
+<a name='L712'></a><a href='#L712'>712</a>
+<a name='L713'></a><a href='#L713'>713</a>
+<a name='L714'></a><a href='#L714'>714</a>
+<a name='L715'></a><a href='#L715'>715</a>
+<a name='L716'></a><a href='#L716'>716</a>
+<a name='L717'></a><a href='#L717'>717</a>
+<a name='L718'></a><a href='#L718'>718</a>
+<a name='L719'></a><a href='#L719'>719</a>
+<a name='L720'></a><a href='#L720'>720</a>
+<a name='L721'></a><a href='#L721'>721</a>
+<a name='L722'></a><a href='#L722'>722</a>
+<a name='L723'></a><a href='#L723'>723</a>
+<a name='L724'></a><a href='#L724'>724</a>
+<a name='L725'></a><a href='#L725'>725</a>
+<a name='L726'></a><a href='#L726'>726</a>
+<a name='L727'></a><a href='#L727'>727</a>
+<a name='L728'></a><a href='#L728'>728</a>
+<a name='L729'></a><a href='#L729'>729</a>
+<a name='L730'></a><a href='#L730'>730</a>
+<a name='L731'></a><a href='#L731'>731</a>
+<a name='L732'></a><a href='#L732'>732</a>
+<a name='L733'></a><a href='#L733'>733</a>
+<a name='L734'></a><a href='#L734'>734</a>
+<a name='L735'></a><a href='#L735'>735</a>
+<a name='L736'></a><a href='#L736'>736</a>
+<a name='L737'></a><a href='#L737'>737</a>
+<a name='L738'></a><a href='#L738'>738</a>
+<a name='L739'></a><a href='#L739'>739</a>
+<a name='L740'></a><a href='#L740'>740</a>
+<a name='L741'></a><a href='#L741'>741</a>
+<a name='L742'></a><a href='#L742'>742</a>
+<a name='L743'></a><a href='#L743'>743</a>
+<a name='L744'></a><a href='#L744'>744</a>
+<a name='L745'></a><a href='#L745'>745</a>
+<a name='L746'></a><a href='#L746'>746</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -695,6 +822,356 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -705,19 +1182,80 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -728,7 +1266,212 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -741,306 +1484,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1051,14 +1522,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1066,31 +1529,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1103,814 +1541,757 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable new-cap */
-import { AttrValue } from './AttrValue.js'
-import { typeRegistry } from './TypeRegistry.js'
-import { Vec3 } from './Vec3.js'
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable no-unused-vars */
+import { Vec3, Color, Xfo } from '../Math/index'
+import {
+  BooleanParameter,
+  NumberParameter,
+  Vec3Parameter,
+  ColorParameter,
+  XfoParameter,
+  ItemSetParameter,
+  MultiChoiceParameter,
+} from './Parameters/index'
+import { MaterialParameter } from './Parameters/MaterialParameter.js'
+import { ItemFlags } from './BaseItem'
+import { TreeItem } from './TreeItem'
+import { BaseGeomItem } from './BaseGeomItem'
+import { sgFactory } from './SGFactory.js'
+import {
+  GroupTransformXfoOperator,
+  GroupMemberXfoOperator
+} from './Operators/GroupMemberXfoOperator.js'
+&nbsp;
+const GROUP_XFO_MODES = {
+  disabled: 0,
+  manual: 1,
+  first: 2,
+  average: 3,
+  globalOri: 4,
+}
+&nbsp;
 /**
- * Represents a four-dimensional coordinate.
- * Math types internally store values in {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array|Float32Array} and
- * expose getters and setters for the component values.
+ * Groups are a special type of `TreeItem` that allows you to gather/classify/organize/modify
+ * multiple items contained within the group. Items can be added to the group directly, or using
+ * its path.
+ * All parameters set to the group are also set to the children; in other words, it's a faster way
+ * to apply common things to multiple items.
  *
- * @extends AttrValue
+ * **Parameters**
+ * * **Items(`ItemSetParameter`):** _todo_
+ * * **Highlighted(`BooleanParameter`):** _todo_
+ * * **HighlightColor(`ColorParameter`):** _todo_
+ * * **HighlightFill(`NumberParameter`):** _todo_
+ * * **Material(`MaterialParameter`):** _todo_
+ * * **CutAwayEnabled(`BooleanParameter`):** _todo_
+ * * **CutPlaneNormal(`Vec3Parameter`):** _todo_
+ * * **CutPlaneDist(`NumberParameter`):** _todo_
+ *
+ * @extends TreeItem
  */
-class Vec4 extends AttrValue {
+class Group extends TreeItem {
   /**
-   /**
-   * Creates a Vec4.
+   * Creates an instance of a group.
    *
-   * The type of values of the `(x, y, z, t)` coordinates can be {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array|Float32Array},
-   * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array|Uint32Array},
-   * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array|Int32Array} and
-   * {@link https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/ArrayBuffer|ArrayBuffer}.
-   * &lt;br&gt;
-   * You can also pass one JSON object parameter.
-   * 
-   * @param {Number|Float32Array|json} x - The x value. Default is 0.
-   * @param {number} y - The y value. Default is 0.
-   * @param {number} z - The y value. Default is 0.
-   * @param {number} t - The t value. Default is 0.
+   * @param {string} name - The name of the group.
    */
-  constructor(x = 0, y = 0, z = 0, t = 0) {
-    super()
+  constructor(name) {
+    super(name)
 &nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (x instanceof ArrayBuffer) {
-      const buffer = <span class="cstat-no" title="statement not covered" >x</span>
-      const byteOffset = <span class="cstat-no" title="statement not covered" >y</span>
-<span class="cstat-no" title="statement not covered" >      this.__data = new Float32Array(buffer, byteOffset, 4)</span>
-    } else <span class="missing-if-branch" title="if path not taken" >I</span>if (x != null &amp;&amp; typeof x == 'object') {
-<span class="cstat-no" title="statement not covered" >      this.__data = new Float32Array(4)</span>
-<span class="cstat-no" title="statement not covered" >      this.fromJSON(x)</span>
-    } else {
-      this.__data = new Float32Array(4)
-      this.__data[0] = x
-      this.__data[1] = y
-      this.__data[2] = z
-      this.__data[3] = t
-    }
-  }
+    // Items which can be constructed by a user (not loaded in binary data.)
+    // Should always have this flag set.
+    this.setFlag(ItemFlags.USER_EDITED)
 &nbsp;
-  /**
-   * Getter for `x` value.
-   *
-   * @return {number} - Returns the x value.
-   */
-  get x() {
-    return this.__data[0]
-  }
+    this.groupXfoDirty = false
+    this.calculatingGroupXfo = false
+    this.dirty = false
+    this.searchRoot = null
+    this._bindXfoDirty = false
 &nbsp;
-  /**
-   * Setter for `x` value.
-   *
-   * @param {number} val - The val param.
-   */
-  set x(val) {
-    this.__data[0] = val
-  }
+    // this.invGroupXfo = undefined
+    this.memberXfoOps = []
+    // this.__eventHandlers = []
 &nbsp;
-  /**
-   * Getter for `y` value.
-   *
-   * @return {number} - Returns the y value.
-   */
-  get y() {
-    return this.__data[1]
-  }
+    const pid = 0
+    this.__itemsParam = this.addParameter(new ItemSetParameter('Items', (item) =&gt; item instanceof TreeItem))
+    this.__itemsParam.on('itemAdded', (event) =&gt; {
+      this.__bindItem(event.item, event.index)
+    })
+    this.__itemsParam.on('itemRemoved', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {
+<span class="cstat-no" title="statement not covered" >      this.__unbindItem(event.item, event.index)</span>
+    })
 &nbsp;
-  /**
-   * Setter for `y` value.
-   *
-   * @param {number} val - The val param.
-   */
-  set y(val) {
-    this.__data[1] = val
-  }
-&nbsp;
-  /**
-   * Getter for `z` value.
-   *
-   * @param {number} val - The val param.
-   */
-  get z() {
-    return this.__data[2]
-  }
-&nbsp;
-  /**
-   * Setter for `z` value.
-   *
-   * @param {number} val - The val param.
-   */
-  set z(val) {
-    this.__data[2] = val
-  }
-&nbsp;
-  /**
-   * Getter for `t` value.
-   *
-   * @param {number} val - The val param.
-   */
-  get t() {
-    return this.__data[3]
-  }
-&nbsp;
-  /**
-   * Setter for `t` value.
-   *
-   * @param {number} val - The val param.
-   */
-  set t(val) {
-    this.__data[3] = val
-  }
-&nbsp;
-  /**
-   * Getter for `xy` swizzel.
-   *
-   * @return {number} - Returns the z value.
-   */
-<span class="fstat-no" title="function not covered" >  ge</span>t xyz() {
-<span class="cstat-no" title="statement not covered" >    return new Vec3(this.__data[0], this.__data[1], this.__data[2])</span>
-  }
-&nbsp;
-  /**
-   * Setter from scalar components.
-   *
-   * @param {number} x - The x value.
-   * @param {number} y  - The y value.
-   * @param {number} z  - The y value.
-   * @param {number} t  - The t value.
-   */
-<span class="fstat-no" title="function not covered" >  se</span>t(x, y, z, t) {
-<span class="cstat-no" title="statement not covered" >    this.x = x</span>
-<span class="cstat-no" title="statement not covered" >    this.y = y</span>
-<span class="cstat-no" title="statement not covered" >    this.z = z</span>
-<span class="cstat-no" title="statement not covered" >    this.t = t</span>
-  }
-&nbsp;
-  /**
-   * Sets the state of a Vec4 Object from another Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to set from.
-   */
-<span class="fstat-no" title="function not covered" >  se</span>tFromOther(other) {
-<span class="cstat-no" title="statement not covered" >    this.x = other.x</span>
-<span class="cstat-no" title="statement not covered" >    this.y = other.y</span>
-<span class="cstat-no" title="statement not covered" >    this.z = other.z</span>
-<span class="cstat-no" title="statement not covered" >    this.t = other.t</span>
-  }
-&nbsp;
-  /**
-   * Checks if this Vec4 is exactly the same as another Vec4.
-   *
-   * @deprecated
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @return {boolean} - Returns true or false.
-   */
-<span class="fstat-no" title="function not covered" >  eq</span>ual(other) {
-<span class="cstat-no" title="statement not covered" >    console.warn('Deprecated. Use #isEqual instead.')</span>
-<span class="cstat-no" title="statement not covered" >    return this.isEqual(other)</span>
-  }
-&nbsp;
-  /**
-   * Checks if this Vec4 is exactly the same as another Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @return {boolean} - Returns true or false.
-   */
-  isEqual(other) {
-    return (
-      this.x == other.x &amp;&amp;
-      this.y == other.y &amp;&amp;
-      this.z == other.z &amp;&amp;
-      this.t == other.t
+    this.__initialXfoModeParam = this.addParameter(
+      new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, ['manual', 'first', 'average', 'global'])
     )
+    this.__initialXfoModeParam.on('valueChanged', () =&gt; {
+      this.calcGroupXfo()
+    })
+&nbsp;
+    this.__highlightedParam = this.addParameter(new BooleanParameter('Highlighted', false))
+    this.__highlightedParam.on('valueChanged', <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >      this.__updateHighlight()</span>
+    })
+&nbsp;
+    this.__updateHighlight = this.__updateHighlight.bind(this)
+    const highlightColorParam = this.addParameter(new ColorParameter('HighlightColor', new Color(0.5, 0.5, 1)))
+    highlightColorParam.on('valueChanged', this.__updateHighlight)
+    const highlightFillParam = this.addParameter(new NumberParameter('HighlightFill', 0.0, [0, 1]))
+    highlightFillParam.on('valueChanged', this.__updateHighlight)
+&nbsp;
+    this.__materialParam = this.addParameter(new MaterialParameter('Material'))
+    this.__materialParam.on('valueChanged', () =&gt; {
+      this.__updateMaterial()
+    })
+&nbsp;
+    this.__updateCutaway = this.__updateCutaway.bind(this)
+    this.addParameter(new BooleanParameter('CutAwayEnabled', false)).on('valueChanged', this.__updateCutaway)
+    this.addParameter(new Vec3Parameter('CutPlaneNormal', new Vec3(1, 0, 0))).on('valueChanged', this.__updateCutaway)
+    this.addParameter(new NumberParameter('CutPlaneDist', 0.0)).on('valueChanged', this.__updateCutaway)
+&nbsp;
+    const groupTransformParam = this.addParameter(new XfoParameter('GroupTransform', new Xfo()))
+    this.groupTransformOp = new GroupTransformXfoOperator(this.getParameter('GlobalXfo'), groupTransformParam)
   }
 &nbsp;
   /**
-   * Checks if this Vec4 is different from another Vec4.
+   * Returns enum of available xfo modes.
    *
-   * @deprecated
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @return {boolean} - Returns true or false.
+   * | Name | Default |
+   * | --- | --- |
+   * | manual | &lt;code&gt;0&lt;/code&gt; |
+   * | first | &lt;code&gt;1&lt;/code&gt; |
+   * | average | &lt;code&gt;2&lt;/code&gt; |
+   * | globalOri | &lt;code&gt;3&lt;/code&gt; |
    */
-<span class="fstat-no" title="function not covered" >  no</span>tEquals(other) {
-<span class="cstat-no" title="statement not covered" >    console.warn('Deprecated. Use #notEqual instead.')</span>
-<span class="cstat-no" title="statement not covered" >    return this.notEqual(other)</span>
+  static get INITIAL_XFO_MODES() {
+    return GROUP_XFO_MODES
   }
 &nbsp;
   /**
-   * Checks if this Vec4 is different from another Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @return {boolean} - Returns true or false.
-   */
-<span class="fstat-no" title="function not covered" >  no</span>tEqual(other) {
-<span class="cstat-no" title="statement not covered" >    return (</span>
-      this.x != other.x &amp;&amp;
-      this.y != other.y &amp;&amp;
-      this.z != other.z &amp;&amp;
-      this.t != other.t
-    )
-  }
-&nbsp;
-  /**
-   * Returns true if this Vec4 is approximately the same as other.
-   *
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @param {number} precision - The precision to which the values must match.
+   * The __updateVisibility method.
    * @return {boolean} - The return value.
+   * @private
    */
-<span class="fstat-no" title="function not covered" >  ap</span>proxEqual(other, precision = <span class="branch-0 cbranch-no" title="branch not covered" >Number.EPSILON)</span> {
-<span class="cstat-no" title="statement not covered" >    return (</span>
-      Math.abs(this.x - other.x) &lt; precision &amp;&amp;
-      Math.abs(this.y - other.y) &lt; precision &amp;&amp;
-      Math.abs(this.z - other.z) &lt; precision &amp;&amp;
-      Math.abs(this.t - other.t) &lt; precision
-    )
-  }
-&nbsp;
-  /**
-   * Adds other to this Vec4 and returns the result as a new Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to add.
-   * @return {Vec4} - Returns a new Vec4.
-   */
-<span class="fstat-no" title="function not covered" >  ad</span>d(other) {
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      this.x + other.x,
-      this.y + other.y,
-      this.z + other.z,
-      this.t + other.t
-    )
-  }
-&nbsp;
-  /**
-   * Adds other to this Vec4 mutating the values of this instance
-   *
-   * @param {Vec4} other - The other Vec4 to add.
-   */
-<span class="fstat-no" title="function not covered" >  ad</span>dInPlace(other) {
-<span class="cstat-no" title="statement not covered" >    this.x += other.x</span>
-<span class="cstat-no" title="statement not covered" >    this.y += other.y</span>
-<span class="cstat-no" title="statement not covered" >    this.z += other.z</span>
-<span class="cstat-no" title="statement not covered" >    this.t += other.t</span>
-  }
-&nbsp;
-  /**
-   * Subtracts other from this Vec4 and returns then result as a new Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to subtract.
-   * @return {Vec4} - Returns a new Vec4.
-   */
-<span class="fstat-no" title="function not covered" >  su</span>btract(other) {
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      this.x - other.x,
-      this.y - other.y,
-      this.z - other.z,
-      this.t - other.t
-    )
-  }
-&nbsp;
-  /**
-   * Subtracts other from this Vec4 mutating the values of this instance
-   *
-   * @param {Vec4} other - The other Vec4 to subtract.
-   */
-<span class="fstat-no" title="function not covered" >  su</span>btractInPlace(other) {
-<span class="cstat-no" title="statement not covered" >    this.x -= other.x</span>
-<span class="cstat-no" title="statement not covered" >    this.y -= other.y</span>
-<span class="cstat-no" title="statement not covered" >    this.z -= other.z</span>
-<span class="cstat-no" title="statement not covered" >    this.t -= other.t</span>
-  }
-&nbsp;
-  /**
-   * Multiplies two Vec4s and returns the result as a new Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to multiply with.
-   * @return {Vec4} - Returns a new Vec4.
-   */
-<span class="fstat-no" title="function not covered" >  mu</span>ltiply(other) {
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      this.x * other.x,
-      this.y * other.y,
-      this.z * other.z,
-      this.t * other.t
-    )
-  }
-&nbsp;
-  /**
-   * Multiplies two Vec4s mutating the values of this instance
-   *
-   * @param {Vec4} other - The other Vec4 to multiply with.
-   */
-<span class="fstat-no" title="function not covered" >  mu</span>ltiplyInPlace(other) {
-<span class="cstat-no" title="statement not covered" >    this.x *= other.x</span>
-<span class="cstat-no" title="statement not covered" >    this.y *= other.y</span>
-<span class="cstat-no" title="statement not covered" >    this.z *= other.z</span>
-<span class="cstat-no" title="statement not covered" >    this.t *= other.t</span>
-  }
-&nbsp;
-  /**
-   * Divides two Vec4s and returns the result as a new Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to divide by.
-   * @return {Vec4} - Returns a new Vec4.
-   */
-<span class="fstat-no" title="function not covered" >  di</span>vide(other) {
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      this.x / other.x,
-      this.y / other.y,
-      this.z / other.z,
-      this.t / other.t
-    )
-  }
-&nbsp;
-  /**
-   * Divides two Vec4s.
-   *
-   * @param {Vec4} other - The other Vec4 to divide by.
-   */
-<span class="fstat-no" title="function not covered" >  di</span>videInPlace(other) {
-<span class="cstat-no" title="statement not covered" >    this.x /= other.x</span>
-<span class="cstat-no" title="statement not covered" >    this.y /= other.y</span>
-<span class="cstat-no" title="statement not covered" >    this.z /= other.z</span>
-<span class="cstat-no" title="statement not covered" >    this.t /= other.t</span>
-  }
-&nbsp;
-  /**
-   * Scales this Vec4 by scalar and returns the result as a new Vec4.
-   *
-   * @param {number} scalar - The scalar value.
-   * @return {Vec4} - The return value.
-   */
-<span class="fstat-no" title="function not covered" >  sc</span>ale(scalar) {
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      this.x * scalar,
-      this.y * scalar,
-      this.z * scalar,
-      this.t * scalar
-    )
-  }
-&nbsp;
-  /**
-   * Scales this Vec4 by scalar.
-   *
-   * @param {number} scalar - The scalar value.
-   */
-<span class="fstat-no" title="function not covered" >  sc</span>aleInPlace(scalar) {
-<span class="cstat-no" title="statement not covered" >    this.set(this.x * scalar, this.y * scalar, this.z * scalar, this.t * scalar)</span>
-  }
-&nbsp;
-  /**
-   * Calculates the length of this Vec4.
-   *
-   * @return {number} - Returns the length.
-   */
-  length() {
-    const x = this.__data[0]
-    const y = this.__data[1]
-    const z = this.__data[2]
-    const t = this.__data[2]
-    return Math.sqrt(x * x + y * y + z * z + t * t)
-  }
-&nbsp;
-  /**
-   * Calculates the squared length of this Vec4.
-   *
-   * @return {number} - Returns the length.
-   */
-<span class="fstat-no" title="function not covered" >  le</span>ngthSquared() {
-    const x = <span class="cstat-no" title="statement not covered" >this.__data[0]</span>
-    const y = <span class="cstat-no" title="statement not covered" >this.__data[1]</span>
-    const z = <span class="cstat-no" title="statement not covered" >this.__data[2]</span>
-    const t = <span class="cstat-no" title="statement not covered" >this.__data[3]</span>
-<span class="cstat-no" title="statement not covered" >    return x * x + y * y + z * z + t * t</span>
-  }
-&nbsp;
-  /**
-   * Normalizes the Vec4 and returns it as a new Vec4.
-   * Multiplies coordenates value by the inverse of the vector length.
-   *
-   * @return {Vec4} - Returns the Vec4 normalized.
-   */
-<span class="fstat-no" title="function not covered" >  no</span>rmalize() {
-    const x = <span class="cstat-no" title="statement not covered" >this.__data[0]</span>
-    const y = <span class="cstat-no" title="statement not covered" >this.__data[1]</span>
-    const z = <span class="cstat-no" title="statement not covered" >this.__data[2]</span>
-    const t = <span class="cstat-no" title="statement not covered" >this.__data[3]</span>
-    let len = <span class="cstat-no" title="statement not covered" >x * x + y * y + z * z + t * t</span>
-<span class="cstat-no" title="statement not covered" >    if (len &lt; Number.EPSILON) {</span>
-<span class="cstat-no" title="statement not covered" >      return new Vec4()</span>
+  __updateVisibility() {
+    if (super.__updateVisibility()) {
+      const value = this.getVisible()
+      Array.from(this.__itemsParam.getValue()).forEach((item) =&gt; {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (item instanceof TreeItem) item.propagateVisibility(value ? <span class="branch-0 cbranch-no" title="branch not covered" >1 </span>: -1)
+      })
+      return true
     }
-&nbsp;
-    // TODO: evaluate use of glm_invsqrt here?
-<span class="cstat-no" title="statement not covered" >    len = 1 / Math.sqrt(len)</span>
-<span class="cstat-no" title="statement not covered" >    return new Vec4(x * len, y * len, z * len)</span>
+    return false
   }
 &nbsp;
+  // /////////////////////////////
+&nbsp;
   /**
-   * Normalizes this Vec4 multiplying coordenate values by the inverse of the vector length.
+   * The __updateHighlight method.
+   * @private
    */
-<span class="fstat-no" title="function not covered" >  no</span>rmalizeInPlace() {
-    const x = <span class="cstat-no" title="statement not covered" >this.__data[0]</span>
-    const y = <span class="cstat-no" title="statement not covered" >this.__data[1]</span>
-    const z = <span class="cstat-no" title="statement not covered" >this.__data[2]</span>
-    const t = <span class="cstat-no" title="statement not covered" >this.__data[3]</span>
-    let len = <span class="cstat-no" title="statement not covered" >x * x + y * y + z * z + t * t</span>
-<span class="cstat-no" title="statement not covered" >    if (len &lt; Number.EPSILON) {</span>
-<span class="cstat-no" title="statement not covered" >      return</span>
-    }
-<span class="cstat-no" title="statement not covered" >    len = 1 / Math.sqrt(len)</span>
-<span class="cstat-no" title="statement not covered" >    this.set(x * len, y * len, z * len, t * len)</span>
+<span class="fstat-no" title="function not covered" >  __</span>updateHighlight() {
+    // Make this function async so that we don't pull on the 
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+<span class="cstat-no" title="statement not covered" >    new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; {</span>
+      let highlighted = <span class="cstat-no" title="statement not covered" >false</span>
+      let color
+<span class="cstat-no" title="statement not covered" >      if (this.getParameter('Highlighted').getValue() || this.isSelected()) {</span>
+<span class="cstat-no" title="statement not covered" >        highlighted = true</span>
+<span class="cstat-no" title="statement not covered" >        color = this.getParameter('HighlightColor').getValue()</span>
+<span class="cstat-no" title="statement not covered" >        color.a = this.getParameter('HighlightFill').getValue()</span>
+      }
+&nbsp;
+      const key = <span class="cstat-no" title="statement not covered" >'groupItemHighlight' + this.getId()</span>
+<span class="cstat-no" title="statement not covered" >      Array.from(this.__itemsParam.getValue()).forEach(<span class="fstat-no" title="function not covered" >(i</span>tem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (item instanceof TreeItem) {</span>
+<span class="cstat-no" title="statement not covered" >          if (highlighted) <span class="cstat-no" title="statement not covered" >item.addHighlight(key, color, true)</span></span>
+          else <span class="cstat-no" title="statement not covered" >item.removeHighlight(key, true)</span>
+        }
+      })
+<span class="cstat-no" title="statement not covered" >      resolve()</span>
+    })
   }
 &nbsp;
   /**
-   * Calculates the dot product of this Vec4 against another Vec4.
+   * Changes selection's state of the group with all items it owns.
    *
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @return {number} - Returns the dot product.
+   * @param {boolean} sel - Boolean indicating the new selection state.
    */
-<span class="fstat-no" title="function not covered" >  do</span>t(other) {
-<span class="cstat-no" title="statement not covered" >    return this.x * other.x + this.y * other.y + this.z * other.z + this.t * b.t</span>
-  }
-&nbsp;
-  /**
-   * Calculates the cross product of two Vec4s and returns the result as a new Vec4.
-   *
-   * @param {Vec4} other - The other Vec4 to calculate with.
-   * @return {Vec4} - Returns the cross product as a new Vec4.
-   */
-<span class="fstat-no" title="function not covered" >  cr</span>oss(other) {
-    const ax = <span class="cstat-no" title="statement not covered" >this.x</span>
-    const ay = <span class="cstat-no" title="statement not covered" >this.y</span>
-    const az = <span class="cstat-no" title="statement not covered" >this.z</span>
-    const at = <span class="cstat-no" title="statement not covered" >this.t</span>
-    const bx = <span class="cstat-no" title="statement not covered" >other.x</span>
-    const by = <span class="cstat-no" title="statement not covered" >other.y</span>
-    const bz = <span class="cstat-no" title="statement not covered" >other.z</span>
-    const bt = <span class="cstat-no" title="statement not covered" >other.t</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      ay * bz - az * by,
-      az * bt - at * bz,
-      at * bx - ax * bt,
-      ax * by - ay * bx
-    )
-  }
-&nbsp;
-  /**
-   * Gets the angle between this Vec4 and b.
-   *
-   * @param {Vec4} other - The other Vec4 to compare with.
-   * @return {number} - Returns the angle in radians.
-   */
-<span class="fstat-no" title="function not covered" >  an</span>gleTo(other) {
-    const tempA = <span class="cstat-no" title="statement not covered" >this.normalize()</span>
-    const tempB = <span class="cstat-no" title="statement not covered" >other.normalize()</span>
-    const cosine = <span class="cstat-no" title="statement not covered" >tempA.dot(tempB)</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    if (cosine &gt; 1.0) {</span>
-<span class="cstat-no" title="statement not covered" >      return 0</span>
-    } else {
-<span class="cstat-no" title="statement not covered" >      return Math.acos(cosine)</span>
-    }
-  }
-&nbsp;
-  /**
-   * Performs a linear interpolation between this Vec4 and other.
-   *
-   * @param {Vec4} other - The other Vec4 to interpolate between.
-   * @param {number} t - Interpolation amount between the two inputs.
-   * @return {Vec4} - Returns a new Vec4.
-   */
-<span class="fstat-no" title="function not covered" >  le</span>rp(other, t) {
-    const ax = <span class="cstat-no" title="statement not covered" >this.x</span>
-    const ay = <span class="cstat-no" title="statement not covered" >this.y</span>
-    const az = <span class="cstat-no" title="statement not covered" >this.z</span>
-<span class="cstat-no" title="statement not covered" >    at = this.t</span>
-<span class="cstat-no" title="statement not covered" >    return new Vec4(</span>
-      ax + t * (other.x - ax),
-      ay + t * (other.y - ay),
-      az + t * (other.z - az),
-      at + t * (other.t - at)
-    )
-  }
-&nbsp;
-  /**
-   * Generates a random vector with the given scale.
-   *
-   * @param {number} scale - Length of the resulting vector. If ommitted, a unit vector will be returned.
-   * @return {Vec4} - The return value.
-   */
-<span class="fstat-no" title="function not covered" >  ra</span>ndom(scale = <span class="branch-0 cbranch-no" title="branch not covered" >1.0)</span> {
-    const r = <span class="cstat-no" title="statement not covered" >glMatrix.RANDOM() * 2.0 * Math.PI</span>
-    const z = <span class="cstat-no" title="statement not covered" >glMatrix.RANDOM() * 2.0 - 1.0</span>
-    const zScale = <span class="cstat-no" title="statement not covered" >Math.sqrt(1.0 - z * z) * scale</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    out[0] = Math.cos(r) * zScale</span>
-<span class="cstat-no" title="statement not covered" >    out[1] = Math.sin(r) * zScale</span>
-<span class="cstat-no" title="statement not covered" >    out[2] = z * scale</span>
-<span class="cstat-no" title="statement not covered" >    return out</span>
-  }
-&nbsp;
-  /**
-   * Clones this Vec4 and returns a new Vec4.
-   *
-   * @return {Vec4} - Returns a new Vec4.
-   */
-  clone() {
-    return new Vec4(
-      this.__data[0],
-      this.__data[1],
-      this.__data[2],
-      this.__data[3]
-    )
-  }
-&nbsp;
-  /**
-   * Converts this Vec4 into a Vec3.
-   *
-   * @return {Vec3} - Returns the value as a new Vec3.
-   */
-<span class="fstat-no" title="function not covered" >  to</span>Vec3() {
-<span class="cstat-no" title="statement not covered" >    return new Vec3(this.__data[0], this.__data[1], this.__data[2])</span>
-  }
-&nbsp;
-  /**
-   * Returns the type as an array. Often used to pass types to the GPU.
-   *
-   * @return {aray} - Returns as an array.
-   */
-<span class="fstat-no" title="function not covered" >  as</span>Array() {
-<span class="cstat-no" title="statement not covered" >    return this.__data</span>
+<span class="fstat-no" title="function not covered" >  se</span>tSelected(sel) {
+<span class="cstat-no" title="statement not covered" >    super.setSelected(sel)</span>
+<span class="cstat-no" title="statement not covered" >    this.__updateHighlight()</span>
   }
 &nbsp;
   // ////////////////////////////////////////
-  // Static Methods
+  // Global Xfo
 &nbsp;
   /**
-   * Creates a new Vec3.
-   * @param {...object} ...args - The ...args param.
-   * @return {Vec3} - Returns a new Vec3.
+   * Calculate the group Xfo translate.
+   * @private
+   * @return {Xfo} - Returns a new Xfo.
+   */
+  calcGroupXfo() {
+    const items = Array.from(this.__itemsParam.getValue())
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (items.length == 0) <span class="cstat-no" title="statement not covered" >return new Xfo()</span>
+    this.calculatingGroupXfo = true
+    
+    this.memberXfoOps.forEach((op) =&gt; op.disable())
+    
+    // TODO: Disable the group operator?
+    const initialXfoMode = this.__initialXfoModeParam.getValue()
+    let xfo
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (initialXfoMode == GROUP_XFO_MODES.manual) {
+      // The xfo is manually set by the current global xfo.
+      // this.invGroupXfo = this.getGlobalXfo().inverse()
+<span class="cstat-no" title="statement not covered" >      this.groupTransformOp.setBindXfo(this.getParameter('GlobalXfo').getValue())</span>
+<span class="cstat-no" title="statement not covered" >      this.calculatingGroupXfo = false</span>
+<span class="cstat-no" title="statement not covered" >      this.groupXfoDirty = false</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
+    } else if (initialXfoMode == GROUP_XFO_MODES.first) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (items[0] instanceof TreeItem) {
+        xfo = items[0].getParameter('GlobalXfo').getValue()
+      }
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>if (initialXfoMode == GROUP_XFO_MODES.average) {
+      xfo = new Xfo()
+      xfo.ori.set(0, 0, 0, 0)
+      let numTreeItems = 0
+      items.forEach((item, index) =&gt; {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (item instanceof TreeItem) {
+          const itemXfo = item.getParameter('GlobalXfo').getValue()
+          xfo.tr.addInPlace(itemXfo.tr)
+          xfo.ori.addInPlace(itemXfo.ori)
+          numTreeItems++
+        }
+      })
+      xfo.tr.scaleInPlace(1 / numTreeItems)
+      xfo.ori.normalizeInPlace()
+      // xfo.sc.scaleInPlace(1/ numTreeItems);
+    } else <span class="cstat-no" title="statement not covered" >if (initialXfoMode == GROUP_XFO_MODES.globalOri) {</span>
+<span class="cstat-no" title="statement not covered" >      xfo = new Xfo()</span>
+      let numTreeItems = <span class="cstat-no" title="statement not covered" >0</span>
+<span class="cstat-no" title="statement not covered" >      items.forEach(<span class="fstat-no" title="function not covered" >(i</span>tem, index) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (item instanceof TreeItem) {</span>
+          const itemXfo = <span class="cstat-no" title="statement not covered" >item.getParameter('GlobalXfo').getValue()</span>
+<span class="cstat-no" title="statement not covered" >          xfo.tr.addInPlace(itemXfo.tr)</span>
+<span class="cstat-no" title="statement not covered" >          numTreeItems++</span>
+        }
+      })
+<span class="cstat-no" title="statement not covered" >      xfo.tr.scaleInPlace(1 / numTreeItems)</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      throw new Error('Invalid GROUP_XFO_MODES.')</span>
+    }
+&nbsp;
+    // Note: if the Group global param becomes dirty
+    // then it stops propagating dirty to its members.
+    // const newGlobal = this.getGlobalXfo() // force a cleaning.
+    // this.invGroupXfo = newGlobal.inverse()
+&nbsp;
+    this.getParameter('GlobalXfo').setValue(xfo)
+    this.groupTransformOp.setBindXfo(xfo)
+&nbsp;
+    this.memberXfoOps.forEach((op) =&gt; op.enable())
+    this.calculatingGroupXfo = false
+    this.groupXfoDirty = false
+  }
+&nbsp;
+  // ////////////////////////////////////////
+  // Materials
+&nbsp;
+  /**
+   * The __updateMaterial method.
    * @private
    */
-<span class="fstat-no" title="function not covered" >  st</span>atic create(...args) {
-<span class="cstat-no" title="statement not covered" >    return new Vec3(...args)</span>
+  __updateMaterial() {
+    // Make this function async so that we don't pull on the 
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+    new Promise((resolve) =&gt; {
+      const material = this.getParameter('Material').getValue()
+&nbsp;
+      // TODO: Bind an operator
+      Array.from(this.__itemsParam.getValue()).forEach((item) =&gt; {
+        item.traverse((treeItem) =&gt; {
+          <span class="missing-if-branch" title="else path not taken" >E</span>if (treeItem instanceof TreeItem &amp;&amp; treeItem.hasParameter('Material')) {
+            const p = treeItem.getParameter('Material')
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (material) {
+              const m = p.getValue()
+              <span class="missing-if-branch" title="else path not taken" >E</span>if (m != material) {
+                p.__backupMaterial = m
+                p.loadValue(material)
+              }
+            } else <span class="cstat-no" title="statement not covered" >if (p.__backupMaterial) {</span>
+<span class="cstat-no" title="statement not covered" >              p.loadValue(p.__backupMaterial)</span>
+            }
+          }
+        }, false)
+      })
+      resolve()
+    })
+  }
+&nbsp;
+  // ////////////////////////////////////////
+  // Cutaways
+&nbsp;
+  /**
+   * The __updateCutaway method.
+   * @private
+   */
+<span class="fstat-no" title="function not covered" >  __</span>updateCutaway() {
+    // Make this function async so that we don't pull on the 
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+<span class="cstat-no" title="statement not covered" >    new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; {</span>
+      const cutEnabled = <span class="cstat-no" title="statement not covered" >this.getParameter('CutAwayEnabled').getValue()</span>
+      const cutAwayVector = <span class="cstat-no" title="statement not covered" >this.getParameter('CutPlaneNormal').getValue()</span>
+      const cutAwayDist = <span class="cstat-no" title="statement not covered" >this.getParameter('CutPlaneDist').getValue()</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      Array.from(this.__itemsParam.getValue()).forEach(<span class="fstat-no" title="function not covered" >(i</span>tem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        item.traverse(<span class="fstat-no" title="function not covered" >(t</span>reeItem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          if (treeItem instanceof BaseGeomItem) {</span>
+<span class="cstat-no" title="statement not covered" >            treeItem.setCutawayEnabled(cutEnabled)</span>
+<span class="cstat-no" title="statement not covered" >            treeItem.setCutVector(cutAwayVector)</span>
+<span class="cstat-no" title="statement not covered" >            treeItem.setCutDist(cutAwayDist)</span>
+          }
+        }, true)
+      })
+<span class="cstat-no" title="statement not covered" >      resolve()</span>
+    })
+  }
+&nbsp;
+  // ////////////////////////////////////////
+  // Items
+&nbsp;
+  /**
+   *  sets the root item to be used as the search root.
+   * @param {TreeItem} treeItem
+   */
+&nbsp;
+  setSearchRoot(treeItem) {
+    this.searchRoot = treeItem
+  }
+&nbsp;
+  setOwner(owner) {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.searchRoot || <span class="branch-1 cbranch-no" title="branch not covered" >this.searchRoot == this.getOwner())</span>
+      this.searchRoot = owner
+    super.setOwner(owner)
   }
 &nbsp;
   /**
-   * Creates a new Vec4 to wrap existing memory in a buffer.
-   * @param {ArrayBuffer} buffer - The buffer value.
-   * @param {number} offset - The offset value.
-   * @return {Vec4} - Returns a new Vec3.
+   * This method is mostly used in our demos,
+   * and should be removed from the interface.
+   *
+   * @deprecated
+   * @param {array} paths - The paths value.
    * @private
    */
-<span class="fstat-no" title="function not covered" >  st</span>atic createFromFloat32Buffer(buffer, offset = <span class="branch-0 cbranch-no" title="branch not covered" >0)</span> {
-<span class="cstat-no" title="statement not covered" >    return new Vec4(buffer, offset * 4) </span>// 4 bytes per 32bit float
+  setPaths(paths) {
+    this.clearItems(false)
+&nbsp;
+    const searchRoot = this.getOwner()
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.searchRoot == undefined) {
+<span class="cstat-no" title="statement not covered" >      console.warn('Group does not have an owner and so cannot resolve paths:', this.getName())</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
+    }
+    const items = []
+    paths.forEach((path) =&gt; {
+      const treeItem = this.searchRoot.resolvePath(path)
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (treeItem) items.push(treeItem)
+      else {
+<span class="cstat-no" title="statement not covered" >        console.warn('Path does not resolve to an Item:', path, ' group:', this.getName())</span>
+      }
+    })
+    this.setItems(items)
   }
 &nbsp;
   /**
-   * Returns the number of Float32 elements used by this type. Used to calculate storage requirements for large arrays of this type.
-   * @return {number} - The return value.
-   * @private
+   * Uses the specified list of paths to look and get each `BaseItem` object and add it to Group's `Items` parameter.
+   *
+   * @param {array} paths - The paths value.
    */
-<span class="fstat-no" title="function not covered" >  st</span>atic numElements() {
-<span class="cstat-no" title="statement not covered" >    return 4</span>
+<span class="fstat-no" title="function not covered" >  re</span>solveItems(paths) {
+<span class="cstat-no" title="statement not covered" >    this.setPaths(paths)</span>
   }
 &nbsp;
-  // ///////////////////////////
-  // Persistence
+  /**
+   * The __bindItem method.
+   * @param {BaseItem} item - The item value.
+   * @param {number} index - The index value.
+   * @private
+   */
+  __bindItem(item, index) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!(item instanceof TreeItem)) <span class="cstat-no" title="statement not covered" >return</span>
+&nbsp;
+    item.on('mouseDown', this.onMouseDown)
+    item.on('mouseUp', this.onMouseUp)
+    item.on('mouseMove', this.onMouseMove)
+    item.on('mouseEnter', this.onMouseEnter)
+    item.on('mouseLeave', this.onMouseLeave)
+&nbsp;
+    // ///////////////////////////////
+    // Update the Material
+    const material = this.getParameter('Material').getValue()
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (material) {
+      // TODO: Bind an operator instead
+<span class="cstat-no" title="statement not covered" >      item.traverse(<span class="fstat-no" title="function not covered" >(t</span>reeItem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (treeItem instanceof TreeItem &amp;&amp; treeItem.hasParameter('Material')) {</span>
+          const p = <span class="cstat-no" title="statement not covered" >treeItem.getParameter('Material')</span>
+<span class="cstat-no" title="statement not covered" >          if (material) {</span>
+            const m = <span class="cstat-no" title="statement not covered" >p.getValue()</span>
+<span class="cstat-no" title="statement not covered" >            if (m != material) {</span>
+<span class="cstat-no" title="statement not covered" >              p.__backupMaterial = m</span>
+<span class="cstat-no" title="statement not covered" >              p.loadValue(material)</span>
+            }
+          }
+        }
+      }, true)
+    }
+&nbsp;
+    // ///////////////////////////////
+    // Update the highlight
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (item instanceof TreeItem &amp;&amp; this.getParameter('Highlighted').getValue()) {
+      const color = <span class="cstat-no" title="statement not covered" >this.getParameter('HighlightColor').getValue()</span>
+<span class="cstat-no" title="statement not covered" >      color.a = this.getParameter('HighlightFill').getValue()</span>
+<span class="cstat-no" title="statement not covered" >      item.addHighlight('groupItemHighlight' + this.getId(), color, true)</span>
+    }
+&nbsp;
+    // ///////////////////////////////
+    // Update the item cutaway
+    const cutEnabled = this.getParameter('CutAwayEnabled').getValue()
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (cutEnabled) {
+      const cutAwayVector = <span class="cstat-no" title="statement not covered" >this.getParameter('CutPlaneNormal').getValue()</span>
+      const cutAwayDist = <span class="cstat-no" title="statement not covered" >this.getParameter('CutPlaneDist').getValue()</span>
+<span class="cstat-no" title="statement not covered" >      item.traverse(<span class="fstat-no" title="function not covered" >(t</span>reeItem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (treeItem instanceof BaseGeomItem) {</span>
+          // console.log("cutEnabled:", treeItem.getPath(), cutAwayVector.toString(), treeItem.getMaterial().getShaderName())
+<span class="cstat-no" title="statement not covered" >          treeItem.setCutawayEnabled(cutEnabled)</span>
+<span class="cstat-no" title="statement not covered" >          treeItem.setCutVector(cutAwayVector)</span>
+<span class="cstat-no" title="statement not covered" >          treeItem.setCutDist(cutAwayDist)</span>
+        }
+      }, true)
+    }
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.getVisible()) {
+      // Decrement the visibility counter which might cause
+      // this item to become invisible. (or it might already be invisible.)
+<span class="cstat-no" title="statement not covered" >      item.propagateVisibility(-1)</span>
+    }
+&nbsp;
+    // const updateGlobalXfo = () =&gt; {
+    //   const initialXfoMode = this.__initialXfoModeParam.getValue()
+    //   if (initialXfoMode == GROUP_XFO_MODES.first &amp;&amp; index == 0) {
+    //     this.calcGroupXfo()
+    //   } else if (
+    //     initialXfoMode == GROUP_XFO_MODES.average ||
+    //     initialXfoMode == GROUP_XFO_MODES.globalOri
+    //   ) {
+    //     this.calcGroupXfo()
+    //   }
+    // }
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (item instanceof TreeItem) {
+      const memberGlobalXfoParam = item.getParameter('GlobalXfo')
+      const memberXfoOp = new GroupMemberXfoOperator(this.getParameter('GroupTransform'), memberGlobalXfoParam)
+      this.memberXfoOps.splice(index, 0, memberXfoOp)
+&nbsp;
+      item.getParameter('BoundingBox').on('valueChanged', this._setBoundingBoxDirty)
+      this._bindXfoDirty = true
+    }
+&nbsp;
+    // this.memberXfoOps[index] = item.getGlobalXfo()
+    // eventHandlers.globalXfoChanged = (event) =&gt; {
+    //   // If the item's xfo changees, potentially through its own hierarchy
+    //   // then we need to re-bind here.
+    //   if (!this.propagatingXfoToItems) {
+    //     this.memberXfoOps[index] = item.getGlobalXfo()
+    //     this.groupXfoDirty = true
+    //     updateGlobalXfo()
+    //   }
+    // }
+    // item.on('globalXfoChanged', eventHandlers.globalXfoChanged)
+&nbsp;
+    item.on('boundingChanged', this._setBoundingBoxDirty)
+&nbsp;
+    // updateGlobalXfo()
+  }
 &nbsp;
   /**
-   * The toJSON method encodes this type as a json object for persistence.
-   * @return {object} - The json object.
+   * The __unbindItem method.
+   * @param {BaseItem} item - The item value.
+   * @param {number} index - The index value.
+   * @private
    */
-  toJSON() {
-    return {
-      x: this.x,
-      y: this.y,
-      z: this.z,
-      t: this.t,
+<span class="fstat-no" title="function not covered" >  __</span>unbindItem(item, index) {
+<span class="cstat-no" title="statement not covered" >    if (!(item instanceof TreeItem)) <span class="cstat-no" title="statement not covered" >return</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    item.removeHighlight('branchselected' + this.getId(), true)</span>
+<span class="cstat-no" title="statement not covered" >    if (this.getParameter('Highlighted').getValue()) {</span>
+<span class="cstat-no" title="statement not covered" >      item.removeHighlight('groupItemHighlight' + this.getId(), true)</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!this.getVisible()) {</span>
+      // Increment the Visibility counter which might cause
+      // this item to become visible.
+      // It will stay invisible if its parent is invisible, or if
+      // multiple groups connect to it and say it is invisible.
+<span class="cstat-no" title="statement not covered" >      item.propagateVisibility(1)</span>
+    }
+&nbsp;
+    // ///////////////////////////////
+    // Update the item cutaway
+<span class="cstat-no" title="statement not covered" >    item.traverse(<span class="fstat-no" title="function not covered" >(t</span>reeItem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (treeItem instanceof BaseGeomItem) {</span>
+<span class="cstat-no" title="statement not covered" >        treeItem.setCutawayEnabled(false)</span>
+      }
+    }, true)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    item.off('mouseDown', this.onMouseDown)</span>
+<span class="cstat-no" title="statement not covered" >    item.off('mouseUp', this.onMouseUp)</span>
+<span class="cstat-no" title="statement not covered" >    item.off('mouseMove', this.onMouseMove)</span>
+<span class="cstat-no" title="statement not covered" >    item.off('mouseEnter', this.onMouseEnter)</span>
+<span class="cstat-no" title="statement not covered" >    item.off('mouseLeave', this.onMouseLeave)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (item instanceof TreeItem) {</span>
+<span class="cstat-no" title="statement not covered" >      this.memberXfoOps[index].detach()</span>
+<span class="cstat-no" title="statement not covered" >      this.memberXfoOps.splice(index, 1)</span>
+<span class="cstat-no" title="statement not covered" >      this._setBoundingBoxDirty()</span>
+<span class="cstat-no" title="statement not covered" >      this._bindXfoDirty = true</span>
+    }
+&nbsp;
+    // const eventHandlers = this.__eventHandlers[index]
+    // item.off('globalXfoChanged', eventHandlers.globalXfoChanged)
+<span class="cstat-no" title="statement not covered" >    item.off('boundingChanged', this._setBoundingBoxDirty)</span>
+&nbsp;
+    // this.__eventHandlers.splice(index, 1)
+  }
+&nbsp;
+  /**
+   * Adds an item to the group(See `Items` parameter).
+   *
+   * @param {BaseItem} item - The item value.
+   * @param {boolean} emit - The emit value.
+   */
+  addItem(item, emit = true) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!item) {
+<span class="cstat-no" title="statement not covered" >      console.warn('Error adding item to group. Item is null')</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
+    }
+    this.__itemsParam.addItem(item, emit)
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (emit) {
+      this.calcGroupXfo()
     }
   }
 &nbsp;
   /**
-   * Decodes a JSON object to set the state of this class.
+   * Removes an item from the group(See `Items` parameter).
    *
-   * @param {object} j - The json object.
+   * @param {BaseItem} item - The item value.
+   * @param {boolean} emit - The emit value.
    */
-  fromJSON(j) {
-    this.x = j.x
-    this.y = j.y
-    this.z = j.z
-    this.t = j.t
+<span class="fstat-no" title="function not covered" >  re</span>moveItem(item, emit = <span class="branch-0 cbranch-no" title="branch not covered" >true)</span> {
+<span class="cstat-no" title="statement not covered" >    this.__itemsParam.removeItem(item, emit)</span>
+<span class="cstat-no" title="statement not covered" >    if (emit) {</span>
+<span class="cstat-no" title="statement not covered" >      this.calcGroupXfo()</span>
+    }
   }
 &nbsp;
   /**
-   * Loads the state of the value from a binary reader.
+   * Removes all items from the group and kind of returns the object to the default state.
    *
-   * @param {BinReader} reader - The reader value.
+   * @param {boolean} emit - `true` triggers `valueChanged` event.
    */
-  readBinary(reader) {
-    this.x = reader.loadFloat32()
-    this.y = reader.loadFloat32()
-    this.z = reader.loadFloat32()
-    this.t = reader.loadFloat32()
+  clearItems(emit = <span class="branch-0 cbranch-no" title="branch not covered" >true)</span> {
+    // Note: Unbind reversed so that indices
+    // do not get changed during the unbind.
+    const items = Array.from(this.__itemsParam.getValue())
+    for (let i = items.length - 1; i &gt;= 0; i--) {
+<span class="cstat-no" title="statement not covered" >      this.__unbindItem(items[i], i)</span>
+    }
+    // this.__eventHandlers = []
+    this.memberXfoOps = []
+    this.__itemsParam.clearItems(emit)
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (emit) {
+<span class="cstat-no" title="statement not covered" >      this.calcGroupXfo()</span>
+    }
+  }
+&nbsp;
+  /**
+   * Returns the list of `BaseItem` objects owned by the group.
+   *
+   * @return {array} - The return value.
+   */
+<span class="fstat-no" title="function not covered" >  ge</span>tItems() {
+<span class="cstat-no" title="statement not covered" >    return this.__itemsParam.getValue()</span>
+  }
+&nbsp;
+  /**
+   * Removes old items in current group and adds new ones.
+   *
+   * @param {array} items - List of `BaseItem` you want to add to the group
+   */
+  setItems(items) {
+    this.clearItems(false)
+    this.__itemsParam.setItems(items)
+    this.calcGroupXfo()
+  }
+&nbsp;
+  /**
+   * The _cleanBoundingBox method.
+   * @param {Box3} bbox - The bounding box value.
+   * @return {Box3} - The return value.
+   * @private
+   */
+<span class="fstat-no" title="function not covered" >  _c</span>leanBoundingBox(bbox) {
+    const result = <span class="cstat-no" title="statement not covered" >super._cleanBoundingBox(bbox)</span>
+    const items = <span class="cstat-no" title="statement not covered" >Array.from(this.__itemsParam.getValue())</span>
+<span class="cstat-no" title="statement not covered" >    items.forEach(<span class="fstat-no" title="function not covered" >(i</span>tem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (item instanceof TreeItem) {</span>
+<span class="cstat-no" title="statement not covered" >        if (item.getVisible() &amp;&amp; !item.testFlag(ItemFlags.IGNORE_BBOX)) {</span>
+<span class="cstat-no" title="statement not covered" >          result.addBox3(item.getParameter('BoundingBox').getValue())</span>
+        }
+      }
+    })
+<span class="cstat-no" title="statement not covered" >    return result</span>
+  }
+&nbsp;
+  // ///////////////////////
+  // Events
+&nbsp;
+  /**
+   * Occurs when a user presses a mouse button over an element.
+   * @private
+   * @param {MouseEvent} event - The mouse event that occurs.
+   */
+  onMouseDown(event) {
+    console.warn('@todo-review')
+    super.onMouseDown(event)
+  }
+&nbsp;
+  /**
+   * Occurs when a user releases a mouse button over an element.
+   *
+   * @private
+   * @param {MouseEvent} event - The mouse event that occurs.
+   */
+<span class="fstat-no" title="function not covered" >  on</span>MouseUp(event) {
+<span class="cstat-no" title="statement not covered" >    console.warn('@todo-review')</span>
+<span class="cstat-no" title="statement not covered" >    super.onMouseUp(event)</span>
+  }
+&nbsp;
+  /**
+   * Occur when the mouse pointer is moving  while over an element.
+   * @private
+   * @param {MouseEvent} event - The mouse event that occurs.
+   */
+<span class="fstat-no" title="function not covered" >  on</span>MouseMove(event) {
+<span class="cstat-no" title="statement not covered" >    console.warn('@todo-review')</span>
+<span class="cstat-no" title="statement not covered" >    super.onMouseMove(event)</span>
+  }
+&nbsp;
+  // ////////////////////////////////////////
+  // Persistence
+&nbsp;
+  /**
+   * The toJSON method encodes this type as a json object for persistences.
+   *
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   * @return {object} - Returns the json object.
+   */
+  toJSON(context, flags) {
+    const j = super.toJSON(context, flags)
+    const items = Array.from(this.__itemsParam.getValue())
+    const treeItems = []
+    items.forEach((p) =&gt; {
+      const path = p.getPath()
+      treeItems.push(context ? <span class="branch-0 cbranch-no" title="branch not covered" >context.makeRelative(path) </span>: path)
+    })
+    j.treeItems = treeItems
+    return j
+  }
+&nbsp;
+  /**
+   * The fromJSON method decodes a json object for this type.
+   *
+   * @param {object} j - The json object this item must decode.
+   * @param {object} context - The context value.
+   * @param {number} flags - The flags value.
+   */
+  fromJSON(j, context, flags) {
+    super.fromJSON(j, context, flags)
+&nbsp;
+    // Note: JSON data is only used to store user edits, so
+    // parameters loaed from JSON are considered user edited.
+    this.setFlag(ItemFlags.USER_EDITED)
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!j.treeItems) {
+<span class="cstat-no" title="statement not covered" >      console.warn('Invalid Parameter JSON')</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
+    }
+    if (!context) {
+      throw new Error('Unable to load JSON on a Group without a load context')
+    }
+    let count = j.treeItems.length
+&nbsp;
+    const addItem = (path) =&gt; {
+      context.resolvePath(
+        path,
+        (treeItem) =&gt; {
+          this.addItem(treeItem)
+          count--
+          <span class="missing-if-branch" title="else path not taken" >E</span>if (count == 0) {
+            this.calculatingGroupXfo = true
+            this.calcGroupXfo()
+            this.calculatingGroupXfo = false
+          }
+        },
+<span class="fstat-no" title="function not covered" >        (r</span>eason) =&gt; {
+<span class="cstat-no" title="statement not covered" >          console.warn("Group: '" + this.getName() + "'. Unable to load item:" + path)</span>
+        }
+      )
+    }
+    for (const path of j.treeItems) {
+      addItem(path)
+    }
+  }
+&nbsp;
+  // ////////////////////////////////////////
+  // Clone and Destroy
+&nbsp;
+  /**
+   * The clone method constructs a new group,
+   * copies its values and returns it.
+   *
+   * @param {number} flags - The flags value.
+   * @return {Group} - Returns a new cloned group.
+   */
+<span class="fstat-no" title="function not covered" >  cl</span>one(flags) {
+    const cloned = <span class="cstat-no" title="statement not covered" >new Group()</span>
+<span class="cstat-no" title="statement not covered" >    cloned.copyFrom(this, flags)</span>
+<span class="cstat-no" title="statement not covered" >    return cloned</span>
+  }
+&nbsp;
+  /**
+   * Copies current Group with all owned items.
+   *
+   * @param {Group} src - The group to copy from.
+   * @param {number} flags - The flags value.
+   */
+<span class="fstat-no" title="function not covered" >  co</span>pyFrom(src, flags) {
+<span class="cstat-no" title="statement not covered" >    super.copyFrom(src, flags)</span>
   }
 }
 &nbsp;
-typeRegistry.registerType('Vec4', Vec4)
+sgFactory.registerClass('Group', Group)
 &nbsp;
-export { Vec4 }
+export { Group }
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
