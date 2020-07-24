@@ -94,17 +94,17 @@ class GIFImage extends FileImage {
         resourceLoader.addWork(fileDesc.id, 1)
 
         if (fileDesc.assets && fileDesc.assets.atlas) {
-          const image = new Image()
-          image.crossOrigin = 'anonymous'
-          image.src = fileDesc.assets.atlas.url
-          image.addListener('load', () => {
+          const imageElem = new Image()
+          imageElem.crossOrigin = 'anonymous'
+          imageElem.src = fileDesc.assets.atlas.url
+          imageElem.addEventListener('load', () => {
             resolve({
               width: fileDesc.assets.atlas.width,
               height: fileDesc.assets.atlas.height,
               atlasSize: fileDesc.assets.atlas.atlasSize,
               frameDelays: fileDesc.assets.atlas.frameDelays,
               frameRange: [0, fileDesc.assets.atlas.frameDelays.length],
-              imageData: image,
+              imageData: imageElem,
             })
             resourceLoader.addWorkDone(fileDesc.id, 1)
           })
@@ -158,7 +158,7 @@ class GIFImage extends FileImage {
             const renderFrame = (frame, index) => {
               const dims = frame.dims
 
-              // Note: the server side library returns centisecs for
+              // Note: the server side library returns centisecs (1/100 second) for
               // frame delays, so normalize here so that client and servers
               // valueus are in the
               frameDelays.push(frame.delay / 10)

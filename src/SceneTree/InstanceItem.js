@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable valid-jsdoc */
 import { Xfo } from '../Math/index'
-import { ValueSetMode } from './Parameters/index'
 import { TreeItem, CloneFlags } from './TreeItem.js'
 import { sgFactory } from './SGFactory.js'
 
@@ -30,7 +29,7 @@ class InstanceItem extends TreeItem {
     const numChildren = this.__srcTree.getNumChildren()
     if (numChildren == 0) {
       const clonedTree = this.__srcTree.clone(context)
-      clonedTree.setLocalXfo(new Xfo(), ValueSetMode.DATA_LOAD)
+      clonedTree.getParameter('LocalXfo').loadValue(new Xfo())
       this.addChild(clonedTree, false)
     } else {
       const children = this.__srcTree.getChildren()
@@ -40,7 +39,7 @@ class InstanceItem extends TreeItem {
       })
     }
 
-    // this.__srcTree.addListener('childAdded', event => {
+    // this.__srcTree.on('childAdded', event => {
     //     this.addChild(event.child.clone(CloneFlags.CLONE_FLAG_INSTANCED_TREE), false)
     // })
   }

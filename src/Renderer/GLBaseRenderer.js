@@ -114,7 +114,7 @@ class GLBaseRenderer extends ParameterOwner {
           }
 
           // TODO:
-          // navigator.xr.addListener('devicechange', checkForXRSupport);
+          // navigator.xr.on('devicechange', checkForXRSupport);
         }
       }
     })
@@ -181,8 +181,8 @@ class GLBaseRenderer extends ParameterOwner {
         this.emit('viewChanged', data)
       }
     }
-    vp.addListener('updated', updated)
-    vp.addListener('viewChanged', viewChanged)
+    vp.on('updated', updated)
+    vp.on('viewChanged', viewChanged)
 
     this.__viewports.push(vp)
     return vp
@@ -353,8 +353,8 @@ class GLBaseRenderer extends ParameterOwner {
       if (childItem) this.addTreeItem(childItem)
     }
 
-    treeItem.addListener('childAdded', this.__childItemAdded)
-    treeItem.addListener('childRemoved', this.__childItemRemoved)
+    treeItem.on('childAdded', this.__childItemAdded)
+    treeItem.on('childRemoved', this.__childItemRemoved)
 
     this.renderGeomDataFbos()
   }
@@ -367,8 +367,8 @@ class GLBaseRenderer extends ParameterOwner {
     // Note: we can have BaseItems in the tree now.
     if (!(treeItem instanceof TreeItem)) return
 
-    treeItem.removeListener('childAdded', this.__childItemAdded)
-    treeItem.removeListener('childRemoved', this.__childItemRemoved)
+    treeItem.off('childAdded', this.__childItemAdded)
+    treeItem.off('childRemoved', this.__childItemRemoved)
 
     for (const passCbs of this.__passCallbacks) {
       if (!passCbs.itemRemovedFn) continue
@@ -809,7 +809,7 @@ class GLBaseRenderer extends ParameterOwner {
     }
     index += this.__passes[passtype].length
 
-    pass.addListener('updated', this.requestRedraw)
+    pass.on('updated', this.requestRedraw)
     pass.init(this, index)
     this.__passes[passtype].push(pass)
 
@@ -906,7 +906,7 @@ class GLBaseRenderer extends ParameterOwner {
       this.emit('viewChanged', event)
     }
 
-    xrvp.addListener('presentingChanged', (event) => {
+    xrvp.on('presentingChanged', (event) => {
       const state = event.state
       this.__xrViewportPresenting = state
       if (state) {
@@ -919,9 +919,9 @@ class GLBaseRenderer extends ParameterOwner {
           }
         }
 
-        xrvp.addListener('viewChanged', emitViewChanged)
+        xrvp.on('viewChanged', emitViewChanged)
       } else {
-        xrvp.removeListener('viewChanged', emitViewChanged)
+        xrvp.off('viewChanged', emitViewChanged)
         this.emit('updated', {})
 
         for (const key in this.__passes) {

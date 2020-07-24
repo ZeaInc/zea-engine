@@ -1,7 +1,6 @@
 import { Color } from '../Math/Color.js'
 import { TreeItem } from './TreeItem'
 import { Material } from './Material'
-import { ValueSetMode } from './Parameters/index'
 
 /**
  * Base class that represents geometry items with layering, overlaying and cut away features.
@@ -147,10 +146,10 @@ class BaseGeomItem extends TreeItem {
         // material = materialLibrary.getMaterial('DefaultMaterial');
 
         material = new Material(materialName, 'SimpleSurfaceShader')
-        material.getParameter('BaseColor').setValue(Color.random(0.25), ValueSetMode.DATA_LOAD)
+        material.getParameter('BaseColor').loadValue(Color.random(0.25))
         context.assetItem.getMaterialLibrary().addMaterial(material)
       }
-      this.setMaterial(material, ValueSetMode.DATA_LOAD)
+      this.getParameter('Material').loadValue(material)
 
       this.__layers = reader.loadStrArray()
       if (this.__layers.length > 0) {

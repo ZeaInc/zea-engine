@@ -49,7 +49,7 @@ class GLEnvMap extends GLProbe {
         this.convolveProbe(srcGLTex)
         this.emit('loaded', {})
       }
-      this.__envMap.addListener('loaded', loaded)
+      this.__envMap.on('loaded', loaded)
     }
   }
 

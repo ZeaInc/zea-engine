@@ -1,7 +1,7 @@
 import { Color } from '../Math/index'
 import { SystemDesc } from '../BrowserDetection.js'
 import { ColorParameter } from './Parameters/index'
-import { FilePathParameter } from './index'
+import { FilePathParameter } from './Parameters/FilePathParameter'
 import { AssetItem } from './AssetItem.js'
 import { BinReader } from './BinReader.js'
 import { resourceLoader } from './ResourceLoader.js'
@@ -37,12 +37,12 @@ class VLAAsset extends AssetItem {
     // when this signal emits.
     this.geomsLoaded = false
     this.loaded = false
-    this.__geomLibrary.addListener('loaded', () => {
+    this.__geomLibrary.on('loaded', () => {
       this.emit('geomsLoaded', {})
     })
 
     this.__datafileParam = this.addParameter(new FilePathParameter('DataFilePath'))
-    this.__datafileParam.addListener('valueChanged', () => {
+    this.__datafileParam.on('valueChanged', () => {
       const file = this.__datafileParam.getFileDesc()
       if (!file) return
       console.log(file)
@@ -257,7 +257,7 @@ class VLAAsset extends AssetItem {
     // To ensure that the resource loader knows when
     // parsing is done, we listen to the GeomLibrary streamFileLoaded
     // signal. This is fired every time a file in the stream is finshed parsing.
-    this.__geomLibrary.addListener('streamFileParsed', (event) => {
+    this.__geomLibrary.on('streamFileParsed', (event) => {
       // A chunk of geoms are now parsed, so update the resource loader.
       resourceLoader.addWorkDone(fileId + 'geoms', event.fraction)
     })

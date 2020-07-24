@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { Vec3, Color, Xfo } from '../Math/index'
 import {
-  ValueSetMode,
   BooleanParameter,
   NumberParameter,
   Vec3Parameter,
   ColorParameter,
+  XfoParameter,
   ItemSetParameter,
   MultiChoiceParameter,
 } from './Parameters/index'
@@ -14,12 +14,17 @@ import { ItemFlags } from './BaseItem'
 import { TreeItem } from './TreeItem'
 import { BaseGeomItem } from './BaseGeomItem'
 import { sgFactory } from './SGFactory.js'
+import {
+  GroupTransformXfoOperator,
+  GroupMemberXfoOperator
+} from './Operators/GroupMemberXfoOperator.js'
 
-const GROUP_INITIAL_XFO_MODES = {
-  manual: 0,
-  first: 1,
-  average: 2,
-  globalOri: 3,
+const GROUP_XFO_MODES = {
+  disabled: 0,
+  manual: 1,
+  first: 2,
+  average: 3,
+  globalOri: 4,
 }
 
 /**
@@ -57,70 +62,51 @@ class Group extends TreeItem {
     this.groupXfoDirty = false
     this.calculatingGroupXfo = false
     this.dirty = false
+    this._bindXfoDirty = false
 
-    this.invGroupXfo = undefined
-    this.__initialXfos = []
-    this.__signalIndices = []
+    // this.invGroupXfo = undefined
+    this.memberXfoOps = []
+    // this.__eventHandlers = []
 
     const pid = 0
     this.__itemsParam = this.addParameter(new ItemSetParameter('Items', (item) => item instanceof TreeItem))
-    this.__itemsParam.addListener('itemAdded', (event) => {
+    this.__itemsParam.on('itemAdded', (event) => {
       this.__bindItem(event.item, event.index)
     })
-    this.__itemsParam.addListener('itemRemoved', (event) => {
+    this.__itemsParam.on('itemRemoved', (event) => {
       this.__unbindItem(event.item, event.index)
-    })
-    this.__itemsParam.addListener('valueChanged', () => {
-      this.calcGroupXfo()
-      this._setBoundingBoxDirty()
     })
 
     this.__initialXfoModeParam = this.addParameter(
-      new MultiChoiceParameter('InitialXfoMode', GROUP_INITIAL_XFO_MODES.average, [
-        'manual',
-        'first',
-        'average',
-        'global',
-      ])
+      new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, ['manual', 'first', 'average', 'global'])
     )
-    this.__initialXfoModeParam.addListener('valueChanged', () => {
+    this.__initialXfoModeParam.on('valueChanged', () => {
       this.calcGroupXfo()
     })
 
     this.__highlightedParam = this.addParameter(new BooleanParameter('Highlighted', false))
-    this.__highlightedParam.addListener('valueChanged', () => {
+    this.__highlightedParam.on('valueChanged', () => {
       this.__updateHighlight()
     })
 
     this.__updateHighlight = this.__updateHighlight.bind(this)
     const highlightColorParam = this.addParameter(new ColorParameter('HighlightColor', new Color(0.5, 0.5, 1)))
-    highlightColorParam.addListener('valueChanged', this.__updateHighlight)
+    highlightColorParam.on('valueChanged', this.__updateHighlight)
     const highlightFillParam = this.addParameter(new NumberParameter('HighlightFill', 0.0, [0, 1]))
-    highlightFillParam.addListener('valueChanged', this.__updateHighlight)
+    highlightFillParam.on('valueChanged', this.__updateHighlight)
 
     this.__materialParam = this.addParameter(new MaterialParameter('Material'))
-    this.__materialParam.addListener('valueChanged', () => {
+    this.__materialParam.on('valueChanged', () => {
       this.__updateMaterial()
     })
 
     this.__updateCutaway = this.__updateCutaway.bind(this)
-    this.addParameter(new BooleanParameter('CutAwayEnabled', false)).addListener('valueChanged', this.__updateCutaway)
-    this.addParameter(new Vec3Parameter('CutPlaneNormal', new Vec3(1, 0, 0))).addListener(
-      'valueChanged',
-      this.__updateCutaway
-    )
-    this.addParameter(new NumberParameter('CutPlaneDist', 0.0)).addListener('valueChanged', this.__updateCutaway)
+    this.addParameter(new BooleanParameter('CutAwayEnabled', false)).on('valueChanged', this.__updateCutaway)
+    this.addParameter(new Vec3Parameter('CutPlaneNormal', new Vec3(1, 0, 0))).on('valueChanged', this.__updateCutaway)
+    this.addParameter(new NumberParameter('CutPlaneDist', 0.0)).on('valueChanged', this.__updateCutaway)
 
-    // TODO: this should be the way we propagate dirty. Instead
-    // of using the overloaded method (_setGlobalXfoDirty)
-    // However we seem to get infinite callstacks.
-    // The migration to real operators should clean this up.
-    // Check: servo_mestre/?stage=assembly
-    this.__globalXfoParam.addListener('valueChanged', (event) => {
-      if (!this.calculatingGroupXfo && !this.groupXfoDirty) {
-        this._propagateDirtyXfoToItems()
-      }
-    })
+    const groupTransformParam = this.addParameter(new XfoParameter('GroupTransform', new Xfo()))
+    this.groupTransformOp = new GroupTransformXfoOperator(this.getParameter('GlobalXfo'), groupTransformParam)
   }
 
   /**
@@ -134,19 +120,19 @@ class Group extends TreeItem {
    * | globalOri | <code>3</code> |
    */
   static get INITIAL_XFO_MODES() {
-    return GROUP_INITIAL_XFO_MODES
+    return GROUP_XFO_MODES
   }
 
   /**
-   * The __updateVisiblity method.
+   * The __updateVisibility method.
    * @return {boolean} - The return value.
    * @private
    */
-  __updateVisiblity() {
-    if (super.__updateVisiblity()) {
+  __updateVisibility() {
+    if (super.__updateVisibility()) {
       const value = this.getVisible()
       Array.from(this.__itemsParam.getValue()).forEach((item) => {
-        if (item instanceof TreeItem) item.propagateVisiblity(value ? 1 : -1)
+        if (item instanceof TreeItem) item.propagateVisibility(value ? 1 : -1)
       })
       return true
     }
@@ -160,20 +146,26 @@ class Group extends TreeItem {
    * @private
    */
   __updateHighlight() {
-    let highlighted = false
-    let color
-    if (this.getParameter('Highlighted').getValue() || this.isSelected()) {
-      highlighted = true
-      color = this.getParameter('HighlightColor').getValue()
-      color.a = this.getParameter('HighlightFill').getValue()
-    }
-
-    const key = 'groupItemHighlight' + this.getId()
-    Array.from(this.__itemsParam.getValue()).forEach((item) => {
-      if (item instanceof TreeItem) {
-        if (highlighted) item.addHighlight(key, color, true)
-        else item.removeHighlight(key, true)
+    // Make this function async so that we don't pull on the 
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+    new Promise((resolve) => {
+      let highlighted = false
+      let color
+      if (this.getParameter('Highlighted').getValue() || this.isSelected()) {
+        highlighted = true
+        color = this.getParameter('HighlightColor').getValue()
+        color.a = this.getParameter('HighlightFill').getValue()
       }
+
+      const key = 'groupItemHighlight' + this.getId()
+      Array.from(this.__itemsParam.getValue()).forEach((item) => {
+        if (item instanceof TreeItem) {
+          if (highlighted) item.addHighlight(key, color, true)
+          else item.removeHighlight(key, true)
+        }
+      })
+      resolve()
     })
   }
 
@@ -185,42 +177,10 @@ class Group extends TreeItem {
   setSelected(sel) {
     super.setSelected(sel)
     this.__updateHighlight()
-
-    // if (sel) {
-    //   if (!this.getParameter('Highlighted').getValue()) {
-    //     Array.from(this.__itemsParam.getValue()).forEach(item => {
-    //       if (item instanceof TreeItem)
-    //         item.addHighlight(
-    //           'branchselected' + this.getId(),
-    //           TreeItem.getBranchSelectionOutlineColor(),
-    //           true
-    //         )
-    //     })
-    //   }
-    //   // We want to re-apply the group hilight over the branch selection hilight.
-    //   this.__updateHighlight()
-    // } else {
-    //   Array.from(this.__itemsParam.getValue()).forEach(item => {
-    //     if (item instanceof TreeItem)
-    //       item.removeHighlight('branchselected' + this.getId(), true)
-    //   })
-    // }
   }
 
   // ////////////////////////////////////////
   // Global Xfo
-
-  /**
-   * The _setGlobalXfoDirty method.
-   * @private
-   */
-  _setGlobalXfoDirty() {
-    super._setGlobalXfoDirty()
-    // Note: dirty should propagat from one
-    // Parameter to others following the operator graph.
-    // See: comment above (line 124)
-    // this._propagateDirtyXfoToItems()
-  }
 
   /**
    * Calculate the group Xfo translate.
@@ -231,104 +191,65 @@ class Group extends TreeItem {
     const items = Array.from(this.__itemsParam.getValue())
     if (items.length == 0) return new Xfo()
     this.calculatingGroupXfo = true
+    
+    this.memberXfoOps.forEach((op) => op.disable())
+    
+    // TODO: Disable the group operator?
     const initialXfoMode = this.__initialXfoModeParam.getValue()
     let xfo
-    if (initialXfoMode == GROUP_INITIAL_XFO_MODES.manual) {
+    if (initialXfoMode == GROUP_XFO_MODES.manual) {
       // The xfo is manually set by the current global xfo.
-      this.invGroupXfo = this.getGlobalXfo().inverse()
+      // this.invGroupXfo = this.getGlobalXfo().inverse()
+      this.groupTransformOp.setBindXfo(this.getParameter('GlobalXfo').getValue())
       this.calculatingGroupXfo = false
       this.groupXfoDirty = false
       return
-    } else if (initialXfoMode == GROUP_INITIAL_XFO_MODES.first) {
-      xfo = this.__initialXfos[0]
-    } else if (initialXfoMode == GROUP_INITIAL_XFO_MODES.average) {
+    } else if (initialXfoMode == GROUP_XFO_MODES.first) {
+      if (items[0] instanceof TreeItem) {
+        xfo = items[0].getParameter('GlobalXfo').getValue()
+      }
+    } else if (initialXfoMode == GROUP_XFO_MODES.average) {
       xfo = new Xfo()
       xfo.ori.set(0, 0, 0, 0)
       let numTreeItems = 0
       items.forEach((item, index) => {
         if (item instanceof TreeItem) {
-          xfo.tr.addInPlace(this.__initialXfos[index].tr)
-          xfo.ori.addInPlace(this.__initialXfos[index].ori)
+          const itemXfo = item.getParameter('GlobalXfo').getValue()
+          xfo.tr.addInPlace(itemXfo.tr)
+          xfo.ori.addInPlace(itemXfo.ori)
           numTreeItems++
         }
       })
       xfo.tr.scaleInPlace(1 / numTreeItems)
       xfo.ori.normalizeInPlace()
       // xfo.sc.scaleInPlace(1/ numTreeItems);
-    } else if (initialXfoMode == GROUP_INITIAL_XFO_MODES.globalOri) {
+    } else if (initialXfoMode == GROUP_XFO_MODES.globalOri) {
       xfo = new Xfo()
       let numTreeItems = 0
       items.forEach((item, index) => {
         if (item instanceof TreeItem) {
-          xfo.tr.addInPlace(this.__initialXfos[index].tr)
+          const itemXfo = item.getParameter('GlobalXfo').getValue()
+          xfo.tr.addInPlace(itemXfo.tr)
           numTreeItems++
         }
       })
       xfo.tr.scaleInPlace(1 / numTreeItems)
     } else {
-      throw new Error('Invalid mode.')
+      throw new Error('Invalid GROUP_XFO_MODES.')
     }
-
-    this.setGlobalXfo(xfo, ValueSetMode.GENERATED_VALUE)
 
     // Note: if the Group global param becomes dirty
     // then it stops propagating dirty to its members.
-    const newGlobal = this.getGlobalXfo() // force a cleaning.
-    this.invGroupXfo = newGlobal.inverse()
+    // const newGlobal = this.getGlobalXfo() // force a cleaning.
+    // this.invGroupXfo = newGlobal.inverse()
 
+    this.getParameter('GlobalXfo').setValue(xfo)
+    this.groupTransformOp.setBindXfo(xfo)
+
+    this.memberXfoOps.forEach((op) => op.enable())
     this.calculatingGroupXfo = false
     this.groupXfoDirty = false
   }
-
-  /**
-   * The _propagateDirtyXfoToItems method.
-   * @private
-   */
-  _propagateDirtyXfoToItems() {
-    if (this.groupXfoDirty || this.calculatingGroupXfo) return
-
-    const items = Array.from(this.__itemsParam.getValue())
-    // Only after all the items are resolved do we have an invXfo and we can tranform our items.
-    if (!this.calculatingGroupXfo && items.length > 0 && this.invGroupXfo && !this.dirty) {
-      // Note: because each 'clean' function is a unique
-      // value, the parameter does not know that this Group
-      // has already registered a clean function. For now
-      // we use this 'dirty' hack to avoid registering multiple
-      // clean functions. However, once the cleaning is handled
-      // via a bound operator, then this code will be removed.
-      this.dirty = true
-      this.propagatingXfoToItems = true // Note: selection group needs this set.
-      let delta
-      const setDirty = (item, initialXfo) => {
-        const param = item.getParameter('GlobalXfo')
-        const clean = () => {
-          if (!delta) {
-            // Compute the skinning transform that we can
-            // apply to all the items in the group.
-            const xfo = this.__globalXfoParam.getValue()
-            delta = xfo.multiply(this.invGroupXfo)
-            this.dirty = false
-          }
-          const result = delta.multiply(initialXfo)
-          param.setClean(result)
-        }
-        param.setDirty(clean)
-      }
-      items.forEach((item, index) => {
-        if (item instanceof TreeItem) setDirty(item, this.__initialXfos[index])
-      })
-      this.propagatingXfoToItems = false
-    }
-  }
-
-  // _propagateGroupXfoToItem(index) {
-  //   const clean = () => {
-  //     const xfo = this.__globalXfoParam.getValue()
-  //     const delta = xfo.multiply(this.invGroupXfo)
-  //     return delta.multiply(this.__initialXfos[index])
-  //   }
-  //   item.getParameter('GlobalXfo').setDirty(clean)
-  // }
 
   // ////////////////////////////////////////
   // Materials
@@ -338,23 +259,30 @@ class Group extends TreeItem {
    * @private
    */
   __updateMaterial() {
-    const material = this.getParameter('Material').getValue()
+    // Make this function async so that we don't pull on the 
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+    new Promise((resolve) => {
+      const material = this.getParameter('Material').getValue()
 
-    Array.from(this.__itemsParam.getValue()).forEach((item) => {
-      item.traverse((treeItem) => {
-        if (treeItem instanceof TreeItem && treeItem.hasParameter('Material')) {
-          const p = treeItem.getParameter('Material')
-          if (material) {
-            const m = p.getValue()
-            if (m != material) {
-              p.__backupMaterial = m
-              p.setValue(material, ValueSetMode.GENERATED_VALUE)
+      // TODO: Bind an operator
+      Array.from(this.__itemsParam.getValue()).forEach((item) => {
+        item.traverse((treeItem) => {
+          if (treeItem instanceof TreeItem && treeItem.hasParameter('Material')) {
+            const p = treeItem.getParameter('Material')
+            if (material) {
+              const m = p.getValue()
+              if (m != material) {
+                p.__backupMaterial = m
+                p.loadValue(material)
+              }
+            } else if (p.__backupMaterial) {
+              p.loadValue(p.__backupMaterial)
             }
-          } else if (p.__backupMaterial) {
-            p.setValue(p.__backupMaterial, ValueSetMode.GENERATED_VALUE)
           }
-        }
-      }, false)
+        }, false)
+      })
+      resolve()
     })
   }
 
@@ -366,18 +294,24 @@ class Group extends TreeItem {
    * @private
    */
   __updateCutaway() {
-    const cutEnabled = this.getParameter('CutAwayEnabled').getValue()
-    const cutAwayVector = this.getParameter('CutPlaneNormal').getValue()
-    const cutAwayDist = this.getParameter('CutPlaneDist').getValue()
+    // Make this function async so that we don't pull on the 
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+    new Promise((resolve) => {
+      const cutEnabled = this.getParameter('CutAwayEnabled').getValue()
+      const cutAwayVector = this.getParameter('CutPlaneNormal').getValue()
+      const cutAwayDist = this.getParameter('CutPlaneDist').getValue()
 
-    Array.from(this.__itemsParam.getValue()).forEach((item) => {
-      item.traverse((treeItem) => {
-        if (treeItem instanceof BaseGeomItem) {
-          treeItem.setCutawayEnabled(cutEnabled)
-          treeItem.setCutVector(cutAwayVector)
-          treeItem.setCutDist(cutAwayDist)
-        }
-      }, true)
+      Array.from(this.__itemsParam.getValue()).forEach((item) => {
+        item.traverse((treeItem) => {
+          if (treeItem instanceof BaseGeomItem) {
+            treeItem.setCutawayEnabled(cutEnabled)
+            treeItem.setCutVector(cutAwayVector)
+            treeItem.setCutDist(cutAwayDist)
+          }
+        }, true)
+      })
+      resolve()
     })
   }
 
@@ -429,28 +363,17 @@ class Group extends TreeItem {
   __bindItem(item, index) {
     if (!(item instanceof TreeItem)) return
 
-    const sigIds = {}
-
-    sigIds.mouseDownIndex = item.addListener('mouseDown', (event) => {
-      this.onMouseDown(event)
-    })
-    sigIds.mouseUpIndex = item.addListener('mouseUp', (event) => {
-      this.onMouseUp(event)
-    })
-    sigIds.mouseMoveIndex = item.addListener('mouseMove', (event) => {
-      this.onMouseMove(event)
-    })
-    sigIds.mouseEnterIndex = item.addListener('mouseEnter', (event) => {
-      this.onMouseEnter(event)
-    })
-    sigIds.mouseLeaveIndex = item.addListener('mouseLeave', (event) => {
-      this.onMouseLeave(event)
-    })
+    item.on('mouseDown', this.onMouseDown)
+    item.on('mouseUp', this.onMouseUp)
+    item.on('mouseMove', this.onMouseMove)
+    item.on('mouseEnter', this.onMouseEnter)
+    item.on('mouseLeave', this.onMouseLeave)
 
     // ///////////////////////////////
     // Update the Material
     const material = this.getParameter('Material').getValue()
     if (material) {
+      // TODO: Bind an operator instead
       item.traverse((treeItem) => {
         if (treeItem instanceof TreeItem && treeItem.hasParameter('Material')) {
           const p = treeItem.getParameter('Material')
@@ -458,7 +381,7 @@ class Group extends TreeItem {
             const m = p.getValue()
             if (m != material) {
               p.__backupMaterial = m
-              p.setValue(material, ValueSetMode.GENERATED_VALUE)
+              p.loadValue(material)
             }
           }
         }
@@ -490,39 +413,47 @@ class Group extends TreeItem {
     }
 
     if (!this.getVisible()) {
-      // Decrement the visiblity counter which might cause
+      // Decrement the visibility counter which might cause
       // this item to become invisible. (or it might already be invisible.)
-      item.propagateVisiblity(-1)
+      item.propagateVisibility(-1)
     }
 
-    const updateGlobalXfo = () => {
-      const initialXfoMode = this.__initialXfoModeParam.getValue()
-      if (initialXfoMode == GROUP_INITIAL_XFO_MODES.first && index == 0) {
-        this.calcGroupXfo()
-      } else if (
-        initialXfoMode == GROUP_INITIAL_XFO_MODES.average ||
-        initialXfoMode == GROUP_INITIAL_XFO_MODES.globalOri
-      ) {
-        this.calcGroupXfo()
-      }
+    // const updateGlobalXfo = () => {
+    //   const initialXfoMode = this.__initialXfoModeParam.getValue()
+    //   if (initialXfoMode == GROUP_XFO_MODES.first && index == 0) {
+    //     this.calcGroupXfo()
+    //   } else if (
+    //     initialXfoMode == GROUP_XFO_MODES.average ||
+    //     initialXfoMode == GROUP_XFO_MODES.globalOri
+    //   ) {
+    //     this.calcGroupXfo()
+    //   }
+    // }
+
+    if (item instanceof TreeItem) {
+      const memberGlobalXfoParam = item.getParameter('GlobalXfo')
+      const memberXfoOp = new GroupMemberXfoOperator(this.getParameter('GroupTransform'), memberGlobalXfoParam)
+      this.memberXfoOps.splice(index, 0, memberXfoOp)
+
+      item.getParameter('BoundingBox').on('valueChanged', this._setBoundingBoxDirty)
+      this._bindXfoDirty = true
     }
 
-    sigIds.globalXfoChangedIndex = item.addListener('globalXfoChanged', (event) => {
-      // If the item's xfo changees, potentially through its own hierarchy
-      // then we need to re-bind here.
-      if (!this.propagatingXfoToItems) {
-        this.__initialXfos[index] = item.getGlobalXfo()
-        this.groupXfoDirty = true
-        updateGlobalXfo()
-      }
-    })
-    this.__initialXfos[index] = item.getGlobalXfo()
+    // this.memberXfoOps[index] = item.getGlobalXfo()
+    // eventHandlers.globalXfoChanged = (event) => {
+    //   // If the item's xfo changees, potentially through its own hierarchy
+    //   // then we need to re-bind here.
+    //   if (!this.propagatingXfoToItems) {
+    //     this.memberXfoOps[index] = item.getGlobalXfo()
+    //     this.groupXfoDirty = true
+    //     updateGlobalXfo()
+    //   }
+    // }
+    // item.on('globalXfoChanged', eventHandlers.globalXfoChanged)
 
-    sigIds.bboxChangedIndex = item.addListener('boundingChanged', this._setBoundingBoxDirty)
+    item.on('boundingChanged', this._setBoundingBoxDirty)
 
-    this.__signalIndices[index] = sigIds
-
-    updateGlobalXfo()
+    // updateGlobalXfo()
   }
 
   /**
@@ -540,11 +471,11 @@ class Group extends TreeItem {
     }
 
     if (!this.getVisible()) {
-      // Increment the visiblity counter which might cause
+      // Increment the Visibility counter which might cause
       // this item to become visible.
       // It will stay invisible if its parent is invisible, or if
       // multiple groups connect to it and say it is invisible.
-      item.propagateVisiblity(1)
+      item.propagateVisibility(1)
     }
 
     // ///////////////////////////////
@@ -555,17 +486,24 @@ class Group extends TreeItem {
       }
     }, true)
 
-    const sigIds = this.__signalIndices[index]
-    item.removeListenerById('mouseDown', sigIds.mouseDownIndex)
-    item.removeListenerById('mouseUp', sigIds.mouseUpIndex)
-    item.removeListenerById('mouseMove', sigIds.mouseMoveIndex)
-    item.removeListenerById('mouseEnter', sigIds.mouseEnterIndex)
-    item.removeListenerById('mouseLeave', sigIds.mouseLeaveIndex)
+    item.off('mouseDown', this.onMouseDown)
+    item.off('mouseUp', this.onMouseUp)
+    item.off('mouseMove', this.onMouseMove)
+    item.off('mouseEnter', this.onMouseEnter)
+    item.off('mouseLeave', this.onMouseLeave)
 
-    item.removeListenerById('globalXfoChanged', sigIds.globalXfoChangedIndex)
-    item.removeListenerById('boundingChanged', sigIds.bboxChangedIndex)
-    this.__signalIndices.splice(index, 1)
-    this.__initialXfos.splice(index, 1)
+    if (item instanceof TreeItem) {
+      this.memberXfoOps[index].detach()
+      this.memberXfoOps.splice(index, 1)
+      this._setBoundingBoxDirty()
+      this._bindXfoDirty = true
+    }
+
+    // const eventHandlers = this.__eventHandlers[index]
+    // item.off('globalXfoChanged', eventHandlers.globalXfoChanged)
+    item.off('boundingChanged', this._setBoundingBoxDirty)
+
+    // this.__eventHandlers.splice(index, 1)
   }
 
   /**
@@ -580,6 +518,10 @@ class Group extends TreeItem {
       return
     }
     this.__itemsParam.addItem(item, emit)
+
+    if (emit) {
+      this.calcGroupXfo()
+    }
   }
 
   /**
@@ -590,6 +532,9 @@ class Group extends TreeItem {
    */
   removeItem(item, emit = true) {
     this.__itemsParam.removeItem(item, emit)
+    if (emit) {
+      this.calcGroupXfo()
+    }
   }
 
   /**
@@ -604,9 +549,12 @@ class Group extends TreeItem {
     for (let i = items.length - 1; i >= 0; i--) {
       this.__unbindItem(items[i], i)
     }
-    this.__signalIndices = []
-    this.__initialXfos = []
+    // this.__eventHandlers = []
+    this.memberXfoOps = []
     this.__itemsParam.clearItems(emit)
+    if (emit) {
+      this.calcGroupXfo()
+    }
   }
 
   /**
@@ -626,6 +574,7 @@ class Group extends TreeItem {
   setItems(items) {
     this.clearItems(false)
     this.__itemsParam.setItems(items)
+    this.calcGroupXfo()
   }
 
   /**
@@ -639,7 +588,9 @@ class Group extends TreeItem {
     const items = Array.from(this.__itemsParam.getValue())
     items.forEach((item) => {
       if (item instanceof TreeItem) {
-        if (item.getVisible() && !item.testFlag(ItemFlags.IGNORE_BBOX)) result.addBox3(item.getBoundingBox())
+        if (item.getVisible() && !item.testFlag(ItemFlags.IGNORE_BBOX)) {
+          result.addBox3(item.getParameter('BoundingBox').getValue())
+        }
       }
     })
     return result
@@ -729,7 +680,6 @@ class Group extends TreeItem {
           count--
           if (count == 0) {
             this.calculatingGroupXfo = true
-            // this.setGlobalXfo(this.calcGroupXfo(), ValueSetMode.GENERATED_VALUE)
             this.calcGroupXfo()
             this.calculatingGroupXfo = false
           }
@@ -768,14 +718,6 @@ class Group extends TreeItem {
    */
   copyFrom(src, flags) {
     super.copyFrom(src, flags)
-  }
-
-  /**
-   * The destroy is called by the system to cause explicit resources cleanup.
-   * Users should never need to call this method directly.
-   */
-  destroy() {
-    super.destroy()
   }
 }
 

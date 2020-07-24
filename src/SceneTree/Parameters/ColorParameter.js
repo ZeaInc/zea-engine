@@ -1,6 +1,6 @@
 import { Color } from '../../Math/index'
 import { sgFactory } from '../SGFactory'
-import { Parameter, ValueSetMode } from './Parameter.js'
+import { Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores `Color` values.
@@ -37,7 +37,7 @@ class ColorParameter extends Parameter {
     // Note: !! this should always be done in preprocessing...
     value.applyGamma(2.2)
 
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.__value = value
   }
 
   /**

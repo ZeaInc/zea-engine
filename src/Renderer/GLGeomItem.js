@@ -36,39 +36,38 @@ class GLGeomItem extends EventEmitter {
     //   console.log(this.geomItem.getName(), glGeom.__numTriangles, numSceneMeshTriangles)
     // }
 
-    this.lightmapName = geomItem.getLightmapName()
-
-    this.updateVisibility = this.updateVisibility.bind(this)
     this.updateVisibility = this.updateVisibility.bind(this)
     this.destroy = this.destroy.bind(this)
 
     if (!gl.floatTexturesSupported) {
-      this.updateXfo = () => {
+      this.geomMatrixDirty = true
+      this.geomMatrixChanged = () => {
+        this.geomMatrixDirty = true
         this.updateGeomMatrix()
       }
     } else {
-      this.updateXfo = () => {
+      this.geomMatrixChanged = () => {
         this.emit('updated', { type: GLGeomItemChangeType.GEOMITEM_CHANGED })
       }
     }
-
-    const cutAwayChanged = () => {
+    
+    this.cutAwayChanged = () => {
       this.emit('updated', { type: GLGeomItemChangeType.GEOMITEM_CHANGED })
     }
-    const highlightChanged = () => {
+    this.highlightChanged = () => {
       this.emit('updated', { type: GLGeomItemChangeType.HIGHLIGHT_CHANGED })
       this.emit('highlightChanged')
     }
-    const glGeomUpdated = () => {
+    this.glGeomUpdated = () => {
       this.emit('updated', { type: GLGeomItemChangeType.GEOM_CHANGED })
     }
 
-    this.geomItem.addListener('geomXfoChanged', this.updateXfo)
-    this.geomItem.addListener('visibilityChanged', this.updateVisibility)
-    this.geomItem.addListener('cutAwayChanged', cutAwayChanged)
-    this.geomItem.addListener('destructing', this.destroy)
-    this.highlightChangedId = this.geomItem.addListener('highlightChanged', highlightChanged)
-    this.glGeom.addListener('updated', glGeomUpdated)
+    this.geomItem.getParameter('GeomMat').on('valueChanged', this.geomMatrixChanged)
+    // this.geomItem.on('geomXfoChanged', this.geomMatrixChanged)
+    this.geomItem.on('visibilityChanged', this.updateVisibility)
+    this.geomItem.on('cutAwayChanged', this.cutAwayChanged)
+    this.geomItem.on('highlightChanged', this.highlightChanged)
+    this.glGeom.on('updated', this.glGeomUpdated)
 
     const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset()
     const materialId = 0
@@ -80,6 +79,8 @@ class GLGeomItem extends EventEmitter {
       geomId,
     ]
   }
+
+  
 
   /**
    * The getGeomItem method.
@@ -144,22 +145,6 @@ class GLGeomItem extends EventEmitter {
   }
 
   /**
-   * The updateGeomMatrix method.
-   */
-  updateGeomMatrix() {
-    // Pull on the GeomXfo param. This will trigger the lazy evaluation of the operators in the scene.
-    this.modelMatrixArray = this.geomItem.getGeomMat4().asArray()
-  }
-
-  /**
-   * The getGeomMatrixArray method.
-   * @return {any} - The return value.
-   */
-  getGeomMatrixArray() {
-    return this.modelMatrixArray
-  }
-
-  /**
    * The bind method.
    * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
@@ -171,6 +156,9 @@ class GLGeomItem extends EventEmitter {
     if (!gl.floatTexturesSupported) {
       const modelMatrixunif = unifs.modelMatrix
       if (modelMatrixunif) {
+        if (this.geomMatrixDirty) {
+          this.modelMatrixArray = this.geomItem.getGeomMat4().asArray()
+        }
         gl.uniformMatrix4fv(
           modelMatrixunif.location,
           false,
@@ -218,18 +206,13 @@ class GLGeomItem extends EventEmitter {
    * Users should never need to call this method directly.
    */
   destroy() {
-    this.geomItem.removeListener(
-      'visibilityChanged',
-      this.updateVisibility
-    )
-    this.geomItem.removeListener('geomXfoChanged', this.updateXfo)
-    this.geomItem.removeListenerById(
-      'highlightChanged',
-      this.highlightChangedId
-    )
-
-    // this.geomItem.removeListenerById('destructing', this.destroy)
-    // this.emit('destructing', {})
+    // this.geomItem.off('geomXfoChanged', this.geomMatrixChanged)
+    
+    this.geomItem.getParameter('GeomMat').off('valueChanged', this.geomMatrixChanged)
+    this.geomItem.off('visibilityChanged', this.updateVisibility)
+    this.geomItem.off('cutAwayChanged', this.cutAwayChanged)
+    this.geomItem.off('highlightChanged', this.highlightChanged)
+    this.glGeom.off('updated', this.glGeomUpdated)
   }
 }
 

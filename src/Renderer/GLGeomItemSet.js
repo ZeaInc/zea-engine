@@ -18,7 +18,7 @@ class GLGeomItemSet extends EventEmitter {
     this.glgeom = glgeom
     this.glgeomItems = []
     this.glgeomItems_freeIndices = []
-    this.glgeomItemSignalIds = []
+    this.glgeomItemEventHandlers = []
     this.drawIdsArray = null
     this.drawIdsBuffer = null
     this.drawIdsBufferDirty = true
@@ -96,9 +96,9 @@ class GLGeomItemSet extends EventEmitter {
       this.lightmapName = glgeomItem.getGeomItem().getLightmapName()
     }
 
-    const signalIds = {}
+    const eventHandlers = {}
 
-    const highlightChanged = () => {
+    eventHandlers.highlightChanged = () => {
       if (glgeomItem.getGeomItem().isHighlighted()) {
         // Note: highlightChanged is fired when the color changes
         // or another hilight is added over the top. We avoid
@@ -111,8 +111,8 @@ class GLGeomItemSet extends EventEmitter {
       // console.log("highlightChanged:", glgeomItem.getGeomItem().getName(), glgeomItem.getGeomItem().isHighlighted(), this.highlightedItems)
       this.highlightedIdsBufferDirty = true
     }
-    signalIds.hil = glgeomItem.on('highlightChanged', highlightChanged)
-    const visibilityChanged = (event) => {
+    glgeomItem.on('highlightChanged', eventHandlers.highlightChanged)
+    eventHandlers.visibilityChanged = (event) => {
       const visible = event.visible
       if (visible) {
         this.visibleItems.push(index)
@@ -123,10 +123,10 @@ class GLGeomItemSet extends EventEmitter {
       }
       this.drawIdsBufferDirty = true
     }
-    signalIds.vis = glgeomItem.on('visibilityChanged', visibilityChanged)
+    glgeomItem.on('visibilityChanged', eventHandlers.visibilityChanged)
 
     this.glgeomItems[index] = glgeomItem
-    this.glgeomItemSignalIds[index] = signalIds
+    this.glgeomItemEventHandlers[index] = eventHandlers
 
     this.drawIdsBufferDirty = true
   }
@@ -137,12 +137,12 @@ class GLGeomItemSet extends EventEmitter {
    */
   removeGeomItem(glgeomItem) {
     const index = this.glgeomItems.indexOf(glgeomItem)
-    const signalIds = this.glgeomItemSignalIds[index]
-    glgeomItem.removeListenerById('highlightChanged', signalIds.hil)
-    glgeomItem.removeListenerById('visibilityChanged', signalIds.vis)
+    const eventHandlers = this.glgeomItemEventHandlers[index]
+    glgeomItem.off('highlightChanged', eventHandlers.highlightChanged)
+    glgeomItem.off('visibilityChanged', eventHandlers.visibilityChanged)
 
     this.glgeomItems[index] = null
-    this.glgeomItemSignalIds[index] = null
+    this.glgeomItemEventHandlers[index] = null
 
     this.glgeomItems_freeIndices.push(index)
 

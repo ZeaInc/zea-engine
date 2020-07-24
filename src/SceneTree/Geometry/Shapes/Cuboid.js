@@ -53,10 +53,10 @@ class Cuboid extends Mesh {
     const resize = () => {
       this.__resize()
     }
-    this.__xParam.addListener('valueChanged', resize)
-    this.__yParam.addListener('valueChanged', resize)
-    this.__zParam.addListener('valueChanged', resize)
-    this.__baseZAtZeroParam.addListener('valueChanged', resize)
+    this.__xParam.on('valueChanged', resize)
+    this.__yParam.on('valueChanged', resize)
+    this.__zParam.on('valueChanged', resize)
+    this.__baseZAtZeroParam.on('valueChanged', resize)
   }
 
   /**
@@ -128,10 +128,9 @@ class Cuboid extends Mesh {
 
   /**
    * The __resize method.
-   * @param {number} mode - The mode value.
    * @private
    */
-  __resize(mode) {
+  __resize() {
     const x = this.__xParam.getValue()
     const y = this.__yParam.getValue()
     const z = this.__zParam.getValue()

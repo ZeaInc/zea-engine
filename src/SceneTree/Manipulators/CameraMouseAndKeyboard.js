@@ -42,6 +42,8 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
     this.__ongoingTouches = {}
 
+    this.__globalXfoChangedDuringDrag = this.__globalXfoChangedDuringDrag.bind(this)
+
     this.__orbitRateParam = this.addParameter(new NumberParameter('orbitRate', SystemDesc.isMobileDevice ? -0.3 : 1))
     this.__dollySpeedParam = this.addParameter(new NumberParameter('dollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('mouseWheelDollySpeed', 0.0005))
@@ -50,10 +52,10 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   /**
    * Sets default manipulation mode.
    *
-   * @param {string} mode - The mode value.
+   * @param {string} manipulationMode - The manipulation mode value. Can be 'orbit', or 'look'
    */
-  setDefaultManipulationMode(mode) {
-    this.__defaultManipulationState = mode
+  setDefaultManipulationMode(manipulationMode) {
+    this.__defaultManipulationState = manipulationMode
   }
 
   /**
@@ -233,22 +235,20 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     this.__mouseDownCameraTarget = camera.getGlobalXfo().tr.add(targetOffset)
     this.__mouseDownFocalDist = focalDistance
 
-    this.__dragListenerId = camera
-      .getParameter('GlobalXfo')
-      .on('valueChanged', this.__globalXfoChangedDuringDrag.bind(this))
+    camera.getParameter('GlobalXfo').on('valueChanged', this.__globalXfoChangedDuringDrag)
+
+    this.__dragging = true
   }
 
   /**
    * @private
-   *
-   * @param {*} mode
    */
-  __globalXfoChangedDuringDrag(mode) {
+  __globalXfoChangedDuringDrag() {
     if (!this.__calculatingDragAction) {
-      if (this.__dragListenerId != null) {
+      if (this.__dragging) {
         const camera = this.__mouseDownViewport.getCamera()
-        camera.getParameter('GlobalXfo').removeListenerById('valueChanged', this.__dragListenerId)
-        this.__dragListenerId = null
+        camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
+        this.__dragging = false
       }
       this.initDrag({ viewport: this.__mouseDownViewport, mousePos: this.__mouseDownPos })
     }
@@ -261,14 +261,13 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {MouseEvent} event - The event value.
    */
   endDrag(event) {
-    if (this.__dragListenerId != null) {
+    if (this.__dragging) {
       const { viewport } = event
       const camera = viewport.getCamera()
-      camera.getParameter('GlobalXfo').removeListenerById('valueChanged', this.__dragListenerId)
-      this.__dragListenerId = null
+      camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
+      this.__dragging = false
     }
     this.__mouseDown = false
-    this.__dragging = false
   }
 
   /**
@@ -371,6 +370,13 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {MouseEvent} event - The mouse event that occurs.
    */
   onMouseDown(event) {
+
+    // this.initDrag(event)
+    if (this.__dragging) {
+      const camera = this.__mouseDownViewport.getCamera()
+      camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
+      this.__dragging = false
+    }
     this.initDrag(event)
 
     if (event.button == 2) {
@@ -427,14 +433,11 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    */
   onMouseUp(event) {
     if (this.__dragging) {
+      this.endDrag(event)
       this.emit('movementFinished', {})
-
-      const camera = event.viewport.getCamera()
-      camera.emit('movementFinished', {})
-      this.__dragging = false
+      event.viewport.getCamera().emit('movementFinished', {})
       event.stopPropagation()
     }
-    this.endDrag(event)
   }
 
   /**
@@ -626,8 +629,6 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
     if (Object.keys(this.__ongoingTouches).length == 1) {
       this.initDrag(event)
-
-      this.__dragging = true
     }
   }
 

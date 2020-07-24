@@ -1,6 +1,6 @@
 /* eslint-disable constructor-super */
 import { ValueSetMode, BooleanParameter, NumberParameter } from './Parameters/index'
-import { FilePathParameter } from './index'
+import { FilePathParameter } from './Parameters/FilePathParameter'
 import { TreeItem } from './TreeItem.js'
 
 /**
@@ -48,7 +48,7 @@ class AudioItem extends TreeItem {
       audioSource.start(0)
       this.emit('audioSourceCreated', { audioSource })
     }
-    fileParam.addListener('valueChanged', () => {
+    fileParam.on('valueChanged', () => {
       const request = new XMLHttpRequest()
       request.open('GET', fileParam.getURL(), true)
       request.responseType = 'arraybuffer'
@@ -76,23 +76,21 @@ class AudioItem extends TreeItem {
     })
     const autoplayParam = this.addParameter(new BooleanParameter('Autoplay', false))
     const playStateParam = this.addParameter(new NumberParameter('PlayState', 0))
-    playStateParam.addListener('valueChanged', (event) => {
-      if (mode.mode != ValueSetMode.CUSTOM) {
-        switch (playStateParam.getValue()) {
-          case 0:
-            if (this.__loaded) {
-              if (audioSource) {
-                audioSource.stop(0)
-                audioSource = undefined
-              }
+    playStateParam.on('valueChanged', (event) => {
+      switch (playStateParam.getValue()) {
+        case 0:
+          if (this.__loaded) {
+            if (audioSource) {
+              audioSource.stop(0)
+              audioSource = undefined
             }
-            break
-          case 1:
-            if (this.__loaded) {
-              startAudioPlayback()
-            }
-            break
-        }
+          }
+          break
+        case 1:
+          if (this.__loaded) {
+            startAudioPlayback()
+          }
+          break
       }
     })
 
@@ -101,13 +99,13 @@ class AudioItem extends TreeItem {
     }
 
     this.play = () => {
-      playStateParam.setValue(1, ValueSetMode.CUSTOM)
+      playStateParam.setValue(1)
     }
     this.stop = () => {
-      playStateParam.setValue(0, ValueSetMode.CUSTOM)
+      playStateParam.setValue(0)
     }
     this.pause = () => {
-      playStateParam.setValue(0, ValueSetMode.CUSTOM)
+      playStateParam.setValue(0)
     }
 
     this.getAudioSource = () => {
@@ -126,15 +124,15 @@ class AudioItem extends TreeItem {
     this.addParameter(new NumberParameter('coneOuterAngle', 0))
     this.addParameter(new NumberParameter('coneOuterGain', 1))
 
-    muteParam.addListener('valueChanged', () => {
+    muteParam.on('valueChanged', () => {
       if (audioSource) audioSource.muted = muteParam.getValue()
     })
-    loopParam.addListener('valueChanged', () => {
+    loopParam.on('valueChanged', () => {
       if (audioSource) audioSource.loop = loopParam.getValue()
     })
 
     this.mute = (value) => {
-      muteParam.setValue(value, ValueSetMode.CUSTOM)
+      muteParam.setValue(value)
     }
 
     // Note: Many parts of the code assume a 'loaded' signal.

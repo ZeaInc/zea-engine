@@ -176,14 +176,14 @@ class LDRImage extends FileImage {
       if (imageElem.complete) {
         loaded()
       } else {
-        imageElem.addListener('load', loaded)
+        imageElem.addEventListener('load', loaded)
       }
     } else {
       imageElem = new Image()
       imageElem.crossOrigin = this.__crossOrigin
       imageElem.src = url
 
-      imageElem.addListener('load', loaded)
+      imageElem.addEventListener('load', loaded)
       imageDataLibrary[url] = imageElem
     }
   }

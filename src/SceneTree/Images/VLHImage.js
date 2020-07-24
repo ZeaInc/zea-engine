@@ -2,8 +2,7 @@ import { Color } from '../../Math/index'
 import { sgFactory } from '../SGFactory.js'
 import { BaseImage } from '../BaseImage.js'
 import { resourceLoader } from '../ResourceLoader.js'
-
-import { FilePathParameter } from '../index'
+import { FilePathParameter } from '../Parameters/FilePathParameter'
 
 /**
  * Class representing a VLH image.
@@ -39,7 +38,7 @@ class VLHImage extends BaseImage {
     this.type = 'FLOAT'
 
     const fileParam = this.addParameter(new FilePathParameter('FilePath'))
-    fileParam.addListener('valueChanged', () => {
+    fileParam.on('valueChanged', () => {
       this.loaded = false
 
       if (this.getName() == '') {

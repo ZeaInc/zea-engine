@@ -44,20 +44,15 @@ class MaterialFloatParam extends NumberParameter {
     return this.__image
   }
 
-  // let imageUpdated = () => {
-  //     this.emit('valueChanged', , { mode: Parameter.ValueSetMode.USER_SETVALUE });
-  // }
-
   /**
    * Sets `BaseImage` texture value in parameter.
    *
    * @param {BaseImage} value - The value value.
-   * @param {number} mode - The mode value.
    */
-  setImage(value, mode = 0) {
+  setImage(value) {
     const disconnectImage = () => {
-      // image.removeListener('loaded', imageUpdated);
-      // image.removeListener('updated', imageUpdated);
+      // image.off('loaded', imageUpdated);
+      // image.off('updated', imageUpdated);
       this.emit('textureDisconnected', {})
     }
     if (value) {
@@ -65,10 +60,10 @@ class MaterialFloatParam extends NumberParameter {
         disconnectImage()
       }
       this.__image = value
-      // image.addListener('loaded', imageUpdated);
-      // image.addListener('updated', imageUpdated);
+      // image.on('loaded', imageUpdated);
+      // image.on('updated', imageUpdated);
       this.emit('textureConnected', {})
-      this.emit('valueChanged', { mode })
+      this.emit('valueChanged', { mode: 0 })
     } else {
       if (this.__image != undefined) {
         disconnectImage()

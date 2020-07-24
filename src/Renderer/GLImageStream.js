@@ -18,7 +18,7 @@ class GLImageStream extends RefCounted {
     this.__streamImage = streamImage
     this.__descParam = this.__streamImage.getParameter('StreamAtlasDesc')
     this.__indexParam = this.__streamImage.getParameter('StreamAtlasIndex')
-    this.__indexParam.addListener('valueChanged', () => {
+    this.__indexParam.on('valueChanged', () => {
       this.emit('updated', {})
     })
 
@@ -39,7 +39,7 @@ class GLImageStream extends RefCounted {
     if (this.__streamImage.isLoaded()) {
       configure()
     } else {
-      this.__indexParam.addListener('loaded', () => {
+      this.__indexParam.on('loaded', () => {
         configure()
       })
     }

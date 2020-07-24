@@ -42,13 +42,12 @@ class MultiChoiceParameter extends NumberParameter {
    * Sets parameter index value.
    *
    * @param {string|number} value - The value param.
-   * @param {number} mode - The mode value.
    */
-  setValue(value, mode) {
+  setValue(value) {
     if (typeof value === 'string') {
-      super.setValue(this.choices.indexOf(value), mode)
+      super.setValue(this.choices.indexOf(value))
     } else {
-      super.setValue(value, mode)
+      super.setValue(value)
     }
   }
 }

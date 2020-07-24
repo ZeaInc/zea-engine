@@ -73,20 +73,20 @@ class LDRVideo extends FileImage {
     }
 
     document.body.appendChild(videoElem)
-    videoElem.addListener(
+    videoElem.addEventListener(
       'loadedmetadata',
       () => {
         // videoElem.play();
 
         const muteParam = this.getParameter('Mute')
         videoElem.muted = muteParam.getValue()
-        muteParam.addListener('valueChanged', () => {
+        muteParam.on('valueChanged', () => {
           videoElem.muted = muteParam.getValue()
         })
 
         const loopParam = this.getParameter('Loop')
         videoElem.loop = loopParam.getValue()
-        loopParam.addListener('valueChanged', () => {
+        loopParam.on('valueChanged', () => {
           videoElem.loop = loopParam.getValue()
         })
 

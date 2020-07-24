@@ -32,7 +32,7 @@ class Cross extends Lines {
     const resize = () => {
       this.__resize()
     }
-    this.__sizeParam.addListener('valueChanged', resize)
+    this.__sizeParam.on('valueChanged', resize)
   }
 
   /**

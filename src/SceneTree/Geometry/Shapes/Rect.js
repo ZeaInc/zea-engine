@@ -32,9 +32,9 @@ class Rect extends Lines {
     if (isNaN(x) || isNaN(y)) throw new Error('Invalid geom args')
 
     this.__x = this.addParameter(new NumberParameter('x', x))
-    this.__x.addListener('valueChanged', this.__resize.bind(this))
+    this.__x.on('valueChanged', this.__resize.bind(this))
     this.__y = this.addParameter(new NumberParameter('y', y))
-    this.__y.addListener('valueChanged', this.__resize.bind(this))
+    this.__y.on('valueChanged', this.__resize.bind(this))
     this.__rebuild()
   }
 
@@ -97,16 +97,16 @@ class Rect extends Lines {
     this.setSegment(1, 1, 2)
     this.setSegment(2, 2, 3)
     this.setSegment(3, 3, 0)
-    this.__resize(-1)
+    this.__resize(false)
     this.emit('geomDataTopologyChanged', {})
   }
 
   /**
    * The __resize method.
-   * @param {number} mode - The mode value.
+   * @param {number} emit - The emit value.
    * @private
    */
-  __resize(mode) {
+  __resize(emit) {
     const x = this.__x.getValue()
     const y = this.__y.getValue()
 
@@ -115,7 +115,7 @@ class Rect extends Lines {
     this.getVertex(2).set(0.5 * x, 0.5 * y, 0.0)
     this.getVertex(3).set(-0.5 * x, 0.5 * y, 0.0)
     this.setBoundingBoxDirty()
-    if (mode != -1) this.emit('geomDataChanged', {})
+    if (emit) this.emit('geomDataChanged', {})
   }
 
   /**

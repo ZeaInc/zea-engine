@@ -17,6 +17,7 @@ export * from './Parameters/MaterialParameter.js'
 export * from './Parameters/MaterialFloatParam.js'
 export * from './Parameters/MaterialColorParam.js'
 // export * from './Parameters/GeometryParameter.js'
+export * from './Parameters/FilePathParameter.js'
 export * from './Geometry/index'
 export * from './Images/index'
 

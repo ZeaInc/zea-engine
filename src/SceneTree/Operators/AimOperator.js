@@ -1,6 +1,6 @@
 import { Quat } from '../../Math/index'
 import { Operator } from './Operator.js'
-import { XfoOperatorOutput } from './OperatorOutput.js'
+import { OperatorOutput, OperatorOutputMode } from './OperatorOutput.js'
 import { NumberParameter, MultiChoiceParameter, XfoParameter } from '../Parameters/index'
 import { sgFactory } from '../SGFactory.js'
 
@@ -23,7 +23,7 @@ class AimOperator extends Operator {
     this.addParameter(new NumberParameter('Stretch', 0.0))
     this.addParameter(new NumberParameter('Initial Dist', 1.0))
     this.addParameter(new XfoParameter('Target'))
-    this.addOutput(new XfoOperatorOutput('InputOutput'))
+    this.addOutput(new OperatorOutput('InputOutput', OperatorOutputMode.OP_READ_WRITE))
   }
 
   /**
@@ -105,7 +105,7 @@ class AimOperator extends Operator {
       }
       // console.log("AimOperator.evaluate:", xfo.sc.toString())
     }
-    output.setClean(xfo)
+    output.setCleanFromOp(xfo, this)
   }
 }
 

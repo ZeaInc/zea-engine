@@ -12,7 +12,7 @@ import { resourceLoader } from './ResourceLoader.js'
 import { GeomLibrary } from './GeomLibrary.js'
 import { MaterialLibrary } from './MaterialLibrary.js'
 import { BooleanParameter, NumberParameter, StringParameter } from './Parameters/index'
-import { FilePathParameter } from './index'
+import { FilePathParameter } from './Parameters/FilePathParameter'
 
 // AssetItem.registerDataLoader('.obj', ObjDataLoader);
 
@@ -55,7 +55,7 @@ class ObjAsset extends AssetItem {
     this.addParameter(new StringParameter('defaultShader', ''))
 
     this.objfileParam = this.addParameter(new FilePathParameter('FilePath'))
-    this.objfileParam.addListener('valueChanged', () => {
+    this.objfileParam.on('valueChanged', () => {
       this.loaded = false
       this.__loadObj(
         () => {
@@ -163,7 +163,7 @@ class ObjAsset extends AssetItem {
 
     const async = new Async()
     async.incAsyncCount()
-    async.addListener('ready', () => {
+    async.on('ready', () => {
       buildChildItems()
     })
 

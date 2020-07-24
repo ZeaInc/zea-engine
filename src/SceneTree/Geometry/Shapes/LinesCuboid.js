@@ -41,10 +41,10 @@ class LinesCuboid extends Lines {
     const rebuild = () => {
       this.__rebuild()
     }
-    this.__x.addListener('valueChanged', resize)
-    this.__y.addListener('valueChanged', resize)
-    this.__z.addListener('valueChanged', resize)
-    this.__baseZAtZero.addListener('valueChanged', rebuild)
+    this.__x.on('valueChanged', resize)
+    this.__y.on('valueChanged', resize)
+    this.__z.on('valueChanged', resize)
+    this.__baseZAtZero.on('valueChanged', rebuild)
   }
 
   /**
@@ -68,16 +68,15 @@ class LinesCuboid extends Lines {
     this.setSegment(9, 1, 5)
     this.setSegment(10, 2, 6)
     this.setSegment(11, 3, 7)
-    this.__resize(-1)
+    this.__resize(false)
     this.emit('geomDataTopologyChanged', {})
   }
 
   /**
    * The __resize method.
-   * @param {number} mode - The mode value.
    * @private
    */
-  __resize(mode) {
+  __resize() {
     const x = this.__x.getValue()
     const y = this.__y.getValue()
     const z = this.__z.getValue()
@@ -98,7 +97,7 @@ class LinesCuboid extends Lines {
     this.getVertex(7).set(-0.5 * x, -0.5 * y, zoff * z)
 
     this.setBoundingBoxDirty()
-    if (mode != -1) this.emit('geomDataChanged', {})
+    if (emit) this.emit('geomDataChanged', {})
   }
 
   /**

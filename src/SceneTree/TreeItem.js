@@ -1,7 +1,8 @@
 import { Color, Xfo, Box3 } from '../Math/index'
 import { sgFactory } from './SGFactory.js'
-import { ParamFlags, ValueSetMode, Parameter, BooleanParameter, XfoParameter } from './Parameters/index'
+import { ParamFlags, Parameter, BooleanParameter, XfoParameter } from './Parameters/index'
 import { ItemFlags, BaseItem } from './BaseItem.js'
+import { CalcGlobalXfoOperator } from './Operators/CalcGlobalXfoOperator.js'
 
 // Defines used to explicity specify types for WebGL.
 const SaveFlags = {
@@ -22,6 +23,50 @@ let selectionOutlineColor = new Color('#03E3AC')
 selectionOutlineColor.a = 0.1
 let branchSelectionOutlineColor = selectionOutlineColor.lerp(new Color('white'), 0.5)
 branchSelectionOutlineColor.a = 0.1
+
+
+/**
+ * Represents a specific type of parameter, that only stores Vec3(three-dimensional coordinate) values.
+ *
+ * i.e.:
+ * ```javascript
+ * const vec3Param = new Vec3Parameter('MyVec3', new Vec3(1.2, 3.4, 1))
+ * //'myParameterOwnerItem' is an instance of a 'ParameterOwner' class.
+ * // Remember that only 'ParameterOwner' and classes that extend from it can host 'Parameter' objects.
+ * myParameterOwnerItem.addParameter(vec3Param)
+ * ```
+ * @extends Parameter
+ */
+class BoundingBoxParameter extends Parameter {
+  /**
+   * Create a Vec3 parameter.
+   * @param {treeItem} treeItem - The tree item to compute the bounding box for.
+   * @param {Vec3} value - The value of the parameter.
+   * @param {array} range - The range value is an array of two `Vec2` objects.
+   */
+  constructor(name, treeItem) {
+    super(name, new Box3(), 'Box3')
+    this.treeItem = treeItem
+    this.dirty = true
+  }
+
+  setDirty() {
+    this.dirty = true
+    this.emit("valueChanged")
+  }
+
+  /**
+   * Returns bounding box value
+   *
+   * @return {Box3} - The return value.
+   */
+  getValue() {
+    if (this.dirty) {
+      this.__value = this.treeItem. _cleanBoundingBox(this.__value)
+    }
+    return this.__value
+  }
+}
 
 /**
  * Class representing an Item in the scene tree with hierarchy capabilities (has children).
@@ -65,8 +110,14 @@ class TreeItem extends BaseItem {
     this.__highlights = []
 
     this.__childItems = []
-    this.__childItemsSignalIds = []
+    this.__childItemsEventHandlers = []
     this.__childItemsMapping = {}
+
+    this.onMouseDown = this.onMouseDown.bind(this)
+    this.onMouseUp = this.onMouseUp.bind(this)
+    this.onMouseMove = this.onMouseMove.bind(this)
+    this.onMouseEnter = this.onMouseEnter.bind(this)
+    this.onMouseLeave = this.onMouseLeave.bind(this)
 
     // /////////////////////////////////////
     // Add parameters.
@@ -74,41 +125,42 @@ class TreeItem extends BaseItem {
     this.__visibleParam = this.addParameter(new BooleanParameter('Visible', true))
     this.__localXfoParam = this.addParameter(new XfoParameter('LocalXfo', new Xfo()))
     this.__globalXfoParam = this.addParameter(new XfoParameter('GlobalXfo', new Xfo()))
-    this.__boundingBoxParam = this.addParameter(new Parameter('BoundingBox', new Box3()))
+    this.__boundingBoxParam = this.addParameter(new BoundingBoxParameter('BoundingBox', this))
 
     // Bind handlers
-    this._cleanGlobalXfo = this._cleanGlobalXfo.bind(this)
-    this._setGlobalXfoDirty = this._setGlobalXfoDirty.bind(this)
+    // this._cleanGlobalXfo = this._cleanGlobalXfo.bind(this)
+    // this._setGlobalXfoDirty = this._setGlobalXfoDirty.bind(this)
     this._setBoundingBoxDirty = this._setBoundingBoxDirty.bind(this)
-    this._cleanBoundingBox = this._cleanBoundingBox.bind(this)
+    // this._cleanBoundingBox = this._cleanBoundingBox.bind(this)
+    this._childNameChanged = this._childNameChanged.bind(this)
 
-    this.__localXfoParam.on('valueChanged', this._setGlobalXfoDirty)
+    // this.__localXfoParam.on('valueChanged', this._setGlobalXfoDirty)
 
     // Note: if the user changes the global xfo, we compute the
     // local xfo when it is needed (generally when GlobalXfo is pulled)
     // In the future, we will move this into the operators and ops
     // will support 'inversion' where the param asks the op to
-    // proccess an input value.
-    const cleanLocalXfo = () => {
-      const globalXfo = this.__globalXfoParam.getValue()
-      if (this.__ownerItem !== undefined) return this.__ownerItem.getGlobalXfo().inverse().multiply(globalXfo)
-      else return globalXfo
-    }
+    // process an input value.
+    // const cleanLocalXfo = prevValue => {
+    //   const globalXfo = this.__globalXfoParam.getValue()
+    //   if (this.__ownerItem !== undefined)
+    //     return this.__ownerItem
+    //       .getGlobalXfo()
+    //       .inverse()
+    //       .multiply(globalXfo)
+    //   else return globalXfo
+    // }
+
+    this.globalXfoOp = new CalcGlobalXfoOperator(this.__globalXfoParam, this.__localXfoParam);
     this.__globalXfoParam.on('valueChanged', (event) => {
-      // Dirtiness propagates from Local to Global, but not vice versa.
-      // We need to move to using operators to invert values.
-      // This system of having ops connected in all directions
-      // is super difficult to debug.
-      if (event.mode != ValueSetMode.OPERATOR_DIRTIED) {
-        this.__localXfoParam.setDirty(cleanLocalXfo)
-      }
       this._setBoundingBoxDirty()
+      // Note: deprecate this event.
       this.emit('globalXfoChanged', event)
     })
 
     this.__visibleParam.on('valueChanged', () => {
       this.__visibleCounter += this.__visibleParam.getValue() ? 1 : -1
-      this.__updateVisiblity()
+      this.__updateVisibility()
     })
 
     // Note: one day we will remove the concept of 'selection' from the engine
@@ -194,7 +246,7 @@ class TreeItem extends BaseItem {
    * @private
    */
   _childFlagsChanged(flags) {
-    if ((flags & ParamFlags.USER_EDITED) != 0) this.setFlag(ItemFlags.USER_EDITED)
+    if ((flags & ItemFlags.USER_EDITED) != 0) this.setFlag(ItemFlags.USER_EDITED)
   }
 
   /**
@@ -217,7 +269,7 @@ class TreeItem extends BaseItem {
    */
   setOwner(parentItem) {
     if (this.__ownerItem) {
-      this.__ownerItem.removeListener('globalXfoChanged', this._setGlobalXfoDirty)
+      // this.__ownerItem.off('globalXfoChanged', this._setGlobalXfoDirty)
 
       // The effect of the invisible owner is removed.
       if (!this.__ownerItem.isVisible()) this.__visibleCounter++
@@ -227,17 +279,20 @@ class TreeItem extends BaseItem {
 
     super.setOwner(parentItem)
 
-    this._setGlobalXfoDirty()
+    // this._setGlobalXfoDirty()
     if (this.__ownerItem) {
       this.setSelectable(this.__ownerItem.getSelectable(), true)
 
       // The effect of the invisible owner is added.
       if (!this.__ownerItem.isVisible()) this.__visibleCounter--
 
-      this.__ownerItem.on('globalXfoChanged', this._setGlobalXfoDirty)
+      this.globalXfoOp.getInput('ParentGlobal').setParam(this.__ownerItem.getParameter('GlobalXfo'))
+      // this.__ownerItem.on('globalXfoChanged', this._setGlobalXfoDirty)
+    } else {
+      this.globalXfoOp.getInput('ParentGlobal').setParam(null)
     }
 
-    this.__updateVisiblity()
+    this.__updateVisibility()
   }
 
   /**
@@ -286,39 +341,29 @@ class TreeItem extends BaseItem {
    * Sets the local Xfo transform parameter.
    *
    * @param {Xfo} xfo - The local xfo transform.
-   * @param {number} mode - The mode value. **See:** `ValueSetMode` enum in `Parameter` class.
    */
-  setLocalXfo(xfo, mode) {
+  setLocalXfo(xfo) {
     console.warn(`deprecated. use "getParameter('LocalXfo').setValue(xfo)"`)
-    this.__localXfoParam.setValue(xfo, mode)
+    this.__localXfoParam.setValue(xfo)
   }
 
   /**
    * Returns the global Xfo transform.
    *
-   * @param {number} mode - The mode value.
    * @return {Xfo} - Returns the global Xfo.
    */
-  getGlobalXfo(mode) {
+  getGlobalXfo() {
     console.warn(`deprecated. use "getParameter('GlobalXfo').getValue()"`)
-    return this.__globalXfoParam.getValue(mode)
+    return this.__globalXfoParam.getValue()
   }
 
   /**
    * Sets the global Xfo transform.
    * @param {Xfo} xfo - The global xfo transform.
-   * @param {number} mode - The mode value. **See:** `ValueSetMode` enum in `Parameter` class.
    */
-  setGlobalXfo(xfo, mode) {
+  setGlobalXfo(xfo) {
     console.warn(`deprecated. use "getParameter('GlobalXfo').setValue(xfo)"`)
-    const owner = this.getOwner()
-    if (owner) {
-      const parentXfo = owner.getGlobalXfo()
-      const localXfo = parentXfo.inverse().multiply(xfo)
-      this.__localXfoParam.setValue(localXfo, mode)
-    } else {
-      this.__globalXfoParam.setValue(xfo, mode)
-    }
+    this.__globalXfoParam.setValue(xfo)
   }
 
   /**
@@ -327,22 +372,22 @@ class TreeItem extends BaseItem {
    * @return {any} - The return value.
    * @private
    */
-  _cleanGlobalXfo(prevValue) {
-    const parentItem = this.getParentItem()
-    const localXfo = this.__localXfoParam.getValue()
-    if (parentItem !== undefined) {
-      const parentGlobal = parentItem.getGlobalXfo()
-      return parentGlobal.multiply(localXfo)
-    } else return localXfo
-  }
+  // _cleanGlobalXfo(prevValue) {
+  //   const parentItem = this.getParentItem()
+  //   const localXfo = this.__localXfoParam.getValue()
+  //   if (parentItem !== undefined) {
+  //     const parentGlobal = parentItem.getGlobalXfo()
+  //     return parentGlobal.multiply(localXfo)
+  //   } else return localXfo
+  // }
 
   /**
    * The _setGlobalXfoDirty method.
    * @private
    */
-  _setGlobalXfoDirty() {
-    this.__globalXfoParam.setDirty(this._cleanGlobalXfo)
-  }
+  // _setGlobalXfoDirty() {
+  //   this.__globalXfoParam.setDirty(this._cleanGlobalXfo)
+  // }
 
   // ////////////////////////////////////////
   // Visibility
@@ -381,22 +426,22 @@ class TreeItem extends BaseItem {
    *
    * @param {number} val - The val param.
    */
-  propagateVisiblity(val) {
+  propagateVisibility(val) {
     this.__visibleCounter += val
-    this.__updateVisiblity()
+    this.__updateVisibility()
   }
 
   /**
-   * The __updateVisiblity method.
+   * The __updateVisibility method.
    * @return {boolean} - Returns a boolean.
    * @private
    */
-  __updateVisiblity() {
+  __updateVisibility() {
     const visible = this.__visibleCounter > 0
     if (visible != this.__visible) {
       this.__visible = visible
       for (const childItem of this.__childItems) {
-        if (childItem instanceof TreeItem) childItem.propagateVisiblity(this.__visible ? 1 : -1)
+        if (childItem instanceof TreeItem) childItem.propagateVisibility(this.__visible ? 1 : -1)
       }
       this.emit('visibilityChanged', { visible })
       return true
@@ -527,7 +572,7 @@ class TreeItem extends BaseItem {
   _setBoundingBoxDirty() {
     if (this.__boundingBoxParam) {
       // Will cause boundingChanged to emit
-      this.__boundingBoxParam.setDirty(this._cleanBoundingBox)
+      this.__boundingBoxParam.setDirty()//this._cleanBoundingBox)
     }
   }
 
@@ -621,6 +666,18 @@ class TreeItem extends BaseItem {
   }
 
   /**
+   * The _childNameChanged event hander.
+   * @param {any} start - The start value.
+   * @private
+   */
+  _childNameChanged(event) {
+    // Update the acceleration structure.
+    const index = this.__childItemsMapping[event.oldName]
+    delete this.__childItemsMapping[event.oldName]
+    this.__childItemsMapping[event.newName] = index
+  }
+
+  /**
    * Inserts a child. It accepts all kind of `BaseItem`, not only `TreeItem`.
    *
    * @param {BaseItem} childItem - The child BaseItem to insert.
@@ -642,27 +699,18 @@ class TreeItem extends BaseItem {
       throw new Error('Object is is not a tree item :' + childItem.constructor.name)
     }
 
-    const signalIds = {}
-    signalIds.nameChangedId = childItem.on('nameChanged', (event) => {
-      // Update the acceleration structure.
-      const index = this.__childItemsMapping[event.oldName]
-      delete this.__childItemsMapping[event.oldName]
-      this.__childItemsMapping[event.newName] = index
-    })
+    childItem.on('nameChanged', this._childNameChanged)
 
     let newLocalXfo
     if (childItem instanceof TreeItem) {
       if (maintainXfo) {
         newLocalXfo = this.getGlobalXfo().inverse().multiply(childItem.getGlobalXfo())
       }
-      signalIds.bboxChangedId = childItem.on('boundingChanged', () => {
-        this._setBoundingBoxDirty()
-      })
-      signalIds.visChangedId = childItem.on('visibilityChanged', this._setBoundingBoxDirty)
+      childItem.on('boundingChanged', this._setBoundingBoxDirty)
+      childItem.on('visibilityChanged', this._setBoundingBoxDirty)
     }
 
     this.__childItems.splice(index, 0, childItem)
-    this.__childItemsSignalIds.splice(index, 0, signalIds)
     this.__childItemsMapping[childItem.getName()] = index
     this.__updateMapping(index)
 
@@ -694,12 +742,12 @@ class TreeItem extends BaseItem {
    * @param {boolean} fixCollisions - Modify the name of the item to avoid
    * name collisions with other chidrent of the same parent.
    * If false, an exception wll be thrown instead if a name collision occurs.
-   * @return {number} - The index of the child item in this items children array.
+   * @return {BaseItem} childItem - The child BaseItem that was added.
    */
   addChild(childItem, maintainXfo = true, fixCollisions = true) {
     const index = this.__childItems.length
     this.insertChild(childItem, index, maintainXfo, fixCollisions)
-    return index
+    return childItem
   }
 
   /**
@@ -748,16 +796,15 @@ class TreeItem extends BaseItem {
    * @private
    */
   __unbindChild(index, childItem) {
-    const signalIds = this.__childItemsSignalIds[index]
-    childItem.removeListenerById('nameChanged', signalIds.nameChangedId)
+    childItem.off('nameChanged', this._childNameChanged)
 
     if (childItem instanceof TreeItem) {
-      childItem.removeListenerById('boundingChanged', signalIds.bboxChangedId)
-      childItem.removeListenerById('visibilityChanged', signalIds.visChangedId)
+      childItem.off('boundingChanged', this._setBoundingBoxDirty)
+      childItem.off('visibilityChanged', this._setBoundingBoxDirty)
     }
 
     this.__childItems.splice(index, 1)
-    this.__childItemsSignalIds.splice(index, 1)
+    this.__childItemsEventHandlers.splice(index, 1)
     delete this.__childItemsMapping[childItem.getName()]
     this.__updateMapping(index)
 
@@ -1176,15 +1223,13 @@ class TreeItem extends BaseItem {
       xfo.ori = reader.loadFloat32Quat()
       xfo.sc.set(reader.loadFloat32())
       // console.log(this.getPath() + " TreeItem:" + xfo.toString());
-      this.__localXfoParam.setValue(xfo, ValueSetMode.DATA_LOAD)
+      this.__localXfoParam.loadValue(xfo)
     }
 
     const bboxFlag = 1 << 3
-    if (itemflags & bboxFlag)
-      this.__boundingBoxParam.setValue(
-        new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()),
-        ValueSetMode.DATA_LOAD
-      )
+    if (itemflags & bboxFlag) {
+      this.__boundingBoxParam.loadValue(new Box3(reader.loadFloat32Vec3(), reader.loadFloat32Vec3()))
+    }
 
     const numChildren = reader.loadUInt32()
     if (numChildren > 0) {
@@ -1266,7 +1311,7 @@ class TreeItem extends BaseItem {
     src.getChildren().forEach((srcChildItem) => {
       if (srcChildItem) this.addChild(srcChildItem.clone(flags), false, false)
       // if(flags& CloneFlags.CLONE_FLAG_INSTANCED_TREE) {
-      //     src.addListener('childAdded', (childItem, index)=>{
+      //     src.on('childAdded', (childItem, index)=>{
       //         this.addChild(childItem.clone(flags), false);
       //     })
       // }

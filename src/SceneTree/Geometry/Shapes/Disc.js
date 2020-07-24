@@ -113,7 +113,6 @@ class Disc extends Mesh {
 
   /**
    * The __resize method.
-   * @param {number} mode - The mode value.
    * @private
    */
   __resize() {

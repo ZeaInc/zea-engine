@@ -1,4 +1,4 @@
-import { ValueSetMode, ParamFlags, Parameter } from './Parameter.js'
+import { ParamFlags, Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores any type of list values.
@@ -67,7 +67,7 @@ class ListParameter extends Parameter {
    */
   setElement(index, value) {
     this.__value[index] = value
-    this.emit('valueChanged', { mode: ValueSetMode.USER_SETVALUE })
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
   }
 
   /**
@@ -85,7 +85,7 @@ class ListParameter extends Parameter {
     this.__value.push(elem)
     this.__flags |= ParamFlags.USER_EDITED
     this.emit('elementAdded', { elem, index: this.__value.length - 1 })
-    this.emit('valueChanged', { mode: ValueSetMode.USER_SETVALUE })
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
     return elem
   }
 
@@ -99,7 +99,7 @@ class ListParameter extends Parameter {
     this.__value.splice(index, 1)
     this.__flags |= ParamFlags.USER_EDITED
     this.emit('elementRemoved', { elem, index })
-    this.emit('valueChanged', { mode: ValueSetMode.USER_SETVALUE })
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
   }
 
   /**
@@ -114,7 +114,7 @@ class ListParameter extends Parameter {
     // this.setValue(this.__value);
     this.__flags |= ParamFlags.USER_EDITED
     this.emit('elementAdded', { elem, index })
-    this.emit('valueChanged', { mode: ValueSetMode.USER_SETVALUE })
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
   }
 
   // ////////////////////////////////////////
@@ -168,7 +168,7 @@ class ListParameter extends Parameter {
       this.__value.push(elem)
       this.emit('elementAdded', { elem, index: this.__value.length - 1 })
     }
-    this.emit('valueChanged', { mode: ValueSetMode.DATA_LOAD })
+    this.emit('valueChanged', { mode: 0 })
   }
 
   // ////////////////////////////////////////

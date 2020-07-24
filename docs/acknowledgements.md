@@ -15,8 +15,8 @@
 | rollup-plugin-terser            | 5.3.0         | [MIT](https://github.com/TrySound/rollup-plugin-terser/blob/master/LICENSE)              |
 | rollup-plugin-web-worker-loader | 6.3.0         | [MIT](https://github.com/darionco/rollup-plugin-web-worker-loader/blob/master/LICENSE)   |
 | docsify-cli                     | 4.4.0         | [MIT](https://github.com/docsifyjs/docsify-cli/blob/master/LICENSE)                      |
-| jsdoc-to-markdown                     | 4.4.0         | [MIT](https://github.com/docsifyjs/docsify-cli/blob/master/LICENSE)                      |
-| unrar                           | 5.90          | [freeware](https://github.com/pmachapman/unrar)                                          |
+| jsdoc-to-markdown               | 4.4.0         | [MIT](https://github.com/docsifyjs/docsify-cli/blob/master/LICENSE)                      |
+| unrar                           | 5.90          | [freeware](https://raw.githubusercontent.com/pmachapman/unrar/master/license.txt)        |
 | node-unrar                      | 4.4.0         | [MIT](https://github.com/YuJianrong/node-unrar.js/blob/master/LICENSE.md)                |
 | karma                           | 5.0.4         | [MIT](https://github.com/karma-runner/karma/blob/master/LICENSE)                         |
 | mocha                           | 7.1.2         | [MIT](https://github.com/mochajs/mocha/blob/master/LICENSE)                              |

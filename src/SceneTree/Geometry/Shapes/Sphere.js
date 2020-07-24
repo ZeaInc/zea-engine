@@ -47,9 +47,9 @@ class Sphere extends Mesh {
     const rebuild = () => {
       this.__rebuild()
     }
-    this.__radiusParam.addListener('valueChanged', resize)
-    this.__sidesParam.addListener('valueChanged', rebuild)
-    this.__loopsParam.addListener('valueChanged', rebuild)
+    this.__radiusParam.on('valueChanged', resize)
+    this.__sidesParam.on('valueChanged', rebuild)
+    this.__loopsParam.on('valueChanged', rebuild)
   }
 
   /**
