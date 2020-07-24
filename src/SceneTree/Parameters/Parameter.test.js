@@ -1,5 +1,4 @@
 import { Parameter } from './Parameter'
-import { ParameterOwner } from '../ParameterOwner'
 import { BaseItem } from '../BaseItem'
 
 describe('Parameter', () => {
@@ -14,7 +13,7 @@ describe('Parameter', () => {
     const parameter = new Parameter('param1')
 
     const mockFn = jest.fn()
-    const event = { mode: 'param2', prevName: 'param1' }
+    const event = { newName: 'param2', prevName: 'param1' }
     parameter.on('nameChanged', mockFn)
 
     parameter.setName('param2')
@@ -26,7 +25,7 @@ describe('Parameter', () => {
     const parameter = new Parameter('param1', '', 'String')
 
     const mockFn = jest.fn()
-    const event = { mode: 0 }
+    const event = { mode: 2 }
     parameter.on('valueChanged', mockFn)
 
     parameter.setValue('Test')

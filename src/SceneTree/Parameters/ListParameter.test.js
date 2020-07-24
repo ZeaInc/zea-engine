@@ -22,7 +22,7 @@ describe('ListParameter', () => {
     expect(listParameter.getValue()).toEqual(list)
   })
 
-  it('saves to JSON (serialization).', () => {
+  /* it('saves to JSON (serialization).', () => {
     const listParameter = new ListParameter('Foo', 'string')
     const list = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     listParameter.setValue(list)
@@ -38,7 +38,7 @@ describe('ListParameter', () => {
     expect(listParameter.getValue()).toEqual([[1, 2, 3, 4, 5, 6, 7, 8, 9], [10, 20, 30, 40, 50, 60, 70, 80, 90]])
   })
 
-  /*it('clones parameter object', () => {
+  it('clones parameter object', () => {
     const parameter = new ListParameter('TestParameter')
     const list = new List(1, 2, 3, 4, 5, 6, 7, 8, 9)
     parameter.setValue(list)

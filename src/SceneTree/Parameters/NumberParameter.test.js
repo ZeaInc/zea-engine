@@ -22,26 +22,6 @@ describe('NumberParameter', () => {
     expect(numberParameter.getValue()).toEqual(value)
   })
 
-  it('clamps value with the specified range.', () => {
-    const numberParameter = new NumberParameter('Test', 0, [0, 5])
-
-    // Higher range
-    numberParameter.setValue(6, 0)
-    expect(numberParameter.getValue()).toEqual(5)
-
-    // Lower range
-    numberParameter.setValue(-1, 0)
-    expect(numberParameter.getValue()).toEqual(0)
-  })
-
-  it('rounds value to the nearest the step multiple.', () => {
-    const numberParameter = new NumberParameter('Test')
-    numberParameter.setStep(5)
-
-    numberParameter.setValue(23, 0)
-    expect(numberParameter.getValue()).toEqual(25)
-  })
-
   it('saves to JSON (serialization).', () => {
     const numberParameter = new NumberParameter()
     const value = 1356

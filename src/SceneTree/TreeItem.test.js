@@ -27,7 +27,8 @@ describe('TreeItem', () => {
     const parent = new TreeItem('Parent')
     const child = new TreeItem('Child')
 
-    const index = parent.addChild(child)
+    parent.addChild(child)
+    const index = parent.getChildIndex(child)
 
     expect(parent.getChildByName('Child')).toBe(child)
     expect(parent.getChild(index)).toBe(child)
@@ -104,7 +105,8 @@ describe('TreeItem', () => {
     const parent = new TreeItem('Parent')
     const child = new TreeItem('Child')
 
-    const index = parent.addChild(child)
+    parent.addChild(child)
+    const index = parent.getChildIndex(child)
 
     expect(parent.getNumChildren()).toBe(1)
 

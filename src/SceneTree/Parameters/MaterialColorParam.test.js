@@ -30,7 +30,7 @@ describe('MaterialColorParam', () => {
     const baseImage = new BaseImage('Foo')
     materialParameter.setImage(baseImage)
 
-    const expOutput = '{"value":15}'
+    const expOutput = '{"value":{"r":1,"g":0,"b":0,"a":1}}'
 
     expect(JSON.stringify(materialParameter.toJSON())).toEqual(expOutput)
   })

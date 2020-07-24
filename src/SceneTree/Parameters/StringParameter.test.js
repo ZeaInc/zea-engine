@@ -1,5 +1,4 @@
 import { StringParameter } from './StringParameter'
-import { ParameterOwner } from '../ParameterOwner'
 import { BaseItem } from '../BaseItem'
 import { BinReader } from '../../SceneTree/BinReader'
 
@@ -15,7 +14,7 @@ describe('StringParameter', () => {
     const parameter = new StringParameter('param1')
 
     const mockFn = jest.fn()
-    const event = { mode: 'param2', prevName: 'param1' }
+    const event = { newName: 'param2', prevName: 'param1' }
     parameter.on('nameChanged', mockFn)
 
     parameter.setName('param2')
@@ -27,7 +26,7 @@ describe('StringParameter', () => {
     const parameter = new StringParameter('param1', '', 'String')
 
     const mockFn = jest.fn()
-    const event = { mode: 0 }
+    const event = { mode: 2 }
     parameter.on('valueChanged', mockFn)
 
     parameter.setValue('Test')
