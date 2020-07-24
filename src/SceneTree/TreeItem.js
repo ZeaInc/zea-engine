@@ -69,7 +69,8 @@ class BoundingBoxParameter extends Parameter {
 }
 
 /**
- * Class representing an Item in the scene tree with hierarchy capabilities(has children).
+ * Class representing an Item in the scene tree with hierarchy capabilities (has children).
+ * It has the capability to add and remove children.
  * <br>
  * <br>
  * **Parameters**
@@ -95,7 +96,10 @@ class TreeItem extends BaseItem {
   /**
    * Creates a tree item with the specified name.
    *
-   * @param {string} name - The name of the tree item.
+   * @param {string} name - The name of the tree item. It's the identifier of the tree item.
+   * It's an identifier intended to be human readable.
+   * It's included in the path that we use to access a particular item.
+   * It's used to display it in the tree.
    */
   constructor(name) {
     super(name)
@@ -260,7 +264,7 @@ class TreeItem extends BaseItem {
   // Parent Item
 
   /**
-   * Sets the owner(another TreeItem) of the current TreeItem.
+   * Sets the owner (another TreeItem) of the current TreeItem.
    * @param {TreeItem} parentItem - The parent item.
    */
   setOwner(parentItem) {
@@ -268,7 +272,7 @@ class TreeItem extends BaseItem {
       // this.__ownerItem.off('globalXfoChanged', this._setGlobalXfoDirty)
 
       // The effect of the invisible owner is removed.
-      if (!this.__ownerItem.getVisible()) this.__visibleCounter++
+      if (!this.__ownerItem.isVisible()) this.__visibleCounter++
       const index = this.__ownerItem.getChildIndex(this)
       if (index >= 0) this.__ownerItem.__unbindChild(index, this)
     }
@@ -280,7 +284,7 @@ class TreeItem extends BaseItem {
       this.setSelectable(this.__ownerItem.getSelectable(), true)
 
       // The effect of the invisible owner is added.
-      if (!this.__ownerItem.getVisible()) this.__visibleCounter--
+      if (!this.__ownerItem.isVisible()) this.__visibleCounter--
 
       this.globalXfoOp.getInput('ParentGlobal').setParam(this.__ownerItem.getParameter('GlobalXfo'))
       // this.__ownerItem.on('globalXfoChanged', this._setGlobalXfoDirty)
@@ -329,6 +333,7 @@ class TreeItem extends BaseItem {
    * @return {Xfo} - Returns the local Xfo.
    */
   getLocalXfo() {
+    console.warn(`deprecated. use "getParameter('LocalXfo').getValue()"`)
     return this.__localXfoParam.getValue()
   }
 
@@ -338,6 +343,7 @@ class TreeItem extends BaseItem {
    * @param {Xfo} xfo - The local xfo transform.
    */
   setLocalXfo(xfo) {
+    console.warn(`deprecated. use "getParameter('LocalXfo').setValue(xfo)"`)
     this.__localXfoParam.setValue(xfo)
   }
 
@@ -347,6 +353,7 @@ class TreeItem extends BaseItem {
    * @return {Xfo} - Returns the global Xfo.
    */
   getGlobalXfo() {
+    console.warn(`deprecated. use "getParameter('GlobalXfo').getValue()"`)
     return this.__globalXfoParam.getValue()
   }
 
@@ -355,6 +362,7 @@ class TreeItem extends BaseItem {
    * @param {Xfo} xfo - The global xfo transform.
    */
   setGlobalXfo(xfo) {
+    console.warn(`deprecated. use "getParameter('GlobalXfo').setValue(xfo)"`)
     this.__globalXfoParam.setValue(xfo)
   }
 
@@ -385,11 +393,21 @@ class TreeItem extends BaseItem {
   // Visibility
 
   /**
-   * Returns visible parameter value for current TreeItem.
+   * @deprecated
    *
    * @return {boolean} - The visible param value.
    */
   getVisible() {
+    console.warn('Deprecated. Use #isVisible.')
+    return this.isVisible()
+  }
+
+  /**
+   * Returns visible parameter value for current TreeItem.
+   *
+   * @return {boolean} - The visible param value.
+   */
+  isVisible() {
     // Should never be more than 1, but can be less than 0.
     return this.__visibleCounter > 0
   }
@@ -530,7 +548,7 @@ class TreeItem extends BaseItem {
     bbox.reset()
     this.__childItems.forEach((childItem) => {
       if (childItem instanceof TreeItem)
-        if (childItem.getVisible() && !childItem.testFlag(ItemFlags.IGNORE_BBOX)) {
+        if (childItem.isVisible() && !childItem.testFlag(ItemFlags.IGNORE_BBOX)) {
           // console.log(" - ", childItem.constructor.name, childItem.getName(), childItem.getGlobalXfo().sc.x, childItem.getBoundingBox().toString())
           bbox.addBox3(childItem.getParameter('BoundingBox').getValue())
         }
@@ -580,7 +598,7 @@ class TreeItem extends BaseItem {
    * @return {number} - The return value.
    */
   numChildren() {
-    console.warn('Deprecated method. Please use getNumChildren')
+    console.warn('Deprecated. Use #getNumChildren.')
     return this.__childItems.length
   }
 
@@ -804,10 +822,13 @@ class TreeItem extends BaseItem {
    */
   removeChild(index) {
     const childItem = this.__childItems[index]
-    if (childItem) {
-      this.__unbindChild(index, childItem)
-      childItem.setOwner(undefined)
+
+    if (!childItem) {
+      return
     }
+
+    this.__unbindChild(index, childItem)
+    childItem.setOwner(undefined)
   }
 
   /**
@@ -831,7 +852,7 @@ class TreeItem extends BaseItem {
    * @deprecated
    */
   removeChildByHandle(childItem) {
-    console.warn('Deprecated method. Please use removeChild')
+    console.warn('Deprecated. Use #removeChild')
     const index = this.__childItems.indexOf(childItem)
     if (index == -1) throw new Error('Error in removeChildByHandle. Child not found:' + childItem.getName())
     this.removeChild(index)
@@ -954,12 +975,17 @@ class TreeItem extends BaseItem {
         if (childItem) __t(childItem, depth + 1)
       }
     }
+
     const __t = (treeItem, depth) => {
       if (callback(treeItem, depth) == false) return false
       if (treeItem instanceof TreeItem) __c(treeItem, depth)
     }
-    if (includeThis) __t(this, 1)
-    else __c(this, 0)
+
+    if (includeThis) {
+      __t(this, 1)
+    } else {
+      __c(this, 0)
+    }
   }
 
   // ///////////////////////
@@ -1040,7 +1066,8 @@ class TreeItem extends BaseItem {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method serializes this instance as a JSON.
+   * It can be used for persistence, data transfer, etc.
    *
    * @param {object} context - The context value.
    * @param {number} flags - The flags value.
@@ -1072,11 +1099,12 @@ class TreeItem extends BaseItem {
         }
       }
     }
+
     return j
   }
 
   /**
-   * The fromJSON method decodes a json object for this type.
+   * The fromJSON method takes a JSON and deserializes into an instance of this type.
    *
    * @param {object} j - The json object this item must decode.
    * @param {object} context - The context value.
