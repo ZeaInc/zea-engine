@@ -1,5 +1,5 @@
 import { Vec3 } from '../../Math/index'
-import { Parameter, ValueSetMode } from './Parameter.js'
+import { Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores Vec3(three-dimensional coordinate) values.
@@ -34,9 +34,7 @@ class Vec3Parameter extends Parameter {
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    const value = new Vec3()
-    value.readBinary(reader)
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.__value.readBinary(reader)
   }
 
   // ////////////////////////////////////////

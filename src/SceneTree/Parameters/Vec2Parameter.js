@@ -58,9 +58,7 @@ class Vec2Parameter extends Parameter {
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    const value = new Vec2()
-    value.readBinary(reader)
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.__value.readBinary(reader)
   }
 
   /**

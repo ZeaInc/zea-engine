@@ -1,4 +1,4 @@
-import { ParamFlags, ValueSetMode, Parameter } from './Parameter.js'
+import { ParamFlags, Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores `Material` values.
@@ -93,7 +93,7 @@ class MaterialParameter extends Parameter {
         const materialLibrary = context.assetItem.getMaterialLibrary()
         const material = materialLibrary.getMaterial(j.value instanceof array ? j.value[1] : j.value)
         if (material) {
-          this.setValue(material, ValueSetMode.DATA_LOAD)
+          this.loadValue(material)
         }
       }
     }

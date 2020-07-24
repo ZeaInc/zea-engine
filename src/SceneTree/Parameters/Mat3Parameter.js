@@ -1,5 +1,5 @@
 import { Mat3 } from '../../Math/index'
-import { Parameter, ValueSetMode } from './Parameter.js'
+import { Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores Mat3(3x3 matrix) values.
@@ -31,9 +31,7 @@ class Mat3Parameter extends Parameter {
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    const value = new Mat3()
-    value.readBinary(reader)
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.__value.readBinary(reader)
   }
 
   /**
