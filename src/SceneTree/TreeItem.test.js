@@ -1,7 +1,5 @@
 import { TreeItem } from './TreeItem'
 
-console.warn = () => {}
-
 describe('TreeItem', () => {
   it('is visible by default.', () => {
     const treeItem = new TreeItem('Foo')
@@ -23,15 +21,24 @@ describe('TreeItem', () => {
     expect(parent.getNumChildren()).toBe(0)
   })
 
-  test('Adding children.', () => {
+  test('Getting child by index.', () => {
     const parent = new TreeItem('Parent')
     const child = new TreeItem('Child')
 
     parent.addChild(child)
+
     const index = parent.getChildIndex(child)
 
-    expect(parent.getChildByName('Child')).toBe(child)
     expect(parent.getChild(index)).toBe(child)
+  })
+
+  test('Getting child by name.', () => {
+    const parent = new TreeItem('Parent')
+    const child = new TreeItem('Child')
+
+    parent.addChild(child)
+
+    expect(parent.getChildByName('Child')).toBe(child)
   })
 
   test('Counting children.', () => {
@@ -54,13 +61,13 @@ describe('TreeItem', () => {
     expect(parent.getChildNames()).toEqual(['A', 'B'])
   })
 
-  test('Getting children index.', () => {
+  test('Getting child index.', () => {
     const parent = new TreeItem('Parent')
     const child = new TreeItem('Child')
 
     parent.addChild(child)
 
-    expect(parent.indexOfChild(child)).toBe(0)
+    expect(parent.getChildIndex(child)).toBe(0)
   })
 
   test('Resolving a shallow path.', () => {
@@ -101,11 +108,12 @@ describe('TreeItem', () => {
     expect(mockFn).toHaveBeenCalledTimes(2)
   })
 
-  test('Removing children by index.', () => {
+  test('Removing child by index.', () => {
     const parent = new TreeItem('Parent')
     const child = new TreeItem('Child')
 
     parent.addChild(child)
+
     const index = parent.getChildIndex(child)
 
     expect(parent.getNumChildren()).toBe(1)
@@ -115,7 +123,7 @@ describe('TreeItem', () => {
     expect(parent.getNumChildren()).toBe(0)
   })
 
-  test('Removing children by name.', () => {
+  test('Removing child by name.', () => {
     const parent = new TreeItem('Parent')
     const childName = 'Child'
     const child = new TreeItem(childName)
@@ -157,6 +165,6 @@ describe('TreeItem', () => {
 
     const expOutput = '{"x":1,"y":2,"z":3}'
 
-    //console.log(parent.toJSON())
+    // console.log(parent.toJSON())
   })
 })

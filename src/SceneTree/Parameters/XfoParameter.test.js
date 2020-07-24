@@ -38,7 +38,7 @@ describe('XfoParameter', () => {
 
   it('loads from JSON (serialization).', () => {
     const xfoParameter = new XfoParameter()
-    const input = { value: { tr: { x: 2, y: 5, z: 7 }, ori: { x: 0, y: 0, z: 0, w: 1 }, sc:{ x: 2, y: 2, z: 2 } } }
+    const input = { value: { tr: { x: 2, y: 5, z: 7 }, ori: { x: 0, y: 0, z: 0, w: 1 }, sc: { x: 2, y: 2, z: 2 } } }
     xfoParameter.fromJSON(input)
 
     expect(xfoParameter.getValue().toJSON()).toEqual(input.value)

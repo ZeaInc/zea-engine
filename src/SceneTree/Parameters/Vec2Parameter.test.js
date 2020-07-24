@@ -48,7 +48,7 @@ describe('Vec2Parameter', () => {
     const reader = new BinReader(data.buffer)
     vec2Parameter.readBinary(reader)
 
-    expect(vec2Parameter.getValue().toJSON()).toEqual({ x: 1, y: 2})
+    expect(vec2Parameter.getValue().toJSON()).toEqual({ x: 1, y: 2 })
   })
 
   it('clones parameter object', () => {

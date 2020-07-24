@@ -48,6 +48,26 @@ describe('Parameter', () => {
     expect(parameter.getPath()).toEqual(['param1'])
   })
 
+  test('Saving to JSON (serialization).', () => {
+    const parameter = new Parameter('name', 'value')
+
+    const expOutput = '{"value":"value"}'
+
+    expect(JSON.stringify(parameter.toJSON())).toEqual(expOutput)
+  })
+
+  test('Loading from JSON (deserialization).', () => {
+    const edited = 'Edited'
+    const json = { value: edited }
+
+    const parameter = new Parameter('name', 'value')
+    parameter.fromJSON(json)
+
+    // TODO: test that the USER_EDITED flag was set.
+
+    expect(parameter.getValue()).toEqual(edited)
+  })
+
   it('Has path to parameter when owned', () => {
     const item = new BaseItem('item1')
 

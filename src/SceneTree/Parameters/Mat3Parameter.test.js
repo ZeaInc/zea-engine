@@ -49,7 +49,6 @@ describe('Mat3Parameter', () => {
     expect(mat3Parameter.getValue().toJSON()).toEqual(Float32Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9))
   })
 
-
   it('clones parameter object', () => {
     const parameter = new Mat3Parameter('TestParameter')
     const mat3 = new Mat3(1, 2, 3, 4, 5, 6, 7, 8, 9)

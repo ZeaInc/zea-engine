@@ -1,4 +1,4 @@
-import { Vec3} from '../../Math/Vec3'
+import { Vec3 } from '../../Math/Vec3'
 import { Vec3Parameter } from './Vec3Parameter'
 import { BinReader } from '../../SceneTree/BinReader'
 

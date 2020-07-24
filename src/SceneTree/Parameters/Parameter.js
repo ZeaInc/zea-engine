@@ -403,8 +403,7 @@ class Parameter extends EventEmitter {
       console.warn('Invalid Parameter JSON')
       return
     }
-
-    // Note: JSON data is only used to store user edits, so
+    // Since JSON data is only used to store user edits,
     // parameters loaded from JSON are considered user edited.
     this.setFlag(ParamFlags.USER_EDITED)
 

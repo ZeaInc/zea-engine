@@ -28,7 +28,9 @@ describe('Mat4Parameter', () => {
     const mat4 = new Mat4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     mat4Parameter.setValue(mat4)
 
-    expect(mat4Parameter.toJSON()).toEqual({ value: Float32Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16) })
+    expect(mat4Parameter.toJSON()).toEqual({
+      value: Float32Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+    })
   })
 
   it('loads from JSON (serialization).', () => {
@@ -46,7 +48,9 @@ describe('Mat4Parameter', () => {
     const reader = new BinReader(data.buffer)
     mat4Parameter.readBinary(reader)
 
-    expect(mat4Parameter.getValue().toJSON()).toEqual(Float32Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16))
+    expect(mat4Parameter.getValue().toJSON()).toEqual(
+      Float32Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+    )
   })
 
   it('clones parameter object', () => {
