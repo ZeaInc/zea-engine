@@ -128,10 +128,9 @@ class Cuboid extends Mesh {
 
   /**
    * The __resize method.
-   * @param {number} mode - The mode value.
    * @private
    */
-  __resize(mode) {
+  __resize() {
     const x = this.__xParam.getValue()
     const y = this.__yParam.getValue()
     const z = this.__zParam.getValue()

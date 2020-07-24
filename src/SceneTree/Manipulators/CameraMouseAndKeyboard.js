@@ -52,10 +52,10 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   /**
    * Sets default manipulation mode.
    *
-   * @param {string} mode - The mode value.
+   * @param {string} manipulationMode - The manipulation mode value. Can be 'orbit', or 'look'
    */
-  setDefaultManipulationMode(mode) {
-    this.__defaultManipulationState = mode
+  setDefaultManipulationMode(manipulationMode) {
+    this.__defaultManipulationState = manipulationMode
   }
 
   /**
@@ -236,14 +236,14 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     this.__mouseDownFocalDist = focalDistance
 
     camera.getParameter('GlobalXfo').on('valueChanged', this.__globalXfoChangedDuringDrag)
+
+    this.__dragging = true
   }
 
   /**
    * @private
-   *
-   * @param {*} mode
    */
-  __globalXfoChangedDuringDrag(mode) {
+  __globalXfoChangedDuringDrag() {
     if (!this.__calculatingDragAction) {
       if (this.__dragging) {
         const camera = this.__mouseDownViewport.getCamera()
@@ -370,6 +370,13 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {MouseEvent} event - The mouse event that occurs.
    */
   onMouseDown(event) {
+
+    // this.initDrag(event)
+    if (this.__dragging) {
+      const camera = this.__mouseDownViewport.getCamera()
+      camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
+      this.__dragging = false
+    }
     this.initDrag(event)
 
     if (event.button == 2) {
@@ -426,14 +433,11 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    */
   onMouseUp(event) {
     if (this.__dragging) {
+      this.endDrag(event)
       this.emit('movementFinished', {})
-
-      const camera = event.viewport.getCamera()
-      camera.emit('movementFinished', {})
-      this.__dragging = false
+      event.viewport.getCamera().emit('movementFinished', {})
       event.stopPropagation()
     }
-    this.endDrag(event)
   }
 
   /**
@@ -625,8 +629,6 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
     if (Object.keys(this.__ongoingTouches).length == 1) {
       this.initDrag(event)
-
-      this.__dragging = true
     }
   }
 

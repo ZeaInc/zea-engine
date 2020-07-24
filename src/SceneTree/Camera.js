@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Vec3, Box3, Xfo } from '../Math/index'
 import { TreeItem } from './TreeItem.js'
-import { ValueSetMode, BooleanParameter, NumberParameter } from './Parameters/index'
+import { BooleanParameter, NumberParameter } from './Parameters/index'
 import { sgFactory } from './SGFactory'
 
 /**
@@ -22,7 +22,7 @@ import { sgFactory } from './SGFactory'
  */
 class Camera extends TreeItem {
   /**
-   * Instanciates a camera object, setting default configuration like zoom, target and positioning.
+   * Instantiates a camera object, setting default configuration like zoom, target and positioning.
    *
    * @param {string} name - The name of the camera.
    */
@@ -54,8 +54,8 @@ class Camera extends TreeItem {
 
     // Initial viewing coords of a person standing 3 meters away from the
     // center of the stage looking at something 1 meter off the ground.
-    this.setPositionAndTarget(new Vec3(3, 3, 1.75), new Vec3(0, 0, 1), ValueSetMode.GENERATED_VALUE)
-    this.setLensFocalLength('28mm', ValueSetMode.GENERATED_VALUE)
+    this.setPositionAndTarget(new Vec3(3, 3, 1.75), new Vec3(0, 0, 1))
+    this.setLensFocalLength('28mm')
   }
 
   // ////////////////////////////////////////////
@@ -126,9 +126,8 @@ class Camera extends TreeItem {
    * 400mm, 500mm, 600mm, 800mm
    *
    * @param {string} value - The lens focal length value.
-   * @param {number} mode - The mode value.
    */
-  setLensFocalLength(value, mode = ValueSetMode.USER_SETVALUE) {
+  setLensFocalLength(value) {
     // https://www.nikonians.org/reviews/fov-tables
     const mapping = {
       '10mm': 100.4,
@@ -172,7 +171,7 @@ class Camera extends TreeItem {
       console.warn('Camera lense focal length not suported:' + value)
       return
     }
-    this.__fovParam.setValue(Math.degToRad(mapping[value]), mode)
+    this.__fovParam.setValue(Math.degToRad(mapping[value]))
   }
 
   /**
@@ -189,13 +188,12 @@ class Camera extends TreeItem {
    *
    * @errors on dist value lower or less than zero.
    * @param {number} dist - The focal distance value.
-   * @param {number} mode - The mode value.
    */
-  setFocalDistance(dist, mode = ValueSetMode.USER_SETVALUE) {
+  setFocalDistance(dist) {
     if (dist < 0.0001) console.error('Never set focal distance to zero')
-    this.__focalDistanceParam.setValue(dist, mode)
-    this.__nearParam.setValue(dist * 0.01, mode)
-    this.__farParam.setValue(dist * 200.0, mode)
+    this.__focalDistanceParam.setValue(dist)
+    this.__nearParam.setValue(dist * 0.01)
+    this.__farParam.setValue(dist * 200.0)
   }
 
   /**
@@ -210,10 +208,9 @@ class Camera extends TreeItem {
    * Sets `focalDistance` parameter value.
    *
    * @param {boolean} value - The value param.
-   * @param {number} mode - The mode value.
    */
-  setIsOrthographic(value, mode = ValueSetMode.USER_SETVALUE) {
-    this.__isOrthographicParam.setValue(value, mode)
+  setIsOrthographic(value) {
+    this.__isOrthographicParam.setValue(value)
   }
 
   /**
@@ -225,13 +222,12 @@ class Camera extends TreeItem {
    *
    * @param {Vec3} position - The position of the camera.
    * @param {Vec3} target - The target of the camera.
-   * @param {number} mode - The mode value.
    */
-  setPositionAndTarget(position, target, mode = ValueSetMode.USER_SETVALUE) {
-    this.setFocalDistance(position.distanceTo(target), mode)
+  setPositionAndTarget(position, target) {
+    this.setFocalDistance(position.distanceTo(target))
     const xfo = new Xfo()
     xfo.setLookAt(position, target, new Vec3(0.0, 0.0, 1.0))
-    this.setGlobalXfo(xfo, mode)
+    this.getParameter('GlobalXfo').setValue(xfo)
   }
 
   /**
@@ -255,9 +251,8 @@ class Camera extends TreeItem {
    *
    * @param {GLBaseViewport} viewport - The viewport value.
    * @param {array} treeItems - The treeItems value.
-   * @param {number} mode - The mode value.
    */
-  frameView(viewport, treeItems, mode = ValueSetMode.USER_SETVALUE) {
+  frameView(viewport, treeItems) {
     const boundingBox = new Box3()
     for (const treeItem of treeItems) {
       boundingBox.addBox3(treeItem.getParameter('BoundingBox').getValue())
@@ -297,9 +292,9 @@ class Camera extends TreeItem {
     const dollyDist = newFocalDistance - focalDistance
     globalXfo.tr.addInPlace(cameraViewVec.scale(dollyDist))
 
-    this.setFocalDistance(newFocalDistance, mode)
-    this.setGlobalXfo(globalXfo, mode)
-    this.emit('movementFinished', { mode })
+    this.setFocalDistance(newFocalDistance)
+    this.setGlobalXfo(globalXfo)
+    this.emit('movementFinished')
   }
 
   /**

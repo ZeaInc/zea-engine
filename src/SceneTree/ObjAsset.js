@@ -12,7 +12,7 @@ import { resourceLoader } from './ResourceLoader.js'
 import { GeomLibrary } from './GeomLibrary.js'
 import { MaterialLibrary } from './MaterialLibrary.js'
 import { BooleanParameter, NumberParameter, StringParameter } from './Parameters/index'
-import { FilePathParameter } from './index'
+import { FilePathParameter } from './Parameters/FilePathParameter'
 
 // AssetItem.registerDataLoader('.obj', ObjDataLoader);
 

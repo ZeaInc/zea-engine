@@ -20,12 +20,8 @@ class GLPass extends ParameterOwner {
     this.enabled = true
     this.__passIndex = 0
 
-    const enabledParam = this.addParameter(
-      new BooleanParameter('Enabled', true)
-    )
-    enabledParam.on('valueChanged', 
-      mode => (this.enabled = enabledParam.getValue())
-    )
+    const enabledParam = this.addParameter(new BooleanParameter('Enabled', true))
+    enabledParam.on('valueChanged', () => (this.enabled = enabledParam.getValue()))
   }
 
   /**

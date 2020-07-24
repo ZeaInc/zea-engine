@@ -156,10 +156,22 @@ class Vec4 extends AttrValue {
   /**
    * Checks if this Vec4 is exactly the same as another Vec4.
    *
+   * @deprecated
    * @param {Vec4} other - The other Vec4 to compare with.
    * @return {boolean} - Returns true or false.
    */
   equal(other) {
+    console.warn('Deprecated. Use #isEqual instead.')
+    return this.isEqual(other)
+  }
+
+  /**
+   * Checks if this Vec4 is exactly the same as another Vec4.
+   *
+   * @param {Vec4} other - The other Vec4 to compare with.
+   * @return {boolean} - Returns true or false.
+   */
+  isEqual(other) {
     return (
       this.x == other.x &&
       this.y == other.y &&
@@ -171,10 +183,22 @@ class Vec4 extends AttrValue {
   /**
    * Checks if this Vec4 is different from another Vec4.
    *
+   * @deprecated
    * @param {Vec4} other - The other Vec4 to compare with.
    * @return {boolean} - Returns true or false.
    */
   notEquals(other) {
+    console.warn('Deprecated. Use #notEqual instead.')
+    return this.notEqual(other)
+  }
+
+  /**
+   * Checks if this Vec4 is different from another Vec4.
+   *
+   * @param {Vec4} other - The other Vec4 to compare with.
+   * @return {boolean} - Returns true or false.
+   */
+  notEqual(other) {
     return (
       this.x != other.x &&
       this.y != other.y &&
@@ -552,7 +576,7 @@ class Vec4 extends AttrValue {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    * @return {object} - The json object.
    */
   toJSON() {
@@ -562,6 +586,30 @@ class Vec4 extends AttrValue {
       z: this.z,
       t: this.t,
     }
+  }
+
+  /**
+   * Decodes a JSON object to set the state of this class.
+   *
+   * @param {object} j - The json object.
+   */
+  fromJSON(j) {
+    this.x = j.x
+    this.y = j.y
+    this.z = j.z
+    this.t = j.t
+  }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.x = reader.loadFloat32()
+    this.y = reader.loadFloat32()
+    this.z = reader.loadFloat32()
+    this.t = reader.loadFloat32()
   }
 }
 

@@ -1,7 +1,7 @@
 import { Color } from '../Math/index'
 import { SystemDesc } from '../BrowserDetection.js'
 import { ColorParameter } from './Parameters/index'
-import { FilePathParameter } from './index'
+import { FilePathParameter } from './Parameters/FilePathParameter'
 import { AssetItem } from './AssetItem.js'
 import { BinReader } from './BinReader.js'
 import { resourceLoader } from './ResourceLoader.js'

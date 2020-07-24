@@ -1,42 +1,55 @@
-import { ValueSetMode, ValueGetMode } from '../Parameters/index'
-import { sgFactory } from '../SGFactory'
-import { EventEmitter } from '../../Utilities/index'
+import { OperatorOutputMode } from '../Parameters/index'
 
 /** Class representing an operator output.
- * @extends EventEmitter
  */
-class OperatorOutput extends EventEmitter {
+class OperatorOutput {
   /**
    * Create an operator output.
    * @param {string} name - The name value.
-   * @param {any} filterFn - The filterFn value.
+   * @param {OperatorOutputMode} operatorOutputMode - The mode which the OperatorOutput uses to bind to its target parameter.
    */
-  constructor(name, filterFn) {
-    super()
+  constructor(name, operatorOutputMode = OperatorOutputMode.OP_WRITE) {
     this.__name = name
-    this.__filterFn = filterFn
+    this._mode = operatorOutputMode
     this._param = undefined
+    this._paramBindIndex = -1
     this.detached = false
   }
 
   /**
-   * The getName method.
-   * @return {any} - The return value.
+   * Returns name of the output.
+   * @return {string} - The name string.
    */
   getName() {
     return this.__name
   }
 
   /**
-   * The getFilterFn method.
-   * @return {any} - The return value.
+   * Sets operator that owns this output. Called by the operator when adding outputs
+   * @param {Operator} op - The operator object.
    */
-  getFilterFn() {
-    return this.__filterFn
+  setOperator(op) {
+    this._op = op
   }
 
   /**
-   * The isConnected method.
+   * Returns operator that owns this output.
+   * @return {Operator} - The operator object.
+   */
+  getOperator() {
+    return this._op
+  }
+
+  /**
+   * Returns mode that the output writes to be parameter. Must be a number from OperatorOutputMode
+   * @return {OperatorOutputMode} - The mode value.
+   */
+  getMode() {
+    return this._mode
+  }
+
+  /**
+   * Returns true if this output is connected to a parameter.
    * @return {boolean} - The return value.
    */
   isConnected() {
@@ -52,34 +65,64 @@ class OperatorOutput extends EventEmitter {
   }
 
   /**
-   * The setParam method.
-   * @param {any} param - The param value.
+   * Sets the Parameter for this out put to write to.
+   * @param {Parameter} param - The param value.
    */
-  setParam(param) {
+  setParam(param, index = -1) {
     this._param = param
-    this.emit('paramSet', { param })
+    this._paramBindIndex = this._param.bindOperatorOutput(this, index)
+  }
+
+  /**
+   * Returns the index of the binding on the parameter of this OperatorOutput
+   * up to date.
+   * @return {number} index - The index of the binding on the parameter.
+   */
+  getParamBindIndex() {
+    return this._paramBindIndex
+  }
+
+  /**
+   * If bindings change on a Parameter, it will call this method to ensure the output index is
+   * up to date.
+   * @param {number} index - The index of the binding on the parameter.
+   */
+  setParamBindIndex(index) {
+    this._paramBindIndex = index
+  }
+
+  /**
+   * Propagates dirty to the connected parameter.
+   */
+  setDirty() {
+    if (this._param) {
+      this._param.setDirty(this)
+    }
   }
 
   /**
    * The getValue method.
-   * @param {boolean} mode - The mode param.
    * @return {any} - The return value.
    */
-  getValue(mode = ValueGetMode.OPERATOR_GETVALUE) {
-    if (this._param) return this._param.getValue(mode)
+  getValue() {
+    if (this._param) return this._param.getValueFromOp(this._paramBindIndex)
   }
 
   /**
    * The setValue method.
-   * Note: Sometimes outputs are used in places like statemachines,
+   * Note: FIXME Sometimes outputs are used in places like statemachines,
    * where we would want the change to cause an event.
+   * Note: when a user sets a parameter value that is being driven by
+   * an operator, the operator can propagate the value back up the chain
+   * to its inputs.
    * @param {any} value - The value param.
-   * @param {boolean} mode - The mode value.
+   * @return {any} - The modified value.
    */
-  setValue(value, mode = ValueSetMode.OPERATOR_SETVALUE) {
+  setValue(value) {
     if (this._param) {
-      this._param.setValue(value, mode)
+      value = this._op.setValue(value, this)
     }
+    return value
   }
 
   /**
@@ -88,31 +131,8 @@ class OperatorOutput extends EventEmitter {
    */
   setClean(value) {
     if (this._param) {
-      this._param.setClean(value)
+      this._param.setCleanFromOp(value, this, this._paramBindIndex)
     }
-  }
-
-  /**
-   * The setDirty method.
-   * @param {any} fn - The fn value.
-   */
-  setDirty(fn) {
-    if (this._param) {
-      this._param.setDirty(fn)
-    }
-  }
-  setDirtyFromOp() {
-    if (this._param) {
-      this._param.setDirtyFromOp()
-    }
-  }
-
-  /**
-   * The removeCleanerFn method.
-   * @param {any} fn - The fn value.
-   */
-  removeCleanerFn(fn) {
-    if (this._param) this._param.removeCleanerFn(fn)
   }
 
   // ////////////////////////////////////////
@@ -127,11 +147,8 @@ class OperatorOutput extends EventEmitter {
   toJSON(context, flags) {
     const paramPath = this._param ? this._param.getPath() : ''
     return {
-      type: sgFactory.getClassName(this),
-      paramPath:
-        context && context.makeRelative
-          ? context.makeRelative(paramPath)
-          : paramPath,
+      paramPath: context && context.makeRelative ? context.makeRelative(paramPath) : paramPath,
+      paramBindIndex: this._paramBindIndex,
     }
   }
 
@@ -149,22 +166,18 @@ class OperatorOutput extends EventEmitter {
       context.resolvePath(
         j.paramPath,
         param => {
-          this.setParam(param)
+          this.setParam(param, j.paramBindIndex)
         },
         reason => {
-          console.warn(
-            "Operator Output: '" +
-              this.getName() +
-              "'. Unable to load item:" +
-              j.paramPath
-          )
+          console.warn("OperatorOutput: '" + this.getName() + "'. Unable to connect to:" + j.paramPath)
         }
       )
     }
   }
 
   /**
-   * The detach method.
+   * The detach method is called when an operator is being removed from the scene tree.
+   * It removes all connections to parameters in the scene.
    */
   detach() {
     // This function is called when we want to suspend an operator
@@ -172,69 +185,16 @@ class OperatorOutput extends EventEmitter {
     // Once operators have persistent connections,
     // we will simply uninstall the output from the parameter.
     this.detached = true
+    this._paramBindIndex = this._param.unbindOperator(this, index)
   }
 
   /**
-   * The reattach method.
+   * The reattach method can be called when re-instating an operator in the scene.
    */
   reattach() {
     this.detached = false
+    this._paramBindIndex = this._param.bindOperatorOutput(this, this._paramBindIndex)
   }
 }
-sgFactory.registerClass('OperatorOutput', OperatorOutput)
 
-/** Class representing an Xfo operator output.
- * @extends OperatorOutput
- */
-class XfoOperatorOutput extends OperatorOutput {
-  /**
-   * Create an Xfo operator output.
-   * @param {string} name - The name value.
-   */
-  constructor(name) {
-    super(name, p => p.getDataType() == 'Xfo')
-  }
-
-  /**
-   * The getInitialValue method.
-   * @return {any} - The return value.
-   */
-  getInitialValue() {
-    return this._initialParamValue
-  }
-
-  /**
-   * The setParam method.
-   * @param {any} param - The param value.
-   */
-  setParam(param) {
-    // Note: sometimes the param value is changed after binding.
-    // e.g. The group Xfo is updated after the operator
-    // that binds to it is loaded. It could also change if a user
-    // Is adding items to the group using the UI. Therefore, the
-    // initial Xfo needs to be updated.
-    const init = () => {
-      this._initialParamValue = param.getValue()
-      if (this._initialParamValue.clone)
-        this._initialParamValue = this._initialParamValue.clone()
-
-      if (this._initialParamValue == undefined) throw new Error('WTF?')
-    }
-    init()
-    // param.on('valueChanged', event => {
-    //   if (
-    //     event.mode == ValueSetMode.USER_SETVALUE ||
-    //     event.mode == ValueSetMode.REMOTEUSER_SETVALUE ||
-    //     event.mode == ValueSetMode.DATA_LOAD
-    //   ) {
-    //     init()
-    //   }
-    // })
-
-    this._param = param
-    this.emit('paramSet', { param })
-  }
-}
-sgFactory.registerClass('XfoOperatorOutput', XfoOperatorOutput)
-
-export { OperatorOutput, XfoOperatorOutput }
+export { OperatorOutput, OperatorOutputMode }

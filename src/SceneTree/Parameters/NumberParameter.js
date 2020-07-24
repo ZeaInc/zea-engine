@@ -1,5 +1,5 @@
 import { sgFactory } from '../SGFactory.js'
-import { ValueSetMode, Parameter } from './Parameter.js'
+import { Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores numeric values.
@@ -27,38 +27,6 @@ class NumberParameter extends Parameter {
     if (range && !Array.isArray(range)) console.error('Range value must be an array of 2 numbers.')
     this.__range = range
     this.__step = step
-  }
-
-  /**
-   * Specifies the value of the parameter.
-   *
-   * @param {number} value - The value param.
-   * @param {number} mode - The mode value.
-   */
-  setValue(value, mode) {
-    if (mode == ValueSetMode.USER_SETVALUE) {
-      if (this.__range) {
-        value = Math.clamp(value, this.__range[0], this.__range[1])
-      }
-      if (this.__step) {
-        value = Math.round(value / this.__step) * this.__step
-      }
-    }
-    super.setValue(value, mode)
-  }
-
-  /**
-   * Sets parameter's value.
-   *
-   * @param {number} mode - The mode value.
-   * @return {number} - The return value.
-   */
-  getValue(mode) {
-    // Still not sure if we should clamp the output.
-    // if(this.__range) {
-    //     return Math.clamp(super.getValue(), this.__range[0], this.__range[1]);
-    // }
-    return super.getValue(mode)
   }
 
   /**
@@ -135,8 +103,7 @@ class NumberParameter extends Parameter {
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    const value = reader.loadFloat32()
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.__value = reader.loadFloat32()
   }
 
   // ////////////////////////////////////////

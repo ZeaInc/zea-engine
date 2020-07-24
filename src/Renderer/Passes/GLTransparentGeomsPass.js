@@ -67,7 +67,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
         this.visibleItems.splice(index, 1)
       }
     })
-    const geomXfoChangedId = geomItem.on('geomXfoChanged', () => {
+    const geomXfoChangedId = geomItem.getParameter('GeomMat').on('valueChanged', () => {
       this.resort = true
     })
 

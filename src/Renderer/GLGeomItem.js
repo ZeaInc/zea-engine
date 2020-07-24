@@ -40,11 +40,13 @@ class GLGeomItem extends EventEmitter {
     this.destroy = this.destroy.bind(this)
 
     if (!gl.floatTexturesSupported) {
-      this.updateXfo = () => {
+      this.geomMatrixDirty = true
+      this.geomMatrixChanged = () => {
+        this.geomMatrixDirty = true
         this.updateGeomMatrix()
       }
     } else {
-      this.updateXfo = () => {
+      this.geomMatrixChanged = () => {
         this.emit('updated', { type: GLGeomItemChangeType.GEOMITEM_CHANGED })
       }
     }
@@ -60,7 +62,8 @@ class GLGeomItem extends EventEmitter {
       this.emit('updated', { type: GLGeomItemChangeType.GEOM_CHANGED })
     }
 
-    this.geomItem.on('geomXfoChanged', this.updateXfo)
+    this.geomItem.getParameter('GeomMat').on('valueChanged', this.geomMatrixChanged)
+    // this.geomItem.on('geomXfoChanged', this.geomMatrixChanged)
     this.geomItem.on('visibilityChanged', this.updateVisibility)
     this.geomItem.on('cutAwayChanged', this.cutAwayChanged)
     this.geomItem.on('highlightChanged', this.highlightChanged)
@@ -142,22 +145,6 @@ class GLGeomItem extends EventEmitter {
   }
 
   /**
-   * The updateGeomMatrix method.
-   */
-  updateGeomMatrix() {
-    // Pull on the GeomXfo param. This will trigger the lazy evaluation of the operators in the scene.
-    this.modelMatrixArray = this.geomItem.getGeomMat4().asArray()
-  }
-
-  /**
-   * The getGeomMatrixArray method.
-   * @return {any} - The return value.
-   */
-  getGeomMatrixArray() {
-    return this.modelMatrixArray
-  }
-
-  /**
    * The bind method.
    * @param {any} renderstate - The renderstate value.
    * @return {any} - The return value.
@@ -169,6 +156,9 @@ class GLGeomItem extends EventEmitter {
     if (!gl.floatTexturesSupported) {
       const modelMatrixunif = unifs.modelMatrix
       if (modelMatrixunif) {
+        if (this.geomMatrixDirty) {
+          this.modelMatrixArray = this.geomItem.getGeomMat4().asArray()
+        }
         gl.uniformMatrix4fv(
           modelMatrixunif.location,
           false,
@@ -216,7 +206,9 @@ class GLGeomItem extends EventEmitter {
    * Users should never need to call this method directly.
    */
   destroy() {
-    this.geomItem.off('geomXfoChanged', this.updateXfo)
+    // this.geomItem.off('geomXfoChanged', this.geomMatrixChanged)
+    
+    this.geomItem.getParameter('GeomMat').off('valueChanged', this.geomMatrixChanged)
     this.geomItem.off('visibilityChanged', this.updateVisibility)
     this.geomItem.off('cutAwayChanged', this.cutAwayChanged)
     this.geomItem.off('highlightChanged', this.highlightChanged)

@@ -153,7 +153,7 @@ Clones this Xfo and returns a new Xfo.
 <a name="Xfo+toJSON"></a>
 
 ### toJSON
-The toJSON method encodes this type as a json object for persistences.
+The toJSON method encodes this type as a json object for persistence.
 
 
 **Returns**: <code>object</code> - - The json object.  

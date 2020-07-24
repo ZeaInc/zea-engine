@@ -8,8 +8,7 @@ import { resourceLoader } from '../ResourceLoader.js'
 import { SystemDesc } from '../../BrowserDetection.js'
 
 import { BooleanParameter, NumberParameter, Vec4Parameter } from '../Parameters/index'
-
-import { FilePathParameter } from '../index'
+import { FilePathParameter } from '../Parameters/FilePathParameter'
 
 const imageDataLibrary = {}
 

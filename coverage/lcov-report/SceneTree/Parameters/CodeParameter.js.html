@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.29% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.29% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -147,8 +147,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -157,7 +157,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -166,7 +166,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -177,12 +177,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { sgFactory } from '../SGFactory'
@@ -210,9 +210,9 @@ class CodeParameter extends StringParameter {
    * @param {string} name - The name of the code parameter.
    * @param {string} value - The value of the parameter.
    */
-<span class="fstat-no" title="function not covered" >  co</span>nstructor(name, value = <span class="branch-0 cbranch-no" title="branch not covered" >'')</span> {
-<span class="cstat-no" title="statement not covered" >    super(name, value, 'String')</span>
-<span class="cstat-no" title="statement not covered" >    this.lang = 'js'</span>
+  constructor(name, value = '') {
+    super(name, value, 'String')
+    this.lang = 'js'
   }
 &nbsp;
   /**
@@ -220,8 +220,8 @@ class CodeParameter extends StringParameter {
    *
    * @param {string} lang - The language value.
    */
-<span class="fstat-no" title="function not covered" >  se</span>tLanguage(lang) {
-<span class="cstat-no" title="statement not covered" >    this.lang = lang</span>
+  setLanguage(lang) {
+    this.lang = lang
   }
 &nbsp;
   /**
@@ -229,8 +229,8 @@ class CodeParameter extends StringParameter {
    *
    * @return {string} - Returns the language.
    */
-<span class="fstat-no" title="function not covered" >  ge</span>tLanguage() {
-<span class="cstat-no" title="statement not covered" >    return this.lang</span>
+  getLanguage() {
+    return this.lang
   }
 &nbsp;
   /**
@@ -240,9 +240,9 @@ class CodeParameter extends StringParameter {
    * @param {number} flags - The flags value.
    * @return {CodeParameter} - Returns a new cloned code parameter.
    */
-<span class="fstat-no" title="function not covered" >  cl</span>one(flags) {
-    const clonedParam = <span class="cstat-no" title="statement not covered" >new CodeParameter(this.__name, this.__value)</span>
-<span class="cstat-no" title="statement not covered" >    return clonedParam</span>
+  clone(flags) {
+    const clonedParam = new CodeParameter(this.__name, this.__value)
+    return clonedParam
   }
 }
 &nbsp;
@@ -256,7 +256,7 @@ export { CodeParameter }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 23 2020 08:54:36 GMT-0500 (Colombia Standard Time)
+                at Fri Jul 24 2020 12:55:04 GMT-0500 (Colombia Standard Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

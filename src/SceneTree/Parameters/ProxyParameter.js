@@ -1,7 +1,7 @@
 import { sgFactory } from '../SGFactory'
 import { Parameter } from './Parameter.js'
 
-/** Class representing a proxy parameter. Proxies are used to connect 
+/** Class representing a proxy parameter. Proxies are used to connect
  * a parameter on one object with another. An existing parameter is
  * replaced with a proxy that binds to a parameter on another object.
  * @extends Parameter
@@ -21,15 +21,19 @@ class ProxyParameter extends Parameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {number} mode - The mode value.
    */
   setSourceParameter(sourceParameter) {
     this.sourceParameter = sourceParameter;
     this.sourceParameter.on('valueChanged', this.__proxyValueChanged.bind(this));
   }
 
-  __proxyValueChanged(mode) {
-    this.emit('valueChanged', { mode })
+  /**
+   * @private
+   * Handles propagating the valueChanged event from the source param
+   * @param {any} value - The value param.
+   */
+  __proxyValueChanged(event) {
+    this.emit('valueChanged', event)
   }
 
 
@@ -45,26 +49,24 @@ class ProxyParameter extends Parameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {number} mode - The mode value.
    */
-  setValue(value, mode) {
-    // this.sourceParameter.setValue(value, mode)
+  setValue(value) {
+    // this.sourceParameter.setValue(value)
   }
 
   /**
    * The getValue method.
-   * @param {number} mode - The mode value.
    * @return {any} - The return value.
    */
-  getValue(mode) {
-    return this.sourceParameter.getValue(mode)
+  getValue() {
+    return this.sourceParameter.getValue()
   }
 
   // ////////////////////////////////////////
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    * @param {object} context - The context value.
    * @param {number} flags - The flags value.
    * @return {object} - Returns the json object.
@@ -113,6 +115,7 @@ class ProxyParameter extends Parameter {
    * The clone method constructs a new number parameter, copies its values
    * from this parameter and returns it.
    * @param {number} flags - The flags value.
+   * @param {object} context - The context object.
    * @return {ProxyParameter} - Returns a new number parameter.
    */
   clone(flags, context) {
@@ -136,12 +139,7 @@ class ProxyParameter extends Parameter {
         clonedParam.setSourceParameter(param)
       },
       reason => {
-        console.warn(
-          "Error cloning Proxy Param: '" +
-            this.getName() +
-            "'. Unable to connect to:" +
-            j.sourceParameter
-        )
+        console.warn("Error cloning Proxy Param: '" + this.getName() + "'. Unable to connect to:" + j.sourceParameter)
       }
     )
   }

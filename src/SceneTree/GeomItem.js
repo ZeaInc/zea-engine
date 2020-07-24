@@ -1,9 +1,43 @@
 import { Vec2, Xfo } from '../Math/index'
-import { ValueSetMode, XfoParameter, Mat4Parameter } from './Parameters/index'
+import { XfoParameter, Mat4Parameter } from './Parameters/index'
 import { MaterialParameter } from './Parameters/MaterialParameter'
 import { GeometryParameter } from './Parameters/GeometryParameter'
 import { sgFactory } from './SGFactory.js'
 import { BaseGeomItem } from './BaseGeomItem.js'
+import { Operator } from './Operators/Operator.js'
+import { OperatorInput } from './Operators/OperatorInput.js'
+import { OperatorOutput } from './Operators/OperatorOutput.js'
+
+
+/** The operator the calculates the global Xfo of a TreeItem based on its parents GlobalXfo and its own LocalXfo
+ * @extends Operator
+ * @private
+ */
+class CalcGeomMatOperator extends Operator {
+  /**
+   * Create a gears operator.
+   * @param {string} name - The name value.
+   */
+  constructor(globalXfoParam, geomOffsetXfoParam, geomMatParam) {
+    super("CalcGeomMatOperator")
+    this.addInput(new OperatorInput('GlobalXfo')).setParam(globalXfoParam)
+    this.addInput(new OperatorInput('GeomOffsetXfo')).setParam(geomOffsetXfoParam)
+    this.addOutput(new OperatorOutput('GeomMat')).setParam(geomMatParam)
+  }
+
+  /**
+   * The evaluate method.
+   */
+  evaluate() {
+    const globalXfo = this.getInput('GlobalXfo').getValue()
+    const geomOffsetXfo = this.getInput('GeomOffsetXfo').getValue()
+    const geomMatOutput = this.getOutput('GeomMat')
+
+    const globalMat4 = globalXfo.toMat4()
+    const geomOffsetMat4 = geomOffsetXfo.toMat4()
+    geomMatOutput.setClean(globalMat4.multiply(geomOffsetMat4))
+  }
+}
 
 /**
  * Class representing a geometry item in a scene tree.
@@ -25,10 +59,10 @@ class GeomItem extends BaseGeomItem {
   /**
    * Creates a geometry item.
    * @param {string} name - The name of the geom item.
-   * @param {BaseGeom} geom - The geom value.
+   * @param {BaseGeom} geometry - The geometry value.
    * @param {Material} material - The material value.
    */
-  constructor(name, geom = undefined, material = undefined) {
+  constructor(name, geometry = undefined, material = undefined) {
     super(name)
 
     this.__geomParam = this.insertParameter(new GeometryParameter('Geometry'), 0)
@@ -42,16 +76,16 @@ class GeomItem extends BaseGeomItem {
     this.__geomOffsetXfoParam = this.addParameter(new XfoParameter('GeomOffsetXfo'))
     this.__geomMatParam = this.addParameter(new Mat4Parameter('GeomMat'))
 
-    this.__cleanGeomMat = this.__cleanGeomMat.bind(this)
-    this.__globalXfoParam.on('valueChanged', () => {
-      this.__geomMatParam.setDirty(this.__cleanGeomMat)
-    })
-    this.__geomOffsetXfoParam.on('valueChanged', () => {
-      this.__geomMatParam.setDirty(this.__cleanGeomMat)
-    })
-    this.__geomMatParam.on('valueChanged', (event) => {
-      this.emit('geomXfoChanged', event)
-    })
+    // this.__cleanGeomMat = this.__cleanGeomMat.bind(this)
+    // this.__globalXfoParam.on('valueChanged', () => {
+    //   this.__geomMatParam.setDirty(this.__cleanGeomMat)
+    // })
+    // this.__geomOffsetXfoParam.on('valueChanged', () => {
+    //   this.__geomMatParam.setDirty(this.__cleanGeomMat)
+    // })
+    // this.__geomMatParam.on('valueChanged', (event) => {
+    //   this.emit('geomXfoChanged', event)
+    // })
     this.__materialParam.on('valueChanged', (event) => {
       this.emit('materialAssigned', event)
     })
@@ -59,19 +93,14 @@ class GeomItem extends BaseGeomItem {
       this.emit('geomAssigned', event)
     })
 
-    if (geom) this.setGeometry(geom, ValueSetMode.DATA_LOAD)
-    if (material) this.setMaterial(material, ValueSetMode.DATA_LOAD)
-  }
+    this.calcGeomMatOperator = new CalcGeomMatOperator(
+      this.__globalXfoParam,
+      this.__geomOffsetXfoParam,
+      this.__geomMatParam
+    )
 
-  /**
-   * The __cleanGeomMat method.
-   * @return {Mat4} - The return value.
-   * @private
-   */
-  __cleanGeomMat() {
-    const globalMat4 = this.__globalXfoParam.getValue().toMat4()
-    const geomOffsetMat4 = this.__geomOffsetXfoParam.getValue().toMat4()
-    return globalMat4.multiply(geomOffsetMat4)
+    if (geometry) this.getParameter('Geometry').loadValue(geometry)
+    if (material) this.getParameter('Material').loadValue(material)
   }
 
   // ////////////////////////////////////////
@@ -90,32 +119,31 @@ class GeomItem extends BaseGeomItem {
    * Sets geometry object to `Geometry` parameter.
    *
    * @param {BaseGeom} geom - The geom value.
-   * @param {number} mode - The mode value.
    */
-  setGeometry(geom, mode) {
-    this.__geomParam.setValue(geom, mode)
+  setGeometry(geom) {
+    this.__geomParam.setValue(geom)
   }
 
   /**
-   * Getter for geometry (getGeom is deprectated. Please use getGeometry).
+   * Getter for geometry (getGeom is deprecated. Please use getGeometry).
    *
    * @deprecated
    * @return {BaseGeom} - The return value.
    */
   getGeom() {
-    console.warn("getGeom is deprectated. Please use 'getGeometry'")
+    console.warn("getGeom is deprecated. Please use 'getGeometry'")
     return this.getGeometry()
   }
 
   /**
-   * Setter for geometry. (setGeom is deprectated. Please use setGeometry).
+   * Setter for geometry. (setGeom is deprecated. Please use setGeometry).
    *
    * @deprecated
    * @param {BaseGeom} geom - The geom value.
    * @return {number} - The return value.
    */
   setGeom(geom) {
-    console.warn("setGeom is deprectated. Please use 'setGeometry'")
+    console.warn("setGeom is deprecated. Please use 'setGeometry'")
     return this.setGeometry(geom)
   }
 
@@ -132,10 +160,9 @@ class GeomItem extends BaseGeomItem {
    * Sets material object to `Material` parameter.
    *
    * @param {Material} material - The material value.
-   * @param {number} mode - The mode value.
    */
-  setMaterial(material, mode) {
-    this.__materialParam.setValue(material, mode)
+  setMaterial(material) {
+    this.__materialParam.setValue(material)
   }
 
   /**
@@ -260,14 +287,14 @@ class GeomItem extends BaseGeomItem {
     const geomLibrary = context.assetItem.getGeometryLibrary()
     const geom = geomLibrary.getGeom(geomIndex)
     if (geom) {
-      this.setGeometry(geom, ValueSetMode.DATA_LOAD)
+      this.getParameter('Geometry').loadValue(geom)
     } else {
       this.geomIndex = geomIndex
       const onGeomLoaded = (event) => {
         const { range } = event
         if (geomIndex >= range[0] && geomIndex < range[1]) {
           const geom = geomLibrary.getGeom(geomIndex)
-          if (geom) this.setGeometry(geom, ValueSetMode.DATA_LOAD)
+          if (geom) this.getParameter('Geometry').loadValue(geom)
           else console.warn('Geom not loaded:', this.getName())
           geomLibrary.off('rangeLoaded', onGeomLoaded)
         }
@@ -296,10 +323,10 @@ class GeomItem extends BaseGeomItem {
           console.warn("Geom :'" + this.name + "' Material not found:" + materialName)
           material = materialLibrary.getMaterial('Default')
         }
-        this.setMaterial(material, ValueSetMode.DATA_LOAD)
+        this.getParameter('Material').loadValue(material)
       } else {
         // Force nodes to have a material so we can see them.
-        this.setMaterial(context.assetItem.getMaterialLibrary().getMaterial('Default'), ValueSetMode.DATA_LOAD)
+        this.getParameter('Material').loadValue(context.assetItem.getMaterialLibrary().getMaterial('Default'))
       }
     }
 
@@ -348,7 +375,7 @@ class GeomItem extends BaseGeomItem {
         const { range } = event
         if (geomIndex >= range[0] && geomIndex < range[1]) {
           const geom = geomLibrary.getGeom(geomIndex)
-          if (geom) this.setGeometry(geom, ValueSetMode.DATA_LOAD)
+          if (geom) this.getParameter('Geometry').loadValue(geom)
           else console.warn('Geom not loaded:', this.getName())
           geomLibrary.off('rangeLoaded', onGeomLoaded)
         }

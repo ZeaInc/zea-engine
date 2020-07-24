@@ -1,5 +1,5 @@
 import { sgFactory } from '../SGFactory'
-import { Parameter, ValueSetMode } from './Parameter.js'
+import { Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores Mat4(4x4 matrix) values.
@@ -50,8 +50,7 @@ class StringParameter extends Parameter {
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    const value = reader.loadStr()
-    this.setValue(value, ValueSetMode.DATA_LOAD)
+    this.__value = reader.loadStr()
   }
 
   /**

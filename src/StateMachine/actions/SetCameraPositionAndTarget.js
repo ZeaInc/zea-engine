@@ -19,13 +19,16 @@ class SetCameraPositionAndTarget extends StateAction {
   constructor() {
     super()
 
-    this.addParameter(
-      new TreeItemParameter('Camera', treeItem => treeItem instanceof Camera)
-    )
+    this.addParameter(new TreeItemParameter('Camera', (treeItem) => treeItem instanceof Camera))
     this.addParameter(new Vec3Parameter('CameraPos'))
     this.addParameter(new Vec3Parameter('CameraTarget'))
     this.addParameter(new NumberParameter('InterpTime', 1.0))
-    this.addParameter(new NumberParameter('UpdateFrequency', 30))
+
+    // Note: if the update frequency here can be faster than the renderer, it means each
+    // rendered frame there is an updated values. This keeps movement smooth.
+    // This is very apparent when moving the camera, while changing other values. If the 2 changes
+    // are slower than rendering, then we see juddering.
+    this.addParameter(new NumberParameter('UpdateFrequency', 100))
   }
 
   /**

@@ -1,4 +1,4 @@
-import { ParamFlags, ValueSetMode, Parameter } from './Parameter.js'
+import { ParamFlags, Parameter } from './Parameter.js'
 
 /** Class representing a geometry parameter.
  * @extends Parameter
@@ -14,39 +14,31 @@ class GeometryParameter extends Parameter {
     super(name, undefined, 'Geometry')
     this.setValue(value)
 
-    this.__emitboundingBoxDirtied = this.__emitboundingBoxDirtied.bind(this)
+    this.__emitBoundingBoxDirtied = this.__emitBoundingBoxDirtied.bind(this)
   }
 
   // eslint-disable-next-line require-jsdoc
-  __emitboundingBoxDirtied(event) {
+  __emitBoundingBoxDirtied(event) {
     this.emit('boundingBoxChanged', event)
   }
 
   /**
    * The setValue method.
    * @param {any} geom - The geom value.
-   * @param {any} mode - The mode value.
    */
-  setValue(geom, mode = ValueSetMode.USER_SETVALUE) {
+  setValue(geom) {
     // 0 == normal set. 1 = changed via cleaner fn, 2 = change by loading/cloning code.
     if (this.__value !== geom) {
       if (this.__value) {
-        this.__value.off('boundingBoxChanged', this.__emitboundingBoxDirtied)
+        this.__value.off('boundingBoxChanged', this.__emitBoundingBoxDirtied)
       }
       this.__value = geom
       if (this.__value) {
-        this.__value.on('boundingBoxChanged', this.__emitboundingBoxDirtied)
+        this.__value.on('boundingBoxChanged', this.__emitBoundingBoxDirtied)
       }
 
-      if (
-        mode == ValueSetMode.USER_SETVALUE ||
-        mode == ValueSetMode.REMOTEUSER_SETVALUE
-      ) {
-        this.__flags |= ParamFlags.USER_EDITED
-      }
-
-      // During the cleaning process, we don't want notifications.
-      if (mode != ValueSetMode.OPERATOR_SETVALUE) this.emit('valueChanged', { mode })
+      this.__flags |= ParamFlags.USER_EDITED
+      this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
     }
   }
 
@@ -54,7 +46,7 @@ class GeometryParameter extends Parameter {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    * @param {object} context - The context value.
    * @param {number} flags - The flags value.
    * @return {object} - Returns the json object.
@@ -98,7 +90,7 @@ class GeometryParameter extends Parameter {
     // e.g. freeing GPU Memory.
 
     if (this.__value) {
-      this.__value.off('boundingBoxChanged', this.__emitboundingBoxDirtied)
+      this.__value.off('boundingBoxChanged', this.__emitBoundingBoxDirtied)
     }
   }
 }

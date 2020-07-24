@@ -30,6 +30,7 @@ class GLBillboardsPass extends GLPass {
     super.init(renderer, passIndex)
 
     this.__billboards = []
+    this.__dirtyBillboards = new Set()
     this.__freeIndices = []
     this.__drawCount = 0
     this.__threshold = 0.0
@@ -98,7 +99,7 @@ class GLBillboardsPass extends GLPass {
         this.__drawCount++
         // The billboard Xfo might have changed while it was 
         // not visible. We need to update here.
-        this.__updateBillboard(index)
+        this.__dirtyBillboards.add(index)
       } else this.__drawCount--
       this.__reqUpdateIndexArray()
     }
@@ -106,7 +107,7 @@ class GLBillboardsPass extends GLPass {
 
     const xfoChanged = () => {
       if (billboard.getVisible()) {
-        this.__updateBillboard(index)
+        this.__dirtyBillboards.add(index)
         this.emit('updated', {})
       }
     }
@@ -114,7 +115,7 @@ class GLBillboardsPass extends GLPass {
 
     const alphaChanged = () => {
       if (billboard.getVisible()) {
-        this.__updateBillboard(index)
+        this.__dirtyBillboards.add(index)
         this.emit('updated', {})
       }
     }
@@ -463,6 +464,13 @@ class GLBillboardsPass extends GLPass {
       this.__updateRequested
     ) {
       return
+    }
+
+    if (this.__dirtyBillboards.size > 0) {
+      this.__dirtyBillboards.forEach((index) => {
+        this.__updateBillboard(index)
+      })
+      this.__dirtyBillboards.clear()
     }
 
     if (this.indexArrayUpdateNeeded) this.__updateIndexArray()

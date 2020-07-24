@@ -261,7 +261,7 @@ class Xfo {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    *
    * @return {object} - The json object.
    */
@@ -285,6 +285,17 @@ class Xfo {
     if (j.sc) {
       this.sc.fromJSON(j.sc)
     }
+  }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.tr.readBinary(reader)
+    this.ori.readBinary(reader)
+    this.sc.readBinary(reader)
   }
 
   /**

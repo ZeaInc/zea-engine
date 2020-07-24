@@ -646,7 +646,7 @@ class Color extends AttrValue {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    *
    * @return {object} - The json object.
    */
@@ -669,6 +669,18 @@ class Color extends AttrValue {
     this.g = j.g
     this.b = j.b
     this.a = j.a
+  }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.r = reader.loadFloat32()
+    this.g = reader.loadFloat32()
+    this.b = reader.loadFloat32()
+    this.a = reader.loadFloat32()
   }
 
   /**

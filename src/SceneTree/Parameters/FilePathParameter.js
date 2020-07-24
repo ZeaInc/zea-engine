@@ -1,4 +1,4 @@
-import { ValueSetMode, ParamFlags, Parameter } from './Parameter.js'
+import { ParamFlags, Parameter } from './Parameter.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
 /**
@@ -51,15 +51,14 @@ class FilePathParameter extends Parameter {
    * Resolves resourceId using the specified path and sets its value to the parameter.
    *
    * @param {string} filePath - The filePath value.
-   * @param {number} mode - The mode value.
    */
-  setFilepath(filePath, mode) {
+  setFilepath(filePath) {
     const resourceId = resourceLoader.resolveFilePathToId(filePath)
     if (!resourceId) {
       console.warn('Resource unavailable:' + filePath)
       return
     }
-    this.setValue(resourceId, mode)
+    this.setValue(resourceId)
   }
 
   /**
@@ -146,10 +145,9 @@ class FilePathParameter extends Parameter {
    * Sets file data.
    *
    * @param {string} url - the url value of the
-   * @param {string} name  -
-   * @param {number} mode -
+   * @param {string} name - (optional) the name of the file that the Url points to.
    */
-  setUrl(url, name, mode = ValueSetMode.USER_SETVALUE) {
+  setUrl(url, name) {
     const parts = url.split('/')
     if (!name) name = parts[parts.length - 1]
 
@@ -160,10 +158,8 @@ class FilePathParameter extends Parameter {
       url,
     }
 
-    if (mode == ValueSetMode.USER_SETVALUE || mode == ValueSetMode.REMOTEUSER_SETVALUE) {
-      this.__flags |= ParamFlags.USER_EDITED
-    }
-    this.emit('valueChanged', { mode })
+    this.__flags |= ParamFlags.USER_EDITED
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
   }
 
   /**
@@ -189,17 +185,16 @@ class FilePathParameter extends Parameter {
    * Sets file parameter value receiving its resource id.
    *
    * @param {string} value - The value param.
-   * @param {number} mode - The mode value.
    * @return {boolean} - The return value.
    */
-  setValue(value, mode = ValueSetMode.USER_SETVALUE) {
+  setValue(value) {
     // 0 == normal set. 1 = changed via cleaner fn, 2 = change by loading/cloning code.
     if (value == undefined) {
       throw new Error('Invalid value for setValue.')
     }
     if (value.indexOf('.') > 0) {
       console.warn('Deprecation warning for setValue. setValue should now only take a file id, not a path.')
-      return this.setFilepath(value, mode)
+      return this.setFilepath(value)
     }
     // Note: equality tests only work on simple types.
     // Important here because file changes cause reloads..
@@ -232,8 +227,8 @@ class FilePathParameter extends Parameter {
       }
     })
 
-    if (mode == ValueSetMode.USER_SETVALUE) this.__flags |= ParamFlags.USER_EDITED
-    this.emit('valueChanged', { mode })
+    this.__flags |= ParamFlags.USER_EDITED
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
   }
   // ////////////////////////////////////////
   // Persistence
@@ -268,23 +263,19 @@ class FilePathParameter extends Parameter {
   fromJSON(j, context, flags) {
     if (j.value) {
       if (j.value.indexOf('.') > 0) {
-        this.setFilepath(j.value, ValueSetMode.DATA_LOAD)
-        return
+        this.__value = j.value
       } else {
         if (resourceLoader.resourceAvailable(j.value)) {
-          this.setValue(j.value, ValueSetMode.DATA_LOAD)
+          this.__value = j.value
           this.__flags |= ParamFlags.USER_EDITED
-          return
         }
       }
-    }
-    if (j.filepath) {
+    } else if (j.filepath) {
       const resourceId = resourceLoader.resolveFilePathToId(j.filepath)
       if (!resourceId) {
         console.warn('Resource unavailable:' + j.filepath)
       } else {
-        this.setValue(resourceId, ValueSetMode.DATA_LOAD)
-        return
+        this.__value = resourceId
       }
     }
   }

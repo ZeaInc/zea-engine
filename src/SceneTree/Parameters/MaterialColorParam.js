@@ -56,9 +56,8 @@ class MaterialColorParam extends ColorParameter {
    * Sets `BaseImage` texture value in parameter.
    *
    * @param {BaseImage} value - The value param.
-   * @param {number} mode - The mode param.
    */
-  setImage(value, mode = 0) {
+  setImage(value) {
     const disconnectImage = () => {
       this.__image.off('loaded', this.__imageUpdated)
       this.__image.off('updated', this.__imageUpdated)
@@ -72,7 +71,7 @@ class MaterialColorParam extends ColorParameter {
       this.__image = value
       this.__image.on('updated', this.__imageUpdated)
       this.emit('textureConnected', {})
-      this.emit('valueChanged', { mode })
+      this.emit('valueChanged', { mode: 0 })
     } else {
       if (this.__image != undefined) {
         disconnectImage()

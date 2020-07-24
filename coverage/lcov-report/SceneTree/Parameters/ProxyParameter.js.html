@@ -207,9 +207,7 @@
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
 <a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a>
-<a name='L152'></a><a href='#L152'>152</a>
-<a name='L153'></a><a href='#L153'>153</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,12 +232,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,6 +251,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -327,25 +327,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -357,14 +342,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { sgFactory } from '../SGFactory'
 import { Parameter } from './Parameter.js'
 &nbsp;
-/** Class representing a proxy parameter. Proxies are used to connect 
+/** Class representing a proxy parameter. Proxies are used to connect
  * a parameter on one object with another. An existing parameter is
  * replaced with a proxy that binds to a parameter on another object.
  * @extends Parameter
@@ -384,15 +380,19 @@ class ProxyParameter extends Parameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {number} mode - The mode value.
    */
 <span class="fstat-no" title="function not covered" >  se</span>tSourceParameter(sourceParameter) {
 <span class="cstat-no" title="statement not covered" >    this.sourceParameter = sourceParameter;</span>
-<span class="cstat-no" title="statement not covered" >    this.sourceParameter.addListener('valueChanged', this.__proxyValueChanged.bind(this));</span>
+<span class="cstat-no" title="statement not covered" >    this.sourceParameter.on('valueChanged', this.__proxyValueChanged.bind(this));</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  __</span>proxyValueChanged(mode) {
-<span class="cstat-no" title="statement not covered" >    this.emit('valueChanged', { mode })</span>
+  /**
+   * @private
+   * Handles propagating the valueChanged event from the source param
+   * @param {any} value - The value param.
+   */
+<span class="fstat-no" title="function not covered" >  __</span>proxyValueChanged(event) {
+<span class="cstat-no" title="statement not covered" >    this.emit('valueChanged', event)</span>
   }
 &nbsp;
 &nbsp;
@@ -408,26 +408,24 @@ class ProxyParameter extends Parameter {
   /**
    * The setValue method.
    * @param {any} value - The value param.
-   * @param {number} mode - The mode value.
    */
-<span class="fstat-no" title="function not covered" >  se</span>tValue(value, mode) {
-    // this.sourceParameter.setValue(value, mode)
+<span class="fstat-no" title="function not covered" >  se</span>tValue(value) {
+    // this.sourceParameter.setValue(value)
   }
 &nbsp;
   /**
    * The getValue method.
-   * @param {number} mode - The mode value.
    * @return {any} - The return value.
    */
-<span class="fstat-no" title="function not covered" >  ge</span>tValue(mode) {
-<span class="cstat-no" title="statement not covered" >    return this.sourceParameter.getValue(mode)</span>
+<span class="fstat-no" title="function not covered" >  ge</span>tValue() {
+<span class="cstat-no" title="statement not covered" >    return this.sourceParameter.getValue()</span>
   }
 &nbsp;
   // ////////////////////////////////////////
   // Persistence
 &nbsp;
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    * @param {object} context - The context value.
    * @param {number} flags - The flags value.
    * @return {object} - Returns the json object.
@@ -476,6 +474,7 @@ class ProxyParameter extends Parameter {
    * The clone method constructs a new number parameter, copies its values
    * from this parameter and returns it.
    * @param {number} flags - The flags value.
+   * @param {object} context - The context object.
    * @return {ProxyParameter} - Returns a new number parameter.
    */
 <span class="fstat-no" title="function not covered" >  cl</span>one(flags, context) {
@@ -499,12 +498,7 @@ class ProxyParameter extends Parameter {
 <span class="cstat-no" title="statement not covered" >        clonedParam.setSourceParameter(param)</span>
       },
 <span class="fstat-no" title="function not covered" >      re</span>ason =&gt; {
-<span class="cstat-no" title="statement not covered" >        console.warn(</span>
-          "Error cloning Proxy Param: '" +
-            this.getName() +
-            "'. Unable to connect to:" +
-            j.sourceParameter
-        )
+<span class="cstat-no" title="statement not covered" >        console.warn("Error cloning Proxy Param: '" + this.getName() + "'. Unable to connect to:" + j.sourceParameter)</span>
       }
     )
   }
@@ -520,7 +514,7 @@ export { ProxyParameter }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 23 2020 08:54:36 GMT-0500 (Colombia Standard Time)
+                at Fri Jul 24 2020 12:55:04 GMT-0500 (Colombia Standard Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

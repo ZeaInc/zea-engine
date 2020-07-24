@@ -24,7 +24,8 @@ class SimpleUniformBinding {
    * @param {any} unif - The unif value.
    */
   constructor(gl, glmaterial, param, unif) {
-    this.__unif = unif
+    this.param = param
+    this.unif = unif
 
     switch (unif.type) {
       case Boolean:
@@ -42,10 +43,9 @@ class SimpleUniformBinding {
         this.uniformXX = gl.uniform1f.bind(gl)
         break
     }
-
-    this.__val = param.getValue()
+    this.dirty = true
     param.on('valueChanged', () => {
-      this.__val = param.getValue()
+      this.dirty = true
       glmaterial.emit('updated', {})
     })
   }
@@ -55,7 +55,11 @@ class SimpleUniformBinding {
    * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
-    this.uniformXX(this.__unif.location, this.__val)
+    if (this.dirty) {
+      this.val = this.param.getValue()
+      this.dirty = false
+    }
+    this.uniformXX(this.unif.location, this.val)
   }
 
   /**
@@ -81,7 +85,8 @@ class ComplexUniformBinding {
    * @param {any} unif - The unif value.
    */
   constructor(gl, glmaterial, param, unif) {
-    this.__unif = unif
+    this.param = param
+    this.unif = unif
 
     switch (unif.type) {
       case Vec2:
@@ -94,10 +99,9 @@ class ComplexUniformBinding {
         this.uniformXX = gl.uniform4fv.bind(gl)
         break
     }
-
-    this.__vals = param.getValue().asArray()
+    this.dirty = true
     param.on('valueChanged', () => {
-      this.__vals = param.getValue().asArray()
+      this.dirty = true
       glmaterial.emit('updated', {})
     })
   }
@@ -107,7 +111,11 @@ class ComplexUniformBinding {
    * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
-    this.uniformXX(this.__unif.location, this.__vals)
+    if (this.dirty) {
+      this.vals = this.param.getValue().asArray()
+      this.dirty = false
+    }
+    this.uniformXX(this.unif.location, this.vals)
   }
 
   /**
@@ -133,7 +141,8 @@ class MatrixUniformBinding {
    * @param {any} unif - The unif value.
    */
   constructor(gl, glmaterial, param, unif) {
-    this.__unif = unif
+    this.param = param
+    this.unif = unif
 
     switch (unif.type) {
       case Mat3:
@@ -144,9 +153,9 @@ class MatrixUniformBinding {
         break
     }
 
-    this.__vals = param.getValue().asArray()
+    this.dirty = true
     param.on('valueChanged', () => {
-      this.__val = param.getValue().asArray()
+      this.dirty = true
       glmaterial.emit('updated', {})
     })
   }
@@ -156,7 +165,11 @@ class MatrixUniformBinding {
    * @param {any} renderstate - The renderstate value.
    */
   bind(renderstate) {
-    this.uniformMatrixXXX(this.__unif.location, false, this.__val)
+    if (this.dirty) {
+      this.vals = this.param.getValue().asArray()
+      this.dirty = false
+    }
+    this.uniformMatrixXXX(this.unif.location, false, this.val)
   }
 
   /**
@@ -183,12 +196,13 @@ class ColorUniformBinding {
    * @param {any} unifs - The unifs value.
    */
   constructor(gl, glmaterial, param, unif, unifs) {
-    this.__gl = gl
-    this.__unif = unif
-    this.__textureUnif = unifs[unif.name + 'Tex']
-    this.__textureTypeUnif = unifs[unif.name + 'TexType']
+    this.gl = gl
+    this.param = param
+    this.unif = unif
+    this.textureUnif = unifs[unif.name + 'Tex']
+    this.textureTypeUnif = unifs[unif.name + 'TexType']
 
-    this.__vals = [0, 0, 0, 0]
+    this.vals = [0, 0, 0, 0]
     this.bind = this.bindValue
 
     const genGLTex = image => {
@@ -196,18 +210,18 @@ class ColorUniformBinding {
       const textureType = 1
       if (!gltexture) {
         if (image.type === 'FLOAT') {
-          gltexture = new GLHDRImage(this.__gl, image)
+          gltexture = new GLHDRImage(this.gl, image)
         } else if (image.isStreamAtlas()) {
-          gltexture = new GLImageStream(this.__gl, image)
+          gltexture = new GLImageStream(this.gl, image)
         }
         // else if (image.hasAlpha()){
-        //     gltexture = new GLLDRAlphaImage(this.__gl, image);
+        //     gltexture = new GLLDRAlphaImage(this.gl, image);
         // }
         else {
-          gltexture = new GLTexture2D(this.__gl, image)
+          gltexture = new GLTexture2D(this.gl, image)
         }
       }
-      this.texBinding = gltexture.preBind(this.__textureUnif, unifs)
+      this.texBinding = gltexture.preBind(this.textureUnif, unifs)
       gltexture.on('updated', () => {
         glmaterial.emit('updated', {})
       })
@@ -248,12 +262,12 @@ class ColorUniformBinding {
       glmaterial.emit('updated', {})
     }
 
-    const update = () => {
+    this.update = () => {
       // Sometimes the value of a color param is an image.
       const value = param.getValue()
-      this.__vals = value.asArray()
+      this.vals = value.asArray()
 
-      if (this.__textureUnif) {
+      if (this.textureUnif) {
         let image
         if (param.getImage) {
           image = param.getImage()
@@ -264,17 +278,20 @@ class ColorUniformBinding {
           disconnectImage()
         }
       }
-      glmaterial.emit('updated',)
+      glmaterial.emit('updated')
     }
 
     /**
      * The update method.
      */
-    update()
+    this.update()
     param.on('textureConnected', () => {
       connectImage(param.getImage())
     })
-    param.on('valueChanged', update)
+    this.dirty = true
+    param.on('valueChanged', () => {
+      this.dirty = true
+    })
 
     this.uniform1i = gl.uniform1i.bind(gl)
     this.uniform4fv = gl.uniform4fv.bind(gl)
@@ -285,9 +302,13 @@ class ColorUniformBinding {
    * @param {any} renderstate - The renderstate value.
    */
   bindValue(renderstate) {
-    this.uniform4fv(this.__unif.location, this.__vals)
-    if (this.__textureTypeUnif)
-      this.uniform1i(this.__textureTypeUnif.location, 0)
+    if (this.dirty) {
+      this.update()
+      this.dirty = false
+    }
+    this.uniform4fv(this.unif.location, this.vals)
+    if (this.textureTypeUnif)
+      this.uniform1i(this.textureTypeUnif.location, 0)
   }
 
   /**
@@ -295,9 +316,13 @@ class ColorUniformBinding {
    * @param {any} renderstate - The renderstate value.
    */
   bindTexture(renderstate) {
+    if (this.dirty) {
+      this.update()
+      this.dirty = false
+    }
     this.gltexture.bindToUniform(
       renderstate,
-      this.__textureUnif,
+      this.textureUnif,
       this.texBinding
     )
   }
@@ -317,9 +342,9 @@ class MaterialShaderBinding {
    * @param {any} warnMissingUnifs - The warnMissingUnifs value.
    */
   constructor(gl, glmaterial, unifs, warnMissingUnifs) {
-    this.__uniformBindings = []
+    this.uniformBindings = []
 
-    const bindParam = param => {
+    const bindParam = (param) => {
       const name = param.getName()
       const unif = unifs[name]
       if (unif == undefined) {
@@ -351,24 +376,24 @@ class MaterialShaderBinding {
         case UInt32:
         case SInt32:
         case Float32:
-          this.__uniformBindings.push(
+          this.uniformBindings.push(
             new SimpleUniformBinding(gl, glmaterial, param, unif)
           )
           break
         case Vec2:
         case Vec3:
         case Vec4:
-          this.__uniformBindings.push(
+          this.uniformBindings.push(
             new ComplexUniformBinding(gl, glmaterial, param, unif)
           )
           break
         case Color:
-          this.__uniformBindings.push(
+          this.uniformBindings.push(
             new ColorUniformBinding(gl, glmaterial, param, unif, unifs)
           )
           break
         case Mat4:
-          this.__uniformBindings.push(
+          this.uniformBindings.push(
             new MatrixUniformBinding(gl, glmaterial, param, unif)
           )
           break
@@ -392,7 +417,7 @@ class MaterialShaderBinding {
    * @return {any} - The return value.
    */
   bind(renderstate) {
-    for (const uniformBinding of this.__uniformBindings) {
+    for (const uniformBinding of this.uniformBindings) {
       uniformBinding.bind(renderstate)
     }
     return true
@@ -402,7 +427,7 @@ class MaterialShaderBinding {
    * The unbind method.
    */
   unbind() {
-    for (const uniformBinding of this.__uniformBindings) {
+    for (const uniformBinding of this.uniformBindings) {
       uniformBinding.unbind(renderstate)
     }
   }
@@ -412,7 +437,7 @@ class MaterialShaderBinding {
    * Users should never need to call this method directly.
    */
   destroy() {
-    for (const uniformBinding of this.__uniformBindings) {
+    for (const uniformBinding of this.uniformBindings) {
       uniformBinding.destroy(renderstate)
     }
   }

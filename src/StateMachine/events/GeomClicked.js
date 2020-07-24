@@ -16,8 +16,11 @@ class GeomClicked extends StateEvent {
     super(name)
     this.__geomParam = this.addParameter(new TreeItemParameter('TreeItem'))
     this.__geomParam.on('valueChanged', () => {
+      if (this.__geom && this.__activated) {
+        this.__geom.off('mouseDown', this.__geomClicked)
+      }
       this.__geom = this.__geomParam.getValue()
-      if (this.__activated && this.__geom) {
+      if (this.__geom && this.__activated) {
         this.__geom.on('mouseDown', this.__geomClicked)
       }
     })

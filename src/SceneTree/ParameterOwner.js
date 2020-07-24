@@ -5,8 +5,8 @@ import { sgFactory } from './SGFactory.js'
 
 // Explicit import of files to avoid importing all the parameter types.
 // Note: Soon these imports should be removed, once all code avoids calling
-// 'addPArameter' without the parameter instance.
-import { ParamFlags, ValueSetMode, Parameter } from './Parameters/Parameter.js'
+// 'addParameter' without the parameter instance.
+import { ParamFlags, Parameter } from './Parameters/Parameter.js'
 
 let counter = 0
 
@@ -114,10 +114,9 @@ class ParameterOwner extends EventEmitter {
   }
 
   /**
-   * This method can be overrridden in derived classes
+   * This method can be overridden in derived classes
    * to perform general updates (see GLPass or BaseItem).
-   * @param {any} param - The param param.
-   * @param {any} mode - The mode param.
+   * @param {object} event - The event object emitted by the parameter.
    * @private
    */
   __parameterValueChanged(event) {
@@ -128,7 +127,7 @@ class ParameterOwner extends EventEmitter {
    * Adds `Parameter` object to the owner's parameter list.
    *
    * @emits `parameterAdded` with the name of the param.
-   * @param {Parameter} param - The paramater to add.
+   * @param {Parameter} param - The parameter to add.
    * @return {Parameter} - With `owner` and `valueChanged` event set.
    */
   addParameter(param) {
@@ -151,6 +150,7 @@ class ParameterOwner extends EventEmitter {
       console.warn('Replacing Parameter:' + name)
       this.removeParameter(name)
     }
+    param.setOwner(this)
     const paramChangedHandler = (event) => this.__parameterValueChanged({ ...event, param })
     param.on('valueChanged', paramChangedHandler)
     this.__paramEventHandlers[name] = paramChangedHandler
@@ -322,7 +322,7 @@ class ParameterOwner extends EventEmitter {
       const param = this.getParameter(srcParam.getName())
       if (param) {
         // Note: we are not cloning the values.
-        param.setValue(srcParam.getValue(), ValueSetMode.OPERATOR_SETVALUE)
+        param.loadValue(srcParam.getValue())
       } else {
         this.addParameter(srcParam.clone())
       }

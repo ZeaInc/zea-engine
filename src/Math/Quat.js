@@ -1107,6 +1107,18 @@ class Quat extends AttrValue {
     this.__data[3] = j.w
     this.normalizeInPlace()
   }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.x = reader.loadFloat32()
+    this.y = reader.loadFloat32()
+    this.z = reader.loadFloat32()
+    this.w = reader.loadFloat32()
+  }
 }
 
 typeRegistry.registerType('Quat', Quat)

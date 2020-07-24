@@ -1,13 +1,7 @@
 import { Vec3, Quat } from '../../Math/index'
 import { Operator } from './Operator.js'
-import { XfoOperatorOutput } from './OperatorOutput.js'
-import {
-  StructParameter,
-  NumberParameter,
-  Vec3Parameter,
-  ListParameter,
-  Parameter,
-} from '../Parameters/index'
+import { OperatorOutput, OperatorOutputMode } from './OperatorOutput.js'
+import { StructParameter, NumberParameter, Vec3Parameter, ListParameter } from '../Parameters/index'
 import { sgFactory } from '../SGFactory.js'
 
 /** Class representing a gear parameter.
@@ -23,10 +17,8 @@ class GearParameter extends StructParameter {
 
     this.__ratioParam = this._addMember(new NumberParameter('Ratio', 1.0))
     this.__offsetParam = this._addMember(new NumberParameter('Offset', 0.0))
-    this.__axisParam = this._addMember(
-      new Vec3Parameter('Axis', new Vec3(1, 0, 0))
-    )
-    this.__output = new XfoOperatorOutput('Gear')
+    this.__axisParam = this._addMember(new Vec3Parameter('Axis', new Vec3(1, 0, 0)))
+    this.__output = new OperatorOutput('Gear', OperatorOutputMode.OP_READ_WRITE)
   }
 
   /**
@@ -146,29 +138,25 @@ class GearsOperator extends Operator {
   evaluate() {
     const revolutions = this.__revolutionsParam.getValue()
     const gears = this.__gearsParam.getValue()
-    const len = gears.length
     for (const gear of gears) {
       const output = gear.getOutput()
-      const initialxfo = output.getInitialValue()
-      if (!initialxfo) {
-        // Note: we have cases where we have interdependencies.
-        // Operator A Writes to [A, B, C]
-        // Operator B Writes to [A, B, C].
-        // During the load of operator B.C, we trigger an evaluation
-        // of Opeator A, which causes B to evaluate (due to B.A already connected)
-        // Now operator B is evaluating will partially setup.
-        // See SmartLoc: Exploded Parts and Gears read/write the same set of
-        // params.
-        return
-      }
+
+      // Note: we have cases where we have interdependencies.
+      // Operator A Writes to [A, B, C]
+      // Operator B Writes to [A, B, C].
+      // During the load of operator B.C, we trigger an evaluation
+      // of Operator A, which causes B to evaluate (due to B.A already connected)
+      // Now operator B is evaluating will partially setup.
+      // See SmartLoc: Exploded Parts and Gears read/write the same set of
+      // params.
+      if (!output.isConnected()) continue
 
       const rot = revolutions * gear.getRatio() + gear.getOffset()
 
       const quat = new Quat()
       quat.setFromAxisAndAngle(gear.getAxis(), rot * Math.PI * 2.0)
-      // const initialxfo = output.getInitialValue().clone();
       const xfo = output.getValue()
-      xfo.ori = quat.multiply(initialxfo.ori)
+      xfo.ori = quat.multiply(xfo.ori)
       output.setClean(xfo)
     }
   }
@@ -191,7 +179,7 @@ class GearsOperator extends Operator {
     super.reattach()
 
     // Restart the operator.
-    this.getParameter('RPM').emit('valueChanged', { mode: Parameter.ValueSetMode.USER_SETVALUE })
+    this.getParameter('RPM').emit('valueChanged', {})
   }
 
   /**

@@ -1457,7 +1457,7 @@ class Mat4 extends AttrValue {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    *
    * @return {object} - The json object.
    */
@@ -1472,6 +1472,15 @@ class Mat4 extends AttrValue {
    */
   fromJSON(json) {
     this.__data = new Float32Array(json)
+  }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.__data = reader.loadFloat32Array(16)
   }
 }
 

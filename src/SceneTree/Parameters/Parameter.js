@@ -1,11 +1,6 @@
 import { EventEmitter } from '../../Utilities/EventEmitter.js'
 import { sgFactory } from '../SGFactory.js'
 
-const ValueGetMode = {
-  NORMAL: 0,
-  OPERATOR_GETVALUE: 1,
-}
-
 // Note: In some cases we want the parameter to emit a notification
 // and cause the update of the scene during evaluation (like statemachine updates).
 // But we also don't want the parameter value to then
@@ -26,11 +21,11 @@ const ParamFlags = {
   DISABLED: 1 << 2,
 }
 
-const ParamState = {
-  CLEAN: 0,
-  DIRTY: 1,
-  CLEANING: 2,
+const OperatorOutputMode = {
+  OP_WRITE: 0,
+  OP_READ_WRITE: 1,
 }
+
 
 /**
  * Represents a reactive type of attribute that can be owned by a `ParameterOwner` class.
@@ -39,23 +34,52 @@ const ParamState = {
  * * **nameChanged:** Triggered when the name of the parameter changes.
  * * **valueChanged:** Triggered when the value of the parameter changes.
  */
-class BaseParameter extends EventEmitter {
+class Parameter extends EventEmitter {
   /**
-   * Create a base parameter.
-   * @param {string} name - The name of the base parameter.
+   * When initializing a new parameter, the passed in value could be anything.
+   * If it is a new type of value, just ensure you register it in the `SGFactory`.
+   *
+   * How to use it:
+   *
+   * ```javascript
+   *  // Creating a parameter object
+   *  const param = new Parameter('Title', 'Awesome Parameter Value', 'String')
+   *
+   *   // Capturing events
+   *  param.on('valueChanged', (...params) => console.log('Value changed!'))
+   *
+   *  // Changing parameter's value will cause `valueChanged` event to trigger.
+   *  param.setValue('A New Awesome Parameter Value')
+   *  // As result the console log code will execute: Value Changed!
+   * ```
+   *
+   * @param {string} name - The name of the parameter.
+   * @param {object|string|number|any} value - The value of the parameter.
+   * @param {string} dataType - The data type of the parameter.
    */
-  constructor(name) {
-    super()
+  constructor(name, value, dataType) {
+    super(name)
+  
     this.__name = name
-    this.__cleanerFns = []
+    this.__value = value
+    this.__dataType = dataType ? dataType : undefined
     this.__boundOps = []
-    this.__state = ParamState.CLEAN
+    this.__dirtyOpIndex = this.__boundOps.length
     this.__flags = 0
 
     this.getName = this.getName.bind(this)
     this.setName = this.setName.bind(this)
     this.getValue = this.getValue.bind(this)
     this.setValue = this.setValue.bind(this)
+  }
+
+  /**
+   * The clone method.
+   * @param {number} flags - The flags value.
+   */
+  clone(flags) {
+    const cloneded = new Parameter(this.__name, this.__value, this.__dataType)
+    return cloneded
   }
 
   /**
@@ -80,7 +104,7 @@ class BaseParameter extends EventEmitter {
 
     const prevName = this.__name
     this.__name = name
-    this.emit('nameChanged', { mode: this.__name, prevName })
+    this.emit('nameChanged', { newName: this.__name, prevName })
   }
 
   /**
@@ -108,17 +132,20 @@ class BaseParameter extends EventEmitter {
    * @return {array} - The return value.
    */
   getPath() {
-    const owner = this.getOwner()
-    if (owner && owner.getName) {
-      if (owner.getPath) {
-        const path = owner.getPath().slice()
-        path.push(this.__name)
-        return path
-      } else {
-        return [owner.getName(), this.__name]
-      }
+    if (this.ownerItem && this.ownerItem.getName) {
+      return [...this.ownerItem.getPath(), this.__name]
+    } else {
+      return [this.__name]
     }
-    return [this.__name]
+  }
+
+  /**
+   * Returns parameter's data type.
+   *
+   * @return {string} - The return value.
+   */
+  getDataType() {
+    return this.__dataType
   }
 
   /**
@@ -150,234 +177,143 @@ class BaseParameter extends EventEmitter {
     return (this.__flags & flag) != 0
   }
 
+  // ////////////////////////////////////////////////
+  // Operator bindings
+
   /**
-   * The getValue method (TODO).
+   * Binds an OperatorOutput to this parameter. 
    *
-   * @private
+   * @param {OperatorOutput} operatorOutput - The output that we are unbinding from the Parameter
+   * @param {number} index - The index(optional) that the output is being bound at.
+   * @return {number} - The index of the bound output.
    */
-  getValue() {
-    // TODO
-    console.warn('@todo-review')
-  }
-
-  /**
-   * The getValue method (TODO).
-   *
-   * @private
-   * @param {object|string|number|any} value - The value param.
-   */
-  setValue(value) {
-    console.warn('@todo-review')
-  }
-
-  /**
-   * The setEnabled method.
-   * @deprecated
-   * @private
-   * @param {object|string|number|any} state - The state value.
-   */
-  setEnabled(state) {
-    console.warn('@todo-review')
-    console.warn('Deprecated Method: This method will be removed soon.')
-    if (state) this.setFlag(ParamFlags.DISABLED)
-    else this.clearFlag(ParamFlags.DISABLED)
-  }
-
-  /**
-   * The isEnabled method.
-   * @deprecated
-   * @private
-   */
-  isEnabled() {
-    console.warn('@todo-review')
-    console.warn('Deprecated Method: This method will be removed soon.')
-    this.testFlag(ParamFlags.DISABLED)
-  }
-
-  /**
-   * The bindOperator method.
-   *
-   * @param {Operator} op - The cleanerFn value.
-   */
-  bindOperator(op) {
-    this.__boundOps.push(op)
-    this.__state = ParamState.DIRTY
-    this.emit('valueChanged', { mode: ValueSetMode.OPERATOR_DIRTIED }) // changed via cleaner fn
+  bindOperatorOutput(operatorOutput, index = -1) {
+    if (index == -1) index = this.__boundOps.length
+    this.__boundOps.splice(index, 0, operatorOutput)
+    // Update the remaining binding indices
+    for (let i = index; i < this.__boundOps.length; i++) {
+      this.__boundOps[i].setParamBindIndex(i)
+    }
+    this.__dirtyOpIndex = 0
+    this.emit('valueChanged', { mode: 0 })
+    return index
   }
 
   /**
    * The unbindOperator method.
    *
-   * @param {Operator} op - The cleanerFn value.
+   * @param {OperatorOutput} operatorOutput - The output that we are unbinding from the Parameter
    * @return {boolean} - The return value.
    */
-  unbindOperator(op) {
-    // If already dirty, simply return.
-    const index = this.__boundOps.indexOf(op)
-    if (index == -1) {
-      return false
-    }
+  unbindOperator(operatorOutput) {
+    const index = operatorOutput.getParamBindIndex()
     this.__boundOps.splice(index, 1)
-    this.__state = ParamState.DIRTY
-    this.emit('valueChanged', { mode: ValueSetMode.OPERATOR_DIRTIED }) // changed via cleaner fn
-  }
-
-  /**
-   * The setDirty method.
-   *
-   * @private
-   * @param {function} cleanerFn - The cleanerFn value.
-   * @return {boolean} - The return value.
-   */
-  setDirty(cleanerFn) {
-    // If already dirty, simply return.
-    if (this.__cleanerFns.indexOf(cleanerFn) != -1) {
-      return false
+    // Update the remaining binding indices
+    for (let i = index; i < this.__boundOps.length; i++) {
+      this.__boundOps[i].setParamBindIndex(i)
     }
-    this.__cleanerFns.push(cleanerFn)
-    this.__state = ParamState.DIRTY
-
-    this.emit('valueChanged', { mode: ValueSetMode.OPERATOR_DIRTIED }) // changed via cleaner fn
-    return true
+    this.__dirtyOpIndex = 0
+    this.emit('valueChanged', { mode: 0 })
+    return index
   }
 
   /**
-   * The setDirtyFromOp method.
-   *
-   * @return {boolean}
+   * The setDirty method dirties this Parameter so subsequent calls to getValue will cause an evaluation of its bound operators.
+   * @param {OperatorOutput} operatorOutput - The cleanerFn value.
+   * @return {boolean} true if the Parameter was made dirty, else false if it was already dirty.
    */
-  setDirtyFromOp() {
-    // As we migrate to bound ops, we will no longer call store
-    // cleaner fns and intead simply propagate.
-    if (this.__state == ParamState.CLEAN) {
-      this.__state = ParamState.DIRTY
-      this.emit('valueChanged', { mode: ValueSetMode.OPERATOR_DIRTIED }) // changed via cleaner fn
+  setDirty(operatorOutput) {
+    // Determine the first operator in the stack that must evaluate
+    // to clean the parameter.
+    let dirtyId = Math.min(this.__dirtyOpIndex, operatorOutput.getParamBindIndex())
+    for (; ; dirtyId--) {
+      if (dirtyId == 0 || this.__boundOps[dirtyId].getMode() == OperatorOutputMode.OP_WRITE) break
     }
-    return true
+
+    // console.log("setDirtyFromOp:", this.getPath(), dirtyId, this.__dirtyOpIndex)
+    if (dirtyId != this.__dirtyOpIndex) {
+      this.__dirtyOpIndex = dirtyId
+      this.emit('valueChanged', { mode: 0 })
+      return true
+    }
+    return false
   }
 
   /**
-   * The isDirty method.
+   * Returns true if this parameter is currently dirty and will evaluate its bound
+   * operators if its value is requested by a call to getValue.
    *
-   * @private
    * @return {boolean} - Returns a boolean.
    */
   isDirty() {
-    return this.__state == ParamState.DIRTY
-    // return this.__cleanerFns.length > 0
+    return this.__dirtyOpIndex < this.__boundOps.length
   }
 
   /**
-   * The _clean method.
-   * @private
+   * The setCleanFromOp method.
+   * @param {any} value - The computed value to be stored in the Parameter.
+   * @param {OperatorOutput} operatorOutput - The source output on the operator that is setting the value.
+   * @param {number} index - The index of the bound OperatorOutput.
    */
-  _clean() {
-    this.__state = ParamState.CLEANING
-    // Clean the param before we start evaluating the connected op.
-    // This is so that operators can read from the current value
-    // to compute the next.
-    const fns = this.__cleanerFns
-    this.__cleanerFns = []
-    for (const fn of fns) {
-      const res = fn(this.__value)
-      if (res != undefined) this.__value = res
+  setCleanFromOp(value, operatorOutput, index) {
+    if (index < this.__dirtyOpIndex) {
+      // We see this message when parameters are evaluated as soon as a change is detected instead of 
+      // in batches. Now that all rendering code is pulling data only during the render cycle, we ara
+      // not seeing it anymore. However, maybe with a UI open, it will start emitting this warning. 
+      // Note: this would be caused, if a Parameter is already cleaned by an Operator, and yet the Operator
+      // is re-evaluating. I am not sure how this can occur.
+      const op = operatorOutput.getOperator()
+      console.warn(`Operator:: ${op.constructor.name} with name: ${op.getName()} is being cleaned immediately, instead of lazily.`)
     }
+    if (index > this.__dirtyOpIndex + 1) {
+      const op = operatorOutput.getOperator()
+      throw(`Parameter: ${this.constructor.name} with name: ${this.getName()} is not cleaning all outputs during evaluation of op:: ${op.constructor.name} with name: ${op.getName()}`)
+    }
+    this.__value = value
 
-    // Note: we always evaluate all the ops in the stack, not just the dirty ones.
-    // A bas op might comptue global Xfo, and a subsequen modifies it.
-    for (const op of this.__boundOps) {
+    // As each operator writes its value, the dirty value is incremented
+    this.__dirtyOpIndex = index + 1
+  }
+
+  /**
+   * During operator evaluation, operators can use this method to retrieve the existing
+   * value of one of their outputs.
+   * @param {number} index - The index of the bound OperatorOutput to evaluate up to.
+   * @return {object|string|number|any} - The return value.
+   */
+  getValueFromOp(index) {
+    // Note: during evaluation of an Operator that writes to multiple outputs,
+    // it can write to an output with an IO setting, which means it retrieves
+    // the previous value while calculating the next.
+    if (this.__dirtyOpIndex < index) {
+      this._clean(index)
+    }
+    return this.__value
+  }
+
+  /**
+   * Cleans the parameter up tp the index of the specified index of the bound OperatorOutput
+   *
+   * @param {number} index - The index of the bound OperatorOutput to evaluate up to.
+   */
+  _clean(index) {
+    // if (this.__boundOps.length > 1) {
+    //   console.log(this.getPath())
+    // }
+    // to clean te parameter, we need to start from the first bound op
+    // that needs to be evaluated, and go down the stack from there.
+    // for (; this.__dirtyOpIndex < index; this.__dirtyOpIndex++) {
+    while (this.__dirtyOpIndex < index) {
+      const operatorOutput = this.__boundOps[this.__dirtyOpIndex]
       // The op can get the current value and modify it in place
       // and set the output to clean.
-      op.evaluate()
+      operatorOutput.getOperator().evaluate()
     }
-    this.__state = ParamState.CLEAN
-  }
 
-  /**
-   * The removeCleanerFn method.
-   * @param {function} cleanerFn - The cleanerFn value.
-   * @return {number} - The return value.
-   */
-  removeCleanerFn(cleanerFn) {
-    // Once operators store a dirty flag, then the op sets its
-    // self to clean before outputting.
-    const index = this.__cleanerFns.indexOf(cleanerFn)
-    if (index == -1) {
-      // Note: when a getValue is called, first the cleaners array is reset
-      // and then the cleaners are called (see above)
-      // When an operator is applied to multiple outputs, then one of the outputs
-      // already has its cleaners array reset.
-      // Due to the asynchronous nature of evaluate, multiple cleanings might occur
-      // throw ("Error. Cleaner Fn not applied to this parameter:" + cleanerFn.name);
-
-      return 0
+    if (this.__dirtyOpIndex < index) {
+      const op = this.__boundOps[this.__dirtyOpIndex].getOperator()
+      throw(`Operator: ${op.constructor.name} with name: ${op.getName()} is not cleaning its outputs during evaluation`)
     }
-    this.__cleanerFns.splice(index, 1)
-  }
-
-  /**
-   * The clone method.
-   * @param {number} flags - The flags value.
-   */
-  clone(flags) {
-    console.warn('@todo-review')
-    console.error('TOOD: implment me')
-  }
-
-  /**
-   * The destroy method.
-   */
-  destroy() {
-    // Note: Some parameters hold refs to geoms/materials,
-    // which need to be explicitly cleaned up.
-    // E.g. freeing GPU Memory.
-    console.warn('@todo-review')
-  }
-}
-
-/**
- * Represents a reactive type of attribute that can be owned by a `ParameterOwner` class.
- * Plus the holding the parameter name and value, it also stores its data type,
- * which is an addition for persistence capability.
- *
- * @extends BaseParameter
- */
-class Parameter extends BaseParameter {
-  /**
-   * When initializing a new parameter, the passed in value could be anything.
-   * If it is a new type of value, just ensure you register it in the `SGFactory`.
-   *
-   * How to use it:
-   *
-   * ```javascript
-   *  // Creating a parameter object
-   *  const param = new Parameter('Title', 'Awesome Parameter Value', 'String')
-   *
-   *   // Capturing events
-   *  param.on('valueChanged', (...params) => console.log('Value changed!'))
-   *
-   *  // Changing parameter's value will cause `valueChanged` event to trigger.
-   *  param.setValue('A New Awesome Parameter Value')
-   *  // As result the console log code will execute: Value Changed!
-   * ```
-   *
-   * @param {string} name - The name of the parameter.
-   * @param {object|string|number|any} value - The value of the parameter.
-   * @param {string} dataType - The data type of the parameter.
-   */
-  constructor(name, value, dataType) {
-    super(name)
-    this.__value = value
-    this.__dataType = dataType ? dataType : undefined
-  }
-
-  /**
-   * Returns parameter's data type.
-   *
-   * @return {string} - The return value.
-   */
-  getDataType() {
-    return this.__dataType
   }
 
   /**
@@ -386,72 +322,61 @@ class Parameter extends BaseParameter {
    * @param {number} mode - The mode value.
    * @return {object|string|number|any} - The return value.
    */
-  getValue(mode = ValueGetMode.NORMAL) {
-    if (/* mode == ValueGetMode.NORMAL && */ this.__state == ParamState.DIRTY) this._clean()
+  getValue(mode) {
+    if (mode != undefined) {
+      console.warn("WARNING in Parameter.setValue: 'mode' is deprecated.")
+    }
+    if (this.__dirtyOpIndex < this.__boundOps.length) {
+      this._clean(this.__boundOps.length)
+    }
     return this.__value
-  }
-
-  /**
-   * Sets parameter's value directly.
-   *
-   * @param {object|string|number|any} value - The value param.
-   */
-  setClean(value) {
-    this.__value = value
   }
 
   /**
    * Sets parameter's value, but runs a few internal cleaning processes.
    *
    * @param {object|string|number|any} value - The value param.
-   * @param {number} mode - The mode param.
    */
-  setValue(value, mode = ValueSetMode.USER_SETVALUE) {
-    // 0 == normal set. 1 = changed via cleaner fn, 2=change by loading/cloning code.
-    if (this.__cleanerFns.length > 0) {
-      // Note: This message has not highlighted any real issues, and has become verbose.
-      // Enable if suspicious of operators being trampled by setValues.
-      // if(mode==0){
-      //     let cleanerNames = [];
-      //     for(let fn of this.__cleanerFns) {
-      //         cleanerNames.push(fn.name);
-      //     }
-      //     console.warn("Error setting "+this.__name + " value when cleaner is assigned:"+ cleanerNames);
-      // }
-      this.__cleanerFns = []
-    }
-
+  setValue(value, mode) {
     if (value == undefined) {
       // eslint-disable-next-line no-throw-literal
       throw 'undefined was passed into the set value for param:' + this.getName()
     }
+    if (mode != undefined) {
+      console.warn("WARNING in Parameter.setValue: 'mode' is deprecated.")
+    }
+
+    if (this.__boundOps.length > 0) {
+      for (let i = this.__boundOps.length - 1; i >= 0; i--) {
+        const operatorOutput = this.__boundOps[i]
+        value = operatorOutput.setValue(value)
+        if (operatorOutput.getMode() == 0/*OP_WRITE*/) return;
+      }
+    }
 
     if (!value.fromJSON) {
-      // Note: equality tests on anything but simple values is going to be super expenseive.
+      // Note: equality tests on anything but simple values is going to be super expensive.
       if (this.__value == value) return
     }
     this.__value = value
-    if (mode == ValueSetMode.USER_SETVALUE || mode == ValueSetMode.REMOTEUSER_SETVALUE) {
-      this.setFlag(ParamFlags.USER_EDITED)
-    }
 
-    // During the cleaning process, we don't want notifications.
-    if (mode != ValueSetMode.OPERATOR_SETVALUE) this.emit('valueChanged', { mode })
-  }
-
-  /**
-   * At the end of an interaction session of setting a value.
-   * E.g. moving a slider handle, or typing in some values
-   * this method should be called to notify that that interaction is complete
-   * Code can listed to this event to trigger longer running actions like
-   * saving a file or heavy computation.
-   */
-  setValueDone() {
-    this.emit('valueChanged', { mode: ValueSetMode.USER_SETVALUE_DONE })
+    // Note: only users call 'setValue'. Operators call 'setCleanFromOp'
+    if (this.__flags & ParamFlags.USER_EDITED) this.setFlag(ParamFlags.USER_EDITED)
+    this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
   }
 
   // ////////////////////////////////////////
   // Persistence
+
+  /**
+   * The loadValue is used to change the value of a parameter, without triggering a 
+   * valueChanges, or setting the USER_EDITED state.
+   *
+   * @param {any} value - The context value.
+   */
+  loadValue(value) {
+    this.__value = value
+  }
 
   /**
    * The toJSON method serializes this instance as a JSON.
@@ -485,23 +410,22 @@ class Parameter extends BaseParameter {
     if (j.value.type && this.__value == undefined) {
       this.__value = sgFactory.constructClass(j.value.type)
     }
-    if (this.__value == undefined || !this.__value.fromJSON) this.setValue(j.value, ValueSetMode.DATA_LOAD)
-    else {
+    if (this.__value == undefined || !this.__value.fromJSON) {
+      this.__value = j.value
+    } else {
       this.__value.fromJSON(j.value, context)
-      this.emit('valueChanged', { mode: ValueSetMode.DATA_LOAD })
     }
+    this.emit('valueChanged', { mode: 0 })
   }
 
   /**
    * The readBinary method.
    *
-   * @private
    * @param {object} reader - The reader value.
    * @param {object} context - The context value.
    */
   readBinary(reader, context) {
-    console.warn('@todo-review')
-    console.error('TODO')
+    console.warn(`TODO: Parameter: ${this.constructor.name} with name: ${this.__name} does not implement readBinary`)
   }
 
   // ////////////////////////////////////////
@@ -522,4 +446,4 @@ class Parameter extends BaseParameter {
   }
 }
 
-export { ParamFlags, ValueGetMode, ValueSetMode, BaseParameter, Parameter }
+export { ParamFlags, ValueSetMode, OperatorOutputMode, Parameter }

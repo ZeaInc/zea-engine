@@ -26,6 +26,7 @@ class BaseGeom extends ParameterOwner {
    */
   constructor() {
     super()
+    this.__numVertices = 0
     this.__boundingBox = new Box3()
     this.__boundingBoxDirty = true
     this.__vertexAttributes = new Map()
@@ -105,7 +106,7 @@ class BaseGeom extends ParameterOwner {
    * @return {number} - The return value.
    */
   numVertices() {
-    return this.vertices.length
+    return this.__numVertices
   }
 
   /**
@@ -114,7 +115,7 @@ class BaseGeom extends ParameterOwner {
    * @return {number} - The return value.
    */
   getNumVertices() {
-    return this.vertices.length
+    return this.__numVertices
   }
 
   /**
@@ -123,11 +124,9 @@ class BaseGeom extends ParameterOwner {
    * @param {number} count - The count value.
    */
   setNumVertices(count) {
-    // If this works, remove the old version.
-    // for (let [key, attr] of this.__vertexAttributes.entries())
-    //     attr.resize(count);
-    console.warn('@todo-review', 'Is this setting numVertices?')
-    this.__vertexAttributes.forEach((attr) => attr.resize(count))
+    this.__numVertices = count
+    // Resizes each of the vertex attributes to match the new count.
+    this.__vertexAttributes.forEach((attr) => attr.resize(this.__numVertices))
   }
 
   /**

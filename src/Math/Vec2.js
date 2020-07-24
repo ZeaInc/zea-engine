@@ -135,11 +135,35 @@ class Vec2 extends AttrValue {
   /**
    * Checks if this Vec2 is exactly the same as another Vec2.
    *
+   * @deprecated
    * @param {Vec2} other - The other Vec2 to compare with.
    * @return {boolean} - Returns `true` if are the same Vector, otherwise, `false`.
    */
   equal(other) {
+    console.warn('Deprecated. Use #isEqual instead.')
+    return this.isEqual(other)
+  }
+
+  /**
+   * Checks if this Vec2 is exactly the same as another Vec2.
+   *
+   * @param {Vec2} other - The other Vec2 to compare with.
+   * @return {boolean} - Returns `true` if are the same Vector, otherwise, `false`.
+   */
+  isEqual(other) {
     return this.x == other.x && this.y == other.y
+  }
+
+  /**
+   * Checks if this Vec2 is different from another Vec2.
+   *
+   * @deprecated
+   * @param {Vec2} other - The other Vec2 to compare with.
+   * @return {boolean} - Returns `true` if the Vec2s are different, otherwise, `false`.
+   */
+  notEquals(other) {
+    console.warn('Deprecated. Use #notEqual instead.')
+    return this.notEqual(other)
   }
 
   /**
@@ -148,9 +172,10 @@ class Vec2 extends AttrValue {
    * @param {Vec2} other - The other Vec2 to compare with.
    * @return {boolean} - Returns `true` if the Vec2s are different, otherwise, `false`.
    */
-  notEquals(other) {
+  notEqual(other) {
     return this.x != other.x && this.y != other.y
   }
+
 
   /**
    * Returns true if this Vec2 is approximately the same as other.
@@ -519,6 +544,16 @@ class Vec2 extends AttrValue {
   fromJSON(j) {
     this.x = j.x
     this.y = j.y
+  }
+
+  /**
+   * Loads the state of the value from a binary reader.
+   *
+   * @param {BinReader} reader - The reader value.
+   */
+  readBinary(reader) {
+    this.x = reader.loadFloat32()
+    this.y = reader.loadFloat32()
   }
 }
 

@@ -62,13 +62,13 @@ class Circle extends Lines {
     if (arc) this.setNumSegments(segs - 1)
     else this.setNumSegments(segs)
     for (let i = 0; i < (arc ? segs - 1 : segs); i++) this.setSegment(i, i, (i + 1) % segs)
-    this.__resize(-1)
+    this.__resize(false)
     this.emit('geomDataTopologyChanged', {})
   }
 
   /**
    * The __resize method.
-   * @param {number} mode - The mode value.
+   * @param {boolean} emit - The emit value.
    * @private
    */
   __resize(mode) {
@@ -77,7 +77,7 @@ class Circle extends Lines {
     const step = this.__angle.getValue() / segs
     for (let i = 0; i < segs; i++) this.getVertex(i).set(Math.cos(step * i) * radius, Math.sin(step * i) * radius, 0.0)
     this.setBoundingBoxDirty()
-    if (mode != -1) this.emit('geomDataChanged', {})
+    if (emit) this.emit('geomDataChanged', {})
   }
 }
 sgFactory.registerClass('Circle', Circle)

@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import { ParamFlags, ValueSetMode, Parameter } from './Parameter.js'
+import { ParamFlags, Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores `TreeItem` values.
@@ -72,11 +72,10 @@ class TreeItemParameter extends Parameter {
   /**
    * Sets parameter's `TreeItem` value.
    *
-   * @param {TreeItem} treeItem - The treeItem value.
-   * @param {number} mode - The mode value.
+   * @param {TreeItem} treeItem - The treeItem value
    * @return {boolean} - The return value.
    */
-  setValue(treeItem, mode = ValueSetMode.USER_SETVALUE) {
+  setValue(treeItem) {
     // 0 == normal set. 1 = changed via cleaner fn, 2=change by loading/cloning code.
     if (this.__filterFn && !this.__filterFn(treeItem)) return false
     if (this.__value !== treeItem) {
@@ -87,10 +86,8 @@ class TreeItemParameter extends Parameter {
       if (this.__value) {
         this.__value.on('globalXfoChanged', this.__emittreeItemGlobalXfoChanged)
       }
-      if (mode == ValueSetMode.USER_SETVALUE || mode == ValueSetMode.REMOTEUSER_SETVALUE) {
-        this.__flags |= ParamFlags.USER_EDITED
-      }
-      this.emit('valueChanged', { mode })
+      this.__flags |= ParamFlags.USER_EDITED
+      this.emit('valueChanged', { mode: ParamFlags.USER_EDITED })
     }
   }
 

@@ -23,7 +23,7 @@ class GLBaseViewport extends ParameterOwner {
     const sceneSet = () => {
       const settings = renderer.getScene().settings
       const bgColorParam = settings.getParameter('BackgroundColor')
-      const processBGValue = mode => {
+      const processBGValue = () => {
         const value = bgColorParam.getValue()
         const gl = this.__renderer.gl
         if (value instanceof BaseImage) {
@@ -46,7 +46,7 @@ class GLBaseViewport extends ParameterOwner {
         }
         this.emit('updated', {})
       }
-      processBGValue(bgColorParam.getValue())
+      processBGValue()
       bgColorParam.on('valueChanged', processBGValue)
     }
 
