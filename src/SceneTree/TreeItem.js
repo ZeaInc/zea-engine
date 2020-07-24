@@ -24,7 +24,6 @@ selectionOutlineColor.a = 0.1
 let branchSelectionOutlineColor = selectionOutlineColor.lerp(new Color('white'), 0.5)
 branchSelectionOutlineColor.a = 0.1
 
-
 /**
  * Represents a specific type of parameter, that only stores Vec3(three-dimensional coordinate) values.
  *
@@ -52,7 +51,7 @@ class BoundingBoxParameter extends Parameter {
 
   setDirty() {
     this.dirty = true
-    this.emit("valueChanged")
+    this.emit('valueChanged')
   }
 
   /**
@@ -62,7 +61,7 @@ class BoundingBoxParameter extends Parameter {
    */
   getValue() {
     if (this.dirty) {
-      this.__value = this.treeItem. _cleanBoundingBox(this.__value)
+      this.__value = this.treeItem._cleanBoundingBox(this.__value)
     }
     return this.__value
   }
@@ -151,7 +150,7 @@ class TreeItem extends BaseItem {
     //   else return globalXfo
     // }
 
-    this.globalXfoOp = new CalcGlobalXfoOperator(this.__globalXfoParam, this.__localXfoParam);
+    this.globalXfoOp = new CalcGlobalXfoOperator(this.__globalXfoParam, this.__localXfoParam)
     this.__globalXfoParam.on('valueChanged', (event) => {
       this._setBoundingBoxDirty()
       // Note: deprecate this event.
@@ -398,7 +397,7 @@ class TreeItem extends BaseItem {
    * @return {boolean} - The visible param value.
    */
   getVisible() {
-    console.warn('Deprecated. Use #isVisible.')
+    console.warn('Deprecated. Use #isVisible')
     return this.isVisible()
   }
 
@@ -572,7 +571,7 @@ class TreeItem extends BaseItem {
   _setBoundingBoxDirty() {
     if (this.__boundingBoxParam) {
       // Will cause boundingChanged to emit
-      this.__boundingBoxParam.setDirty()//this._cleanBoundingBox)
+      this.__boundingBoxParam.setDirty() //this._cleanBoundingBox)
     }
   }
 
@@ -598,7 +597,7 @@ class TreeItem extends BaseItem {
    * @return {number} - The return value.
    */
   numChildren() {
-    console.warn('Deprecated. Use #getNumChildren.')
+    console.warn('Deprecated. Use #getNumChildren')
     return this.__childItems.length
   }
 
@@ -887,7 +886,7 @@ class TreeItem extends BaseItem {
    * @return {number} - The return value.
    */
   indexOfChild(childItem) {
-    console.warn('Deprecated method. Please use getChildIndex')
+    console.warn('Deprecated Use #getChildIndex')
     return this.getChildIndex(childItem)
   }
 
