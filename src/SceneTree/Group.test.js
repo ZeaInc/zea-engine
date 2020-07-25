@@ -183,7 +183,7 @@ describe('Group', () => {
     expect(JSON.stringify(group.toJSON())).toEqual(expOutput)
   })
 
-  it('load from JSON (serialization).', () => {
+  it('loads from JSON (serialization).', () => {
     const group = new Group('Foo')
 
     const treeItem1 = new TreeItem('treeItem1')
@@ -205,7 +205,8 @@ describe('Group', () => {
     })
     expect(group.getParameter('Items').getItem(0)).toBe(treeItem2)
   })
-  it('load from JSON (serialization) with no context.', () => {
+
+  it('loads from JSON (serialization) with no context.', () => {
     const group = new Group('Foo')
 
     const treeItem1 = new TreeItem('treeItem1')
