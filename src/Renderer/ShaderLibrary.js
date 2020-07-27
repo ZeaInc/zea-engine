@@ -1,5 +1,6 @@
-import { hashStr } from '../Math/index'
+import { replaceAll, hashStr } from '../Utilities/StringFunctions'
 import { glslTypes } from './GLSLConstants.js'
+
 
 /** Class representing a shader library.
  * @private
@@ -148,7 +149,7 @@ class ShaderLibrary {
             for (const key in elements.attributes) {
               if (key == 'file') continue
               const value = elements.attributes[key]
-              includedGLSL = includedGLSL.replaceAll(key, value)
+              includedGLSL = replaceAll(includedGLSL, key, value)
               repl[key] = value
             }
 
@@ -167,13 +168,13 @@ class ShaderLibrary {
             for (const name in shaderModule.attributes) {
               let newname = name
               for (const key in repl)
-                newname = newname.replaceAll(key, repl[key])
+                newname = replaceAll(newname, key, repl[key])
               result.attributes[newname] = shaderModule.attributes[name]
             }
             for (const name in shaderModule.uniforms) {
               let newname = name
               for (const key in repl)
-                newname = newname.replaceAll(key, repl[key])
+                newname = replaceAll(newname, key, repl[key])
               result.uniforms[newname] = shaderModule.uniforms[name]
             }
 

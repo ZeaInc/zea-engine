@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 /* eslint-disable camelcase */
-import { JSON_stringify_fixedPrecision } from './Common.js'
+import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
 import { AttrValue } from './AttrValue.js'
 import { typeRegistry } from './TypeRegistry.js'
 import { Vec3 } from './Vec3.js'
@@ -112,7 +112,7 @@ class PlaneType extends AttrValue {
    * @return {string} - The return value.
    */
   toString() {
-    return JSON_stringify_fixedPrecision(this.toJSON())
+    return stringifyJSONWithFixedPrecision(this.toJSON())
   }
 }
 

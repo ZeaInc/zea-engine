@@ -16,23 +16,28 @@ const SInt32 = 5
 const Float32 = 6
 
 Math.radToDeg = function (rad) {
+  console.warn('Deprecated, use "radToDeg" method from "MathFunctions"')
   return rad / DEGTORAD
 }
 
 Math.degToRad = function (deg) {
+  console.warn('Deprecated, use "degToReg" method from "MathFunctions"')
   return deg * DEGTORAD
 }
 
 Number.isNumeric = (n) => {
+  console.warn('Deprecated, use "isNumeric" method from "MathFunctions"')
   return !isNaN(parseFloat(n)) && isFinite(n)
 }
 
 String.prototype.replaceAll = function (search, replacement) {
+  console.warn('Deprecated, use "replaceAll" method from "StringFunctions"')
   const target = this
   return target.replace(new RegExp(search, 'g'), replacement)
 }
 
 const hashStr = function (str) {
+  console.warn('Deprecated, use "hashStr" method from "StringFunctions"')
   let hash = 0
   let i
   let chr
@@ -47,27 +52,32 @@ const hashStr = function (str) {
 }
 
 String.prototype.hash = function () {
+  console.warn('Deprecated, use "hashStr" method from "StringFunctions"')
   return hashStr(this)
 }
 
 // trimming space from both side of the string
 String.prototype.trim = function () {
+  console.warn('Deprecated, use "trim" method from "String" prototype')
   return this.replace(/^\s+|\s+$/g, '')
 }
 
 // trimming space from left side of the string
 String.prototype.ltrim = function () {
+  console.warn('Deprecated, use "trimLeft" method from "String" prototype')
   return this.replace(/^\s+/, '')
 }
 
 // trimming space from right side of the string
 String.prototype.rtrim = function () {
+  console.warn('Deprecated, use "trimRight" method from "String" prototype')
   return this.replace(/\s+$/, '')
 }
 
 // pads left
 // TODO deprecate and remove if not used
 String.prototype.lpad = function (padString, length) {
+  console.warn('Deprecated, use "padStart" method from "String" prototype')
   let str = this
   while (str.length < length) str = padString + str
   return str
@@ -75,12 +85,14 @@ String.prototype.lpad = function (padString, length) {
 
 // pads right
 String.prototype.rpad = function (padString, length) {
+  console.warn('Deprecated, use "padEnd" method from "String" prototype')
   let str = this
   while (str.length < length) str = str + padString
   return str
 }
 
 function JSON_stringify_fixedPrecision(val, space = 0, precision = 5) {
+  console.warn('Deprecated, use "stringifyJSONWithFixedPrecision" method from "StringFunctions"')
   return JSON.stringify(
     val,
     function (key, val) {
@@ -91,6 +103,7 @@ function JSON_stringify_fixedPrecision(val, space = 0, precision = 5) {
 }
 
 const randomInt = (min, max) => {
+  console.warn('Deprecated, use "randomInt" method from "MathFunctions"')
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min)) + min
@@ -99,29 +112,33 @@ const randomInt = (min, max) => {
 Math.randomInt = randomInt
 
 const lerp = (a, b, t) => {
+  console.warn('Deprecated, use "lerp" method from "MathFunctions"')
   return a + t * (b - a)
 }
 
 Math.lerp = (a, b, t) => {
-  console.warn('TODO deprecated')
   return lerp(a, b, t)
 }
 
 const clamp = (value, min, max) => {
+  console.warn('Deprecated, use "clamp" method from "MathFunctions"')
   return Math.min(Math.max(value, min), max)
 }
 
 Math.clamp = clamp
 
 Math.nearestPow2 = function (value) {
+  console.warn('Deprecated, use "nearestPow2" method from "MathFunctions"')
   return Math.pow(2, Math.round(Math.log(value) / Math.log(2)))
 }
 
 Math.nearestPow10 = function (value) {
+  console.warn('Deprecated, use "nearestPow10" method from "MathFunctions"')
   return Math.pow(10, Math.round(Math.log10(value) / Math.log10(10)))
 }
 
 Math.nextPow2 = function (value) {
+  console.warn('Deprecated, use "nextPow2" method from "MathFunctions"')
   let exp = 0
   while (value > 0) {
     exp++
@@ -130,6 +147,7 @@ Math.nextPow2 = function (value) {
   return 1 << exp
 }
 Math.fract = function (value) {
+  console.warn('Deprecated, use "fract" method from "MathFunctions"')
   if (value == 0) return 0
   if (value < 0) {
     if (value > -1.0) return -value
@@ -140,6 +158,7 @@ Math.fract = function (value) {
 }
 
 Math.remap = function (value, start1, end1, start2, end2) {
+  console.warn('Deprecated, use "remap" method from "MathFunctions"')
   return start2 + (end2 - start2) * ((value - start1) / (end1 - start1))
 }
 
@@ -202,6 +221,7 @@ const convertFloat32ArrayToUInt16Array = function (float32Array) {
 // Note: assuemd inputs are a pair of bytes, likely generated in GLSL.
 // Code converted to using bit masks in JavaScript.
 Math.decode16BitFloatFrom2xUInt8 = (c) => {
+  console.warn('Deprecated, use "decode16BitFloatFrom2xUInt8" method from "MathFunctions"')
   const ix = c[0] // 1st byte: 1 bit signum, 4 bits exponent, 3 bits mantissa (MSB)
   const iy = c[1] // 2nd byte: 8 bit mantissa (LSB)
 
@@ -219,6 +239,7 @@ Math.decode16BitFloatFrom2xUInt8 = (c) => {
 }
 
 Math.encode16BitFloatInto2xUInt8 = (v) => {
+  console.warn('Deprecated, use "encode16BitFloatInto2xUInt8" method from "MathFunctions"')
   if (!c) c = new Uint8Array(2)
   // const c = [0, 0];
   const signum = v >= 0 ? 128 : 0
@@ -254,6 +275,7 @@ Math.encode16BitFloatInto2xUInt8 = (v) => {
 }
 
 Math.encode16BitFloat = (v) => {
+  console.warn('Deprecated, use "encode16BitFloat" method from "MathFunctions"')
   const float32Array = new Float32Array(1)
   float32Array[0] = v
   const unit16s = new Uint16Array(float32Array.length)
@@ -302,6 +324,7 @@ Math.encode16BitFloat = (v) => {
 // https://stackoverflow.com/questions/5678432/decompressing-half-precision-floats-in-javascript
 // Note: faster version available, but might not matter.
 Math.decode16BitFloat = (h) => {
+  console.warn('Deprecated, use "decode16BitFloat" method from "MathFunctions"')
   const s = (h & 0x8000) >> 15
   const e = (h & 0x7c00) >> 10
   const f = h & 0x03ff
@@ -316,11 +339,13 @@ Math.decode16BitFloat = (h) => {
 }
 
 Math.smoothStep = (edge0, edge1, x) => {
+  console.warn('Deprecated, use "smoothStep" method from "MathFunctions"')
   const t = Math.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
   return t * t * (3.0 - 2.0 * t)
 }
 
 Math.linStep = (edge0, edge1, x) => {
+  console.warn('Deprecated, use "linStep" method from "MathFunctions"')
   return Math.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
 }
 

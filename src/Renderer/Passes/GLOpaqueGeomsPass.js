@@ -3,6 +3,7 @@ import { GLStandardGeomsPass } from './GLStandardGeomsPass.js'
 import { GLRenderer } from '../GLRenderer.js'
 
 import { GLGeomItemSet } from '../GLGeomItemSet.js'
+import { decode16BitFloatFrom2xUInt8 } from '../../Utilities/MathFunctions'
 
 /** Class representing GL shader materials. 
  * @private
@@ -381,7 +382,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
       dist = geomData[3]
     } else {
       itemId = geomData[0] + (geomData[1] << 8)
-      dist = Math.decode16BitFloatFrom2xUInt8([geomData[2], geomData[3]])
+      dist = decode16BitFloatFrom2xUInt8([geomData[2], geomData[3]])
     }
 
     const glgeomItem = this.__drawItems[itemId]

@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math/index'
+import { encode16BitFloat } from '../Utilities/MathFunctions'
 
 /**
  * Writes `TypedArray` types in binary using a specific encoding.
@@ -141,7 +142,7 @@ class BinWriter {
    * @param {number} value - The value param.
    */
   writeFloat16(value) {
-    const uint16 = Math.encode16BitFloat(value)
+    const uint16 = encode16BitFloat(value)
     this.writeUInt16(uint16)
   }
 

@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 /* eslint-disable camelcase */
-import { JSON_stringify_fixedPrecision } from './Common.js'
+import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
 import { Vec3 } from './Vec3.js'
 import { PlaneType } from './PlaneType.js'
 import { typeRegistry } from './TypeRegistry.js'
@@ -111,7 +111,7 @@ class Frustum {
    * @return {string} - The return value.
    */
   toString() {
-    return JSON_stringify_fixedPrecision(this.toJSON())
+    return stringifyJSONWithFixedPrecision(this.toJSON())
   }
 }
 

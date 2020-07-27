@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { JSON_stringify_fixedPrecision } from './Common.js'
+import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
 import { Vec3 } from './Vec3.js'
 import { Mat4 } from './Mat4.js'
 import { SphereType } from './SphereType.js'
@@ -396,7 +396,7 @@ class Box3 {
    */
   toString() {
     // eslint-disable-next-line new-cap
-    return JSON_stringify_fixedPrecision(this.toJSON())
+    return stringifyJSONWithFixedPrecision(this.toJSON())
   }
 }
 

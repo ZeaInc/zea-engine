@@ -8,6 +8,7 @@ import { GIF } from '../../external/gifuct-js.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
 import { NumberParameter, Vec4Parameter } from '../Parameters/index'
+import { fract } from '../../Utilities/MathFunctions'
 
 /**
  * Class representing a GIF image.
@@ -125,9 +126,9 @@ class GIFImage extends FileImage {
             // do something with the frame data
             const sideLength = Math.sqrt(frames.length)
             const atlasSize = [sideLength, sideLength]
-            if (Math.fract(sideLength) > 0.0) {
+            if (fract(sideLength) > 0.0) {
               atlasSize[0] = Math.floor(atlasSize[0] + 1)
-              if (Math.fract(sideLength) > 0.5) {
+              if (fract(sideLength) > 0.5) {
                 atlasSize[1] = Math.floor(atlasSize[1] + 1)
               } else {
                 atlasSize[1] = Math.floor(atlasSize[1])

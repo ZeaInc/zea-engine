@@ -3,6 +3,7 @@ import { Vec3, Box3, Xfo } from '../Math/index'
 import { TreeItem } from './TreeItem.js'
 import { BooleanParameter, NumberParameter } from './Parameters/index'
 import { sgFactory } from './SGFactory'
+import { degToRad } from '../Utilities/MathFunctions'
 
 /**
  * Represents a view of the scene vertex coordinates. Since it is a `TreeItem`,
@@ -171,7 +172,7 @@ class Camera extends TreeItem {
       console.warn('Camera lense focal length not suported:' + value)
       return
     }
-    this.__fovParam.setValue(Math.degToRad(mapping[value]))
+    this.__fovParam.setValue(degToRad(mapping[value]))
   }
 
   /**

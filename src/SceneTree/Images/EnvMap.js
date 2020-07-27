@@ -55,10 +55,10 @@ function dirToSphOctUv(normal) {
   const aNorm_xy = new Vec2(aNorm.x, aNorm.y)
 
   let dir = max_vec2(aNorm_xy, 1e-20)
-  const orient = Math.atan2(dir.x, dir.y) / Math.HALF_PI
+  const orient = Math.atan2(dir.x, dir.y) / (Math.PI * 0.5)
 
   dir = max_vec2(new Vec2(aNorm.z, aNorm_xy.length()), 1e-20)
-  const pitch = Math.atan2(dir.y, dir.x) / Math.HALF_PI
+  const pitch = Math.atan2(dir.y, dir.x) / (Math.PI * 0.5)
 
   let uv = new Vec2(sNorm.x * orient, sNorm.y * (1.0 - orient))
   uv.scaleInPlace(pitch)
@@ -90,7 +90,7 @@ function sphOctUvToDir(uv) {
     sabsuv = sum_vec2(abs_vec2(uv))
   }
 
-  const orient = (Math.abs(uv.x) / sabsuv) * Math.HALF_PI
+  const orient = (Math.abs(uv.x) / sabsuv) * (Math.PI * 0.5)
   const sOrient = Math.sin(orient)
   const cOrient = Math.cos(orient)
   const sPitch = Math.sin(pitch)

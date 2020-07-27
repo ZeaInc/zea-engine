@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { JSON_stringify_fixedPrecision } from './Common.js'
+import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
 
 import { Vec2 } from './Vec2'
 import { typeRegistry } from './TypeRegistry.js'
@@ -152,7 +152,7 @@ class Box2 {
    */
   toString() {
     // eslint-disable-next-line new-cap
-    return JSON_stringify_fixedPrecision(this.toJSON())
+    return stringifyJSONWithFixedPrecision(this.toJSON())
   }
 }
 

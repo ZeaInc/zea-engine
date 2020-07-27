@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-unused-vars */
 /* eslint-disable guard-for-in */
-import { hashStr } from '../Math/index'
+import { hashStr } from '../Utilities/StringFunctions'
 import { EventEmitter } from '../Utilities/index'
 
 // const asyncLoading = true;

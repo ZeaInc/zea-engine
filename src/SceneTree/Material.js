@@ -4,6 +4,7 @@ import { Vec2, Vec3, Color } from '../Math/index'
 import { BaseItem } from './BaseItem.js'
 import { sgFactory } from './SGFactory.js'
 import { Parameter, NumberParameter, Vec2Parameter, Vec3Parameter, ColorParameter } from './Parameters/index'
+import { isNumeric } from '../Utilities/MathFunctions'
 
 // Explicit export of parameters that are not included in the
 // moduled defined by the index file in the folder. (see Parameters/index.js)
@@ -17,7 +18,7 @@ const generateParameterInstance = (paramName, defaultValue, range, texturable) =
     return new Parameter(paramName, defaultValue, 'Boolean')
   } else if (typeof defaultValue == 'string') {
     return new Parameter(paramName, defaultValue, 'String')
-  } else if (Number.isNumeric(defaultValue)) {
+  } else if (isNumeric(defaultValue)) {
     if (texturable) return new MaterialFloatParam(paramName, defaultValue, range)
     else return new NumberParameter(paramName, defaultValue, range)
   } else if (defaultValue instanceof Vec2) {
