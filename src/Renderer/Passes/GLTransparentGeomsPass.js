@@ -2,7 +2,7 @@ import { Vec3 } from '../../Math/Vec3'
 import { PassType } from './GLPass.js'
 import { GLStandardGeomsPass } from './GLStandardGeomsPass.js'
 import { GLRenderer } from '../GLRenderer.js'
-import { decode16BitFloatFrom2xUInt8 } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 /** Class representing a GL transparent geoms pass.
  * @extends GLStandardGeomsPass
@@ -272,7 +272,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       dist = geomData[3]
     } else {
       itemId = geomData[0] + (geomData[1] << 8)
-      dist = decode16BitFloatFrom2xUInt8([geomData[2], geomData[3]])
+      dist = MathFunctions.decode16BitFloatFrom2xUInt8([geomData[2], geomData[3]])
     }
 
     const glgeomItem = this.__drawItems[itemId]

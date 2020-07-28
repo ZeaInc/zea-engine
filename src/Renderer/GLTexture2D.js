@@ -1,5 +1,5 @@
 import { BaseImage, RefCounted } from '../SceneTree/index'
-import { convertFloat32ArrayToUInt16Array } from '../Utilities/MathFunctions'
+import MathFunctions from '../Utilities/MathFunctions'
 
 /**
  * Represents a texture that contains 2-dimensional images.
@@ -456,7 +456,7 @@ class GLTexture2D extends RefCounted {
           )
         }
         if (this.__type == gl.HALF_FLOAT && data instanceof Float32Array) {
-          data = convertFloat32ArrayToUInt16Array(data)
+          data = MathFunctions.convertFloat32ArrayToUInt16Array(data)
         }
         if (gl.name == 'webgl2') {
           gl.texImage2D(

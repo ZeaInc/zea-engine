@@ -1,15 +1,6 @@
-import {
-  SInt32,
-  UInt32,
-  Float32,
-  Vec2,
-  Vec3,
-  Vec4,
-  Mat3,
-  Mat4,
-  Color,
-} from '../Math/index'
+import { Vec2, Vec3, Vec4, Mat3, Mat4, Color } from '../Math/index'
 import { BaseImage } from '../SceneTree/BaseImage.js'
+import { SInt32, UInt32, Float32 } from '../Utilities/MathFunctions'
 
 const glslTypes = {
   bool: Boolean,

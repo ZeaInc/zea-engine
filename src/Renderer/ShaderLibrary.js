@@ -1,4 +1,4 @@
-import { replaceAll, hashStr } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 import { glslTypes } from './GLSLConstants.js'
 
 
@@ -73,7 +73,7 @@ class ShaderLibrary {
     }
 
     // console.log("parseShader:" + shaderName);
-    const shaderNameHash = hashStr(shaderName)
+    const shaderNameHash = StringFunctions.hashStr(shaderName)
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
     const lines = glsl.split('\n')
 
@@ -135,7 +135,7 @@ class ShaderLibrary {
 
             const shaderModule = this.getShaderModule(includeFile)
 
-            const includedModuleHash = hashStr(elements.attributes.file)
+            const includedModuleHash = StringFunctions.hashStr(elements.attributes.file)
             let includedGLSL = shaderModule.glsl
 
             // Remove the first line of GLSL, and replace it with the line tag.
@@ -149,7 +149,7 @@ class ShaderLibrary {
             for (const key in elements.attributes) {
               if (key == 'file') continue
               const value = elements.attributes[key]
-              includedGLSL = replaceAll(includedGLSL, key, value)
+              includedGLSL = StringFunctions.replaceAll(includedGLSL, key, value)
               repl[key] = value
             }
 
@@ -168,13 +168,13 @@ class ShaderLibrary {
             for (const name in shaderModule.attributes) {
               let newname = name
               for (const key in repl)
-                newname = replaceAll(newname, key, repl[key])
+                newname = StringFunctions.replaceAll(newname, key, repl[key])
               result.attributes[newname] = shaderModule.attributes[name]
             }
             for (const name in shaderModule.uniforms) {
               let newname = name
               for (const key in repl)
-                newname = replaceAll(newname, key, repl[key])
+                newname = StringFunctions.replaceAll(newname, key, repl[key])
               result.uniforms[newname] = shaderModule.uniforms[name]
             }
 

@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import { Float32, UInt32, SInt32 } from '../../Math/index'
+import { Float32, UInt32, SInt32 } from '../../Utilities/MathFunctions'
 import { typeRegistry } from '../../Math/TypeRegistry.js'
 
 function isTypedArray(obj) {

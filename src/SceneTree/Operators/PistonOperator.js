@@ -2,7 +2,7 @@ import { Vec3, Quat, Xfo } from '../../Math/index'
 import { Operator } from './Operator.js'
 import { OperatorOutput, OperatorOutputMode } from './OperatorOutput.js'
 import { NumberParameter, Vec3Parameter, StructParameter, ListParameter } from '../Parameters/index'
-import { degToRad } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 import { sgFactory } from '../SGFactory.js'
 
@@ -70,7 +70,11 @@ class PistonParameter extends StructParameter {
     const camLength = this.__camLengthParam.getValue()
     const rodLength = this.__rodLengthParam.getValue()
     const pistonAngle = this.__pistonAngleParam.getValue()
-    const crankVec = new Vec3(Math.sin(degToRad(pistonAngle)), Math.cos(degToRad(pistonAngle)), 0.0)
+    const crankVec = new Vec3(
+      Math.sin(MathFunctions.degToRad(pistonAngle)),
+      Math.cos(MathFunctions.degToRad(pistonAngle)),
+      0.0
+    )
     this.__pistonAxis = this.__baseCrankXfo.ori.rotateVec3(crankVec)
 
     this.__camVec = this.__baseCrankXfo.ori.rotateVec3(

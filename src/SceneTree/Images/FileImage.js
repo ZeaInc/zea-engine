@@ -9,7 +9,7 @@ import { SystemDesc } from '../../BrowserDetection.js'
 
 import { BooleanParameter, NumberParameter, Vec4Parameter } from '../Parameters/index'
 import { FilePathParameter } from '../Parameters/FilePathParameter'
-import { fract } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 const imageDataLibrary = {}
 
@@ -483,9 +483,9 @@ class FileImage extends BaseImage {
             // do something with the frame data
             const sideLength = Math.sqrt(frames.length)
             const atlasSize = [sideLength, sideLength]
-            if (fract(sideLength) > 0.0) {
+            if (MathFunctions.fract(sideLength) > 0.0) {
               atlasSize[0] = Math.floor(atlasSize[0] + 1)
-              if (fract(sideLength) > 0.5) {
+              if (MathFunctions.fract(sideLength) > 0.5) {
                 atlasSize[1] = Math.floor(atlasSize[1] + 1)
               } else {
                 atlasSize[1] = Math.floor(atlasSize[1])

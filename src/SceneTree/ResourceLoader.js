@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-unused-vars */
 /* eslint-disable guard-for-in */
-import { hashStr } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 import { EventEmitter } from '../Utilities/index'
 
 // const asyncLoading = true;
@@ -225,7 +225,7 @@ class ResourceLoader extends EventEmitter {
     let parentId
     const tmp = {}
     for (const part of parts) {
-      const key = hashStr(part)
+      const key = StringFunctions.hashStr(part)
       if (!(key in this.__resources)) {
         this.__resources[key] = {
           name: part,
@@ -237,7 +237,7 @@ class ResourceLoader extends EventEmitter {
       parentId = key
     }
 
-    const key = hashStr(filename)
+    const key = StringFunctions.hashStr(filename)
     const resource = {
       name: filename,
       url,

@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 /* eslint-disable camelcase */
-import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 import { AttrValue } from './AttrValue.js'
 import { typeRegistry } from './TypeRegistry.js'
 import { Vec3 } from './Vec3.js'
@@ -49,7 +49,7 @@ class SphereType extends AttrValue {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistences.
+   * The toJSON method encodes this type as a json object for persistence.
    *
    * @return {object} - The json object.
    */
@@ -66,7 +66,7 @@ class SphereType extends AttrValue {
    * @return {string} - The return value.
    */
   toString() {
-    return stringifyJSONWithFixedPrecision(this.toJSON())
+    return StringFunctions.stringifyJSONWithFixedPrecision(this.toJSON())
   }
   
   // ////////////////////////////////////////

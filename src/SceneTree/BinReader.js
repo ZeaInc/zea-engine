@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math/index'
-import { decode16BitFloat } from '../Utilities/MathFunctions'
+import MathFunctions from '../Utilities/MathFunctions'
 
 /**
  * Reads binary data in a specific encoding. Used in loading binary data such as zcad files.
@@ -138,7 +138,7 @@ class BinReader {
    */
   loadFloat16() {
     const uint16 = this.loadUInt16()
-    return decode16BitFloat(uint16)
+    return MathFunctions.decode16BitFloat(uint16)
   }
 
   /**

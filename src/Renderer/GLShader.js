@@ -1,5 +1,5 @@
 import { BaseItem } from '../SceneTree/index'
-import { replaceAll } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 
 // Every instance of every shader should have a unique id.
 // This is so that we can uniquely identify the bound shader during
@@ -83,17 +83,17 @@ class GLShader extends BaseItem {
     if (shaderopts) {
       if (shaderopts.repl) {
         for (const key in shaderopts.repl)
-          glsl = replaceAll(glsl, key, shaderopts.repl[key])
+          glsl = StringFunctions.replaceAll(glsl, key, shaderopts.repl[key])
       }
       if (shaderopts.defines) glsl = shaderopts.defines + glsl
     }
 
     let prefix
     if (gl.name == 'webgl2') {
-      glsl = replaceAll(glsl, 'attribute', 'in')
-      if (name == 'vertexShader') glsl = replaceAll(glsl, 'varying', 'out')
-      else glsl = replaceAll(glsl, 'varying', 'in')
-      glsl = replaceAll(glsl, 'texture2D', 'texture')
+      glsl = StringFunctions.replaceAll(glsl, 'attribute', 'in')
+      if (name == 'vertexShader') glsl = StringFunctions.replaceAll(glsl, 'varying', 'out')
+      else glsl = StringFunctions.replaceAll(glsl, 'varying', 'in')
+      glsl = StringFunctions.replaceAll(glsl, 'texture2D', 'texture')
 
       prefix = '#version 300 es\n'
       glsl = prefix + glsl

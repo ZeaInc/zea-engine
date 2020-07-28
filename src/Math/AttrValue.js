@@ -1,5 +1,5 @@
 // eslint-disable-next-line camelcase
-import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 
 /**
  * Base class for Math types that can be stored in vertex attributes.
@@ -62,7 +62,7 @@ class AttrValue {
    */
   toString() {
     // eslint-disable-next-line new-cap
-    return stringifyJSONWithFixedPrecision(this.toJSON())
+    return StringFunctions.stringifyJSONWithFixedPrecision(this.toJSON())
   }
 
   /**

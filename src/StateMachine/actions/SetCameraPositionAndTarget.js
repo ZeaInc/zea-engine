@@ -7,7 +7,7 @@ import {
   TreeItemParameter,
 } from '../../SceneTree/Parameters/index'
 import { StateAction } from '../StateAction.js'
-import { lerp, smoothStep } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 /** A state machine action that sets the camera position and target.
  * @extends StateAction
@@ -82,7 +82,7 @@ class SetCameraPositionAndTarget extends StateAction {
         step++
         if (step < steps) {
           const t = step / steps
-          const smooth_t = smoothStep(0.0, 1.0, t)
+          const smooth_t = MathFunctions.smoothStep(0.0, 1.0, t)
           const delta = (smooth_t - smooth_t_prev) / (1.0 - t)
           smooth_t_prev = smooth_t
 
@@ -97,7 +97,7 @@ class SetCameraPositionAndTarget extends StateAction {
 
           const newVec = newPos.subtract(newTarget)
           const newDist = newVec.length()
-          const idealDist = lerp(distNow, distEnd, delta)
+          const idealDist = MathFunctions.lerp(distNow, distEnd, delta)
           // console.log("t:" + t + " delta: " + delta + " distNow:" + distNow + " idealDist:" + idealDist);
           newVec.scaleInPlace(idealDist / newVec.length())
 

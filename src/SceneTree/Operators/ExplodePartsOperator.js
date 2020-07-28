@@ -12,7 +12,7 @@ import {
 } from '../Parameters/index'
 
 import { sgFactory } from '../SGFactory.js'
-import { linStep } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 /** Class representing an explode part parameter.
  * @extends StructParameter
@@ -101,12 +101,12 @@ class ExplodePartParameter extends StructParameter {
       // starting with stage 0. then 1 ...
       let t = stage / stages
       if (centered) t -= 0.5
-      dist = explodeDist * linStep(movement.x, movement.y, Math.max(0, explode - t))
+      dist = explodeDist * MathFunctions.linStep(movement.x, movement.y, Math.max(0, explode - t))
     } else {
       // Else all the parts are spread out across the explode distance.
       let t = 1.0 - stage / stages
       if (centered) t -= 0.5
-      dist = explodeDist * linStep(movement.x, movement.y, explode) * t
+      dist = explodeDist * MathFunctions.linStep(movement.x, movement.y, explode) * t
     }
     dist += offset
 

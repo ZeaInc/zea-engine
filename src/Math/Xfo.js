@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 import { Vec3 } from './Vec3.js'
 import { Mat4 } from './Mat4.js'
 import { Quat } from './Quat.js'
@@ -294,7 +294,7 @@ class Xfo {
    */
   toString() {
     // eslint-disable-next-line new-cap
-    return stringifyJSONWithFixedPrecision(this.toJSON())
+    return StringFunctions.stringifyJSONWithFixedPrecision(this.toJSON())
   }
 }
 

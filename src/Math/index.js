@@ -1,16 +1,3 @@
-/* eslint-disable camelcase */
-export {
-  UInt8,
-  SInt8,
-  SInt16,
-  UInt16,
-  SInt32,
-  UInt32,
-  Float32,
-  hashStr,
-  JSON_stringify_fixedPrecision,
-} from './Common.js'
-
 export * from './AttrValue.js'
 export * from './Vec2.js'
 export * from './Vec3.js'

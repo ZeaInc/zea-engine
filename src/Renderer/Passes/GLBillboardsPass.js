@@ -6,7 +6,7 @@ import { GLImageAtlas } from '../GLImageAtlas.js'
 import { GLTexture2D } from '../GLTexture2D.js'
 import { generateShaderGeomBinding } from '../GeomShaderBinding.js'
 import { GLRenderer } from '../GLRenderer.js'
-import { convertFloat32ArrayToUInt16Array } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 const pixelsPerItem = 5 // The number of pixels per draw item.
 
@@ -410,7 +410,7 @@ class GLBillboardsPass extends GLPass {
         dataArray
       )
     } else {
-      const unit16s = convertFloat32ArrayToUInt16Array(dataArray)
+      const unit16s = MathFunctions.convertFloat32ArrayToUInt16Array(dataArray)
       gl.texSubImage2D(
         gl.TEXTURE_2D,
         0,

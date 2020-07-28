@@ -1,5 +1,6 @@
 import { SystemDesc } from '../BrowserDetection.js'
-import { Float32 } from '../Math/index'
+import { Float32 } from '../Utilities/MathFunctions'
+
 const create3DContext = function(canvas, opt_attribs) {
   let context = null
   if (opt_attribs.webglContextType != undefined) {

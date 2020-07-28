@@ -3,7 +3,7 @@ import { sgFactory } from '../../SceneTree/SGFactory.js'
 import { NumberParameter } from '../../SceneTree/Parameters/index'
 
 import { StateAction } from '../StateAction.js'
-import { lerp, smoothStep } from '../../Utilities/MathFunctions'
+import MathFunctions from '../../Utilities/MathFunctions'
 
 /** A state machine action that sets parameter values.
  * @extends StateAction
@@ -56,8 +56,8 @@ class SetParameterValue extends StateAction {
           step++
           if (step < steps) {
             const t = step / steps
-            const smoothT = smoothStep(0.0, 1.0, t)
-            const newVal = lerp(paramValueStart, paramValueEnd, smoothT)
+            const smoothT = MathFunctions.smoothStep(0.0, 1.0, t)
+            const newVal = MathFunctions.lerp(paramValueStart, paramValueEnd, smoothT)
             // Note: In this case, we want the parameter to emit a notification
             // and cause the update of the scene. But we also don't want the parameter value to then
             // be considered modified so it is saved to the JSON file. I'm not sure how to address this.

@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 /* eslint-disable camelcase */
-import { stringifyJSONWithFixedPrecision } from '../Utilities/StringFunctions'
+import StringFunctions from '../Utilities/StringFunctions'
 import { Vec3 } from './Vec3.js'
 import { typeRegistry } from './TypeRegistry.js'
 
@@ -178,7 +178,7 @@ class Ray {
    * @return {string} - The return value.
    */
   toString() {
-    return stringifyJSONWithFixedPrecision(this.toJSON())
+    return StringFunctions.stringifyJSONWithFixedPrecision(this.toJSON())
   }
 }
 

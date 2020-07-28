@@ -1,4 +1,4 @@
-import { SInt32, UInt32, Float32 } from './Common.js'
+import { SInt32, UInt32, Float32 } from '../Utilities/MathFunctions'
 
 /** Class representing a type registry.
  * @private

@@ -8,8 +8,7 @@ import { GLShader } from './GLShader.js'
 import { GLTexture2D } from './GLTexture2D.js'
 import { GLRenderTarget } from './GLRenderTarget.js'
 import { generateShaderGeomBinding } from './GeomShaderBinding.js'
-import { nextPow2 } from '../Utilities/MathFunctions'
-
+import MathFunctions from '../Utilities/MathFunctions'
 
 // eslint-disable-next-line require-jsdoc
 class AtlasLayoutShader extends GLShader {
@@ -320,7 +319,7 @@ class GLImageAtlas extends GLRenderTarget {
     let size = Math.round(Math.sqrt(this.__layout.length * pixelsPerItem) + 0.5)
     // Only support power 2 textures. Else we get strange corruption on some GPUs
     // in some scenes.
-    size = nextPow2(size)
+    size = MathFunctions.nextPow2(size)
     // Size should be a multiple of pixelsPerItem, so each geom item is always contiguous
     // in memory. (makes updating a lot easier. See __updateItemInstanceData below)
     if (size % pixelsPerItem != 0)
