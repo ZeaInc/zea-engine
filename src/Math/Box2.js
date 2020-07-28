@@ -76,15 +76,11 @@ class Box2 {
    * @param {Vec2} point - A point represents the corners of a 2D box.
    */
   addPoint(point) {
-    if (this.p0.x == Number.POSITIVE_INFINITY || point.x < this.p0.x)
-      this.p0.x = point.x
-    if (this.p0.y == Number.POSITIVE_INFINITY || point.y < this.p0.y)
-      this.p0.y = point.y
+    if (this.p0.x == Number.POSITIVE_INFINITY || point.x < this.p0.x) this.p0.x = point.x
+    if (this.p0.y == Number.POSITIVE_INFINITY || point.y < this.p0.y) this.p0.y = point.y
 
-    if (this.p1.y == Number.NEGATIVE_INFINITY || point.x > this.p1.x)
-      this.p1.x = point.x
-    if (this.p1.y == Number.NEGATIVE_INFINITY || point.y > this.p1.y)
-      this.p1.y = point.y
+    if (this.p1.y == Number.NEGATIVE_INFINITY || point.x > this.p1.x) this.p1.x = point.x
+    if (this.p1.y == Number.NEGATIVE_INFINITY || point.y > this.p1.y) this.p1.y = point.y
   }
 
   /**

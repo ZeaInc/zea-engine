@@ -26,7 +26,6 @@ const OperatorOutputMode = {
   OP_READ_WRITE: 1,
 }
 
-
 /**
  * Represents a reactive type of attribute that can be owned by a `ParameterOwner` class.
  *
@@ -59,7 +58,7 @@ class Parameter extends EventEmitter {
    */
   constructor(name, value, dataType) {
     super(name)
-  
+
     this.__name = name
     this.__value = value
     this.__dataType = dataType ? dataType : undefined
@@ -181,7 +180,7 @@ class Parameter extends EventEmitter {
   // Operator bindings
 
   /**
-   * Binds an OperatorOutput to this parameter. 
+   * Binds an OperatorOutput to this parameter.
    *
    * @param {OperatorOutput} operatorOutput - The output that we are unbinding from the Parameter
    * @param {number} index - The index(optional) that the output is being bound at.
@@ -257,17 +256,23 @@ class Parameter extends EventEmitter {
    */
   setCleanFromOp(value, operatorOutput, index) {
     if (index < this.__dirtyOpIndex) {
-      // We see this message when parameters are evaluated as soon as a change is detected instead of 
+      // We see this message when parameters are evaluated as soon as a change is detected instead of
       // in batches. Now that all rendering code is pulling data only during the render cycle, we ara
-      // not seeing it anymore. However, maybe with a UI open, it will start emitting this warning. 
+      // not seeing it anymore. However, maybe with a UI open, it will start emitting this warning.
       // Note: this would be caused, if a Parameter is already cleaned by an Operator, and yet the Operator
       // is re-evaluating. I am not sure how this can occur.
       const op = operatorOutput.getOperator()
-      console.warn(`Operator:: ${op.constructor.name} with name: ${op.getName()} is being cleaned immediately, instead of lazily.`)
+      console.warn(
+        `Operator:: ${op.constructor.name} with name: ${op.getName()} is being cleaned immediately, instead of lazily.`
+      )
     }
     if (index > this.__dirtyOpIndex + 1) {
       const op = operatorOutput.getOperator()
-      throw(`Parameter: ${this.constructor.name} with name: ${this.getName()} is not cleaning all outputs during evaluation of op:: ${op.constructor.name} with name: ${op.getName()}`)
+      throw `Parameter: ${
+        this.constructor.name
+      } with name: ${this.getName()} is not cleaning all outputs during evaluation of op:: ${
+        op.constructor.name
+      } with name: ${op.getName()}`
     }
     this.__value = value
 
@@ -312,7 +317,7 @@ class Parameter extends EventEmitter {
 
     if (this.__dirtyOpIndex < index) {
       const op = this.__boundOps[this.__dirtyOpIndex].getOperator()
-      throw(`Operator: ${op.constructor.name} with name: ${op.getName()} is not cleaning its outputs during evaluation`)
+      throw `Operator: ${op.constructor.name} with name: ${op.getName()} is not cleaning its outputs during evaluation`
     }
   }
 
@@ -350,7 +355,7 @@ class Parameter extends EventEmitter {
       for (let i = this.__boundOps.length - 1; i >= 0; i--) {
         const operatorOutput = this.__boundOps[i]
         value = operatorOutput.setValue(value)
-        if (operatorOutput.getMode() == 0/*OP_WRITE*/) return;
+        if (operatorOutput.getMode() == 0 /*OP_WRITE*/) return
       }
     }
 
@@ -369,7 +374,7 @@ class Parameter extends EventEmitter {
   // Persistence
 
   /**
-   * The loadValue is used to change the value of a parameter, without triggering a 
+   * The loadValue is used to change the value of a parameter, without triggering a
    * valueChanges, or setting the USER_EDITED state.
    *
    * @param {any} value - The context value.

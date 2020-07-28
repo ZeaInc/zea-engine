@@ -172,12 +172,7 @@ class Vec4 extends AttrValue {
    * @return {boolean} - Returns true or false.
    */
   isEqual(other) {
-    return (
-      this.x == other.x &&
-      this.y == other.y &&
-      this.z == other.z &&
-      this.t == other.t
-    )
+    return this.x == other.x && this.y == other.y && this.z == other.z && this.t == other.t
   }
 
   /**
@@ -199,12 +194,7 @@ class Vec4 extends AttrValue {
    * @return {boolean} - Returns true or false.
    */
   notEqual(other) {
-    return (
-      this.x != other.x &&
-      this.y != other.y &&
-      this.z != other.z &&
-      this.t != other.t
-    )
+    return this.x != other.x && this.y != other.y && this.z != other.z && this.t != other.t
   }
 
   /**
@@ -230,12 +220,7 @@ class Vec4 extends AttrValue {
    * @return {Vec4} - Returns a new Vec4.
    */
   add(other) {
-    return new Vec4(
-      this.x + other.x,
-      this.y + other.y,
-      this.z + other.z,
-      this.t + other.t
-    )
+    return new Vec4(this.x + other.x, this.y + other.y, this.z + other.z, this.t + other.t)
   }
 
   /**
@@ -257,12 +242,7 @@ class Vec4 extends AttrValue {
    * @return {Vec4} - Returns a new Vec4.
    */
   subtract(other) {
-    return new Vec4(
-      this.x - other.x,
-      this.y - other.y,
-      this.z - other.z,
-      this.t - other.t
-    )
+    return new Vec4(this.x - other.x, this.y - other.y, this.z - other.z, this.t - other.t)
   }
 
   /**
@@ -284,12 +264,7 @@ class Vec4 extends AttrValue {
    * @return {Vec4} - Returns a new Vec4.
    */
   multiply(other) {
-    return new Vec4(
-      this.x * other.x,
-      this.y * other.y,
-      this.z * other.z,
-      this.t * other.t
-    )
+    return new Vec4(this.x * other.x, this.y * other.y, this.z * other.z, this.t * other.t)
   }
 
   /**
@@ -311,12 +286,7 @@ class Vec4 extends AttrValue {
    * @return {Vec4} - Returns a new Vec4.
    */
   divide(other) {
-    return new Vec4(
-      this.x / other.x,
-      this.y / other.y,
-      this.z / other.z,
-      this.t / other.t
-    )
+    return new Vec4(this.x / other.x, this.y / other.y, this.z / other.z, this.t / other.t)
   }
 
   /**
@@ -338,12 +308,7 @@ class Vec4 extends AttrValue {
    * @return {Vec4} - The return value.
    */
   scale(scalar) {
-    return new Vec4(
-      this.x * scalar,
-      this.y * scalar,
-      this.z * scalar,
-      this.t * scalar
-    )
+    return new Vec4(this.x * scalar, this.y * scalar, this.z * scalar, this.t * scalar)
   }
 
   /**
@@ -444,12 +409,7 @@ class Vec4 extends AttrValue {
     const bz = other.z
     const bt = other.t
 
-    return new Vec4(
-      ay * bz - az * by,
-      az * bt - at * bz,
-      at * bx - ax * bt,
-      ax * by - ay * bx
-    )
+    return new Vec4(ay * bz - az * by, az * bt - at * bz, at * bx - ax * bt, ax * by - ay * bx)
   }
 
   /**
@@ -482,12 +442,7 @@ class Vec4 extends AttrValue {
     const ay = this.y
     const az = this.z
     at = this.t
-    return new Vec4(
-      ax + t * (other.x - ax),
-      ay + t * (other.y - ay),
-      az + t * (other.z - az),
-      at + t * (other.t - at)
-    )
+    return new Vec4(ax + t * (other.x - ax), ay + t * (other.y - ay), az + t * (other.z - az), at + t * (other.t - at))
   }
 
   /**
@@ -513,12 +468,7 @@ class Vec4 extends AttrValue {
    * @return {Vec4} - Returns a new Vec4.
    */
   clone() {
-    return new Vec4(
-      this.__data[0],
-      this.__data[1],
-      this.__data[2],
-      this.__data[3]
-    )
+    return new Vec4(this.__data[0], this.__data[1], this.__data[2], this.__data[3])
   }
 
   /**

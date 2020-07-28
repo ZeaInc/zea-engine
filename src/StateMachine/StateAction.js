@@ -44,7 +44,7 @@ class StateAction extends ParameterOwner {
    */
   setState(state) {
     this.__state = state
-    this.__childActions.forEach(childAction => {
+    this.__childActions.forEach((childAction) => {
       childAction.setState(state)
     })
   }
@@ -71,10 +71,7 @@ class StateAction extends ParameterOwner {
    * The activate method.
    */
   activate() {
-    console.warn(
-      'activate must be implmented by each action. this:' +
-        sgFactory.getClassName(this)
-    )
+    console.warn('activate must be implmented by each action. this:' + sgFactory.getClassName(this))
   }
 
   /**
@@ -90,7 +87,7 @@ class StateAction extends ParameterOwner {
    * The deactivate method.
    */
   deactivate() {
-    this.__childActions.forEach(action => {
+    this.__childActions.forEach((action) => {
       action.deactivate()
     })
   }
@@ -100,7 +97,7 @@ class StateAction extends ParameterOwner {
    * @private
    */
   __onDone() {
-    this.__childActions.forEach(action => {
+    this.__childActions.forEach((action) => {
       action.activate()
     })
   }

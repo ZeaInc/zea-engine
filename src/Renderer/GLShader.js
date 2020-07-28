@@ -8,7 +8,6 @@ import { BaseItem } from '../SceneTree/index'
 // never unique in release mode after the port to Rollup)
 let shaderInstanceId = 0
 
-
 /** Class representing a GL shader.
  * @extends BaseItem
  * @private
@@ -81,8 +80,7 @@ class GLShader extends BaseItem {
     if (!shaderopts) shaderopts = gl.shaderopts
     if (shaderopts) {
       if (shaderopts.repl) {
-        for (const key in shaderopts.repl)
-          glsl = glsl.replaceAll(key, shaderopts.repl[key])
+        for (const key in shaderopts.repl) glsl = glsl.replaceAll(key, shaderopts.repl[key])
       }
       if (shaderopts.defines) glsl = shaderopts.defines + glsl
     }
@@ -166,12 +164,7 @@ class GLShader extends BaseItem {
     const vertexShaderGLSL = this.__shaderStages['VERTEX_SHADER'].glsl
     const shaderHdls = {}
     if (vertexShaderGLSL != undefined) {
-      const vertexShader = this.__compileShaderStage(
-        vertexShaderGLSL,
-        gl.VERTEX_SHADER,
-        'vertexShader',
-        shaderopts
-      )
+      const vertexShader = this.__compileShaderStage(vertexShaderGLSL, gl.VERTEX_SHADER, 'vertexShader', shaderopts)
       if (!vertexShader) {
         return false
       }
@@ -181,9 +174,7 @@ class GLShader extends BaseItem {
     const fragmentShaderGLSL = this.__shaderStages['FRAGMENT_SHADER'].glsl
     if (fragmentShaderGLSL != undefined) {
       const fragshaderopts = Object.assign({}, gl.shaderopts, shaderopts)
-      if (fragshaderopts.frag)
-        fragshaderopts.defines =
-          fragshaderopts.frag.defines + fragshaderopts.defines
+      if (fragshaderopts.frag) fragshaderopts.defines = fragshaderopts.frag.defines + fragshaderopts.defines
       const fragmentShader = this.__compileShaderStage(
         fragmentShaderGLSL,
         gl.FRAGMENT_SHADER,
@@ -205,30 +196,20 @@ class GLShader extends BaseItem {
         // Usefull for debugging very nasty compiler errors generated only in the ANGL layer.
         const debug_ext = gl.getExtension('WEBGL_debug_shaders')
         if (debug_ext) {
-          const hlsl = debug_ext.getTranslatedShaderSource(
-            shaderHdls[gl.VERTEX_SHADER]
-          )
+          const hlsl = debug_ext.getTranslatedShaderSource(shaderHdls[gl.VERTEX_SHADER])
           console.log(hlsl)
         }
       }
 
       console.log('vertexShaderGLSL:' + vertexShaderGLSL)
       console.log('fragmentShaderGLSL:' + fragmentShaderGLSL)
-      throw new Error(
-        'Unable to link the shader program:' +
-          this.constructor.name +
-          '\n==================\n' +
-          info
-      )
+      throw new Error('Unable to link the shader program:' + this.constructor.name + '\n==================\n' + info)
 
       gl.deleteProgram(shaderProgramHdl)
       return false
     }
 
-    const result = this.__extractAttributeAndUniformLocations(
-      shaderProgramHdl,
-      shaderopts
-    )
+    const result = this.__extractAttributeAndUniformLocations(shaderProgramHdl, shaderopts)
     result.shaderProgramHdl = shaderProgramHdl
     return result
   }
@@ -267,10 +248,7 @@ class GLShader extends BaseItem {
       if (unifType instanceof Array) {
         for (const member of unifType) {
           const structMemberName = uniformName + '.' + member.name
-          const location = gl.getUniformLocation(
-            shaderProgramHdl,
-            structMemberName
-          )
+          const location = gl.getUniformLocation(shaderProgramHdl, structMemberName)
           if (location == undefined) {
             // console.warn(this.constructor.name + " uniform found in shader code but not in compiled program:" + uniformName);
             continue
@@ -284,8 +262,7 @@ class GLShader extends BaseItem {
       }
       if (shaderopts) {
         if (shaderopts.repl) {
-          for (const key in shaderopts.repl)
-            uniformName = uniformName.replace(key, shaderopts.repl[key])
+          for (const key in shaderopts.repl) uniformName = uniformName.replace(key, shaderopts.repl[key])
         }
       }
 
@@ -325,8 +302,7 @@ class GLShader extends BaseItem {
     const uniforms = {}
     for (const stageName in this.__shaderStages) {
       const shaderStageBlock = this.__shaderStages[stageName]
-      for (const unifName in shaderStageBlock['uniforms'])
-        uniforms[unifName] = shaderStageBlock['uniforms'][unifName]
+      for (const unifName in shaderStageBlock['uniforms']) uniforms[unifName] = shaderStageBlock['uniforms'][unifName]
     }
     return uniforms
   }
@@ -372,10 +348,7 @@ class GLShader extends BaseItem {
     const gl = this.__gl
 
     if (renderstate.glshader != this) {
-      const shaderCompilationResult = this.compileForTarget(
-        key,
-        renderstate.shaderopts
-      )
+      const shaderCompilationResult = this.compileForTarget(key, renderstate.shaderopts)
       if (shaderCompilationResult === false) {
         console.warn(this.constructor.name + ' is not compiled for ' + key)
         return false
@@ -396,8 +369,7 @@ class GLShader extends BaseItem {
 
       // Once the shader has been bound, we allow the renderer to bind any
       // of its global uniform values. (e.g. env map values etc...)
-      if (renderstate.bindRendererUnifs)
-        renderstate.bindRendererUnifs(shaderCompilationResult.unifs)
+      if (renderstate.bindRendererUnifs) renderstate.bindRendererUnifs(shaderCompilationResult.unifs)
     }
 
     renderstate.supportsInstancing = true

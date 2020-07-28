@@ -29,7 +29,7 @@ class GLRenderTarget extends EventEmitter {
 
     const p = processTextureParams(gl, params)
 
-    this.textureTargets.forEach(colorTexture => {
+    this.textureTargets.forEach((colorTexture) => {
       gl.deleteTexture(colorTexture)
     })
     this.textureTargets = []
@@ -37,7 +37,7 @@ class GLRenderTarget extends EventEmitter {
       gl.deleteTexture(this.depthTexture)
       this.depthTexture = null
     }
-    if (this.frameBuffer){
+    if (this.frameBuffer) {
       gl.deleteFramebuffer(this.frameBuffer)
     }
 
@@ -55,14 +55,9 @@ class GLRenderTarget extends EventEmitter {
     this.textureType = 1 // Default 2d 8 bit texture image texture.
     this.textureDesc = [this.width, this.height, 0, 0]
 
-
     // -- Initialize texture targets
     const numColorChannels =
-      params.numColorChannels != undefined
-        ? params.numColorChannels
-        : p.format != undefined
-        ? 1
-        : 0
+      params.numColorChannels != undefined ? params.numColorChannels : p.format != undefined ? 1 : 0
     for (let i = 0; i < numColorChannels; i++) {
       gl.activeTexture(gl.TEXTURE0 + 1)
       const colorTexture = gl.createTexture()
@@ -71,17 +66,7 @@ class GLRenderTarget extends EventEmitter {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, p.wrapT)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, p.minFilter)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, p.magFilter)
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        this.internalFormat,
-        p.width,
-        p.height,
-        0,
-        this.format,
-        this.type,
-        null
-      )
+      gl.texImage2D(gl.TEXTURE_2D, 0, this.internalFormat, p.width, p.height, 0, this.format, this.type, null)
       this.textureTargets.push(colorTexture)
     }
 
@@ -99,51 +84,30 @@ class GLRenderTarget extends EventEmitter {
 
       // the proper texture format combination can be found here
       // https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glTexImage2D.xhtml
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        p.depthInternalFormat,
-        p.width,
-        p.height,
-        0,
-        p.depthFormat,
-        p.depthType,
-        null
-      )
+      gl.texImage2D(gl.TEXTURE_2D, 0, p.depthInternalFormat, p.width, p.height, 0, p.depthFormat, p.depthType, null)
     }
 
     // -- Initialize frame buffer
     this.frameBuffer = gl.createFramebuffer()
-    if (gl.name == 'webgl2')
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.frameBuffer)
+    if (gl.name == 'webgl2') gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.frameBuffer)
     else gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 
     if (this.textureTargets.length > 0) {
       if (this.textureTargets.length > 1) {
         if (gl.name == 'webgl' && !gl.drawBuffers) {
           gl.__ext_draw_buffers = gl.getExtension('WEBGL_draw_buffers')
-          gl.drawBuffers = gl.__ext_draw_buffers.drawBuffersWEBGL.bind(
-            gl.__ext_draw_buffers
-          )
+          gl.drawBuffers = gl.__ext_draw_buffers.drawBuffersWEBGL.bind(gl.__ext_draw_buffers)
           for (let i = 1; i < 14; i++) {
-            gl['COLOR_ATTACHMENT' + i] =
-              gl.__ext_draw_buffers['COLOR_ATTACHMENT' + i + '_WEBGL']
+            gl['COLOR_ATTACHMENT' + i] = gl.__ext_draw_buffers['COLOR_ATTACHMENT' + i + '_WEBGL']
           }
-          gl.MAX_COLOR_ATTACHMENTS =
-            gl.__ext_draw_buffers.MAX_COLOR_ATTACHMENTS_WEBGL
+          gl.MAX_COLOR_ATTACHMENTS = gl.__ext_draw_buffers.MAX_COLOR_ATTACHMENTS_WEBGL
           gl.MAX_DRAW_BUFFERS = gl.__ext_draw_buffers.MAX_DRAW_BUFFERS_WEBGL
         }
       }
 
       const bufferIds = []
       for (let i = 0; i < this.textureTargets.length; i++) {
-        gl.framebufferTexture2D(
-          gl.DRAW_FRAMEBUFFER,
-          gl.COLOR_ATTACHMENT0 + i,
-          gl.TEXTURE_2D,
-          this.textureTargets[i],
-          0
-        )
+        gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this.textureTargets[i], 0)
         bufferIds.push(gl.COLOR_ATTACHMENT0 + i)
       }
       if (this.textureTargets.length > 1) {
@@ -152,13 +116,7 @@ class GLRenderTarget extends EventEmitter {
     }
 
     if (this.depthTexture) {
-      gl.framebufferTexture2D(
-        gl.DRAW_FRAMEBUFFER,
-        gl.DEPTH_ATTACHMENT,
-        gl.TEXTURE_2D,
-        this.depthTexture,
-        0
-      )
+      gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0)
     }
 
     const status = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER)
@@ -171,9 +129,7 @@ class GLRenderTarget extends EventEmitter {
         case gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
           throw new Error('There is no attachment.')
         case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-          throw new Error(
-            'Height and width of the attachment are not the same.'
-          )
+          throw new Error('Height and width of the attachment are not the same.')
         case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
           throw new Error(
             'The format of the attachment is not supported or if depth and stencil attachments are not the same renderbuffer.'
@@ -199,8 +155,7 @@ class GLRenderTarget extends EventEmitter {
       renderstate.boundRendertarget = this.frameBuffer
     }
     const gl = this.__gl
-    if (gl.name == 'webgl2')
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.frameBuffer)
+    if (gl.name == 'webgl2') gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.frameBuffer)
     else gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
     gl.viewport(0, 0, this.width, this.height) // Match the viewport to the texture size
     if (clear) this.clear()
@@ -213,8 +168,7 @@ class GLRenderTarget extends EventEmitter {
   unbindForWriting(renderstate) {
     if (renderstate) renderstate.boundRendertarget = this.__prevBoundFbo
     const gl = this.__gl
-    if (gl.name == 'webgl2')
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.__prevBoundFbo)
+    if (gl.name == 'webgl2') gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.__prevBoundFbo)
     else gl.bindFramebuffer(gl.FRAMEBUFFER, this.__prevBoundFbo)
   }
 
@@ -237,8 +191,7 @@ class GLRenderTarget extends EventEmitter {
    */
   bindForReading() {
     const gl = this.__gl
-    if (gl.name == 'webgl2')
-      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.frameBuffer)
+    if (gl.name == 'webgl2') gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.frameBuffer)
     else gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
   }
 
@@ -250,7 +203,6 @@ class GLRenderTarget extends EventEmitter {
     if (gl.name == 'webgl2') gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null)
     else gl.bindFramebuffer(gl.FRAMEBUFFER, null)
   }
-
 
   /**
    * The bindColorTexture method.
@@ -358,7 +310,6 @@ class GLRenderTarget extends EventEmitter {
     */
   }
 
-
   /**
    * The bindToUniform method.
    * @param {any} renderstate - The renderstate param.
@@ -387,17 +338,12 @@ class GLRenderTarget extends EventEmitter {
       }
 
       if (bindings.textureDescUnif) {
-        this.__gl.uniform4fv(
-          bindings.textureDescUnif.location,
-          this.textureDesc
-        )
+        this.__gl.uniform4fv(bindings.textureDescUnif.location, this.textureDesc)
       }
     }
 
     return true
   }
-
-  
 
   /**
    * The destroy is called by the system to cause explicit resources cleanup.
@@ -405,7 +351,7 @@ class GLRenderTarget extends EventEmitter {
    */
   destroy() {
     const gl = this.__gl
-    this.textureTargets.forEach(colorTexture => {
+    this.textureTargets.forEach((colorTexture) => {
       gl.deleteTexture(colorTexture)
     })
     this.textureTargets = []
@@ -413,7 +359,7 @@ class GLRenderTarget extends EventEmitter {
       gl.deleteTexture(this.depthTexture)
       this.depthTexture = null
     }
-    if (this.frameBuffer){
+    if (this.frameBuffer) {
       gl.deleteFramebuffer(this.frameBuffer)
     }
   }

@@ -12,7 +12,7 @@ class CalcGlobalXfoOperator extends Operator {
    * @param {string} name - The name value.
    */
   constructor(globalXfoParam, localXfoParam) {
-    super("CalcGlobalXfoOperator")
+    super('CalcGlobalXfoOperator')
     this.addInput(new OperatorInput('ParentGlobal'))
     this.addInput(new OperatorInput('LocalXfo')).setParam(localXfoParam)
     this.addOutput(new OperatorOutput('GlobalXfo')).setParam(globalXfoParam)
@@ -52,4 +52,3 @@ class CalcGlobalXfoOperator extends Operator {
 // sgFactory.registerClass('CalcGlobalXfoOperator', CalcGlobalXfoOperator)
 
 export { CalcGlobalXfoOperator }
-

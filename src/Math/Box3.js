@@ -29,20 +29,12 @@ class Box3 {
     if (p0 instanceof Vec3) {
       this.p0 = p0
     } else {
-      this.p0 = new Vec3(
-        Number.POSITIVE_INFINITY,
-        Number.POSITIVE_INFINITY,
-        Number.POSITIVE_INFINITY
-      )
+      this.p0 = new Vec3(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY)
     }
     if (p1 instanceof Vec3) {
       this.p1 = p1
     } else {
-      this.p1 = new Vec3(
-        Number.NEGATIVE_INFINITY,
-        Number.NEGATIVE_INFINITY,
-        Number.NEGATIVE_INFINITY
-      )
+      this.p1 = new Vec3(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY)
     }
   }
 
@@ -109,24 +101,15 @@ class Box3 {
    * @param {Vec3} point - A point represents the corners of a 3D box.
    */
   addPoint(point) {
-    if (
-      point.x != Number.POSITIVE_INFINITY &&
-      point.x != Number.NEGATIVE_INFINITY
-    ) {
+    if (point.x != Number.POSITIVE_INFINITY && point.x != Number.NEGATIVE_INFINITY) {
       if (point.x < this.p0.x) this.p0.x = point.x
       if (point.x > this.p1.x) this.p1.x = point.x
     }
-    if (
-      point.y != Number.POSITIVE_INFINITY &&
-      point.y != Number.NEGATIVE_INFINITY
-    ) {
+    if (point.y != Number.POSITIVE_INFINITY && point.y != Number.NEGATIVE_INFINITY) {
       if (point.y < this.p0.y) this.p0.y = point.y
       if (point.y > this.p1.y) this.p1.y = point.y
     }
-    if (
-      point.z != Number.POSITIVE_INFINITY &&
-      point.z != Number.NEGATIVE_INFINITY
-    ) {
+    if (point.z != Number.POSITIVE_INFINITY && point.z != Number.NEGATIVE_INFINITY) {
       if (point.z < this.p0.z) this.p0.z = point.z
       if (point.z > this.p1.z) this.p1.z = point.z
     }
@@ -143,24 +126,12 @@ class Box3 {
     if (xfo) {
       // Transform each corner of the Box3 into the new coordinate system.
       this.addPoint(xfo.transformVec3(box3.p0))
-      this.addPoint(
-        xfo.transformVec3(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z))
-      )
-      this.addPoint(
-        xfo.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z))
-      )
-      this.addPoint(
-        xfo.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z))
-      )
-      this.addPoint(
-        xfo.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z))
-      )
-      this.addPoint(
-        xfo.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z))
-      )
-      this.addPoint(
-        xfo.transformVec3(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z))
-      )
+      this.addPoint(xfo.transformVec3(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z)))
+      this.addPoint(xfo.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z)))
+      this.addPoint(xfo.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z)))
+      this.addPoint(xfo.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z)))
+      this.addPoint(xfo.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z)))
+      this.addPoint(xfo.transformVec3(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z)))
       this.addPoint(xfo.transformVec3(box3.p1))
     } else {
       this.addPoint(box3.p0)
@@ -207,24 +178,7 @@ class Box3 {
     const scx = this.p1.x - this.p0.x
     const scy = this.p1.y - this.p0.y
     const scz = this.p1.z - this.p0.z
-    return new Mat4(
-      scx,
-      0,
-      0,
-      0,
-      0,
-      scy,
-      0,
-      0,
-      0,
-      0,
-      scz,
-      0,
-      this.p0.x,
-      this.p0.y,
-      this.p0.z,
-      1.0
-    )
+    return new Mat4(scx, 0, 0, 0, 0, scy, 0, 0, 0, 0, scz, 0, this.p0.x, this.p0.y, this.p0.z, 1.0)
   }
 
   /**
@@ -267,10 +221,7 @@ class Box3 {
     // this.clampPoint( sphere.center, closestPoint );
 
     // If that point is inside the sphere, the AABB and sphere intersect.
-    return (
-      closestPoint.distanceToSquared(sphere.center) <=
-      sphere.radius * sphere.radius
-    )
+    return closestPoint.distanceToSquared(sphere.center) <= sphere.radius * sphere.radius
   }
 
   /**

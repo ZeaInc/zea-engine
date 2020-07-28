@@ -219,7 +219,4 @@ void main(void) {
   }
 }
 
-sgFactory.registerClass(
-  'FloatingShadowCatcherShader',
-  FloatingShadowCatcherShader
-)
+sgFactory.registerClass('FloatingShadowCatcherShader', FloatingShadowCatcherShader)

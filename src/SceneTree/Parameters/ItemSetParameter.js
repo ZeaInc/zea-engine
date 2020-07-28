@@ -65,7 +65,7 @@ class ItemSetParameter extends Parameter {
    * @param {boolean} emit - The emit value.
    */
   addItems(items, emitValueChanged = true) {
-    items.forEach(item => this.addItem(item, false))
+    items.forEach((item) => this.addItem(item, false))
     if (emitValueChanged) this.emit('valueChanged', {})
   }
 

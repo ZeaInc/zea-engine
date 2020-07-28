@@ -113,10 +113,7 @@ void main(void) {
   }
 }
 
-sgFactory.registerClass(
-  'OctahedralEnvProjectionShader',
-  OctahedralEnvProjectionShader
-)
+sgFactory.registerClass('OctahedralEnvProjectionShader', OctahedralEnvProjectionShader)
 
 class LatLongEnvProjectionShader extends EnvProjectionShader {
   constructor(gl) {
@@ -168,12 +165,5 @@ void main(void) {
   }
 }
 
-sgFactory.registerClass(
-  'LatLongEnvProjectionShader',
-  LatLongEnvProjectionShader
-)
-export {
-  EnvProjectionShader,
-  OctahedralEnvProjectionShader,
-  LatLongEnvProjectionShader,
-}
+sgFactory.registerClass('LatLongEnvProjectionShader', LatLongEnvProjectionShader)
+export { EnvProjectionShader, OctahedralEnvProjectionShader, LatLongEnvProjectionShader }

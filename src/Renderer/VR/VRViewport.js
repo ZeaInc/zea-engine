@@ -48,7 +48,6 @@ class VRViewport extends GLBaseViewport {
     this.__leftProjectionMatrix = new Mat4()
     this.__rightViewMatrix = new Mat4()
     this.__rightProjectionMatrix = new Mat4()
-
   }
 
   /**
@@ -172,7 +171,7 @@ class VRViewport extends GLBaseViewport {
       // Resources
 
       // Note: when the VRViewport is setup
-      const sceneSet = event => {
+      const sceneSet = (event) => {
         const scene = event.scene
         const resourceLoader = scene.getResourceLoader()
 
@@ -191,9 +190,7 @@ class VRViewport extends GLBaseViewport {
 
         const hmdAssetId = resourceLoader.resolveFilePathToId(assetPath)
         if (hmdAssetId && !SystemDesc.isMobileDevice) {
-          this.__vrAsset = this.__renderer
-            .getScene()
-            .loadCommonAssetResource(hmdAssetId)
+          this.__vrAsset = this.__renderer.getScene().loadCommonAssetResource(hmdAssetId)
           this.__vrAsset.on('loaded', () => {
             const materialLibrary = this.__vrAsset.getMaterialLibrary()
             const materialNames = materialLibrary.getMaterialNames()
@@ -218,75 +215,81 @@ class VRViewport extends GLBaseViewport {
    */
   startPresenting() {
     return new Promise((resolve, reject) => {
-      
-    // https://github.com/immersive-web/webxr/blob/master/explainer.md
+      // https://github.com/immersive-web/webxr/blob/master/explainer.md
 
-    const gl = this.__renderer.gl
+      const gl = this.__renderer.gl
 
-    const __startPresenting = () => {
-      navigator.xr
-        .requestSession('immersive-vr', {
-          requiredFeatures: ['local-floor'],
-          optionalFeatures: ['bounded-floor']
-        }).then(session => {
-          this.__renderer.__xrViewportPresenting = true
-
-          let mirrorCanvas;
-          if (!SystemDesc.isMobileDevice) {
-            // Add an output canvas that will allow XR to also send a view
-            // back the monitor.
-            mirrorCanvas = document.createElement('canvas')
-            mirrorCanvas.style.position = 'relative'
-            mirrorCanvas.style.left = '0px'
-            mirrorCanvas.style.top = '0px'
-            mirrorCanvas.style.width = '100%'
-            mirrorCanvas.style.height = '100%'
-
-            this.__renderer
-              .getDiv()
-              .replaceChild(mirrorCanvas, this.__renderer.getGLCanvas())
-
-            session.on('end', event => {
-                this.__renderer
-                  .getDiv()
-                  .replaceChild(this.__renderer.getGLCanvas(), mirrorCanvas)
-            })
-          }
-
-          session.on('end', event => {
-            this.__stageTreeItem.setVisible(false)
-            this.__session = null
-            this.emit('presentingChanged', { state: false })
+      const __startPresenting = () => {
+        navigator.xr
+          .requestSession('immersive-vr', {
+            requiredFeatures: ['local-floor'],
+            optionalFeatures: ['bounded-floor'],
           })
+          .then((session) => {
+            this.__renderer.__xrViewportPresenting = true
 
-          const onSelectStart = ev => {
-            const controller = this.__vrControllersMap[
-              ev.inputSource.handedness
-            ]
-            if (controller) {
-              const downTime = Date.now()
-              console.log(
-                'controller:',
-                ev.inputSource.handedness,
-                ' down',
-                downTime - controller.__prevDownTime
-              )
-              if (
-                downTime - controller.__prevDownTime <
-                this.__doubleClickTimeMSParam.getValue()
-              ) {
-                this.emit('controllerDoubleClicked', {
-                    button: 1,
-                    controller,
-                    vleStopPropagation: false,
-                    vrviewport: this,
-                  },
-                  this
-                )
-              } else {
-                controller.__prevDownTime = downTime
+            let mirrorCanvas
+            if (!SystemDesc.isMobileDevice) {
+              // Add an output canvas that will allow XR to also send a view
+              // back the monitor.
+              mirrorCanvas = document.createElement('canvas')
+              mirrorCanvas.style.position = 'relative'
+              mirrorCanvas.style.left = '0px'
+              mirrorCanvas.style.top = '0px'
+              mirrorCanvas.style.width = '100%'
+              mirrorCanvas.style.height = '100%'
 
-                this.emit('controllerButtonDown',
+              this.__renderer.getDiv().replaceChild(mirrorCanvas, this.__renderer.getGLCanvas())
+
+              session.on('end', (event) => {
+                this.__renderer.getDiv().replaceChild(this.__renderer.getGLCanvas(), mirrorCanvas)
+              })
+            }
+
+            session.on('end', (event) => {
+              this.__stageTreeItem.setVisible(false)
+              this.__session = null
+              this.emit('presentingChanged', { state: false })
+            })
+
+            const onSelectStart = (ev) => {
+              const controller = this.__vrControllersMap[ev.inputSource.handedness]
+              if (controller) {
+                const downTime = Date.now()
+                console.log('controller:', ev.inputSource.handedness, ' down', downTime - controller.__prevDownTime)
+                if (downTime - controller.__prevDownTime < this.__doubleClickTimeMSParam.getValue()) {
+                  this.emit(
+                    'controllerDoubleClicked',
+                    {
+                      button: 1,
+                      controller,
+                      vleStopPropagation: false,
+                      vrviewport: this,
+                    },
+                    this
+                  )
+                } else {
+                  controller.__prevDownTime = downTime
+
+                  this.emit(
+                    'controllerButtonDown',
+                    {
+                      button: 1,
+                      controller,
+                      vleStopPropagation: false,
+                      vrviewport: this,
+                    },
+                    this
+                  )
+                }
+              }
+            }
+            const onSelectEnd = (ev) => {
+              const controller = this.__vrControllersMap[ev.inputSource.handedness]
+              if (controller) {
+                console.log('controller:', ev.inputSource.handedness, ' up')
+                this.emit(
+                  'controllerButtonUp',
                   {
                     button: 1,
                     controller,
@@ -297,110 +300,88 @@ class VRViewport extends GLBaseViewport {
                 )
               }
             }
-          }
-          const onSelectEnd = ev => {
-            const controller = this.__vrControllersMap[
-              ev.inputSource.handedness
-            ]
-            if (controller) {
-              console.log('controller:', ev.inputSource.handedness, ' up')
-              this.emit('controllerButtonUp',
-                {
-                  button: 1,
-                  controller,
-                  vleStopPropagation: false,
-                  vrviewport: this,
-                },
-                this
-              )
-            }
-          }
-          session.on('selectstart', onSelectStart)
-          session.on('selectend', onSelectEnd)
+            session.on('selectstart', onSelectStart)
+            session.on('selectend', onSelectEnd)
 
-          this.__session = session
+            this.__session = session
 
-          // ////////////////////////////
-          // Old code
-          // this.__session.baseLayer = new XRWebGLLayer(session, gl);
+            // ////////////////////////////
+            // Old code
+            // this.__session.baseLayer = new XRWebGLLayer(session, gl);
 
-          // New code
-          session.updateRenderState({
-            baseLayer: new XRWebGLLayer(session, gl, {
-              compositionDisabled: session.mode == 'inline',
-            }),
-            outputContext: mirrorCanvas ? mirrorCanvas.getContext('xrpresent') : null,
-          })
-          // ////////////////////////////
+            // New code
+            session.updateRenderState({
+              baseLayer: new XRWebGLLayer(session, gl, {
+                compositionDisabled: session.mode == 'inline',
+              }),
+              outputContext: mirrorCanvas ? mirrorCanvas.getContext('xrpresent') : null,
+            })
+            // ////////////////////////////
 
-          // Get a stage frame of reference, which will align the user's physical
-          // floor with Y=0 and can provide boundaries that indicate where the
-          // user can safely walk. If the system can't natively provide stage
-          // coordinates (for example, with a 3DoF device) then it will return an
-          // emulated stage, where the view is translated up by a static height so
-          // that the scene still renders in approximately the right place.
+            // Get a stage frame of reference, which will align the user's physical
+            // floor with Y=0 and can provide boundaries that indicate where the
+            // user can safely walk. If the system can't natively provide stage
+            // coordinates (for example, with a 3DoF device) then it will return an
+            // emulated stage, where the view is translated up by a static height so
+            // that the scene still renders in approximately the right place.
 
-          // If a bounded reference space isn't supported, fall back to a
-          // stationary/floor-level reference space. This still provides a
-          // floor-relative space and will always be supported for
-          // immersive sessions. It will not, however, provide boundaries
-          // and generally expects the user to stand in one place.
-          // If the device doesn't have a way of determining the floor
-          // level (for example, with a 3DoF device) then it will return
-          // an emulated floor-level space, where the view is translated
-          // up by a static height so that the scene still renders in
-          // approximately the right place.
-          //   console.log('Falling back to floor-level reference space');
-          session
-            .requestReferenceSpace(SystemDesc.isMobileDevice ? 'local' : 'local-floor')
-            .catch(e => {
-              // if (!session.mode.startsWith('immersive')) {
+            // If a bounded reference space isn't supported, fall back to a
+            // stationary/floor-level reference space. This still provides a
+            // floor-relative space and will always be supported for
+            // immersive sessions. It will not, however, provide boundaries
+            // and generally expects the user to stand in one place.
+            // If the device doesn't have a way of determining the floor
+            // level (for example, with a 3DoF device) then it will return
+            // an emulated floor-level space, where the view is translated
+            // up by a static height so that the scene still renders in
+            // approximately the right place.
+            //   console.log('Falling back to floor-level reference space');
+            session
+              .requestReferenceSpace(SystemDesc.isMobileDevice ? 'local' : 'local-floor')
+              .catch((e) => {
+                // if (!session.mode.startsWith('immersive')) {
                 // If we're in inline mode, our underlying platform may not support
                 // the stationary reference space, but an identity space is guaranteed.
                 console.log('Falling back to identity reference space')
-                return session
-                  .requestReferenceSpace('viewer')
-                  .then(refSpace => {
-                    // If we use an identity reference space we need to scoot the
-                    // origin down a bit to put the camera at approximately the
-                    // right level. (Here we're moving it 1.6 meters, which should
-                    // *very* roughly align us with the eye height of an "average"
-                    // adult human.)
-                    return refSpace.getOffsetReferenceSpace(
-                      new XRRigidTransform({ y: -1.6 })
-                    )
-                  })
-              // } else {
-              //   throw e
-              // }
-            })
-            .then(refSpace => {
-              this.__refSpace = refSpace
-              this.__stageTreeItem.setVisible(true)
-              this.emit('presentingChanged', { state: true })
-              this.__startSession()
+                return session.requestReferenceSpace('viewer').then((refSpace) => {
+                  // If we use an identity reference space we need to scoot the
+                  // origin down a bit to put the camera at approximately the
+                  // right level. (Here we're moving it 1.6 meters, which should
+                  // *very* roughly align us with the eye height of an "average"
+                  // adult human.)
+                  return refSpace.getOffsetReferenceSpace(new XRRigidTransform({ y: -1.6 }))
+                })
+                // } else {
+                //   throw e
+                // }
+              })
+              .then((refSpace) => {
+                this.__refSpace = refSpace
+                this.__stageTreeItem.setVisible(true)
+                this.emit('presentingChanged', { state: true })
+                this.__startSession()
 
-              resolve()
-            })
-            .catch(e => {
-              console.warn(e.message)
-              reject("Unable to start XR Session:" + e.message)
-            })
-        })
-        .catch(e => {
-          console.warn(e.message)
-        })
-    }
+                resolve()
+              })
+              .catch((e) => {
+                console.warn(e.message)
+                reject('Unable to start XR Session:' + e.message)
+              })
+          })
+          .catch((e) => {
+            console.warn(e.message)
+          })
+      }
 
-    if (SystemDesc.isMobileDevice) {
-      __startPresenting()
-    } else {
-      // Note: we should not need to load the resources here
-      // They could be loaded only once the controllers are
-      // being created. However, I can't see the controllers if
-      // the loading is defered
-      this.loadHMDResources().then(__startPresenting)
-    }
+      if (SystemDesc.isMobileDevice) {
+        __startPresenting()
+      } else {
+        // Note: we should not need to load the resources here
+        // They could be loaded only once the controllers are
+        // being created. However, I can't see the controllers if
+        // the loading is defered
+        this.loadHMDResources().then(__startPresenting)
+      }
     })
   }
 
@@ -460,8 +441,7 @@ class VRViewport extends GLBaseViewport {
       // Note: This is to avoid a bug/feature in WebXR where initially the
       // controllers have no handedness specified, then suddenly
       // get handedness. We need the handedness before we can setup the controller.
-      if (inputSource.handedness == '' || inputSource.handedness == 'none')
-        return
+      if (inputSource.handedness == '' || inputSource.handedness == 'none') return
 
       if (!this.__vrControllers[i]) {
         this.__createController(i, inputSource)
@@ -511,8 +491,7 @@ class VRViewport extends GLBaseViewport {
     const gl = this.__renderer.gl
     gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer)
 
-    if (this.__backgroundColor)
-      gl.clearColor(...this.__backgroundColor.asArray())
+    if (this.__backgroundColor) gl.clearColor(...this.__backgroundColor.asArray())
     gl.colorMask(true, true, true, true)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -568,7 +547,6 @@ class VRViewport extends GLBaseViewport {
     this.emit('viewChanged', data)
   }
 
-
   /**
    * The setCapture method.
    * @param {any} target - The target value.
@@ -595,7 +573,6 @@ class VRViewport extends GLBaseViewport {
     // a frame is dranw.
     this.renderGeomDataFbo()
   }
-
 }
 
 export { VRViewport }

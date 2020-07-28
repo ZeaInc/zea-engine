@@ -7,7 +7,6 @@ const PassType = {
   OVERLAY: 1 << 2,
 }
 
-
 /** This class abstracts the rendering of a collection of geometries to screen.
  * @extends ParameterOwner
  */

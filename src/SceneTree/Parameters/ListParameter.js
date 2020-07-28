@@ -24,7 +24,7 @@ class ListParameter extends Parameter {
    * @param {string} name - The name of the list parameter.
    * @param {string|Parameter} dataType - The dataType value.
    */
-    constructor(name, dataType) {
+  constructor(name, dataType) {
     super(name, [])
     this.__dataType = dataType
   }

@@ -38,26 +38,20 @@ class GLBillboardsPass extends GLPass {
 
     this.__prevSortCameraPos = new Vec3()
 
-    this.__atlas = new GLImageAtlas(
-      this.__renderer.gl,
-      'Billboards',
-      'RGBA',
-      'UNSIGNED_BYTE',
-      [1, 1, 1, 0]
-    )
-    const emitUpdated = event => this.emit('updated', event)
+    this.__atlas = new GLImageAtlas(this.__renderer.gl, 'Billboards', 'RGBA', 'UNSIGNED_BYTE', [1, 1, 1, 0])
+    const emitUpdated = (event) => this.emit('updated', event)
     this.__atlas.on('loaded', emitUpdated)
     this.__atlas.on('updated', emitUpdated)
 
     this.__renderer.registerPass(
-      treeItem => {
+      (treeItem) => {
         if (treeItem instanceof BillboardItem) {
           this.addBillboard(treeItem)
           return true
         }
         return false
       },
-      treeItem => {
+      (treeItem) => {
         if (treeItem instanceof BillboardItem) {
           this.removeBillboard(treeItem)
           return true
@@ -74,7 +68,6 @@ class GLBillboardsPass extends GLPass {
    * The filterRenderTree method.
    */
   filterRenderTree() {}
-
 
   /**
    * The addBillboard method.
@@ -97,7 +90,7 @@ class GLBillboardsPass extends GLPass {
     const visibilityChanged = () => {
       if (billboard.getVisible()) {
         this.__drawCount++
-        // The billboard Xfo might have changed while it was 
+        // The billboard Xfo might have changed while it was
         // not visible. We need to update here.
         this.__dirtyBillboards.add(index)
       } else this.__drawCount--
@@ -121,8 +114,7 @@ class GLBillboardsPass extends GLPass {
     }
     billboard.getParameter('Alpha').on('valueChanged', alphaChanged)
 
-    if (billboard.getVisible())
-      this.__drawCount++
+    if (billboard.getVisible()) this.__drawCount++
 
     this.__billboards[index] = {
       billboard,
@@ -154,7 +146,7 @@ class GLBillboardsPass extends GLPass {
     // to the atlas. (for the Zahner demo)
     // Eventually we need to clean up the atlas, so debug this using the
     // survey-point-calibration 190528_Dummy_Srvy_Data.vlexe test
-    const image = billboardData.billboard.getParameter('Image').getValue();
+    const image = billboardData.billboard.getParameter('Image').getValue()
     this.__atlas.removeSubImage(image)
 
     billboard.off('visibilityChanged', billboardData.visibilityChanged)
@@ -163,7 +155,7 @@ class GLBillboardsPass extends GLPass {
 
     this.__billboards[index] = null
     this.__freeIndices.push(index)
-    
+
     if (billboard.getVisible()) this.__drawCount--
 
     this.indexArrayUpdateNeeded = true
@@ -259,11 +251,8 @@ class GLBillboardsPass extends GLPass {
    * @private
    */
   __updateBillboards() {
-
     const doIt = () => {
-
-      if (this.indexArrayUpdateNeeded)
-        this.__updateIndexArray()
+      if (this.indexArrayUpdateNeeded) this.__updateIndexArray()
 
       const gl = this.__gl
       if (!this.__glshader) {
@@ -271,10 +260,7 @@ class GLBillboardsPass extends GLPass {
           gl.setupInstancedQuad()
         }
         this.__glshader = new BillboardShader(gl)
-        const shaderComp = this.__glshader.compileForTarget(
-          'GLBillboardsPass',
-          this.__renderer.getShaderPreproc()
-        )
+        const shaderComp = this.__glshader.compileForTarget('GLBillboardsPass', this.__renderer.getShaderPreproc())
         this.__shaderBinding = generateShaderGeomBinding(
           gl,
           shaderComp.attrs,
@@ -304,21 +290,14 @@ class GLBillboardsPass extends GLPass {
           const color = billboard.getParameter('Color').getValue()
 
           this.__modelMatrixArray[index] = mat4.asArray()
-          this.__billboardDataArray[index] = [
-            scale,
-            flags,
-            billboardData.imageIndex,
-            alpha,
-          ]
+          this.__billboardDataArray[index] = [scale, flags, billboardData.imageIndex, alpha]
           this.__tintColorArray[index] = [color.r, color.g, color.b, color.a]
         })
         this.__updateRequested = false
         return
       }
 
-      let size = Math.round(
-        Math.sqrt((this.__billboards.length - this.__freeIndices.length) * pixelsPerItem) + 0.5
-      )
+      let size = Math.round(Math.sqrt((this.__billboards.length - this.__freeIndices.length) * pixelsPerItem) + 0.5)
       // Note: the following few lines need a cleanup.
       // We should be using power of 2 textures. The problem is that pot texture sizes don't
       // align with the 6 pixels per draw item. So we need to upload a slightly bigger teture
@@ -330,8 +309,7 @@ class GLBillboardsPass extends GLPass {
       // in memory. (makes updating a lot easier. See __updateItemInstanceData below)
       // size = Math.nextPow2(size);
 
-      if (size % pixelsPerItem != 0)
-        size += pixelsPerItem - (size % pixelsPerItem)
+      if (size % pixelsPerItem != 0) size += pixelsPerItem - (size % pixelsPerItem)
 
       this.__width = size
       // if((this.__width % pixelsPerItem) != 0)
@@ -352,7 +330,7 @@ class GLBillboardsPass extends GLPass {
         this.__drawItemsTexture.resize(size, size)
       }
 
-      this.__indexArray.forEach(index => {
+      this.__indexArray.forEach((index) => {
         if (index != -1) this.__updateBillboard(index)
       })
 
@@ -397,30 +375,10 @@ class GLBillboardsPass extends GLPass {
     const format = this.__drawItemsTexture.getFormat()
 
     if (type == 'FLOAT') {
-      gl.texSubImage2D(
-        gl.TEXTURE_2D,
-        0,
-        xoffset,
-        yoffset,
-        width,
-        height,
-        gl[format],
-        gl[type],
-        dataArray
-      )
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, gl[format], gl[type], dataArray)
     } else {
       const unit16s = Math.convertFloat32ArrayToUInt16Array(dataArray)
-      gl.texSubImage2D(
-        gl.TEXTURE_2D,
-        0,
-        xoffset,
-        yoffset,
-        width,
-        height,
-        gl[format],
-        gl[type],
-        unit16s
-      )
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, xoffset, yoffset, width, height, gl[format], gl[type], unit16s)
     }
   }
 
@@ -458,11 +416,7 @@ class GLBillboardsPass extends GLPass {
    * @param {any} renderstate - The renderstate value.
    */
   draw(renderstate) {
-    if (
-      this.__drawCount == 0 ||
-      !this.__atlas.isReady() ||
-      this.__updateRequested
-    ) {
+    if (this.__drawCount == 0 || !this.__atlas.isReady() || this.__updateRequested) {
       return
     }
 
@@ -489,12 +443,8 @@ class GLBillboardsPass extends GLPass {
       this.sort(cameraPos)
       this.__prevSortCameraPos = cameraPos.clone()
       if (this.__drawCount > 1) {
-        const v0 = this.__billboards[
-          this.__indexArray[0]
-        ].billboard.getGlobalXfo().tr
-        const v1 = this.__billboards[
-          this.__indexArray[1]
-        ].billboard.getGlobalXfo().tr
+        const v0 = this.__billboards[this.__indexArray[0]].billboard.getGlobalXfo().tr
+        const v1 = this.__billboards[this.__indexArray[1]].billboard.getGlobalXfo().tr
         this.__threshold = v0.distanceTo(v1)
       } else {
         this.__threshold = 9999
@@ -516,20 +466,10 @@ class GLBillboardsPass extends GLPass {
         // this.__drawItems[i].bind(renderstate);
         // this.__glgeom.draw();
 
-        gl.uniformMatrix4fv(
-          unifs.modelMatrix.location,
-          false,
-          this.__modelMatrixArray[i]
-        )
-        gl.uniform4fv(
-          unifs.billboardData.location,
-          this.__billboardDataArray[i]
-        )
+        gl.uniformMatrix4fv(unifs.modelMatrix.location, false, this.__modelMatrixArray[i])
+        gl.uniform4fv(unifs.billboardData.location, this.__billboardDataArray[i])
         gl.uniform4fv(unifs.tintColor.location, this.__tintColorArray[i])
-        gl.uniform4fv(
-          unifs.layoutData.location,
-          this.__atlas.getLayoutData(this.__billboards[i].imageIndex)
-        )
+        gl.uniform4fv(unifs.layoutData.location, this.__atlas.getLayoutData(this.__billboards[i].imageIndex))
 
         renderstate.bindViewports(unifs, () => {
           gl.drawQuad()
@@ -549,13 +489,7 @@ class GLBillboardsPass extends GLPass {
       }
 
       renderstate.bindViewports(unifs, () => {
-        gl.drawElementsInstanced(
-          gl.TRIANGLES,
-          6,
-          gl.UNSIGNED_SHORT,
-          0,
-          this.__drawCount
-        )
+        gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, this.__drawCount)
       })
     }
 

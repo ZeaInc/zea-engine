@@ -14,10 +14,7 @@ import { ItemFlags } from './BaseItem'
 import { TreeItem } from './TreeItem'
 import { BaseGeomItem } from './BaseGeomItem'
 import { sgFactory } from './SGFactory.js'
-import {
-  GroupTransformXfoOperator,
-  GroupMemberXfoOperator
-} from './Operators/GroupMemberXfoOperator.js'
+import { GroupTransformXfoOperator, GroupMemberXfoOperator } from './Operators/GroupMemberXfoOperator.js'
 
 const GROUP_XFO_MODES = {
   disabled: 0,
@@ -147,7 +144,7 @@ class Group extends TreeItem {
    * @private
    */
   __updateHighlight() {
-    // Make this function async so that we don't pull on the 
+    // Make this function async so that we don't pull on the
     // graph immediately when we receive a notification.
     // Note: propagating using an operator would be much better.
     new Promise((resolve) => {
@@ -192,9 +189,9 @@ class Group extends TreeItem {
     const items = Array.from(this.__itemsParam.getValue())
     if (items.length == 0) return new Xfo()
     this.calculatingGroupXfo = true
-    
+
     this.memberXfoOps.forEach((op) => op.disable())
-    
+
     // TODO: Disable the group operator?
     const initialXfoMode = this.__initialXfoModeParam.getValue()
     let xfo
@@ -260,7 +257,7 @@ class Group extends TreeItem {
    * @private
    */
   __updateMaterial() {
-    // Make this function async so that we don't pull on the 
+    // Make this function async so that we don't pull on the
     // graph immediately when we receive a notification.
     // Note: propagating using an operator would be much better.
     new Promise((resolve) => {
@@ -295,7 +292,7 @@ class Group extends TreeItem {
    * @private
    */
   __updateCutaway() {
-    // Make this function async so that we don't pull on the 
+    // Make this function async so that we don't pull on the
     // graph immediately when we receive a notification.
     // Note: propagating using an operator would be much better.
     new Promise((resolve) => {
@@ -329,8 +326,7 @@ class Group extends TreeItem {
   }
 
   setOwner(owner) {
-    if (!this.searchRoot || this.searchRoot == this.getOwner())
-      this.searchRoot = owner
+    if (!this.searchRoot || this.searchRoot == this.getOwner()) this.searchRoot = owner
     super.setOwner(owner)
   }
 

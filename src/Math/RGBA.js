@@ -328,8 +328,7 @@ class RGBA extends AttrValue {
         yellowgreen: '#9acd32',
       }
 
-      if (typeof colors[colour.toLowerCase()] != 'undefined')
-        return colors[colour.toLowerCase()]
+      if (typeof colors[colour.toLowerCase()] != 'undefined') return colors[colour.toLowerCase()]
 
       return false
     }
@@ -350,12 +349,7 @@ class RGBA extends AttrValue {
       const hex = int.toString(16)
       return hex.length == 1 ? '0' + hex : hex
     }
-    return (
-      '#' +
-      componentToHex(this.r) +
-      componentToHex(this.g) +
-      componentToHex(this.b)
-    )
+    return '#' + componentToHex(this.r) + componentToHex(this.g) + componentToHex(this.b)
   }
 
   /**
@@ -365,12 +359,7 @@ class RGBA extends AttrValue {
    * @return {boolean} - Returns true or false.
    */
   equal(other) {
-    return (
-      this.r == other.r &&
-      this.g == other.g &&
-      this.b == other.b &&
-      this.a == other.a
-    )
+    return this.r == other.r && this.g == other.g && this.b == other.b && this.a == other.a
   }
 
   /**
@@ -380,12 +369,7 @@ class RGBA extends AttrValue {
    * @return {boolean} - Returns true or false.
    */
   notEquals(other) {
-    return (
-      this.r != other.r &&
-      this.g != other.g &&
-      this.b != other.b &&
-      this.a != other.a
-    )
+    return this.r != other.r && this.g != other.g && this.b != other.b && this.a != other.a
   }
 
   /**
@@ -411,12 +395,7 @@ class RGBA extends AttrValue {
    * @return {RGBA} - Returns a new RGBA.
    */
   add(other) {
-    return new RGBA(
-      this.r + other.r,
-      this.g + other.g,
-      this.b + other.b,
-      this.a + other.a
-    )
+    return new RGBA(this.r + other.r, this.g + other.g, this.b + other.b, this.a + other.a)
   }
 
   /**
@@ -426,12 +405,7 @@ class RGBA extends AttrValue {
    * @return {RGBA} - Returns a new RGBA.
    */
   subtract(other) {
-    return new RGBA(
-      this.r - other.r,
-      this.g - other.g,
-      this.b - other.b,
-      this.a - other.a
-    )
+    return new RGBA(this.r - other.r, this.g - other.g, this.b - other.b, this.a - other.a)
   }
 
   /**
@@ -441,12 +415,7 @@ class RGBA extends AttrValue {
    * @return {RGBA} - Returns a new RGBA.
    */
   scale(scalar) {
-    return new RGBA(
-      this.r * scalar,
-      this.g * scalar,
-      this.b * scalar,
-      this.a * scalar
-    )
+    return new RGBA(this.r * scalar, this.g * scalar, this.b * scalar, this.a * scalar)
   }
 
   /**
@@ -467,12 +436,7 @@ class RGBA extends AttrValue {
    * @param {number} gamma - The gamma value.
    */
   applyGamma(gamma) {
-    this.set(
-      Math.pow(this.r, gamma),
-      Math.pow(this.g, gamma),
-      Math.pow(this.b, gamma),
-      this.a
-    )
+    this.set(Math.pow(this.r, gamma), Math.pow(this.g, gamma), Math.pow(this.b, gamma), this.a)
   }
 
   /**
@@ -481,12 +445,7 @@ class RGBA extends AttrValue {
    * @return {Color} - Returns a new RGBA.
    */
   toLinear(gamma = 2.2) {
-    return new RGBA(
-      Math.pow(this.r, gamma),
-      Math.pow(this.g, gamma),
-      Math.pow(this.b, gamma),
-      this.a
-    )
+    return new RGBA(Math.pow(this.r, gamma), Math.pow(this.g, gamma), Math.pow(this.b, gamma), this.a)
   }
 
   /**
@@ -496,12 +455,7 @@ class RGBA extends AttrValue {
    * @return {RGBA} - Returns a new RGBA.
    */
   toGamma(gamma = 2.2) {
-    return new RGBA(
-      Math.pow(this.r, 1.0 / gamma),
-      Math.pow(this.g, 1.0 / gamma),
-      Math.pow(this.b, 1.0 / gamma),
-      this.a
-    )
+    return new RGBA(Math.pow(this.r, 1.0 / gamma), Math.pow(this.g, 1.0 / gamma), Math.pow(this.b, 1.0 / gamma), this.a)
   }
 
   /**
@@ -525,12 +479,7 @@ class RGBA extends AttrValue {
     const ag = this.g
     const ab = this.b
     const aa = this.a
-    return new RGBA(
-      ar + t * (other.r - ar),
-      ag + t * (other.g - ag),
-      ab + t * (other.b - ab),
-      aa + t * (other.a - aa)
-    )
+    return new RGBA(ar + t * (other.r - ar), ag + t * (other.g - ag), ab + t * (other.b - ab), aa + t * (other.a - aa))
   }
 
   /**
@@ -556,12 +505,7 @@ class RGBA extends AttrValue {
         randomAlpha ? Math.random() * (1.0 + gammaOffset) : 1.0
       )
     } else {
-      return new RGBA(
-        Math.random(),
-        Math.random(),
-        Math.random(),
-        randomAlpha ? Math.random() : 1.0
-      )
+      return new RGBA(Math.random(), Math.random(), Math.random(), randomAlpha ? Math.random() : 1.0)
     }
   }
 
@@ -571,12 +515,7 @@ class RGBA extends AttrValue {
    * @return {RGBA} - Returns a new RGBA.
    */
   clone() {
-    return new RGBA(
-      this.__data[0],
-      this.__data[1],
-      this.__data[2],
-      this.__data[3]
-    )
+    return new RGBA(this.__data[0], this.__data[1], this.__data[2], this.__data[3])
   }
 
   /**

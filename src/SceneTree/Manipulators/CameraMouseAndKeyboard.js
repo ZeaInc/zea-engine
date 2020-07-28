@@ -370,7 +370,6 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {MouseEvent} event - The mouse event that occurs.
    */
   onMouseDown(event) {
-
     // this.initDrag(event)
     if (this.__dragging) {
       const camera = this.__mouseDownViewport.getCamera()

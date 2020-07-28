@@ -35,7 +35,6 @@ int getDrawItemId() {
 `
 )
 
-
 shaderLibrary.setShaderModule(
   'drawItemTexture.glsl',
   `

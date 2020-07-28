@@ -7,15 +7,15 @@
  * Example: Registering a listener for a custom event, and then emitting that event.
  * ```javascript
  *  const ee = new EventEmitter()
- * 
+ *
  *  ee.on('myEvent', (event) => {
  *    console.log('My Event was emitted:', event)
  *  })
- * 
+ *
  *  ee.emit('myEvent', { data: 42 })
  * ```
- * 
- * 
+ *
+ *
  */
 class EventEmitter {
   /**

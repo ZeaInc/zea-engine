@@ -4,10 +4,10 @@ import { GLRenderer } from '../GLRenderer.js'
 import { AudioItem, GeomItem } from '../../SceneTree/index'
 
 const AudioContext =
-  globalThis.navigator && (
-  window.AudioContext || // Default
+  globalThis.navigator &&
+  (window.AudioContext || // Default
   window.webkitAudioContext || // Safari and old versions of Chrome
-  false)
+    false)
 
 let audioCtx
 if (AudioContext) {
@@ -45,9 +45,9 @@ class GLAudioItemsPass extends GLPass {
     if (!audioCtx) return
 
     this.__renderer.registerPass(
-      treeItem => {
+      (treeItem) => {
         if (treeItem instanceof AudioItem) {
-          treeItem.on('audioSourceCreated', event => {
+          treeItem.on('audioSourceCreated', (event) => {
             const { audioSource } = event
             this.addAudioSource(treeItem, audioSource, treeItem)
           })
@@ -57,19 +57,12 @@ class GLAudioItemsPass extends GLPass {
           const material = treeItem.getMaterial()
           if (material) {
             const baseColorParam = material.getParameter('BaseColor')
-            if (
-              baseColorParam &&
-              baseColorParam.getImage &&
-              baseColorParam.getImage()
-            ) {
+            if (baseColorParam && baseColorParam.getImage && baseColorParam.getImage()) {
               const image = baseColorParam.getImage()
               image.on('loaded', () => {
                 if (image.getAudioSource) {
                   const audioSource = image.getAudioSource()
-                  if (
-                    audioSource instanceof HTMLMediaElement ||
-                    audioSource instanceof AudioBufferSourceNode
-                  )
+                  if (audioSource instanceof HTMLMediaElement || audioSource instanceof AudioBufferSourceNode)
                     this.addAudioSource(treeItem, audioSource, image)
                 }
               })
@@ -79,7 +72,7 @@ class GLAudioItemsPass extends GLPass {
           return false
         }
       },
-      treeItem => {}
+      (treeItem) => {}
     )
   }
 
@@ -93,8 +86,7 @@ class GLAudioItemsPass extends GLPass {
     if (audioSource.addedToCollector) return
 
     let source
-    if (audioSource instanceof HTMLMediaElement)
-      source = audioCtx.createMediaElementSource(audioSource)
+    if (audioSource instanceof HTMLMediaElement) source = audioCtx.createMediaElementSource(audioSource)
     else if (audioSource instanceof AudioBufferSourceNode) source = audioSource
     else source = audioCtx.createMediaStreamSource(audioSource)
 
@@ -116,19 +108,17 @@ class GLAudioItemsPass extends GLPass {
       connectVLParamToAudioNodeParam(gainParam, gainNode.gain)
     }
 
-  ('gasource', inNode)
+    'gasource', inNode
 
     const spatializeParam = parameterOwner.getParameter('SpatializeAudio')
     if (spatializeParam && spatializeParam.getValue() == false) {
-    ('ausource', dioCtx.destination)
+      'ausource', dioCtx.destination
     } else {
       const panner = audioCtx.createPanner()
       panner.panningModel = 'HRTF'
-      panner.distanceModel = 'inverse'
-    ('pasource', nner)
-    ('aupanner', dioCtx.destination)
+      panner.distanceModel = 'inverse'('pasource', nner)('aupanner', dioCtx.destination)
 
-      const connectVLParamToAudioNode = paramName => {
+      const connectVLParamToAudioNode = (paramName) => {
         const vlParam = parameterOwner.getParameter(paramName)
         if (!vlParam) return
         panner[paramName] = vlParam.getValue()
@@ -183,7 +173,7 @@ class GLAudioItemsPass extends GLPass {
         // setVelocity()
       }
       updatePannerNodePosition()
-      treeItem.on('globalXfoChanged', event => {
+      treeItem.on('globalXfoChanged', (event) => {
         updatePannerNodePosition()
       })
     }
@@ -259,7 +249,7 @@ GLRenderer.registerPass(GLAudioItemsPass, PassType.OVERLAY)
 
 // Hack so Audio Item can access the context.
 if (globalThis.navigator && window) {
-  window.ZeaAudioaudioCtx = audioCtx;
+  window.ZeaAudioaudioCtx = audioCtx
 }
 
 export { GLAudioItemsPass, audioCtx }

@@ -175,7 +175,7 @@ class BaseItem extends ParameterOwner {
     if (param) {
       return param
     }
-    throw new Error('Invalid path:' + path + '['+index+'] member not found')
+    throw new Error('Invalid path:' + path + '[' + index + '] member not found')
   }
 
   // ////////////////////////////////////////

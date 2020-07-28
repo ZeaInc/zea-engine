@@ -67,8 +67,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     // ////////////////////////////////////////////
     // WebXR
-    this.__supportXR =
-      options.supportXR !== undefined ? options.supportXR : true
+    this.__supportXR = options.supportXR !== undefined ? options.supportXR : true
     this.__xrViewport = undefined
     this.__xrViewportPromise = new Promise((resolve, reject) => {
       if (this.__supportXR) {
@@ -96,19 +95,19 @@ class GLBaseRenderer extends ParameterOwner {
             navigator.xr
               .supportsSessionMode('immersive-vr')
               .then(setupXRViewport)
-              .catch(reason => {
+              .catch((reason) => {
                 console.warn('Unable to setup XR:' + reason)
               })
           } else {
             // New
             navigator.xr
               .isSessionSupported('immersive-vr')
-              .then(isSupported => {
+              .then((isSupported) => {
                 if (isSupported) {
                   setupXRViewport()
                 }
               })
-              .catch(reason => {
+              .catch((reason) => {
                 console.warn('Unable to setup XR:' + reason)
               })
           }
@@ -170,13 +169,13 @@ class GLBaseRenderer extends ParameterOwner {
    */
   addViewport(name) {
     const vp = new GLViewport(this, name, this.getWidth(), this.getHeight())
-    
+
     vp.createGeomDataFbo(this.__floatGeomBuffer)
 
     const updated = () => {
       this.requestRedraw()
     }
-    const viewChanged = data => {
+    const viewChanged = (data) => {
       if (!this.__xrViewportPresenting) {
         this.emit('viewChanged', data)
       }
@@ -209,13 +208,7 @@ class GLBaseRenderer extends ParameterOwner {
       const y = vp.getPosY()
       const width = vp.getWidth()
       const height = vp.getHeight()
-      if (
-        offsetX >= x &&
-        offsetY >= y &&
-        offsetX <= width + x &&
-        offsetY <= height + y
-      )
-        return vp
+      if (offsetX >= x && offsetY >= y && offsetX <= width + x && offsetY <= height + y) return vp
     }
     return undefined
   }
@@ -316,8 +309,7 @@ class GLBaseRenderer extends ParameterOwner {
     this.__scene = scene
     this.addTreeItem(this.__scene.getRoot())
 
-    if (this.__gizmoContext)
-      this.__gizmoContext.setSelectionManager(scene.getSelectionManager())
+    if (this.__gizmoContext) this.__gizmoContext.setSelectionManager(scene.getSelectionManager())
 
     this.emit('sceneSet', { scene: this.__scene })
   }
@@ -431,18 +423,17 @@ class GLBaseRenderer extends ParameterOwner {
       // effect the clientWidth/clientHeight which causes blurry rendering(when zoomed).
       // This is a minor issue IMO, and so am disabling devicePixelRatio until its value is clear.
       // _Remove the meta name="viewport" from the HTML_
-      const dpr = 1.0;//window.devicePixelRatio
+      const dpr = 1.0 //window.devicePixelRatio
       this.__glcanvas.width = this.__glcanvas.clientWidth * dpr
       this.__glcanvas.height = this.__glcanvas.clientHeight * dpr
 
-      for (const vp of this.__viewports)
-        vp.resize(this.__glcanvas.width, this.__glcanvas.height)
+      for (const vp of this.__viewports) vp.resize(this.__glcanvas.width, this.__glcanvas.height)
 
       this.resizeFbos(this.__glcanvas.width, this.__glcanvas.height)
 
       this.emit('resized', {
         width: this.__glcanvas.width,
-        height: this.__glcanvas.height
+        height: this.__glcanvas.height,
       })
       this.requestRedraw()
     }
@@ -463,9 +454,7 @@ class GLBaseRenderer extends ParameterOwner {
    */
   setupWebGL(canvasDiv, webglOptions) {
     this.__glcanvas = document.createElement('canvas')
-    this.__glcanvas.style.position = webglOptions.canvasPosition
-      ? webglOptions.canvasPosition
-      : 'absolute'
+    this.__glcanvas.style.position = webglOptions.canvasPosition ? webglOptions.canvasPosition : 'absolute'
     this.__glcanvas.style.left = '0px'
     this.__glcanvas.style.top = '0px'
     this.__glcanvas.style.width = '100%'
@@ -484,8 +473,7 @@ class GLBaseRenderer extends ParameterOwner {
     webglOptions.alpha = webglOptions.alpha ? webglOptions.alpha : false
     webglOptions.xrCompatible = true
     this.__gl = create3DContext(this.__glcanvas, webglOptions)
-    if (!this.__gl)
-      alert('Unable to create WebGL context. WebGL not supported.')
+    if (!this.__gl) alert('Unable to create WebGL context. WebGL not supported.')
     this.__gl.renderer = this
 
     if (this.__gl.name == 'webgl2') {
@@ -503,8 +491,7 @@ class GLBaseRenderer extends ParameterOwner {
     // Note: We are now pushing on high-end mobile devices.
     // Galaxy and above. We need this. We need to accurately determine
     // if the float buffer is not supported.
-    this.__floatGeomBuffer =
-      this.__gl.floatTexturesSupported && SystemDesc.browserName != 'Safari'
+    this.__floatGeomBuffer = this.__gl.floatTexturesSupported && SystemDesc.browserName != 'Safari'
     this.__gl.floatGeomBuffer = this.__floatGeomBuffer
     // Note: the following returns UNSIGNED_BYTE even if the browser supports float.
     // const implType = this.__gl.getParameter(this.__gl.IMPLEMENTATION_COLOR_READ_TYPE);
@@ -545,7 +532,7 @@ class GLBaseRenderer extends ParameterOwner {
     const calcRendererCoords = (event) => {
       const rect = this.__glcanvas.getBoundingClientRect()
       // Disabling devicePixelRatio for now. See: __onResize
-      const dpr = 1.0;//window.devicePixelRatio
+      const dpr = 1.0 //window.devicePixelRatio
       // Note: the rendererX/Y values are relative to the viewport,
       // but are available outside the viewport. So when a mouse
       // drag occurs, and drags outside the viewport, these values
@@ -626,8 +613,7 @@ class GLBaseRenderer extends ParameterOwner {
       if (activeGLRenderer != this || !isValidCanvas()) return
       event.undoRedoManager = this.undoRedoManager
       calcRendererCoords(event)
-      if (!mouseIsDown)
-        activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
+      if (!mouseIsDown) activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
 
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
@@ -652,7 +638,7 @@ class GLBaseRenderer extends ParameterOwner {
       window.onmousewheel = document.onmousewheel = onWheel
     }
 
-    window.oncontextmenu = function() {
+    window.oncontextmenu = function () {
       return false
     }
 
@@ -785,8 +771,7 @@ class GLBaseRenderer extends ParameterOwner {
     let glshader = this.__shaders[shaderName]
     if (!glshader) {
       glshader = sgFactory.constructClass(shaderName, this.__gl)
-      if (!glshader)
-        console.error('Shader not registered with the SGFactory:', shaderName)
+      if (!glshader) console.error('Shader not registered with the SGFactory:', shaderName)
       this.__shaders[shaderName] = glshader
     }
     return glshader
@@ -887,9 +872,7 @@ class GLBaseRenderer extends ParameterOwner {
    * @return {any} - The return value.
    */
   supportsVR() {
-    console.warn(
-      'Deprecated Method. Please instead connect to the vrViewportSetup signal.'
-    )
+    console.warn('Deprecated Method. Please instead connect to the vrViewportSetup signal.')
     return this.__supportXR && navigator.xr != null
   }
 
@@ -901,7 +884,7 @@ class GLBaseRenderer extends ParameterOwner {
   __setupXRViewport() {
     // Always get the last display. Additional displays are added at the end.(e.g. [Polyfill, HMD])
     const xrvp = new VRViewport(this)
-    
+
     const emitViewChanged = (event) => {
       this.emit('viewChanged', event)
     }
@@ -932,9 +915,7 @@ class GLBaseRenderer extends ParameterOwner {
         }
         const event = {
           interfaceType: 'CameraAndPointer',
-          viewXfo: this.getViewport()
-            .getCamera()
-            .getGlobalXfo(),
+          viewXfo: this.getViewport().getCamera().getGlobalXfo(),
         }
         this.emit('viewChanged', event)
 
@@ -987,8 +968,7 @@ class GLBaseRenderer extends ParameterOwner {
     if (this.isContinuouslyDrawing() || this.__xrViewportPresenting) return
 
     const onAnimationFrame = () => {
-      if (this.__continuousDrawing && !this.__xrViewportPresenting)
-        window.requestAnimationFrame(onAnimationFrame)
+      if (this.__continuousDrawing && !this.__xrViewportPresenting) window.requestAnimationFrame(onAnimationFrame)
       for (const vp of this.__viewports) vp.draw()
     }
 
@@ -1028,12 +1008,7 @@ class GLBaseRenderer extends ParameterOwner {
    */
   requestRedraw() {
     // If a redraw has already been requested, then simply return and wait.
-    if (
-      this.__redrawRequested ||
-      this.__continuousDrawing ||
-      this.__xrViewportPresenting
-    )
-      return false
+    if (this.__redrawRequested || this.__continuousDrawing || this.__xrViewportPresenting) return false
 
     const onAnimationFrame = () => {
       this.__redrawRequested = false
@@ -1055,14 +1030,10 @@ class GLBaseRenderer extends ParameterOwner {
 
     const gl = this.__gl
     if (!renderstate.viewports || renderstate.viewports.length == 1) {
-      renderstate.bindRendererUnifs = unifs => {
+      renderstate.bindRendererUnifs = (unifs) => {
         const { cameraMatrix, viewMatrix, projectionMatrix, eye } = unifs
         if (cameraMatrix) {
-          gl.uniformMatrix4fv(
-            cameraMatrix.location,
-            false,
-            renderstate.cameraMatrix.asArray()
-          )
+          gl.uniformMatrix4fv(cameraMatrix.location, false, renderstate.cameraMatrix.asArray())
         }
 
         const vp = renderstate.viewports[0]
@@ -1071,11 +1042,7 @@ class GLBaseRenderer extends ParameterOwner {
         }
 
         if (projectionMatrix) {
-          gl.uniformMatrix4fv(
-            projectionMatrix.location,
-            false,
-            vp.projectionMatrix.asArray()
-          )
+          gl.uniformMatrix4fv(projectionMatrix.location, false, vp.projectionMatrix.asArray())
         }
 
         if (eye) {
@@ -1085,17 +1052,13 @@ class GLBaseRenderer extends ParameterOwner {
       }
       renderstate.bindViewports = (unifs, cb) => cb()
     } else {
-      renderstate.bindRendererUnifs = unifs => {
+      renderstate.bindRendererUnifs = (unifs) => {
         // Note: the camera matrix should be the head position instead
         // of the eye position. The inverse(viewMatrix) can be used
         // when we want the eye pos.
         const { cameraMatrix } = unifs
         if (cameraMatrix) {
-          gl.uniformMatrix4fv(
-            cameraMatrix.location,
-            false,
-            renderstate.cameraMatrix.asArray()
-          )
+          gl.uniformMatrix4fv(cameraMatrix.location, false, renderstate.cameraMatrix.asArray())
         }
       }
 
@@ -1109,11 +1072,7 @@ class GLBaseRenderer extends ParameterOwner {
           }
 
           if (projectionMatrix) {
-            gl.uniformMatrix4fv(
-              projectionMatrix.location,
-              false,
-              vp.projectionMatrix.asArray()
-            )
+            gl.uniformMatrix4fv(projectionMatrix.location, false, vp.projectionMatrix.asArray())
           }
 
           if (eye) {
@@ -1158,7 +1117,7 @@ class GLBaseRenderer extends ParameterOwner {
    * The drawSceneGeomData method.
    * @param {any} renderstate - The renderstate value.
    */
-  drawSceneGeomData(renderstate, mask=255) {
+  drawSceneGeomData(renderstate, mask = 255) {
     this.bindGLBaseRenderer(renderstate)
     for (const key in this.__passes) {
       // Skip pass categories that do not match

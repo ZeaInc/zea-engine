@@ -99,14 +99,8 @@ class ResourceLoader extends EventEmitter {
         baseUrl = 'https://unpkg.com/@zeainc/zea-engine@0.1.3'
       }
       this.wasmUrl = baseUrl + '/public-resources/unpack.wasm'
-      this.addResourceURL(
-        'ZeaEngine/Vive.vla',
-        baseUrl + '/public-resources/Vive.vla'
-      )
-      this.addResourceURL(
-        'ZeaEngine/Oculus.vla',
-        baseUrl + '/public-resources/Oculus.vla'
-      )
+      this.addResourceURL('ZeaEngine/Vive.vla', baseUrl + '/public-resources/Vive.vla')
+      this.addResourceURL('ZeaEngine/Oculus.vla', baseUrl + '/public-resources/Oculus.vla')
     }
 
     if (!baseUrl) {

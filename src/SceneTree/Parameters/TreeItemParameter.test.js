@@ -2,7 +2,7 @@ import { TreeItem } from '../TreeItem'
 import { TreeItemParameter } from './TreeItemParameter'
 
 describe('TreeItemParameter', () => {
-  it  ('has an initial value.', () => {
+  it('has an initial value.', () => {
     const treeItemParameter = new TreeItemParameter()
 
     expect(treeItemParameter.getValue()).toBeUndefined()

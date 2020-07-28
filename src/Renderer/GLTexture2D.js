@@ -150,12 +150,7 @@ class GLTexture2D extends RefCounted {
    * @param {boolean} emit - The emit value.
    */
   configure(params, emit = true) {
-    if (
-      !('type' in params) ||
-      !('format' in params) ||
-      !('width' in params) ||
-      !('height' in params)
-    )
+    if (!('type' in params) || !('format' in params) || !('width' in params) || !('height' in params))
       throw new Error('Invalid texture params')
 
     const gl = this.__gl
@@ -166,29 +161,14 @@ class GLTexture2D extends RefCounted {
     const maxSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
     if (width <= 0 || width > maxSize || height <= 0 || height > maxSize) {
       throw new Error(
-        'gl-texture2d: Invalid texture size. width:' +
-          width +
-          ' height:' +
-          height +
-          ' maxSize:' +
-          maxSize
+        'gl-texture2d: Invalid texture size. width:' + width + ' height:' + height + ' maxSize:' + maxSize
       )
     }
 
     const format = params.format
     const type = params.type
-    let minFilter =
-      'minFilter' in params
-        ? params.minFilter
-        : 'filter' in params
-        ? params.filter
-        : 'LINEAR'
-    let magFilter =
-      'magFilter' in params
-        ? params.magFilter
-        : 'filter' in params
-        ? params.filter
-        : 'LINEAR'
+    let minFilter = 'minFilter' in params ? params.minFilter : 'filter' in params ? params.filter : 'LINEAR'
+    let magFilter = 'magFilter' in params ? params.magFilter : 'filter' in params ? params.filter : 'LINEAR'
     const wrap = 'wrap' in params ? params.wrap : 'CLAMP_TO_EDGE'
 
     // if(format == 'ALPHA')
@@ -200,44 +180,32 @@ class GLTexture2D extends RefCounted {
 
       if (gl.name == 'webgl2') {
         if (minFilter == 'LINEAR' && !gl.__ext_float_linear) {
-          console.warn(
-            'Floating point texture filtering not supported on this device'
-          )
+          console.warn('Floating point texture filtering not supported on this device')
           minFilter = 'NEAREST'
         }
         if (magFilter == 'LINEAR' && !gl.__ext_float_linear) {
-          console.warn(
-            'Floating point texture filtering not supported on this device'
-          )
+          console.warn('Floating point texture filtering not supported on this device')
           magFilter = 'NEAREST'
         }
       } else {
         if (gl.__ext_float) {
           if (minFilter == 'LINEAR' && !gl.__ext_float_linear) {
-            console.warn(
-              'Floating point texture filtering not supported on this device'
-            )
+            console.warn('Floating point texture filtering not supported on this device')
             minFilter = 'NEAREST'
           }
           if (magFilter == 'LINEAR' && !gl.__ext_float_linear) {
-            console.warn(
-              'Floating point texture filtering not supported on this device'
-            )
+            console.warn('Floating point texture filtering not supported on this device')
             magFilter = 'NEAREST'
           }
         } else {
           if (gl.__ext_half_float) {
             type = 'HALF_FLOAT'
             if (minFilter == 'LINEAR' && !gl.__ext_texture_half_float_linear) {
-              console.warn(
-                'Half Float texture filtering not supported on this device'
-              )
+              console.warn('Half Float texture filtering not supported on this device')
               minFilter = 'NEAREST'
             }
             if (magFilter == 'LINEAR' && !gl.__ext_texture_half_float_linear) {
-              console.warn(
-                'Half Float texture filtering not supported on this device'
-              )
+              console.warn('Half Float texture filtering not supported on this device')
               magFilter = 'NEAREST'
             }
           } else {
@@ -254,21 +222,15 @@ class GLTexture2D extends RefCounted {
         // }
       } else {
         if (!gl.supportUploadingHalfFloat && data != undefined) {
-          throw new Error(
-            'Safari does not support uploading HALF_FLOAT texture data.'
-          )
+          throw new Error('Safari does not support uploading HALF_FLOAT texture data.')
         }
         if (gl.__ext_half_float) {
           if (minFilter == 'LINEAR' && !gl.__ext_texture_half_float_linear) {
-            console.warn(
-              'Half Float texture filtering not supported on this device'
-            )
+            console.warn('Half Float texture filtering not supported on this device')
             minFilter = 'NEAREST'
           }
           if (magFilter == 'LINEAR' && !gl.__ext_texture_half_float_linear) {
-            console.warn(
-              'Half Float texture filtering not supported on this device'
-            )
+            console.warn('Half Float texture filtering not supported on this device')
             magFilter = 'NEAREST'
           }
         } else {
@@ -289,8 +251,7 @@ class GLTexture2D extends RefCounted {
     this.__wrapParam = wrap
 
     this.__format = gl[format]
-    this.__internalFormat =
-      'internalFormat' in params ? gl[params.internalFormat] : this.__format
+    this.__internalFormat = 'internalFormat' in params ? gl[params.internalFormat] : this.__format
     this.__type = gl[type]
 
     if (gl.name == 'webgl2') {
@@ -336,8 +297,7 @@ class GLTexture2D extends RefCounted {
     this.__flipY = 'flipY' in params ? params.flipY : false
     this.__mipMapped = 'mipMapped' in params ? params.mipMapped : false
     this.invert = 'invert' in params ? params.invert : false
-    this.alphaFromLuminance =
-      'alphaFromLuminance' in params ? params.alphaFromLuminance : false
+    this.alphaFromLuminance = 'alphaFromLuminance' in params ? params.alphaFromLuminance : false
     this.textureDesc = [width, height, 0, 0]
 
     if (this.__gltex) {
@@ -398,14 +358,7 @@ class GLTexture2D extends RefCounted {
         data instanceof HTMLImageElement ||
         data instanceof HTMLVideoElement
       ) {
-        gl.texImage2D(
-          gl.TEXTURE_2D,
-          0,
-          this.__internalFormat,
-          this.__format,
-          this.__type,
-          data
-        )
+        gl.texImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, this.__format, this.__type, data)
         this.width = data.width
         this.height = data.height
       } else {
@@ -458,30 +411,9 @@ class GLTexture2D extends RefCounted {
           data = Math.convertFloat32ArrayToUInt16Array(data)
         }
         if (gl.name == 'webgl2') {
-          gl.texImage2D(
-            gl.TEXTURE_2D,
-            0,
-            this.__internalFormat,
-            width,
-            height,
-            0,
-            this.__format,
-            this.__type,
-            data,
-            0
-          )
+          gl.texImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, width, height, 0, this.__format, this.__type, data, 0)
         } else {
-          gl.texImage2D(
-            gl.TEXTURE_2D,
-            0,
-            this.__internalFormat,
-            width,
-            height,
-            0,
-            this.__format,
-            this.__type,
-            data
-          )
+          gl.texImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, width, height, 0, this.__format, this.__type, data)
         }
         // These values may not have changed....
         this.width = width
@@ -598,50 +530,20 @@ class GLTexture2D extends RefCounted {
       const maxSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
       if (width < 0 || width > maxSize || height < 0 || height > maxSize) {
         throw new Error(
-          'gl-texture2d: Invalid texture size. width:' +
-            width +
-            ' height:' +
-            height +
-            ' maxSize:' +
-            maxSize
+          'gl-texture2d: Invalid texture size. width:' + width + ' height:' + height + ' maxSize:' + maxSize
         )
       }
 
       if (preserveData) {
         const gltex = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, gltex)
-        gl.texImage2D(
-          gl.TEXTURE_2D,
-          0,
-          this.__internalFormat,
-          width,
-          height,
-          0,
-          this.__format,
-          this.__type,
-          null
-        )
+        gl.texImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, width, height, 0, this.__format, this.__type, null)
         const fbo = gl.createFramebuffer()
         gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-        gl.framebufferTexture2D(
-          gl.FRAMEBUFFER,
-          gl.COLOR_ATTACHMENT0,
-          gl.TEXTURE_2D,
-          this.__gltex,
-          0
-        )
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.__gltex, 0)
 
         gl.bindTexture(gl.TEXTURE_2D, gltex) // Do we need this line?
-        gl.copyTexImage2D(
-          gl.TEXTURE_2D,
-          0,
-          this.__internalFormat,
-          0,
-          0,
-          this.width,
-          this.height,
-          0
-        )
+        gl.copyTexImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, 0, 0, this.width, this.height, 0)
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
@@ -652,17 +554,7 @@ class GLTexture2D extends RefCounted {
         this.__updateGLTexParams()
       } else {
         gl.bindTexture(gl.TEXTURE_2D, this.__gltex)
-        gl.texImage2D(
-          gl.TEXTURE_2D,
-          0,
-          this.__internalFormat,
-          width,
-          height,
-          0,
-          this.__format,
-          this.__type,
-          null
-        )
+        gl.texImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, width, height, 0, this.__format, this.__type, null)
       }
 
       this.width = width
@@ -687,17 +579,7 @@ class GLTexture2D extends RefCounted {
   populate(dataArray, width, height, offsetX = 0, offsetY = 0, bind = true) {
     const gl = this.__gl
     if (bind) gl.bindTexture(gl.TEXTURE_2D, this.__gltex)
-    gl.texSubImage2D(
-      gl.TEXTURE_2D,
-      0,
-      offsetX,
-      offsetY,
-      width,
-      height,
-      this.__format,
-      this.__type,
-      dataArray
-    )
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, offsetX, offsetY, width, height, this.__format, this.__type, dataArray)
   }
 
   /**
@@ -781,10 +663,7 @@ class GLTexture2D extends RefCounted {
       }
 
       if (bindings.textureDescUnif) {
-        this.__gl.uniform4fv(
-          bindings.textureDescUnif.location,
-          this.textureDesc
-        )
+        this.__gl.uniform4fv(bindings.textureDescUnif.location, this.textureDesc)
       }
     }
 

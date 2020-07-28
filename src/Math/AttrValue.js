@@ -31,9 +31,7 @@ class AttrValue {
    * @return {AttrValue} - Returns the constructed value.
    */
   static createFromFloat32Buffer(buffer, offset) {
-    throw new Error(
-      'Not yet implemented for this type:' + this.constructor.name
-    )
+    throw new Error('Not yet implemented for this type:' + this.constructor.name)
   }
 
   /**
@@ -41,9 +39,7 @@ class AttrValue {
    * @return {number} - Returns the number of float values stored in this math type.
    */
   static numElements() {
-    throw new Error(
-      'Not yet implemented for this type:' + this.constructor.name
-    )
+    throw new Error('Not yet implemented for this type:' + this.constructor.name)
   }
 
   /**
@@ -70,9 +66,7 @@ class AttrValue {
    * @return {object} - The json object.
    */
   toJSON() {
-    throw new Error(
-      'Not yet implemented for this type:' + this.constructor.name
-    )
+    throw new Error('Not yet implemented for this type:' + this.constructor.name)
   }
 }
 

@@ -175,10 +175,7 @@ class GLGeomItemSet extends EventEmitter {
       this.drawIdsBufferDirty = false
       return
     }
-    if (
-      this.drawIdsBuffer &&
-      this.glgeomItems.length != this.drawIdsArray.length
-    ) {
+    if (this.drawIdsBuffer && this.glgeomItems.length != this.drawIdsArray.length) {
       this.gl.deleteBuffer(this.drawIdsBuffer)
       this.drawIdsBuffer = null
     }
@@ -212,10 +209,7 @@ class GLGeomItemSet extends EventEmitter {
       this.highlightedIdsBufferDirty = false
       return
     }
-    if (
-      this.highlightedIdsBuffer &&
-      this.glgeomItems.length != this.highlightedIdsArray.length
-    ) {
+    if (this.highlightedIdsBuffer && this.glgeomItems.length != this.highlightedIdsArray.length) {
       this.gl.deleteBuffer(this.highlightedIdsBuffer)
       this.highlightedIdsBuffer = null
     }
@@ -223,10 +217,7 @@ class GLGeomItemSet extends EventEmitter {
     // Collect all visible geom ids into the instanceIds array.
     // Note: the draw count can be less than the number of instances
     // we re-use the same buffer and simply invoke fewer draw calls.
-    if (
-      !this.highlightedIdsArray ||
-      this.highlightedItems.length > this.highlightedIdsArray.length
-    ) {
+    if (!this.highlightedIdsArray || this.highlightedItems.length > this.highlightedIdsArray.length) {
       this.highlightedIdsArray = new Float32Array(this.highlightedItems.length)
       if (this.highlightedIdsBuffer) {
         gl.deleteBuffer(this.highlightedIdsBuffer)
@@ -270,10 +261,7 @@ class GLGeomItemSet extends EventEmitter {
         const gllightmap = renderstate.lightmaps[this.lightmapName]
         if (gllightmap && gllightmap.glimage.isLoaded()) {
           gllightmap.glimage.bindToUniform(renderstate, unifs.lightmap)
-          gl.uniform2fv(
-            unifs.lightmapSize.location,
-            gllightmap.atlasSize.asArray()
-          )
+          gl.uniform2fv(unifs.lightmapSize.location, gllightmap.atlasSize.asArray())
           if (unifs.lightmapConnected) {
             gl.uniform1i(unifs.lightmapConnected.location, true)
           }
@@ -302,11 +290,7 @@ class GLGeomItemSet extends EventEmitter {
       this.updateHighlightedIDsBuffer()
     }
 
-    this.__bindAndRender(
-      renderstate,
-      this.highlightedItems,
-      this.highlightedIdsBuffer
-    )
+    this.__bindAndRender(renderstate, this.highlightedItems, this.highlightedIdsBuffer)
   }
 
   /**
@@ -328,15 +312,11 @@ class GLGeomItemSet extends EventEmitter {
       renderstate.glgeom = this.glgeom
     }
 
-    if (
-      !gl.floatTexturesSupported ||
-      !gl.drawElementsInstanced ||
-      !renderstate.supportsInstancing
-    ) {
+    if (!gl.floatTexturesSupported || !gl.drawElementsInstanced || !renderstate.supportsInstancing) {
       if (renderstate.unifs.instancedDraw) {
         gl.uniform1i(renderstate.unifs.instancedDraw.location, 0)
       }
-      itemIndices.forEach(index => {
+      itemIndices.forEach((index) => {
         this.glgeomItems[index].bind(renderstate)
         renderstate.bindViewports(unifs, () => {
           this.glgeom.draw(renderstate)

@@ -140,12 +140,9 @@ class Xfo {
       // and with non-uniform scale. Then parent them together. If they
       // remain stationary, after parenting, then this math is correct.
       result.sc = result.ori.rotateVec3(this.sc)
-      if (Math.sign(result.sc.x) != Math.sign(this.sc.x))
-        result.sc.x = -result.sc.x
-      if (Math.sign(result.sc.y) != Math.sign(this.sc.y))
-        result.sc.y = -result.sc.y
-      if (Math.sign(result.sc.z) != Math.sign(this.sc.z))
-        result.sc.z = -result.sc.z
+      if (Math.sign(result.sc.x) != Math.sign(this.sc.x)) result.sc.x = -result.sc.x
+      if (Math.sign(result.sc.y) != Math.sign(this.sc.y)) result.sc.y = -result.sc.y
+      if (Math.sign(result.sc.z) != Math.sign(this.sc.z)) result.sc.z = -result.sc.z
     } else {
       result.sc = this.sc.inverse()
     }
@@ -169,24 +166,7 @@ class Xfo {
    * @return {Mat4} - Returns a new Mat4.
    */
   toMat4() {
-    const scl = new Mat4(
-      this.sc.x,
-      0,
-      0,
-      0,
-      0,
-      this.sc.y,
-      0,
-      0,
-      0,
-      0,
-      this.sc.z,
-      0,
-      0,
-      0,
-      0,
-      1.0
-    )
+    const scl = new Mat4(this.sc.x, 0, 0, 0, 0, this.sc.y, 0, 0, 0, 0, this.sc.z, 0, 0, 0, 0, 1.0)
 
     const rot = this.ori.toMat4()
 

@@ -1,13 +1,8 @@
-const processTextureParams = function(gl, params) {
+const processTextureParams = function (gl, params) {
   if (!params.width || !params.height) throw new Error('Invalid texture params')
 
   const maxSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
-  if (
-    params.width <= 0 ||
-    params.width > maxSize ||
-    params.height <= 0 ||
-    params.height > maxSize
-  ) {
+  if (params.width <= 0 || params.width > maxSize || params.height <= 0 || params.height > maxSize) {
     throw new Error(
       'GLTextureParams: Invalid texture size. width:' +
         params.width +
@@ -23,8 +18,7 @@ const processTextureParams = function(gl, params) {
     height: params.height,
   }
   const processParam = (name, defaultValue) => {
-    if (name in params)
-      result[name] = isNaN(params[name]) ? gl[params[name]] : params[name]
+    if (name in params) result[name] = isNaN(params[name]) ? gl[params[name]] : params[name]
     else if (defaultValue) result[name] = defaultValue
   }
   processParam('format')
@@ -44,29 +38,20 @@ const processTextureParams = function(gl, params) {
   if (result.format == gl.FLOAT) {
     if (gl.name == 'webgl2') {
       if (result.filter == gl.LINEAR && !gl.__ext_float_linear) {
-        console.warn(
-          'Floating point texture filtering not supported on result device'
-        )
+        console.warn('Floating point texture filtering not supported on result device')
         result.filter = gl.NEAREST
       }
     } else {
       if (gl.__ext_float) {
         if (result.filter == gl.LINEAR && !gl.__ext_float_linear) {
-          console.warn(
-            'Floating point texture filtering not supported on result device'
-          )
+          console.warn('Floating point texture filtering not supported on result device')
           result.filter = gl.NEAREST
         }
       } else {
         if (gl.__ext_half_float) {
           result.format = gl.HALF_FLOAT
-          if (
-            result.filter == gl.LINEAR &&
-            !gl.__ext_texture_half_float_linear
-          ) {
-            console.warn(
-              'Half Float texture filtering not supported on result device'
-            )
+          if (result.filter == gl.LINEAR && !gl.__ext_texture_half_float_linear) {
+            console.warn('Half Float texture filtering not supported on result device')
             result.filter = gl.NEAREST
           }
         } else {
@@ -84,9 +69,7 @@ const processTextureParams = function(gl, params) {
     } else {
       if (gl.__ext_half_float) {
         if (result.filter == gl.LINEAR && !gl.__ext_texture_half_float_linear) {
-          console.warn(
-            'Half Float texture filtering not supported on result device'
-          )
+          console.warn('Half Float texture filtering not supported on result device')
           result.filter = gl.NEAREST
         }
       } else throw new Error('OES_texture_half_float is not available')
@@ -104,11 +87,7 @@ const processTextureParams = function(gl, params) {
   // the proper texture format combination can be found here
   // https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glTexImage2D.xhtml
   // Determine the internal format from mthe format and type.
-  if (
-    result.format != undefined &&
-    gl.name == 'webgl2' &&
-    result.internalFormat == result.format
-  ) {
+  if (result.format != undefined && gl.name == 'webgl2' && result.internalFormat == result.format) {
     if (result.type == gl.FLOAT) {
       if (result.format == gl.RED) {
         result.internalFormat = gl.R32F

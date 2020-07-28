@@ -25,15 +25,12 @@ class GLLines extends GLGeom {
   genBuffers() {
     super.genBuffers()
 
-
     const gl = this.__gl
     const geomBuffers = this.__geom.genBuffers()
     const indices = geomBuffers.indices
 
     this.fatLines =
-      (this.__geom.lineThickness > 0 ||
-        geomBuffers.attrBuffers.lineThickness) &&
-      gl.floatTexturesSupported
+      (this.__geom.lineThickness > 0 || geomBuffers.attrBuffers.lineThickness) && gl.floatTexturesSupported
 
     if (this.fatLines) {
       if (!gl.__quadVertexIdsBuffer) {
@@ -54,8 +51,7 @@ class GLLines extends GLGeom {
         pos.setFromOther(positions.getValueRef(i))
 
         // The thickness of the line.
-        if (lineThicknessAttr)
-          dataArray[i * 4 + 3] = lineThicknessAttr.getFloat32Value(i)
+        if (lineThicknessAttr) dataArray[i * 4 + 3] = lineThicknessAttr.getFloat32Value(i)
         else dataArray[i * 4 + 3] = this.__geom.lineThickness
       }
       this.__positionsTexture = new GLTexture2D(gl, {
@@ -74,15 +70,9 @@ class GLLines extends GLGeom {
       for (let i = 0; i < indices.length; i++) {
         let seqentialIndex
         if (i % 2 == 0) {
-          seqentialIndex =
-            i > 0
-              ? indices[i] == indices[i - 1]
-              : indices[i] == indices[indices.length - 1]
+          seqentialIndex = i > 0 ? indices[i] == indices[i - 1] : indices[i] == indices[indices.length - 1]
         } else {
-          seqentialIndex =
-            i < indices.length - 1
-              ? indices[i] == indices[i + 1]
-              : indices[i] == indices[0]
+          seqentialIndex = i < indices.length - 1 ? indices[i] == indices[i + 1] : indices[i] == indices[0]
         }
         // encode the flag into the indices values.
         // this flag is decoded in GLSL.
@@ -120,12 +110,9 @@ class GLLines extends GLGeom {
       this.__numVertices = geomBuffers.numVertices
     }
 
-    if (indices instanceof Uint8Array)
-      this.__indexDataType = this.__gl.UNSIGNED_BYTE
-    if (indices instanceof Uint16Array)
-      this.__indexDataType = this.__gl.UNSIGNED_SHORT
-    if (indices instanceof Uint32Array)
-      this.__indexDataType = this.__gl.UNSIGNED_INT
+    if (indices instanceof Uint8Array) this.__indexDataType = this.__gl.UNSIGNED_BYTE
+    if (indices instanceof Uint16Array) this.__indexDataType = this.__gl.UNSIGNED_SHORT
+    if (indices instanceof Uint32Array) this.__indexDataType = this.__gl.UNSIGNED_INT
   }
 
   /**
@@ -152,8 +139,7 @@ class GLLines extends GLGeom {
         pos.setFromOther(positions.getValueRef(i))
 
         // The thickness of the line.
-        if (lineThicknessAttr)
-          dataArray[i * 4 + 3] = lineThicknessAttr.getFloat32Value(i)
+        if (lineThicknessAttr) dataArray[i * 4 + 3] = lineThicknessAttr.getFloat32Value(i)
         else dataArray[i * 4 + 3] = this.__geom.lineThickness
       }
 
@@ -163,9 +149,7 @@ class GLLines extends GLGeom {
       for (let i = 0; i < indices.length; i++) {
         let seqentialIndex
         if (i % 2 == 0) seqentialIndex = i > 0 && indices[i] == indices[i - 1]
-        else
-          seqentialIndex =
-            i < indices.length - 1 && indices[i] == indices[i + 1]
+        else seqentialIndex = i < indices.length - 1 && indices[i] == indices[i + 1]
         indexArray[i] = (seqentialIndex ? 1 : 0) + indices[i] * 2
       }
 
@@ -203,12 +187,9 @@ class GLLines extends GLGeom {
       this.__numSegIndices = indices.length
     }
 
-    if (indices instanceof Uint8Array)
-      this.__indexDataType = this.__gl.UNSIGNED_BYTE
-    if (indices instanceof Uint16Array)
-      this.__indexDataType = this.__gl.UNSIGNED_SHORT
-    if (indices instanceof Uint32Array)
-      this.__indexDataType = this.__gl.UNSIGNED_INT
+    if (indices instanceof Uint8Array) this.__indexDataType = this.__gl.UNSIGNED_BYTE
+    if (indices instanceof Uint16Array) this.__indexDataType = this.__gl.UNSIGNED_SHORT
+    if (indices instanceof Uint32Array) this.__indexDataType = this.__gl.UNSIGNED_INT
   }
 
   /**
@@ -224,12 +205,7 @@ class GLLines extends GLGeom {
 
       let shaderBinding = this.__shaderBindings[renderstate.shaderkey]
       if (!shaderBinding) {
-        shaderBinding = generateShaderGeomBinding(
-          gl,
-          renderstate.attrs,
-          this.__glattrbuffers,
-          gl.__quadIndexBuffer
-        )
+        shaderBinding = generateShaderGeomBinding(gl, renderstate.attrs, this.__glattrbuffers, gl.__quadIndexBuffer)
         this.__shaderBindings[renderstate.shaderkey] = shaderBinding
       }
       shaderBinding.bind(renderstate)
@@ -238,22 +214,15 @@ class GLLines extends GLGeom {
       if (usePositionsTexture) {
         const unifs = renderstate.unifs
         if (unifs.positionsTexture) {
-          this.__positionsTexture.bindToUniform(
-            renderstate,
-            unifs.positionsTexture
-          )
-          gl.uniform1i(
-            unifs.positionsTextureSize.location,
-            this.__positionsTexture.width
-          )
+          this.__positionsTexture.bindToUniform(renderstate, unifs.positionsTexture)
+          gl.uniform1i(unifs.positionsTextureSize.location, this.__positionsTexture.width)
         }
       }
 
       const unifs = renderstate.unifs
       gl.uniform1f(
         unifs.LineThickness.location,
-        (this.__geom.lineThickness ? this.__geom.lineThickness : 1.0) *
-          renderstate.viewScale
+        (this.__geom.lineThickness ? this.__geom.lineThickness : 1.0) * renderstate.viewScale
       )
       return true
     } else {
@@ -282,22 +251,11 @@ class GLLines extends GLGeom {
     const gl = this.__gl
     if (this.fatLines) {
       if (renderstate.unifs.LineThickness)
-        gl.drawElementsInstanced(
-          gl.TRIANGLES,
-          6,
-          gl.UNSIGNED_SHORT,
-          0,
-          this.__drawCount
-        )
+        gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, this.__drawCount)
 
       // Note: We don't have a solution for drawing fat lines to the geom data buffer.
     } else {
-      gl.drawElements(
-        this.__gl.LINES,
-        this.__numSegIndices,
-        this.__indexDataType,
-        0
-      )
+      gl.drawElements(this.__gl.LINES, this.__numSegIndices, this.__indexDataType, 0)
     }
   }
 
@@ -306,13 +264,7 @@ class GLLines extends GLGeom {
    * @param {any} instanceCount - The instanceCount value.
    */
   drawInstanced(instanceCount) {
-    this.__gl.drawElementsInstanced(
-      this.__gl.LINES,
-      this.__numSegIndices,
-      this.__indexDataType,
-      0,
-      instanceCount
-    )
+    this.__gl.drawElementsInstanced(this.__gl.LINES, this.__numSegIndices, this.__indexDataType, 0, instanceCount)
   }
 }
 

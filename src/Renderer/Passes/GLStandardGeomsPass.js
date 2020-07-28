@@ -2,15 +2,7 @@ import { GLPass } from './GLPass'
 
 import { Vec4 } from '../../Math/index'
 
-import {
-  GeomItem,
-  Points,
-  Lines,
-  Mesh,
-  PointsProxy,
-  LinesProxy,
-  MeshProxy,
-} from '../../SceneTree/index'
+import { GeomItem, Points, Lines, Mesh, PointsProxy, LinesProxy, MeshProxy } from '../../SceneTree/index'
 
 import { GLPoints } from '../GLPoints.js'
 import { GLLines } from '../GLLines.js'
@@ -45,10 +37,10 @@ class GLStandardGeomsPass extends GLPass {
     super.init(renderer, passIndex)
 
     this.__renderer.registerPass(
-      treeItem => {
+      (treeItem) => {
         if (treeItem instanceof GeomItem) {
           if (!treeItem.getMetadata('glgeomItem')) {
-            const checkGeom = geomItem => {
+            const checkGeom = (geomItem) => {
               if (this.filterGeomItem(geomItem)) {
                 if (treeItem.getGeometry() == undefined) {
                   // we will add this geomitem once it recieves its geom.
@@ -69,9 +61,7 @@ class GLStandardGeomsPass extends GLPass {
             }
 
             if (treeItem.getMaterial() == undefined) {
-              console.warn(
-                'Scene item :' + treeItem.getPath() + ' has no material'
-              )
+              console.warn('Scene item :' + treeItem.getPath() + ' has no material')
               // TODO: listen for when the material is assigned.(like geoms below)
               return false
             } else {
@@ -84,11 +74,8 @@ class GLStandardGeomsPass extends GLPass {
           return false
         }
       },
-      treeItem => {
-        if (
-          treeItem instanceof GeomItem &&
-          treeItem.getMetadata('glgeomItem')
-        ) {
+      (treeItem) => {
+        if (treeItem instanceof GeomItem && treeItem.getMetadata('glgeomItem')) {
           return this.removeGeomItem(treeItem)
         }
         return false
@@ -126,22 +113,18 @@ class GLStandardGeomsPass extends GLPass {
   constructShaders(shaderName) {
     let glgeomdatashader
     let glselectedshader
-    
+
     const glshader = this.__renderer.getOrCreateShader(shaderName)
     if (glshader.constructor.getGeomDataShaderName()) {
-      glgeomdatashader = this.__renderer.getOrCreateShader(
-        glshader.constructor.getGeomDataShaderName()
-      )
+      glgeomdatashader = this.__renderer.getOrCreateShader(glshader.constructor.getGeomDataShaderName())
     }
     if (glshader.constructor.getSelectedShaderName()) {
-      glselectedshader = this.__renderer.getOrCreateShader(
-        glshader.constructor.getSelectedShaderName()
-      )
+      glselectedshader = this.__renderer.getOrCreateShader(glshader.constructor.getSelectedShaderName())
     }
     return {
       glshader,
       glgeomdatashader,
-      glselectedshader
+      glselectedshader,
     }
   }
 
@@ -157,7 +140,7 @@ class GLStandardGeomsPass extends GLPass {
     }
     const glshader = this.__renderer.getOrCreateShader(material.getShaderName())
     glmaterial = new GLMaterial(this.__gl, material, glshader)
-    glmaterial.on('updated', event => {
+    glmaterial.on('updated', (event) => {
       this.__renderer.requestRedraw()
     })
     material.setMetadata('glmaterial', glmaterial)
@@ -229,7 +212,7 @@ class GLStandardGeomsPass extends GLPass {
     const glgeomItem = new GLGeomItem(gl, geomItem, glgeom, index, flags)
     geomItem.setMetadata('glgeomItem', glgeomItem)
 
-    glgeomItem.on('updated', event => {
+    glgeomItem.on('updated', (event) => {
       switch (event.type) {
         case GLGeomItemChangeType.GEOMITEM_CHANGED:
           if (this.__dirtyItemIndices.indexOf(index) != -1) return
@@ -263,10 +246,10 @@ class GLStandardGeomsPass extends GLPass {
    */
   removeGeomItem(geomItem) {
     if (geomItem.getMetadata('glpass') != this) return
-    
+
     // TODO: Finish of ref counting GLGeoms.
     // I'm not sure if we ever clean up the renderer properly
-    // when geoms are removed. (Run Instancing test and see if 
+    // when geoms are removed. (Run Instancing test and see if
     // GLGeom is ever destoryed when instance counts drop to zero.)
     // this.removeGeom(geomItem.getGeometry())
 
@@ -324,12 +307,7 @@ class GLStandardGeomsPass extends GLPass {
    */
   getGeomItem(id) {
     if (id >= this.__drawItems.length) {
-      console.warn(
-        'Invalid Draw Item id:' +
-          id +
-          ' NumItems:' +
-          (this.__drawItems.length - 1)
-      )
+      console.warn('Invalid Draw Item id:' + id + ' NumItems:' + (this.__drawItems.length - 1))
       return undefined
     }
     return this.__drawItems[id]
@@ -418,16 +396,13 @@ class GLStandardGeomsPass extends GLPass {
       return
     }
 
-    let size = Math.round(
-      Math.sqrt(this.__drawItems.length * pixelsPerItem) + 0.5
-    )
+    let size = Math.round(Math.sqrt(this.__drawItems.length * pixelsPerItem) + 0.5)
     // Only support power 2 textures. Else we get strange corruption on some GPUs
     // in some scenes.
     size = Math.nextPow2(size)
     // Size should be a multiple of pixelsPerItem, so each geom item is always contiguous
     // in memory. (makes updating a lot easier. See __updateItemInstanceData below)
-    if (size % pixelsPerItem != 0)
-      size += pixelsPerItem - (size % pixelsPerItem)
+    if (size % pixelsPerItem != 0) size += pixelsPerItem - (size % pixelsPerItem)
 
     if (!this.__drawItemsTexture) {
       this.__drawItemsTexture = new GLTexture2D(gl, {
@@ -478,32 +453,14 @@ class GLStandardGeomsPass extends GLPass {
         // When an item is deleted, we allocate its index to the free list
         // and null this item in the array. skip over null items.
         if (!glgeomItem) continue
-        this.__populateDrawItemDataArray(
-          glgeomItem.getGeomItem(),
-          j - indexStart,
-          dataArray
-        )
+        this.__populateDrawItemDataArray(glgeomItem.getGeomItem(), j - indexStart, dataArray)
       }
 
       if (typeId == gl.FLOAT) {
-        this.__drawItemsTexture.populate(
-          dataArray,
-          width,
-          height,
-          xoffset,
-          yoffset,
-          false
-        )
+        this.__drawItemsTexture.populate(dataArray, width, height, xoffset, yoffset, false)
       } else {
         const unit16s = Math.convertFloat32ArrayToUInt16Array(dataArray)
-        this.__drawItemsTexture.populate(
-          unit16s,
-          width,
-          height,
-          xoffset,
-          yoffset,
-          false
-        )
+        this.__drawItemsTexture.populate(unit16s, width, height, xoffset, yoffset, false)
       }
 
       i += uploadCount - 1
@@ -530,10 +487,7 @@ class GLStandardGeomsPass extends GLPass {
     const unifs = renderstate.unifs
     if (this.__drawItemsTexture && unifs.instancesTexture) {
       this.__drawItemsTexture.bindToUniform(renderstate, unifs.instancesTexture)
-      gl.uniform1i(
-        unifs.instancesTextureSize.location,
-        this.__drawItemsTexture.width
-      )
+      gl.uniform1i(unifs.instancesTextureSize.location, this.__drawItemsTexture.width)
     }
     return true
   }

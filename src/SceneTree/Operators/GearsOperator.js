@@ -95,9 +95,7 @@ class GearsOperator extends Operator {
   constructor(name) {
     super(name)
 
-    this.__revolutionsParam = this.addParameter(
-      new NumberParameter('Revolutions', 0.0)
-    )
+    this.__revolutionsParam = this.addParameter(new NumberParameter('Revolutions', 0.0))
     const rpmParam = this.addParameter(new NumberParameter('RPM', 0.0)) // revolutions per minute
     this.__timeoutId
     rpmParam.on('valueChanged', () => {
@@ -107,9 +105,7 @@ class GearsOperator extends Operator {
           const timerCallback = () => {
             const rpm = rpmParam.getValue()
             const revolutions = this.__revolutionsParam.getValue()
-            this.__revolutionsParam.setValue(
-              revolutions + rpm * (1 / (50 * 60))
-            )
+            this.__revolutionsParam.setValue(revolutions + rpm * (1 / (50 * 60)))
             this.__timeoutId = setTimeout(timerCallback, 20) // Sample at 50fps.
           }
           timerCallback()
@@ -119,13 +115,11 @@ class GearsOperator extends Operator {
         this.__timeoutId = undefined
       }
     })
-    this.__gearsParam = this.addParameter(
-      new ListParameter('Gears', GearParameter)
-    )
-    this.__gearsParam.on('elementAdded', event => {
+    this.__gearsParam = this.addParameter(new ListParameter('Gears', GearParameter))
+    this.__gearsParam.on('elementAdded', (event) => {
       this.addOutput(event.elem.getOutput())
     })
-    this.__gearsParam.on('elementRemoved', event => {
+    this.__gearsParam.on('elementRemoved', (event) => {
       this.removeOutput(event.index)
     })
 

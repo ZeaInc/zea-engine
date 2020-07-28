@@ -27,7 +27,6 @@ class GeomClicked extends StateEvent {
     this.__geomClicked = this.__geomClicked.bind(this)
     this.__activated = false
     this.__geomClickedBindId = -1
-
   }
 
   /**

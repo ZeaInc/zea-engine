@@ -26,9 +26,7 @@ class VRController {
 
     // this.setVisible(true);
 
-    this.__treeItem = new TreeItem(
-      'VRController:' + inputSource.handedness + id
-    )
+    this.__treeItem = new TreeItem('VRController:' + inputSource.handedness + id)
     // Controller coordinate system
     // X = Horizontal.
     // Y = Up.
@@ -53,15 +51,12 @@ class VRController {
 
       this.__activeVolumeSize = 0.04
 
-      vrviewport.loadHMDResources().then(asset => {
+      vrviewport.loadHMDResources().then((asset) => {
         asset.on('loaded', () => {
           let srcControllerTree
-          if (id == 0)
-            srcControllerTree = asset.getChildByName('LeftController')
-          else if (id == 1)
-            srcControllerTree = asset.getChildByName('RightController')
-          if (!srcControllerTree)
-            srcControllerTree = asset.getChildByName('Controller')
+          if (id == 0) srcControllerTree = asset.getChildByName('LeftController')
+          else if (id == 1) srcControllerTree = asset.getChildByName('RightController')
+          if (!srcControllerTree) srcControllerTree = asset.getChildByName('Controller')
           const controllerTree = srcControllerTree.clone()
 
           controllerTree.setLocalXfo(

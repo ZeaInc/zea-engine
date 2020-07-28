@@ -36,7 +36,7 @@ class GLPoints extends GLGeom {
       this.__glattrbuffers[attrName] = {
         buffer: attrBuffer,
         dataType: attrData.dataType,
-        normalized: attrData.normalized
+        normalized: attrData.normalized,
       }
     }
 
@@ -57,17 +57,9 @@ class GLPoints extends GLGeom {
         if (!gl.__quadVertexIdsBuffer) gl.setupInstancedQuad()
 
         // Merge the points attrs with the quad attrs.
-        const attrbuffers = Object.assign(
-          this.__glattrbuffers,
-          gl.__quadattrbuffers
-        )
+        const attrbuffers = Object.assign(this.__glattrbuffers, gl.__quadattrbuffers)
 
-        shaderBinding = generateShaderGeomBinding(
-          gl,
-          renderstate.attrs,
-          attrbuffers,
-          gl.__quadIndexBuffer
-        )
+        shaderBinding = generateShaderGeomBinding(gl, renderstate.attrs, attrbuffers, gl.__quadIndexBuffer)
         this.__shaderBindings[renderstate.shaderkey] = shaderBinding
       }
       shaderBinding.bind(renderstate)
@@ -84,13 +76,7 @@ class GLPoints extends GLGeom {
   draw(renderstate) {
     const gl = this.__gl
     if (renderstate.unifs.PointSize) {
-      gl.drawElementsInstanced(
-        gl.TRIANGLES,
-        6,
-        gl.UNSIGNED_SHORT,
-        0,
-        this.__numVerts
-      )
+      gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, this.__numVerts)
     } else {
       gl.drawArrays(gl.POINTS, 0, this.__numVerts)
     }
@@ -101,12 +87,7 @@ class GLPoints extends GLGeom {
    * @param {any} instanceCount - The instanceCount value.
    */
   drawInstanced(instanceCount) {
-    this.__gl.drawArraysInstanced(
-      this.__gl.POINTS,
-      0,
-      this.__numVerts,
-      instanceCount
-    )
+    this.__gl.drawArraysInstanced(this.__gl.POINTS, 0, this.__numVerts, instanceCount)
   }
 }
 export { GLPoints }

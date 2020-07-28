@@ -4,7 +4,7 @@ import { sgFactory } from './SGFactory.js'
 import { Material } from './Material.js'
 import { FileImage } from './Images/index'
 
-/** Class representing a material library in a scene tree. 
+/** Class representing a material library in a scene tree.
  * @private
  */
 class MaterialLibrary extends EventEmitter {
@@ -94,9 +94,7 @@ class MaterialLibrary extends EventEmitter {
   getMaterial(name, assert = true) {
     const res = this.__materials[name]
     if (!res && assert) {
-      throw new Error(
-        'Material:' + name + ' not found in library:' + this.getMaterialNames()
-      )
+      throw new Error('Material:' + name + ' not found in library:' + this.getMaterialNames())
     }
     return res
   }
@@ -128,9 +126,7 @@ class MaterialLibrary extends EventEmitter {
   getImage(name, assert = true) {
     const res = this.__images[name]
     if (!res && assert) {
-      throw new Error(
-        'Image:' + name + ' not found in library:' + this.getImageNames()
-      )
+      throw new Error('Image:' + name + ' not found in library:' + this.getImageNames())
     }
     return res
   }

@@ -26,20 +26,13 @@ class ExplodePartParameter extends StructParameter {
     super(name)
 
     this.__stageParam = this._addMember(new NumberParameter('Stage', 0))
-    this.__axisParam = this._addMember(
-      new Vec3Parameter('Axis', new Vec3(1, 0, 0))
-    )
+    this.__axisParam = this._addMember(new Vec3Parameter('Axis', new Vec3(1, 0, 0)))
 
     // The Movement param enables fine level timing to be set per part.
     this.__movementParam = this._addMember(
-      new Vec2Parameter('MovementTiming', new Vec2(0, 1), [
-        new Vec2(0, 0),
-        new Vec2(1, 1),
-      ])
+      new Vec2Parameter('MovementTiming', new Vec2(0, 1), [new Vec2(0, 0), new Vec2(1, 1)])
     )
-    this.__multiplierParam = this._addMember(
-      new NumberParameter('Multiplier', 1.0)
-    )
+    this.__multiplierParam = this._addMember(new NumberParameter('Multiplier', 1.0))
     this.__output = new OperatorOutput('Part', OperatorOutputMode.OP_READ_WRITE)
   }
 
@@ -78,16 +71,7 @@ class ExplodePartParameter extends StructParameter {
    * @param {Xfo} parentXfo - The parentXfo value.
    * @param {any} parentDelta - The parentDelta value.
    */
-  evaluate(
-    explode,
-    explodeDist,
-    offset,
-    stages,
-    cascade,
-    centered,
-    parentXfo,
-    parentDelta
-  ) {
+  evaluate(explode, explodeDist, offset, stages, cascade, centered, parentXfo, parentDelta) {
     // Note: during interactive setup of the operator we
     // can have evaluations before anhthing is connected.
     if (!this.__output.isConnected()) return
@@ -163,20 +147,12 @@ class ExplodePartsOperator extends Operator {
     super(name)
 
     this.__stagesParam = this.addParameter(new NumberParameter('Stages', 0))
-    this._explodeParam = this.addParameter(
-      new NumberParameter('Explode', 0.0, [0, 1])
-    )
+    this._explodeParam = this.addParameter(new NumberParameter('Explode', 0.0, [0, 1]))
     this._distParam = this.addParameter(new NumberParameter('Dist', 1.0))
     this._offsetParam = this.addParameter(new NumberParameter('Offset', 0))
-    this._cascadeParam = this.addParameter(
-      new BooleanParameter('Cascade', false)
-    )
-    this._centeredParam = this.addParameter(
-      new BooleanParameter('Centered', false)
-    )
-    this.__parentItemParam = this.addParameter(
-      new TreeItemParameter('RelativeTo')
-    )
+    this._cascadeParam = this.addParameter(new BooleanParameter('Cascade', false))
+    this._centeredParam = this.addParameter(new BooleanParameter('Centered', false))
+    this.__parentItemParam = this.addParameter(new TreeItemParameter('RelativeTo'))
     this.__parentItemParam.on('valueChanged', () => {
       // compute the local xfos
       const parentItem = this.__parentItemParam.getValue()
@@ -187,9 +163,7 @@ class ExplodePartsOperator extends Operator {
       this.setDirty()
     })
 
-    this.__itemsParam = this.addParameter(
-      new ListParameter('Parts', ExplodePartParameter)
-    )
+    this.__itemsParam = this.addParameter(new ListParameter('Parts', ExplodePartParameter))
     this.__itemsParam.on('elementAdded', (event) => {
       if (event.index > 0) {
         const prevStage = this.__itemsParam.getElement(event.index - 1).getStage()
@@ -201,7 +175,7 @@ class ExplodePartsOperator extends Operator {
       this.addOutput(event.elem.getOutput())
       this.setDirty()
     })
-    this.__itemsParam.on('elementRemoved', event => {
+    this.__itemsParam.on('elementRemoved', (event) => {
       this.removeOutput(event.elem.getOutput())
     })
 

@@ -23,17 +23,7 @@ class Mat3 extends AttrValue {
    * @param {number} m21 - Row 2, column 1.
    * @param {number} m22 - Row 2, column 2.
    */
-  constructor(
-    m00 = 1,
-    m01 = 0,
-    m02 = 0,
-    m10 = 0,
-    m11 = 1,
-    m12 = 0,
-    m20 = 0,
-    m21 = 0,
-    m22 = 1
-  ) {
+  constructor(m00 = 1, m01 = 0, m02 = 0, m10 = 0, m11 = 1, m12 = 0, m20 = 0, m21 = 0, m22 = 1) {
     super()
 
     if (m00 instanceof ArrayBuffer) {
@@ -276,17 +266,7 @@ class Mat3 extends AttrValue {
    * @param {number} m21 - Row 2, column 1.
    * @param {number} m22 - Row 2, column 2.
    */
-  set(
-    m00 = 1,
-    m01 = 0,
-    m02 = 0,
-    m10 = 0,
-    m11 = 1,
-    m12 = 0,
-    m20 = 0,
-    m21 = 0,
-    m22 = 1
-  ) {
+  set(m00 = 1, m01 = 0, m02 = 0, m10 = 0, m11 = 1, m12 = 0, m20 = 0, m21 = 0, m22 = 1) {
     this.__data[0] = m00
     this.__data[1] = m01
     this.__data[2] = m02
@@ -347,17 +327,7 @@ class Mat3 extends AttrValue {
     const yLen = yAxis.length()
     if (yLen > Number.EPSILON) yAxis.scaleInPlace(1 / yLen)
 
-    this.set(
-      xAxis.x,
-      xAxis.y,
-      xAxis.z,
-      yAxis.x,
-      yAxis.y,
-      yAxis.z,
-      zAxis.x,
-      zAxis.y,
-      zAxis.z
-    )
+    this.set(xAxis.x, xAxis.y, xAxis.z, yAxis.x, yAxis.y, yAxis.z, zAxis.x, zAxis.y, zAxis.z)
   }
 
   /**
@@ -486,15 +456,9 @@ class Mat3 extends AttrValue {
    */
   transformVec3(vec3) {
     return new Vec3(
-      this.__data[0] * vec3.x +
-        this.__data[1] * vec3.y +
-        this.__data[2] * vec3.z,
-      this.__data[3] * vec3.x +
-        this.__data[4] * vec3.y +
-        this.__data[5] * vec3.z,
-      this.__data[6] * vec3.x +
-        this.__data[7] * vec3.y +
-        this.__data[8] * vec3.z
+      this.__data[0] * vec3.x + this.__data[1] * vec3.y + this.__data[2] * vec3.z,
+      this.__data[3] * vec3.x + this.__data[4] * vec3.y + this.__data[5] * vec3.z,
+      this.__data[6] * vec3.x + this.__data[7] * vec3.y + this.__data[8] * vec3.z
     )
   }
 

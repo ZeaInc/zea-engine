@@ -50,7 +50,7 @@ class GLGeomItem extends EventEmitter {
         this.emit('updated', { type: GLGeomItemChangeType.GEOMITEM_CHANGED })
       }
     }
-    
+
     this.cutAwayChanged = () => {
       this.emit('updated', { type: GLGeomItemChangeType.GEOMITEM_CHANGED })
     }
@@ -72,15 +72,8 @@ class GLGeomItem extends EventEmitter {
     const lightmapCoordsOffset = this.geomItem.getLightmapCoordsOffset()
     const materialId = 0
     const geomId = 0
-    this.geomData = [
-      lightmapCoordsOffset.x,
-      lightmapCoordsOffset.y,
-      materialId,
-      geomId,
-    ]
+    this.geomData = [lightmapCoordsOffset.x, lightmapCoordsOffset.y, materialId, geomId]
   }
-
-  
 
   /**
    * The getGeomItem method.
@@ -159,11 +152,7 @@ class GLGeomItem extends EventEmitter {
         if (this.geomMatrixDirty) {
           this.modelMatrixArray = this.geomItem.getGeomMat4().asArray()
         }
-        gl.uniformMatrix4fv(
-          modelMatrixunif.location,
-          false,
-          this.modelMatrixArray
-        )
+        gl.uniformMatrix4fv(modelMatrixunif.location, false, this.modelMatrixArray)
       }
       const drawItemDataunif = unifs.drawItemData
       if (drawItemDataunif) {
@@ -181,10 +170,7 @@ class GLGeomItem extends EventEmitter {
         const gllightmap = renderstate.lightmaps[this.lightmapName]
         if (gllightmap && gllightmap.glimage.isLoaded()) {
           gllightmap.glimage.bindToUniform(renderstate, unifs.lightmap)
-          gl.uniform2fv(
-            unifs.lightmapSize.location,
-            gllightmap.atlasSize.asArray()
-          )
+          gl.uniform2fv(unifs.lightmapSize.location, gllightmap.atlasSize.asArray())
           if (unifs.lightmapConnected) {
             gl.uniform1i(unifs.lightmapConnected.location, true)
           }
@@ -207,7 +193,7 @@ class GLGeomItem extends EventEmitter {
    */
   destroy() {
     // this.geomItem.off('geomXfoChanged', this.geomMatrixChanged)
-    
+
     this.geomItem.getParameter('GeomMat').off('valueChanged', this.geomMatrixChanged)
     this.geomItem.off('visibilityChanged', this.updateVisibility)
     this.geomItem.off('cutAwayChanged', this.cutAwayChanged)

@@ -3,7 +3,7 @@ import { MaterialLibrary } from './MaterialLibrary.js'
 import { resourceLoader } from './ResourceLoader.js'
 import { loadTextfile } from './Utils.js'
 
-/** Class representing a material library manager. 
+/** Class representing a material library manager.
  * @private
  */
 class MaterialLibraryManager extends EventEmitter {
@@ -14,8 +14,8 @@ class MaterialLibraryManager extends EventEmitter {
     super()
     this.__materialLibraries = {}
 
-    resourceLoader.registerResourceCallback('.matlib', file => {
-      loadTextfile(file.url, data => {
+    resourceLoader.registerResourceCallback('.matlib', (file) => {
+      loadTextfile(file.url, (data) => {
         const stem = file.name.split('.')[0] // trim off the extension
         const j = JSON.parse(data)
         const matlib = new MaterialLibrary(stem)

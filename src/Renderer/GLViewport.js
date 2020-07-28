@@ -7,7 +7,7 @@ import { GLTexture2D } from './GLTexture2D.js'
 import { CameraMouseAndKeyboard } from '../SceneTree/index'
 
 /** Class representing a GL viewport.
- * 
+ *
  * @extends GLBaseViewport
  */
 class GLViewport extends GLBaseViewport {
@@ -130,8 +130,7 @@ class GLViewport extends GLBaseViewport {
     const aspect = this.__width / this.__height
     this.__camera.updateProjectionMatrix(this.__projectionMatrix, aspect)
 
-    const frustumH =
-      Math.tan(this.__camera.getFov() / 2.0) * this.__camera.getNear() * 2.0
+    const frustumH = Math.tan(this.__camera.getFov() / 2.0) * this.__camera.getNear() * 2.0
     const frustumW = frustumH * aspect
     this.__frustumDim.set(frustumW, frustumH)
   }
@@ -166,10 +165,9 @@ class GLViewport extends GLBaseViewport {
    * @param {array} treeItems - The treeItems value.
    */
   frameView(treeItems) {
-    if (this.__width > 0 && this.__height > 0)
-      this.__camera.frameView(this, treeItems)
+    if (this.__width > 0 && this.__height > 0) this.__camera.frameView(this, treeItems)
     else {
-      console.warn("Unable to frameView while Viewport with and height are 0.")
+      console.warn('Unable to frameView while Viewport with and height are 0.')
     }
   }
 
@@ -201,9 +199,7 @@ class GLViewport extends GLBaseViewport {
     let rayDirection
     if (this.__camera.getIsOrthographic()) {
       // Orthographic projections.
-      rayStart = cameraMat.transformVec3(
-        projInv.transformVec3(new Vec3(sx, -sy, -1.0))
-      )
+      rayStart = cameraMat.transformVec3(projInv.transformVec3(new Vec3(sx, -sy, -1.0)))
       rayDirection = new Vec3(0.0, 0.0, -1.0)
     } else {
       rayStart = cameraMat.translation
@@ -330,29 +326,13 @@ class GLViewport extends GLBaseViewport {
       let geomData
       if (gl.floatGeomBuffer) {
         geomData = new Float32Array(4)
-        gl.readPixels(
-          screenPos.x,
-          this.__height - screenPos.y,
-          1,
-          1,
-          gl.RGBA,
-          gl.FLOAT,
-          geomData
-        )
+        gl.readPixels(screenPos.x, this.__height - screenPos.y, 1, 1, gl.RGBA, gl.FLOAT, geomData)
         if (geomData[3] == 0) return undefined
         // Mask the pass id to be only the first 6 bits of the integer.
         passId = Math.round(geomData[0]) & (64 - 1)
       } else {
         geomData = new Uint8Array(4)
-        gl.readPixels(
-          screenPos.x,
-          this.__height - screenPos.y,
-          1,
-          1,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          geomData
-        )
+        gl.readPixels(screenPos.x, this.__height - screenPos.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, geomData)
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         if (geomData[0] == 0 && geomData[1] == 0) return undefined
         passId = 0
@@ -367,9 +347,7 @@ class GLViewport extends GLBaseViewport {
 
       if (geomItemAndDist) {
         if (!mouseRay) mouseRay = this.calcRayFromScreenPos(screenPos)
-        const intersectionPos = mouseRay.start.add(
-          mouseRay.dir.scale(geomItemAndDist.dist)
-        )
+        const intersectionPos = mouseRay.start.add(mouseRay.dir.scale(geomItemAndDist.dist))
         this.__intersectionData = {
           screenPos,
           mouseRay,
@@ -407,26 +385,10 @@ class GLViewport extends GLBaseViewport {
       let geomDatas
       if (gl.floatGeomBuffer) {
         geomDatas = new Float32Array(4 * numPixels)
-        gl.readPixels(
-          rectLeft,
-          rectBottom,
-          rectWidth,
-          rectHeight,
-          gl.RGBA,
-          gl.FLOAT,
-          geomDatas
-        )
+        gl.readPixels(rectLeft, rectBottom, rectWidth, rectHeight, gl.RGBA, gl.FLOAT, geomDatas)
       } else {
         geomDatas = new Uint8Array(4 * numPixels)
-        gl.readPixels(
-          rectLeft,
-          rectBottom,
-          rectWidth,
-          rectHeight,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          geomDatas
-        )
+        gl.readPixels(rectLeft, rectBottom, rectWidth, rectHeight, gl.RGBA, gl.UNSIGNED_BYTE, geomDatas)
       }
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -441,9 +403,7 @@ class GLViewport extends GLBaseViewport {
           passId = 0
         }
 
-        const geomItemAndDist = this.__renderer
-          .getPass(passId)
-          .getGeomItemAndDist(geomData)
+        const geomItemAndDist = this.__renderer.getPass(passId).getGeomItemAndDist(geomData)
         if (geomItemAndDist) {
           geomItems.add(geomItemAndDist.geomItem)
         }
@@ -463,10 +423,7 @@ class GLViewport extends GLBaseViewport {
    * @private
    */
   __eventMousePos(event) {
-    return new Vec2(
-      event.rendererX - this.getPosX(),
-      event.rendererY - this.getPosY()
-    )
+    return new Vec2(event.rendererX - this.getPosX(), event.rendererY - this.getPosY())
   }
 
   /**
@@ -498,10 +455,7 @@ class GLViewport extends GLBaseViewport {
       event.mousePos = mousePos
       event.mouseRay = this.calcRayFromScreenPos(mousePos)
 
-      const intersectionData = this.getGeomDataAtPos(
-        event.mousePos,
-        event.mouseRay
-      )
+      const intersectionData = this.getGeomDataAtPos(event.mousePos, event.mouseRay)
       if (intersectionData != undefined) {
         // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
         // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getMaterial().name);
@@ -559,10 +513,7 @@ class GLViewport extends GLBaseViewport {
     }
 
     const downTime = Date.now()
-    if (
-      downTime - this.__prevDownTime <
-      this.__doubleClickTimeMSParam.getValue()
-    ) {
+    if (downTime - this.__prevDownTime < this.__doubleClickTimeMSParam.getValue()) {
       if (this.__cameraManipulator) {
         this.__cameraManipulator.onDoubleClick(event)
         if (!event.propagating) return
@@ -715,10 +666,7 @@ class GLViewport extends GLBaseViewport {
    * @private
    */
   __eventTouchPos(touch) {
-    return new Vec2(
-      touch.rendererX - this.getPosX(),
-      touch.rendererY - this.getPosY()
-    )
+    return new Vec2(touch.rendererX - this.getPosX(), touch.rendererY - this.getPosY())
   }
 
   /**
@@ -748,10 +696,7 @@ class GLViewport extends GLBaseViewport {
       }
 
       const downTime = Date.now()
-      if (
-        downTime - this.__prevDownTime <
-        this.__doubleClickTimeMSParam.getValue()
-      ) {
+      if (downTime - this.__prevDownTime < this.__doubleClickTimeMSParam.getValue()) {
         if (this.__cameraManipulator) {
           this.__cameraManipulator.onDoubleTap(event)
           if (!event.propagating) return
@@ -878,8 +823,7 @@ class GLViewport extends GLBaseViewport {
 
     gl.viewport(...this.region)
 
-    if (this.__backgroundColor)
-      gl.clearColor(...this.__backgroundColor.asArray())
+    if (this.__backgroundColor) gl.clearColor(...this.__backgroundColor.asArray())
     gl.colorMask(true, true, true, true)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 

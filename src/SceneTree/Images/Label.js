@@ -81,7 +81,7 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke, strokeWidth) 
  *
  * **Parameters**
  * * **Library(`StringParameter`):** Library you wan to use for your label, see **Library List** above.
- * * **Text(`StringParameter`):** 
+ * * **Text(`StringParameter`):**
  * * **FontColor(`ColorParameter`):**
  * * **Margin(`NumberParameter`):**
  * * **BorderWidth(`NumberParameter`):**

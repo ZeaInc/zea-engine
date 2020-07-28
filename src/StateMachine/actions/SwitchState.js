@@ -14,18 +14,14 @@ class SwitchState extends StateAction {
    */
   constructor() {
     super()
-    this.__targetStateParam = this.addParameter(
-      new StringParameter('TargetState', '')
-    )
+    this.__targetStateParam = this.addParameter(new StringParameter('TargetState', ''))
   }
 
   /**
    * Activate the action.
    */
   activate() {
-    this.__state
-      .getStateMachine()
-      .activateState(this.__targetStateParam.getValue())
+    this.__state.getStateMachine().activateState(this.__targetStateParam.getValue())
   }
 }
 

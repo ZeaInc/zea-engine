@@ -72,10 +72,7 @@ class GLImageStream extends RefCounted {
 
     if (bindings) {
       if (bindings.textureIndexUnif) {
-        this.__gl.uniform1i(
-          bindings.textureIndexUnif.location,
-          this.__indexParam.getValue()
-        )
+        this.__gl.uniform1i(bindings.textureIndexUnif.location, this.__indexParam.getValue())
       }
     }
 

@@ -307,15 +307,9 @@ class Quat extends AttrValue {
       const sqx = ordered.x * ordered.x
       const sqy = ordered.y * ordered.y
       const sqz = ordered.z * ordered.z
-      euler.y = Math.atan2(
-        2.0 * ordered.y * this.w - 2.0 * ordered.x * ordered.z,
-        1.0 - 2.0 * sqy - 2.0 * sqz
-      )
+      euler.y = Math.atan2(2.0 * ordered.y * this.w - 2.0 * ordered.x * ordered.z, 1.0 - 2.0 * sqy - 2.0 * sqz)
       euler.z = Math.asin(2.0 * test)
-      euler.x = Math.atan2(
-        2.0 * ordered.x * this.w - 2.0 * ordered.y * ordered.z,
-        1.0 - 2.0 * sqx - 2.0 * sqz
-      )
+      euler.x = Math.atan2(2.0 * ordered.x * this.w - 2.0 * ordered.y * ordered.z, 1.0 - 2.0 * sqx - 2.0 * sqz)
     }
 
     switch (rotationOrder) {
@@ -408,12 +402,7 @@ class Quat extends AttrValue {
       const j = (i + 1) % 3
       const k = (i + 2) % 3
 
-      fRoot = Math.sqrt(
-        mat3.__data[i * 3 + i] -
-          mat3.__data[j * 3 + j] -
-          mat3.__data[k * 3 + k] +
-          1.0
-      )
+      fRoot = Math.sqrt(mat3.__data[i * 3 + i] - mat3.__data[j * 3 + j] - mat3.__data[k * 3 + k] + 1.0)
       this.__data[i] = 0.5 * fRoot
       fRoot = 0.5 / fRoot
       this.__data[3] = (mat3.__data[j * 3 + k] - mat3.__data[k * 3 + j]) * fRoot
@@ -450,12 +439,7 @@ class Quat extends AttrValue {
       const j = (i + 1) % 3
       const k = (i + 2) % 3
 
-      fRoot = Math.sqrt(
-        mat4.__data[i * 4 + i] -
-          mat4.__data[j * 4 + j] -
-          mat4.__data[k * 4 + k] +
-          1.0
-      )
+      fRoot = Math.sqrt(mat4.__data[i * 4 + i] - mat4.__data[j * 4 + j] - mat4.__data[k * 4 + k] + 1.0)
       this.__data[i] = 0.5 * fRoot
       fRoot = 0.5 / fRoot
       this.__data[3] = (mat4.__data[j * 4 + k] - mat4.__data[k * 4 + j]) * fRoot
@@ -505,7 +489,7 @@ class Quat extends AttrValue {
 
   /**
    * Returns true if this Quat is approximately the same as other
-   * 
+   *
    * @param {Quat} other - The other Quat to compare with.
    * @param {number} precision - The precision to which the values must match.
    * @return {boolean} - Returns true or false.
@@ -526,12 +510,7 @@ class Quat extends AttrValue {
    * @return {Quat} - Returns a new Quat.
    */
   add(other) {
-    return new Quat(
-      this.x + other.x,
-      this.y + other.y,
-      this.z + other.z,
-      this.w + other.w
-    )
+    return new Quat(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w)
   }
 
   /**
@@ -553,12 +532,7 @@ class Quat extends AttrValue {
    * @return {Quat} - Returns a new Quat.
    */
   subtract(other) {
-    return new Quat(
-      this.x - other.x,
-      this.y - other.y,
-      this.z - other.z,
-      this.w - other.w
-    )
+    return new Quat(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w)
   }
 
   /**
@@ -568,12 +542,7 @@ class Quat extends AttrValue {
    * @return {Quat} - Returns a new Vec3.
    */
   scale(scalar) {
-    return new Quat(
-      this.x * scalar,
-      this.y * scalar,
-      this.z * scalar,
-      this.w * scalar
-    )
+    return new Quat(this.x * scalar, this.y * scalar, this.z * scalar, this.w * scalar)
   }
 
   /**
@@ -657,9 +626,7 @@ class Quat extends AttrValue {
    * @return {number} - Returns the dot product.
    */
   dot(other) {
-    return (
-      this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w
-    )
+    return this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w
   }
 
   /**
@@ -678,12 +645,7 @@ class Quat extends AttrValue {
     const bz = other.z
     const bt = other.w
 
-    return new Quat(
-      ay * bz - az * by,
-      az * bt - at * bz,
-      at * bx - ax * bt,
-      ax * by - ay * bx
-    )
+    return new Quat(ay * bz - az * by, az * bt - at * bz, at * bx - ax * bt, ax * by - ay * bx)
   }
 
   /**
@@ -1070,12 +1032,7 @@ class Quat extends AttrValue {
    * @return {Quat} - Returns a new Quat.
    */
   clone() {
-    return new Quat(
-      this.__data[0],
-      this.__data[1],
-      this.__data[2],
-      this.__data[3]
-    )
+    return new Quat(this.__data[0], this.__data[1], this.__data[2], this.__data[3])
   }
 
   // ///////////////////////////

@@ -137,9 +137,6 @@ void main(void) {
   }
 }
 
-sgFactory.registerClass(
-  'StandardSurfaceGeomDataShader',
-  StandardSurfaceGeomDataShader
-)
+sgFactory.registerClass('StandardSurfaceGeomDataShader', StandardSurfaceGeomDataShader)
 
 export { StandardSurfaceGeomDataShader }

@@ -82,7 +82,7 @@ describe('StringParameter', () => {
   it('loads from binary (serialization).', () => {
     const parameter = new StringParameter()
 
-    const str = "FooBar"
+    const str = 'FooBar'
     const view = new DataView(new ArrayBuffer(10))
     let byteOffset = 0
     view.setUint32(byteOffset, str.length, true)

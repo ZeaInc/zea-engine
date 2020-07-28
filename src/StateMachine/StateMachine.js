@@ -39,10 +39,7 @@ class StateMachine extends BaseItem {
     state.setStateMachine(this)
     this.__states[state.getName()] = state
 
-    if (
-      Object.keys(this.__states).length == 1 &&
-      this.__initialStateName == undefined
-    ) {
+    if (Object.keys(this.__states).length == 1 && this.__initialStateName == undefined) {
       this.__initialStateName = state.getName()
     }
   }

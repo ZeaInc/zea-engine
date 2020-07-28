@@ -23,8 +23,8 @@ class ProxyParameter extends Parameter {
    * @param {any} value - The value param.
    */
   setSourceParameter(sourceParameter) {
-    this.sourceParameter = sourceParameter;
-    this.sourceParameter.on('valueChanged', this.__proxyValueChanged.bind(this));
+    this.sourceParameter = sourceParameter
+    this.sourceParameter.on('valueChanged', this.__proxyValueChanged.bind(this))
   }
 
   /**
@@ -36,7 +36,6 @@ class ProxyParameter extends Parameter {
     this.emit('valueChanged', event)
   }
 
-
   /**
    * The getDataType method.
    * @return {any} - The return value.
@@ -44,7 +43,6 @@ class ProxyParameter extends Parameter {
   getDataType() {
     return this.sourceParameter.getDataType()
   }
-
 
   /**
    * The setValue method.
@@ -73,7 +71,7 @@ class ProxyParameter extends Parameter {
    */
   toJSON(context, flags) {
     const j = super.toJSON(context, flags)
-    if (this.sourceParameter) j.sourceParameter = this.sourceParameter.getPath();
+    if (this.sourceParameter) j.sourceParameter = this.sourceParameter.getPath()
     return j
   }
 
@@ -91,16 +89,11 @@ class ProxyParameter extends Parameter {
       // are loaded last.
       context.resolvePath(
         j.sourceParameter,
-        param => {
+        (param) => {
           this.setSourceParameter(param)
         },
-        reason => {
-          console.warn(
-            "Error loading Proxy Param: '" +
-              this.getName() +
-              "'. Unable to connect to:" +
-              j.sourceParameter
-          )
+        (reason) => {
+          console.warn("Error loading Proxy Param: '" + this.getName() + "'. Unable to connect to:" + j.sourceParameter)
         }
       )
     }
@@ -121,7 +114,7 @@ class ProxyParameter extends Parameter {
   clone(flags, context) {
     const clonedParam = new ProxyParameter(this.__name, this.__value)
     if (this.sourceParameter) {
-      this.connectToClonedSourceParam(context);
+      this.connectToClonedSourceParam(context)
     }
     return clonedParam
   }
@@ -135,10 +128,10 @@ class ProxyParameter extends Parameter {
   connectToClonedSourceParam(context) {
     context.resolveClonedItem(
       this.sourceParameter,
-      param => {
+      (param) => {
         clonedParam.setSourceParameter(param)
       },
-      reason => {
+      (reason) => {
         console.warn("Error cloning Proxy Param: '" + this.getName() + "'. Unable to connect to:" + j.sourceParameter)
       }
     )

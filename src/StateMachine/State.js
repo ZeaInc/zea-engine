@@ -53,10 +53,10 @@ class State {
    * Activates the state.
    */
   activate() {
-    this.__stateEvents.forEach(stateEvent => {
+    this.__stateEvents.forEach((stateEvent) => {
       stateEvent.activate()
     })
-    this.__activationActions.forEach(action => {
+    this.__activationActions.forEach((action) => {
       action.activate()
     })
   }
@@ -65,15 +65,15 @@ class State {
    * Deactivates the state.
    */
   deactivate() {
-    this.__stateEvents.forEach(stateEvent => {
+    this.__stateEvents.forEach((stateEvent) => {
       stateEvent.deactivate()
     })
     // Any activation actions that are still running should be stopped.
     // e.g. SetParameterValue.
-    this.__activationActions.forEach(action => {
+    this.__activationActions.forEach((action) => {
       action.deactivate()
     })
-    this.__deactivationActions.forEach(action => {
+    this.__deactivationActions.forEach((action) => {
       action.activate()
     })
   }
@@ -174,16 +174,12 @@ class State {
       this.addStateEvent(stateEvent)
     }
     for (const activationActionJson of j.activationActions) {
-      const activationAction = sgFactory.constructClass(
-        activationActionJson.type
-      )
+      const activationAction = sgFactory.constructClass(activationActionJson.type)
       activationAction.fromJSON(activationActionJson, context)
       this.addActivationAction(activationAction)
     }
     for (const deactivationActionJson of j.deactivationActions) {
-      const deactivationAction = sgFactory.constructClass(
-        deactivationActionJson.type
-      )
+      const deactivationAction = sgFactory.constructClass(deactivationActionJson.type)
       deactivationAction.fromJSON(deactivationActionJson, context)
       this.addDeactivationAction(deactivationAction)
     }

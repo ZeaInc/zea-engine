@@ -74,12 +74,7 @@ class GLLDRAlphaImage extends GLTexture2D {
       })
       this.__unpackLDRAlphaShader = new UnpackLDRAlphaImageShader(gl)
       const shaderComp = this.__unpackLDRAlphaShader.compileForTarget()
-      this.__shaderBinding = generateShaderGeomBinding(
-        gl,
-        shaderComp.attrs,
-        gl.__quadattrbuffers,
-        gl.__quadIndexBuffer
-      )
+      this.__shaderBinding = generateShaderGeomBinding(gl, shaderComp.attrs, gl.__quadattrbuffers, gl.__quadIndexBuffer)
     } else {
       this.__srcLDRTex.bufferData(ldr)
       this.__srcAlphaTex.bufferData(alpha)

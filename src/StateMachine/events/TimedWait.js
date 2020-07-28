@@ -25,10 +25,7 @@ class TimedWait extends StateEvent {
       delete this.__timeoutId
       this.__onEvent()
     }
-    this.__timeoutId = window.setTimeout(
-      timerCallback,
-      this.__waitTimeParam.getValue() * 1000
-    ) // Sample at 50fps.
+    this.__timeoutId = window.setTimeout(timerCallback, this.__waitTimeParam.getValue() * 1000) // Sample at 50fps.
   }
 
   /**

@@ -30,10 +30,7 @@ class GLEnvMap extends GLProbe {
     this.__srcGLTex = srcGLTex // for debugging
 
     this.__envMapShader = new OctahedralEnvMapShader(gl)
-    const envMapShaderComp = this.__envMapShader.compileForTarget(
-      'GLEnvMap',
-      preproc
-    )
+    const envMapShaderComp = this.__envMapShader.compileForTarget('GLEnvMap', preproc)
     this.__envMapShaderBinding = generateShaderGeomBinding(
       gl,
       envMapShaderComp.attrs,

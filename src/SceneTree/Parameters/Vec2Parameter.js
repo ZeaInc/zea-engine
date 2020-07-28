@@ -51,7 +51,7 @@ class Vec2Parameter extends Parameter {
     this.emit('rangeChanged', { range })
   }
 
-   /**
+  /**
    * Extracts a number value from a buffer, updating current parameter state.
    *
    * @param {BinReader} reader - The reader value.

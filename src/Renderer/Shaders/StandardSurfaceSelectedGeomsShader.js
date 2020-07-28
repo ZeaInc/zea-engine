@@ -83,8 +83,5 @@ void main(void) {
   }
 }
 
-sgFactory.registerClass(
-  'StandardSurfaceSelectedGeomsShader',
-  StandardSurfaceSelectedGeomsShader
-)
+sgFactory.registerClass('StandardSurfaceSelectedGeomsShader', StandardSurfaceSelectedGeomsShader)
 export { StandardSurfaceSelectedGeomsShader }

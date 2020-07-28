@@ -1,11 +1,7 @@
 import { sgFactory } from '../../SceneTree/SGFactory.js'
 
 import { Camera } from '../../SceneTree/Camera.js'
-import {
-  NumberParameter,
-  Vec3Parameter,
-  TreeItemParameter,
-} from '../../SceneTree/Parameters/index'
+import { NumberParameter, Vec3Parameter, TreeItemParameter } from '../../SceneTree/Parameters/index'
 import { StateAction } from '../StateAction.js'
 
 /** A state machine action that sets the camera position and target.
@@ -47,9 +43,7 @@ class SetCameraPositionAndTarget extends StateAction {
   activate() {
     const camera = this.getParameter('Camera').getValue()
     if (!camera) {
-      console.warn(
-        'Camera not assigned to SetCameraPositionAndTarget state action'
-      )
+      console.warn('Camera not assigned to SetCameraPositionAndTarget state action')
       return
     }
     const posEnd = this.getParameter('CameraPos').getValue()
@@ -104,10 +98,7 @@ class SetCameraPositionAndTarget extends StateAction {
           camera.setPositionAndTarget(newTarget.add(newVec), newTarget)
           modifyingCameraXfo = false
 
-          this.__timeoutId = window.setTimeout(
-            timerCallback,
-            1000 / updateFrequency
-          )
+          this.__timeoutId = window.setTimeout(timerCallback, 1000 / updateFrequency)
         } else {
           // camera.setPositionAndTarget(posEnd, targetEnd);
           camera.off('globalXfoChanged', onCameraChanged)
@@ -121,7 +112,7 @@ class SetCameraPositionAndTarget extends StateAction {
       camera.setPositionAndTarget(posEnd, targetEnd)
     }
   }
-  
+
   /**
    * The deactivate method.
    */
@@ -144,8 +135,5 @@ class SetCameraPositionAndTarget extends StateAction {
   }
 }
 
-sgFactory.registerClass(
-  'SetCameraPositionAndTarget',
-  SetCameraPositionAndTarget
-)
+sgFactory.registerClass('SetCameraPositionAndTarget', SetCameraPositionAndTarget)
 export { SetCameraPositionAndTarget }

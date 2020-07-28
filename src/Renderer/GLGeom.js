@@ -19,13 +19,13 @@ class GLGeom extends RefCounted {
     this.__glattrbuffers = {}
     this.__shaderBindings = {}
 
-    const updateBuffers = opts => {
+    const updateBuffers = (opts) => {
       this.updateBuffers(opts)
       this.emit('updated', {})
     }
     this.__geom.on('geomDataChanged', updateBuffers)
 
-    const regenBuffers = opts => {
+    const regenBuffers = (opts) => {
       this.clearShaderBindings()
       this.updateBuffers(opts)
       this.emit('updated', {})
@@ -69,12 +69,7 @@ class GLGeom extends RefCounted {
     let shaderBinding = this.__shaderBindings[renderstate.shaderkey]
     if (!shaderBinding) {
       const gl = this.__gl
-      shaderBinding = generateShaderGeomBinding(
-        gl,
-        renderstate.attrs,
-        this.__glattrbuffers,
-        this.__indexBuffer
-      )
+      shaderBinding = generateShaderGeomBinding(gl, renderstate.attrs, this.__glattrbuffers, this.__indexBuffer)
       this.__shaderBindings[renderstate.shaderkey] = shaderBinding
     }
     shaderBinding.bind(renderstate)
@@ -102,9 +97,7 @@ class GLGeom extends RefCounted {
    * The draw method.
    */
   draw() {
-    throw new Error(
-      'Not implemented. Implement this method in a derived class.'
-    )
+    throw new Error('Not implemented. Implement this method in a derived class.')
   }
 
   /**
@@ -112,9 +105,7 @@ class GLGeom extends RefCounted {
    * @param {any} instanceCount - The instanceCount param.
    */
   drawInstanced(instanceCount) {
-    throw new Error(
-      'Not implemented. Implement this method in a derived class.'
-    )
+    throw new Error('Not implemented. Implement this method in a derived class.')
   }
 
   /**
@@ -150,8 +141,7 @@ class GLGeom extends RefCounted {
     // eslint-disable-next-line guard-for-in
     for (const attrName in this.__glattrbuffers) {
       const glbuffer = this.__glattrbuffers[attrName]
-      if (glbuffer.shared)
-        continue /* This buffer is shared between geoms. do not destroy */
+      if (glbuffer.shared) continue /* This buffer is shared between geoms. do not destroy */
       gl.deleteBuffer(glbuffer.buffer)
     }
     this.__glattrs = {}

@@ -1,13 +1,4 @@
-import {
-  SInt32,
-  UInt32,
-  Float32,
-  Vec2,
-  Vec3,
-  Vec4,
-  Color,
-  Mat4,
-} from '../Math/index'
+import { SInt32, UInt32, Float32, Vec2, Vec3, Vec4, Color, Mat4 } from '../Math/index'
 import { GLTexture2D } from './GLTexture2D.js'
 import { GLHDRImage } from './GLHDRImage.js'
 import { GLImageStream } from './GLImageStream.js'
@@ -73,9 +64,9 @@ class SimpleUniformBinding {
   destroy() {}
 }
 
-/** Class representing complex uniform binding. 
+/** Class representing complex uniform binding.
  * @private
-*/
+ */
 class ComplexUniformBinding {
   /**
    * Create complex uniform binding.
@@ -129,9 +120,9 @@ class ComplexUniformBinding {
   destroy() {}
 }
 
-/** Class representing material uniform binding. 
+/** Class representing material uniform binding.
  * @private
-*/
+ */
 class MatrixUniformBinding {
   /**
    * Create material uniform binding.
@@ -183,9 +174,9 @@ class MatrixUniformBinding {
   destroy() {}
 }
 
-/** Class representing color uniform binding. 
+/** Class representing color uniform binding.
  * @private
-*/
+ */
 class ColorUniformBinding {
   /**
    * Create color uniform binding.
@@ -205,7 +196,7 @@ class ColorUniformBinding {
     this.vals = [0, 0, 0, 0]
     this.bind = this.bindValue
 
-    const genGLTex = image => {
+    const genGLTex = (image) => {
       let gltexture = image.getMetadata('gltexture')
       const textureType = 1
       if (!gltexture) {
@@ -234,7 +225,7 @@ class ColorUniformBinding {
 
     let boundImage
     let imageLoaded
-    const connectImage = image => {
+    const connectImage = (image) => {
       if (!image.isLoaded()) {
         imageLoaded = () => {
           genGLTex(boundImage)
@@ -307,8 +298,7 @@ class ColorUniformBinding {
       this.dirty = false
     }
     this.uniform4fv(this.unif.location, this.vals)
-    if (this.textureTypeUnif)
-      this.uniform1i(this.textureTypeUnif.location, 0)
+    if (this.textureTypeUnif) this.uniform1i(this.textureTypeUnif.location, 0)
   }
 
   /**
@@ -320,19 +310,15 @@ class ColorUniformBinding {
       this.update()
       this.dirty = false
     }
-    this.gltexture.bindToUniform(
-      renderstate,
-      this.textureUnif,
-      this.texBinding
-    )
+    this.gltexture.bindToUniform(renderstate, this.textureUnif, this.texBinding)
   }
 }
 
 const logged = {}
 
-/** Class representing material shader binding. 
+/** Class representing material shader binding.
  * @private
-*/
+ */
 class MaterialShaderBinding {
   /**
    * Create material shader binding.
@@ -376,31 +362,21 @@ class MaterialShaderBinding {
         case UInt32:
         case SInt32:
         case Float32:
-          this.uniformBindings.push(
-            new SimpleUniformBinding(gl, glmaterial, param, unif)
-          )
+          this.uniformBindings.push(new SimpleUniformBinding(gl, glmaterial, param, unif))
           break
         case Vec2:
         case Vec3:
         case Vec4:
-          this.uniformBindings.push(
-            new ComplexUniformBinding(gl, glmaterial, param, unif)
-          )
+          this.uniformBindings.push(new ComplexUniformBinding(gl, glmaterial, param, unif))
           break
         case Color:
-          this.uniformBindings.push(
-            new ColorUniformBinding(gl, glmaterial, param, unif, unifs)
-          )
+          this.uniformBindings.push(new ColorUniformBinding(gl, glmaterial, param, unif, unifs))
           break
         case Mat4:
-          this.uniformBindings.push(
-            new MatrixUniformBinding(gl, glmaterial, param, unif)
-          )
+          this.uniformBindings.push(new MatrixUniformBinding(gl, glmaterial, param, unif))
           break
         default:
-          console.warn(
-            'Param :' + name + ' has unhandled data type:' + unif.type
-          )
+          console.warn('Param :' + name + ' has unhandled data type:' + unif.type)
           return
       }
       return

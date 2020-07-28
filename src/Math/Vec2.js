@@ -18,11 +18,11 @@ class Vec2 extends AttrValue {
    * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array|Int32Array} and
    * {@link https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/ArrayBuffer|ArrayBuffer}.
    * <br>
-   * 
+   *
    * ```javascript
    *  const myVec2 = new Vec2(1.2, 3.4)
    * ```
-   * 
+   *
    * Given an array of floats, create a Vec2 that wraps some part of it.
    * ```javascript
    *  const floatArray = new Float32Array(6)
@@ -35,7 +35,7 @@ class Vec2 extends AttrValue {
    * ```json
    *  > { x:1.2, y:3.4 }
    * ```
-   * 
+   *
    * Given an array of floats, create a Vec2 that wraps some part of it.
    * ```javascript
    *  const floatArray = new Float32Array(6)
@@ -52,7 +52,7 @@ class Vec2 extends AttrValue {
    * ```json
    *  > { x:5.6, y:7.8 }
    * ```
-   * 
+   *
    * You can also pass one JSON object parameter.
    * ```javascript
    *  const myVec2 = new Vec2({ x:1.2, y:3.4 })
@@ -176,7 +176,6 @@ class Vec2 extends AttrValue {
     return this.x != other.x && this.y != other.y
   }
 
-
   /**
    * Returns true if this Vec2 is approximately the same as other.
    *
@@ -185,10 +184,7 @@ class Vec2 extends AttrValue {
    * @return {boolean} - Returns true or false.
    */
   approxEqual(other, precision = Number.EPSILON) {
-    return (
-      Math.abs(this.x - other.x) < precision &&
-      Math.abs(this.y - other.y) < precision
-    )
+    return Math.abs(this.x - other.x) < precision && Math.abs(this.y - other.y) < precision
   }
 
   /**
@@ -413,10 +409,7 @@ class Vec2 extends AttrValue {
   rotate(angle) {
     const cosa = Math.cos(angle)
     const sina = Math.sin(angle)
-    return new Vec2(
-      this.x * cosa - this.y * sina,
-      this.x * sina + this.y * cosa
-    )
+    return new Vec2(this.x * cosa - this.y * sina, this.x * sina + this.y * cosa)
   }
 
   /**

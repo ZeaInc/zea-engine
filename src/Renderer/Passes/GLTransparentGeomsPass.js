@@ -41,9 +41,8 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       if (shaderClass.isTransparent()) return true
       if (shaderClass.isOverlay()) return false
 
-      const baseColorParam = geomItem.getMaterial().getParameter("BaseColor")
-      if (baseColorParam && baseColorParam.getValue().a < 0.999)
-        return true;
+      const baseColorParam = geomItem.getMaterial().getParameter('BaseColor')
+      if (baseColorParam && baseColorParam.getValue().a < 0.999) return true
     }
     return false
   }
@@ -59,7 +58,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     const glmaterial = this.addMaterial(material)
     const glgeomitem = super.addGeomItem(geomItem)
 
-    const visibilityChangedId = geomItem.on('visibilityChanged', event => {
+    const visibilityChangedId = geomItem.on('visibilityChanged', (event) => {
       if (event.visible) {
         this.visibleItems.push(item)
       } else {
@@ -117,13 +116,10 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       const mat4 = transparentItem.glgeomitem.geomItem.getGeomMat4()
       transparentItem.dist = mat4.translation.distanceTo(viewPos)
     }
-    this.visibleItems.sort((a, b) =>
-      a.dist > b.dist ? -1 : a.dist < b.dist ? 1 : 0
-    )
+    this.visibleItems.sort((a, b) => (a.dist > b.dist ? -1 : a.dist < b.dist ? 1 : 0))
     this.prevSortCameraPos = viewPos
     this.resort = false
   }
-
 
   _drawItem(renderstate, transparentItem, cache) {
     if (cache.currentglMaterial != transparentItem.glmaterial) {
@@ -194,8 +190,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
     const viewPos = renderstate.viewXfo.tr
     // TODO: Avoid sorting if the camera did not movemore than 30cm
-    if (this.resort || viewPos.distanceTo(this.prevSortCameraPos) > 0.3)
-      this.sortItems(viewPos)
+    if (this.resort || viewPos.distanceTo(this.prevSortCameraPos) > 0.3) this.sortItems(viewPos)
 
     gl.enable(gl.DEPTH_TEST)
     gl.depthFunc(gl.LESS)
@@ -225,7 +220,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
 
     gl.disable(gl.BLEND)
   }
-  
+
   /**
    * The drawHighlightedGeoms method.
    * @param {any} renderstate - The renderstate value.

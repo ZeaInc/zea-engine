@@ -121,7 +121,7 @@ class LDRVideo extends FileImage {
     const promise = videoElem.play()
     if (promise !== undefined) {
       promise
-        .then(_ => {
+        .then((_) => {
           console.log('Autoplay started!')
           // Autoplay started!
         })

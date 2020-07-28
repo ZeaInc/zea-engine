@@ -58,24 +58,7 @@ class Mat4 extends AttrValue {
       this.__data = new Float32Array(buffer, byteOffset, 16)
     } else {
       this.__data = new Float32Array(16)
-      this.set(
-        m00,
-        m01,
-        m02,
-        m03,
-        m10,
-        m11,
-        m12,
-        m13,
-        m20,
-        m21,
-        m22,
-        m23,
-        m30,
-        m31,
-        m32,
-        m33
-      )
+      this.set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33)
     }
   }
 
@@ -255,7 +238,7 @@ class Mat4 extends AttrValue {
 
   /**
    * Setter for row 2, column 1
-   * 
+   *
    * @param {number} val - The val param.
    */
   set m21(val) {
@@ -408,7 +391,7 @@ class Mat4 extends AttrValue {
 
   /**
    * Getter for the `z` axis.
-   * 
+   *
    * @return {Vec3} - Returns the `z` axis as a Vec3.
    */
   get zAxis() {
@@ -653,8 +636,7 @@ class Mat4 extends AttrValue {
     const b11 = a22 * a33 - a23 * a32
 
     // Calculate the determinant
-    let det =
-      b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06
+    let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06
 
     if (!det) {
       console.warn('Unable to invert Mat4')
@@ -719,8 +701,7 @@ class Mat4 extends AttrValue {
     const b11 = a22 * a33 - a23 * a32
 
     // Calculate the determinant
-    let det =
-      b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06
+    let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06
 
     if (!det) {
       console.warn('Unable to invert Mat4')
@@ -787,8 +768,7 @@ class Mat4 extends AttrValue {
     const b11 = a22 * a33 - a23 * a32
 
     // Calculate the determinant
-    let det =
-      b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06
+    let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06
 
     if (!det) {
       throw new Error('Unable to invert Mat4')
@@ -1281,11 +1261,7 @@ class Mat4 extends AttrValue {
     const x = vec.x
     const y = vec.y
     const z = vec.z
-    return new Vec3(
-      a[0] * x + a[4] * y + a[8] * z,
-      a[1] * x + a[5] * y + a[9] * z,
-      a[2] * x + a[6] * y + a[10] * z
-    )
+    return new Vec3(a[0] * x + a[4] * y + a[8] * z, a[1] * x + a[5] * y + a[9] * z, a[2] * x + a[6] * y + a[10] * z)
   }
 
   /**
@@ -1300,24 +1276,7 @@ class Mat4 extends AttrValue {
     const f = Math.tan(Math.PI * 0.5 - 0.5 * fovy)
     const rangeInv = 1.0 / (near - far)
     /* eslint-disable prettier/prettier*/
-    this.set(
-      f / aspect,
-      0,
-      0,
-      0,
-      0,
-      f,
-      0,
-      0,
-      0,
-      0,
-      (near + far) * rangeInv,
-      -1,
-      0,
-      0,
-      near * far * rangeInv * 2,
-      0
-    )
+    this.set(f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (near + far) * rangeInv, -1, 0, 0, near * far * rangeInv * 2, 0)
     /* eslint-enable prettier/prettier*/
   }
 

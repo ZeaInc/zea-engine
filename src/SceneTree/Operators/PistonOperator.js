@@ -217,13 +217,13 @@ class PistonOperator extends Operator {
       this.init()
     })
     this.__pistonsParam = this.addParameter(new ListParameter('Pistons', PistonParameter))
-    this.__pistonsParam.on('elementAdded', event => {
+    this.__pistonsParam.on('elementAdded', (event) => {
       event.elem.setCrankXfo(this.__baseCrankXfo)
 
       this.addOutput(event.elem.getRodOutput())
       this.addOutput(event.elem.getCapOutput())
     })
-    this.__pistonsParam.on('elementRemoved', event => {
+    this.__pistonsParam.on('elementRemoved', (event) => {
       this.removeOutput(event.elem.getRodOutput())
       this.removeOutput(event.elem.getCapOutput())
     })

@@ -387,8 +387,7 @@ class Color extends AttrValue {
         yellowgreen: '#9acd32',
       }
 
-      if (typeof colors[colour.toLowerCase()] != 'undefined')
-        return colors[colour.toLowerCase()]
+      if (typeof colors[colour.toLowerCase()] != 'undefined') return colors[colour.toLowerCase()]
 
       return false
     }
@@ -410,12 +409,7 @@ class Color extends AttrValue {
       const hex = int.toString(16)
       return hex.length == 1 ? '0' + hex : hex
     }
-    return (
-      '#' +
-      componentToHex(this.r) +
-      componentToHex(this.g) +
-      componentToHex(this.b)
-    )
+    return '#' + componentToHex(this.r) + componentToHex(this.g) + componentToHex(this.b)
   }
 
   /**

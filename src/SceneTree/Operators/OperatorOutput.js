@@ -165,10 +165,10 @@ class OperatorOutput {
       // are loaded last.
       context.resolvePath(
         j.paramPath,
-        param => {
+        (param) => {
           this.setParam(param, j.paramBindIndex)
         },
-        reason => {
+        (reason) => {
           console.warn("OperatorOutput: '" + this.getName() + "'. Unable to connect to:" + j.paramPath)
         }
       )

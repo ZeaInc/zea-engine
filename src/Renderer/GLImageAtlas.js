@@ -9,7 +9,6 @@ import { GLTexture2D } from './GLTexture2D.js'
 import { GLRenderTarget } from './GLRenderTarget.js'
 import { generateShaderGeomBinding } from './GeomShaderBinding.js'
 
-
 // eslint-disable-next-line require-jsdoc
 class AtlasLayoutShader extends GLShader {
   /**
@@ -185,7 +184,7 @@ class GLImageAtlas extends GLRenderTarget {
 
       const updated = () => {
         // TODO: Check to see if the new dimensions
-        // do not match the previous. If not, then we 
+        // do not match the previous. If not, then we
         // need to relayout. wE could also avlid a complete
         // relaout by reremoving and re-adding this image.
         this.__layoutNeedsRegeneration = true
@@ -290,10 +289,7 @@ class GLImageAtlas extends GLRenderTarget {
     this.configure({
       width,
       height,
-      format:
-        this.__typeParam == 'FLOAT' && this.__formatParam == 'RGB'
-          ? 'RGBA'
-          : this.__formatParam,
+      format: this.__typeParam == 'FLOAT' && this.__formatParam == 'RGB' ? 'RGBA' : this.__formatParam,
       type: this.__typeParam,
       filter: 'LINEAR',
     })
@@ -322,8 +318,7 @@ class GLImageAtlas extends GLRenderTarget {
     size = Math.nextPow2(size)
     // Size should be a multiple of pixelsPerItem, so each geom item is always contiguous
     // in memory. (makes updating a lot easier. See __updateItemInstanceData below)
-    if (size % pixelsPerItem != 0)
-      size += pixelsPerItem - (size % pixelsPerItem)
+    if (size % pixelsPerItem != 0) size += pixelsPerItem - (size % pixelsPerItem)
 
     if (!gl.floatTexturesSupported) {
       this.__layoutVec4s = []
@@ -336,9 +331,7 @@ class GLImageAtlas extends GLRenderTarget {
         ]
       })
     } else {
-      const dataArray = new Float32Array(
-        size * size * 4
-      ) /* each pixel has 4 floats*/
+      const dataArray = new Float32Array(size * size * 4) /* each pixel has 4 floats*/
       for (let i = 0; i < this.__layout.length; i++) {
         const layoutItem = this.__layout[i]
         const vec4 = Vec4.createFromFloat32Buffer(dataArray.buffer, i * 4)
@@ -409,15 +402,9 @@ class GLImageAtlas extends GLRenderTarget {
       const layoutItem = this.__layout[j]
       glimage.bindToUniform(renderstate, unifs.srctexture)
       gl.uniform2fv(unifs.pos.location, layoutItem.pos.multiply(scl).asArray())
-      gl.uniform2fv(
-        unifs.size.location,
-        layoutItem.size.multiply(scl).asArray()
-      )
+      gl.uniform2fv(unifs.size.location, layoutItem.size.multiply(scl).asArray())
       gl.uniform2f(unifs.srctextureDim.location, glimage.width, glimage.height)
-      gl.uniform1i(
-        unifs.alphaFromLuminance.location,
-        glimage.alphaFromLuminance
-      )
+      gl.uniform1i(unifs.alphaFromLuminance.location, glimage.alphaFromLuminance)
       gl.uniform1i(unifs.invert.location, glimage.invert)
       gl.drawQuad()
 
@@ -455,18 +442,11 @@ class GLImageAtlas extends GLRenderTarget {
 
     const unifs = renderstate.unifs
     const atlasLayoutUnif = unifs[unif.name + '_layout']
-    if (atlasLayoutUnif)
-      this.__atlasLayoutTexture.bindToUniform(renderstate, atlasLayoutUnif)
+    if (atlasLayoutUnif) this.__atlasLayoutTexture.bindToUniform(renderstate, atlasLayoutUnif)
 
     const atlasDescUnif = unifs[unif.name + '_desc']
     if (atlasDescUnif)
-      this.__gl.uniform4f(
-        atlasDescUnif.location,
-        this.width,
-        this.height,
-        this.__atlasLayoutTexture.width,
-        0.0
-      )
+      this.__gl.uniform4f(atlasDescUnif.location, this.width, this.height, this.__atlasLayoutTexture.width, 0.0)
 
     return true
   }
@@ -493,4 +473,3 @@ class GLImageAtlas extends GLRenderTarget {
 }
 
 export { GLImageAtlas }
-

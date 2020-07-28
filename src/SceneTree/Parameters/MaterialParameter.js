@@ -50,7 +50,7 @@ class MaterialParameter extends Parameter {
       if (this.__value) {
         this.__value.on('parameterValueChanged', this.__valueParameterValueChanged)
       }
-      
+
       this.__flags |= ParamFlags.USER_EDITED
 
       // During the cleaning process, we don't want notifications.

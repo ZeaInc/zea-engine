@@ -201,7 +201,6 @@ void main(void) {
   }
 }
 
-
 class FatPointsSelectedShader extends FatPointsShader {
   constructor(gl) {
     super(gl)
@@ -270,8 +269,8 @@ sgFactory.registerClass('FatPointsShader', FatPointsShader)
 sgFactory.registerClass('FatPointsGeomDataShader', FatPointsGeomDataShader)
 sgFactory.registerClass('FatPointsSelectedShader', FatPointsSelectedShader)
 
-// Note: due to a bug in webpack, if these classes are not exported, 
-// then we get a mangling of the code _only_in_release_mode_. 
+// Note: due to a bug in webpack, if these classes are not exported,
+// then we get a mangling of the code _only_in_release_mode_.
 // The factory returns FatPointsSelectedShader
 // instead of FatPointsShader when the GLPAss tries to construct it.
 export { FatPointsShader, FatPointsGeomDataShader, FatPointsSelectedShader }

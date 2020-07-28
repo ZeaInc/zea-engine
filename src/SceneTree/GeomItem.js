@@ -8,7 +8,6 @@ import { Operator } from './Operators/Operator.js'
 import { OperatorInput } from './Operators/OperatorInput.js'
 import { OperatorOutput } from './Operators/OperatorOutput.js'
 
-
 /** The operator the calculates the global Xfo of a TreeItem based on its parents GlobalXfo and its own LocalXfo
  * @extends Operator
  * @private
@@ -19,7 +18,7 @@ class CalcGeomMatOperator extends Operator {
    * @param {string} name - The name value.
    */
   constructor(globalXfoParam, geomOffsetXfoParam, geomMatParam) {
-    super("CalcGeomMatOperator")
+    super('CalcGeomMatOperator')
     this.addInput(new OperatorInput('GlobalXfo')).setParam(globalXfoParam)
     this.addInput(new OperatorInput('GeomOffsetXfo')).setParam(geomOffsetXfoParam)
     this.addOutput(new OperatorOutput('GeomMat')).setParam(geomMatParam)

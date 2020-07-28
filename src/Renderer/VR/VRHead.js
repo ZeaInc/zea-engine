@@ -1,9 +1,9 @@
 import { Mat4, Xfo } from '../../Math/index'
 import { TreeItem } from '../../SceneTree/index'
 
-/** Class representing a VR head. 
+/** Class representing a VR head.
  * @private
-*/
+ */
 class VRHead {
   /**
    * Create a VR head.

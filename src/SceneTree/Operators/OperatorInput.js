@@ -121,10 +121,10 @@ class OperatorInput {
       // are loaded last.
       context.resolvePath(
         j.paramPath,
-        param => {
+        (param) => {
           this.setParam(param)
         },
-        reason => {
+        (reason) => {
           console.warn("OperatorInput: '" + this.getName() + "'. Unable to connect to:" + j.paramPath)
         }
       )
