@@ -63,7 +63,7 @@ class KinematicGroupParameter extends ListParameter {
   }
 
   /**
-   * The getXfo method.
+   * The setXfo method.
    * @param {any} xfo - The xfo value.
    */
   setXfo(xfo) {
