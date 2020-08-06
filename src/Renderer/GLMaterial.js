@@ -19,6 +19,8 @@ class GLMaterial extends EventEmitter {
     this.__glshader = glshader
 
     this.__shaderBindings = {}
+
+    material.on('parameterValueChanged', () => this.emit('updated'))
   }
 
   /**
