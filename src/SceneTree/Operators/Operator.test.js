@@ -114,6 +114,49 @@ describe('Operator', () => {
     expect(myParam.isDirty()).toBe(false)
   })
 
+  it('test dynamically changing inputs and outputs', () => {
+    const operator = new Operator()
+    const aParam = new NumberParameter('A', 2)
+    const bParam = new NumberParameter('B', 3.5)
+    const cParam = new NumberParameter('C')
+
+    operator.addInput(new OperatorInput('A')).setParam(aParam)
+    operator.addInput(new OperatorInput('B')).setParam(bParam)
+    operator.addOutput(new OperatorOutput('C')).setParam(cParam)
+
+    expect(aParam.isDirty()).toBe(false)
+    expect(bParam.isDirty()).toBe(false)
+    expect(cParam.isDirty()).toBe(true)
+
+    operator.getInput('A').setParam(null)
+    operator.getInput('B').setParam(null)
+    operator.getOutput('C').setParam(null)
+
+    expect(aParam.isDirty()).toBe(false)
+    expect(bParam.isDirty()).toBe(false)
+    expect(cParam.isDirty()).toBe(false)
+
+    operator.removeInput(operator.getInput('A'))
+    operator.removeInput(operator.getInput('B'))
+    operator.removeOutput(operator.getOutput('C'))
+
+    operator.addInput(new OperatorInput('A')).setParam(aParam)
+    operator.addInput(new OperatorInput('B')).setParam(bParam)
+    operator.addOutput(new OperatorOutput('C')).setParam(cParam)
+
+    expect(aParam.isDirty()).toBe(false)
+    expect(bParam.isDirty()).toBe(false)
+    expect(cParam.isDirty()).toBe(true)
+
+    operator.removeInput(operator.getInput('A'))
+    operator.removeInput(operator.getInput('B'))
+    operator.removeOutput(operator.getOutput('C'))
+
+    expect(aParam.isDirty()).toBe(false)
+    expect(bParam.isDirty()).toBe(false)
+    expect(cParam.isDirty()).toBe(false)
+  })
+
   class SetFloatOperator extends Operator {
     constructor(name, value) {
       super(name)

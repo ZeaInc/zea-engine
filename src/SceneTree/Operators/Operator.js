@@ -62,7 +62,7 @@ class Operator extends BaseItem {
    * @param {OperatorInput} input - The input value.
    */
   removeInput(input) {
-    if (input.getParam()) input.getParam().unbindOperator(this)
+    if (input.getParam()) input.setParam(null)
     this.__inputs.splice(this.__inputs.indexOf(input), 1)
   }
 
@@ -110,7 +110,7 @@ class Operator extends BaseItem {
    * @param {OperatorOutput} output - The output value.
    */
   removeOutput(output) {
-    if (output.getParam()) output.getParam().unbindOperator(this)
+    if (output.getParam()) output.setParam(null)
     this.__outputs.splice(this.__outputs.indexOf(output), 1)
   }
 
