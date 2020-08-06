@@ -23,6 +23,29 @@ describe('ParameterOwner', () => {
     expect(mockFn).toHaveBeenCalledTimes(1)
   })
 
+  it('test adding and removing parameters.', () => {
+    const parameterOwner = new ParameterOwner()
+
+    const parameterAdded = jest.fn()
+    const parameterRemoved = jest.fn()
+    const parameterValueChanged = jest.fn()
+
+    parameterOwner.on('parameterAdded', parameterAdded)
+    parameterOwner.on('parameterRemoved', parameterRemoved)
+
+    const foo1 = parameterOwner.addParameter(new Parameter('foo', 1, 'Number'))
+    const foo2 = parameterOwner.replaceParameter(new Parameter('foo', 2, 'Number'))
+    parameterOwner.removeParameter('foo')
+
+    expect(parameterAdded).toHaveBeenCalledTimes(2)
+    expect(parameterRemoved).toHaveBeenCalledTimes(2)
+
+    foo1.setValue(4)
+    foo2.setValue(5)
+    parameterOwner.on('parameterValueChanged', parameterValueChanged)
+    expect(parameterRemoved).toHaveBeenCalledTimes(2)
+  })
+
   it('save to JSON and load from JSON (serialization).', () => {
     // test param without data type.
   })
