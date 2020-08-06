@@ -48,7 +48,7 @@ class ScaleFloatOperator extends Operator {
 sgFactory.registerClass('ScaleFloatOperator', ScaleFloatOperator)
 
 describe('Operator', () => {
-  it('AddFloatsOperator', () => {
+  it('test AddFloatsOperator', () => {
     const addOperator = new AddFloatsOperator()
 
     const aParam = new NumberParameter('A')
@@ -67,7 +67,7 @@ describe('Operator', () => {
     expect(myParam.isDirty()).toBe(false)
   })
 
-  it('ScaleFloatOperator', () => {
+  it('test ScaleFloatOperator', () => {
     const scaleOperator = new ScaleFloatOperator()
 
     const scaleParam = new NumberParameter('A', 2)
@@ -87,7 +87,7 @@ describe('Operator', () => {
     expect(resultParam.isDirty()).toBe(false)
   })
 
-  it('AddScaleFloatOperator', () => {
+  it('test combining AddFloatsOperator and ScaleFloatOperator', () => {
     const addOperator = new AddFloatsOperator()
     const aParam = new NumberParameter('A', 2)
     const bParam = new NumberParameter('B', 3.5)
@@ -124,6 +124,9 @@ describe('Operator', () => {
     operator.addInput(new OperatorInput('B')).setParam(bParam)
     operator.addOutput(new OperatorOutput('C')).setParam(cParam)
 
+    expect(operator.getNumInputs()).toBe(2)
+    expect(operator.getNumOutputs()).toBe(1)
+
     expect(aParam.isDirty()).toBe(false)
     expect(bParam.isDirty()).toBe(false)
     expect(cParam.isDirty()).toBe(true)
@@ -139,6 +142,9 @@ describe('Operator', () => {
     operator.removeInput(operator.getInput('A'))
     operator.removeInput(operator.getInput('B'))
     operator.removeOutput(operator.getOutput('C'))
+
+    expect(operator.getNumInputs()).toBe(0)
+    expect(operator.getNumOutputs()).toBe(0)
 
     operator.addInput(new OperatorInput('A')).setParam(aParam)
     operator.addInput(new OperatorInput('B')).setParam(bParam)
@@ -364,7 +370,7 @@ describe('Operator', () => {
     bParam.setValue(2.5)
 
     const expOutput =
-      '{"name":"","type":"AddFloatsOperator","inputs":[{"paramPath":["Foo","A"]},{"paramPath":["Foo","B"]}],"outputs":[{"paramPath":["Foo","MyParam"],"paramBindIndex":0}]}'
+      '{"name":"","type":"AddFloatsOperator","inputs":[{"name":"A","paramPath":["Foo","A"]},{"name":"B","paramPath":["Foo","B"]}],"outputs":[{"name":"C","paramPath":["Foo","MyParam"],"paramBindIndex":0}]}'
     expect(JSON.stringify(addOperator.toJSON())).toBe(expOutput)
   })
 
@@ -378,8 +384,11 @@ describe('Operator', () => {
     const input = {
       name: '',
       type: 'AddFloatsOperator',
-      inputs: [{ paramPath: ['Foo', 'A'] }, { paramPath: ['Foo', 'B'] }],
-      outputs: [{ paramPath: ['Foo', 'MyParam'], paramBindIndex: 0 }],
+      inputs: [
+        { name: 'A', paramPath: ['Foo', 'A'] },
+        { name: 'B', paramPath: ['Foo', 'B'] },
+      ],
+      outputs: [{ name: 'C', paramPath: ['Foo', 'MyParam'], paramBindIndex: 0 }],
     }
     addOperator.fromJSON(input, {
       resolvePath: (path, cb) => {

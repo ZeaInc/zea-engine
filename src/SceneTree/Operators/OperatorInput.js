@@ -104,6 +104,7 @@ class OperatorInput {
   toJSON(context, flags) {
     const paramPath = this._param ? this._param.getPath() : ''
     return {
+      name: this.__name,
       paramPath: context && context.makeRelative ? context.makeRelative(paramPath) : paramPath,
     }
   }
