@@ -4,6 +4,7 @@ import { TreeItem } from '../../SceneTree/index'
 import { GLBaseViewport } from '../GLBaseViewport.js'
 import { VRHead } from './VRHead.js'
 import { VRController } from './VRController.js'
+import { resourceLoader } from '../../SceneTree/ResourceLoader.js'
 
 /** Class representing a VR viewport.
  * @extends GLBaseViewport
@@ -173,7 +174,6 @@ class VRViewport extends GLBaseViewport {
       // Note: when the VRViewport is setup
       const sceneSet = (event) => {
         const scene = event.scene
-        const resourceLoader = scene.getResourceLoader()
 
         let assetPath
         switch (hmd) {
@@ -190,7 +190,7 @@ class VRViewport extends GLBaseViewport {
 
         const hmdAssetId = resourceLoader.resolveFilePathToId(assetPath)
         if (hmdAssetId && !SystemDesc.isMobileDevice) {
-          this.__vrAsset = this.__renderer.getScene().loadCommonAssetResource(hmdAssetId)
+          this.__vrAsset = resourceLoader.loadCommonAssetResource(hmdAssetId)
           this.__vrAsset.on('loaded', () => {
             const materialLibrary = this.__vrAsset.getMaterialLibrary()
             const materialNames = materialLibrary.getMaterialNames()

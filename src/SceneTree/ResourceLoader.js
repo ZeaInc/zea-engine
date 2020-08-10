@@ -55,6 +55,11 @@ class ResourceLoader extends EventEmitter {
       baseUrl = 'https://unpkg.com/@zeainc/zea-engine@0.1.3'
     }
     this.wasmUrl = baseUrl + '/public-resources/unpack.wasm'
+
+    // Common resources are used by systems such at the renderer and VR controllers.
+    // Any asset that will probably be used my multiple different independent objects
+    // should be loaded here. (For now, it is being used to load VR Controller assets.)
+    this.__commonResources = {}
   }
 
   /**
@@ -238,6 +243,22 @@ class ResourceLoader extends EventEmitter {
     }
     this.emit('loaded', { resourceId })
     this.addWorkDone(resourceId, 1) // parsing done...
+  }
+
+  /**
+   * Loads and return a file resource using the specified path.
+   *
+   * @param {string} resourceId - The resourceId value.
+   * @return {VLAAsset} - The return value.
+   */
+  loadCommonAssetResource(resourceId) {
+    if (resourceId in this.__commonResources) {
+      return this.__commonResources[resourceId]
+    }
+    const asset = new VLAAsset()
+    asset.getParameter('DataFilePath').setValue(resourceId)
+    this.__commonResources[resourceId] = asset
+    return asset
   }
 
   // /////////////////////////////////////////////////
