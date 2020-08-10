@@ -1,4 +1,4 @@
-import { SystemDesc } from '../BrowserDetection.js'
+import { SystemDesc } from '../SystemDesc.js'
 import { EventEmitter } from '../Utilities/index'
 import Registry from '../Registry'
 import { Material } from './Material.js'

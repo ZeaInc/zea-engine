@@ -1,4 +1,4 @@
-import { SystemDesc } from '../BrowserDetection.js'
+import { SystemDesc } from '../SystemDesc.js'
 import '../Math/index'
 
 /**

@@ -1,4 +1,4 @@
-import { SystemDesc } from '../BrowserDetection.js'
+import { SystemDesc } from '../SystemDesc.js'
 import { BinReader } from './BinReader.js'
 import { loadBinfile } from './Utils.js'
 import { PointsProxy, LinesProxy, MeshProxy } from './Geometry/GeomProxies.js'

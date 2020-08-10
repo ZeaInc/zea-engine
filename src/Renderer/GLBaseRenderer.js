@@ -1,5 +1,5 @@
 import { TreeItem, ParameterOwner } from '../SceneTree/index'
-import { SystemDesc } from '../BrowserDetection.js'
+import { SystemDesc } from '../SystemDesc.js'
 import { onResize } from '../external/onResize.js'
 import { create3DContext } from './GLContext.js'
 import { GLScreenQuad } from './GLScreenQuad.js'

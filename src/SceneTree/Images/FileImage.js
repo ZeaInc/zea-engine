@@ -5,7 +5,7 @@ import { BaseImage } from '../BaseImage.js'
 
 import { GIF } from '../../external/gifuct-js.js'
 import { resourceLoader } from '../ResourceLoader.js'
-import { SystemDesc } from '../../BrowserDetection.js'
+import { SystemDesc } from '../../SystemDesc.js'
 
 import { BooleanParameter, NumberParameter, Vec4Parameter } from '../Parameters/index'
 import { FilePathParameter } from '../Parameters/FilePathParameter'

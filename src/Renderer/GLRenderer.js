@@ -1,4 +1,4 @@
-import { SystemDesc } from '../BrowserDetection.js'
+import { SystemDesc } from '../SystemDesc.js'
 import { Vec3, Xfo, Mat4, Ray } from '../Math/index'
 import { Plane, EnvMap } from '../SceneTree/index'
 import { GLFbo } from './GLFbo.js'

@@ -1,4 +1,4 @@
-import { SystemDesc } from '../../BrowserDetection.js'
+import { SystemDesc } from '../../SystemDesc.js'
 import { Vec3, Quat, Xfo, Mat4 } from '../../Math/index'
 import { TreeItem } from '../../SceneTree/index'
 

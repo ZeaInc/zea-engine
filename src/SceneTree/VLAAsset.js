@@ -1,4 +1,4 @@
-import { SystemDesc } from '../BrowserDetection.js'
+import { SystemDesc } from '../SystemDesc.js'
 import { FilePathParameter } from './Parameters/FilePathParameter'
 import { AssetItem } from './AssetItem.js'
 import { BinReader } from './BinReader.js'

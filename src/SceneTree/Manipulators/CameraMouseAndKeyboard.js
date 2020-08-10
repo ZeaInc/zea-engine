@@ -2,7 +2,7 @@
 import { Vec2, Vec3, Quat, Xfo } from '../../Math/index'
 import { ParameterOwner } from '../ParameterOwner.js'
 import { NumberParameter } from '../Parameters/index'
-import { SystemDesc } from '../../BrowserDetection.js'
+import { SystemDesc } from '../../SystemDesc.js'
 
 /**
  * Class representing the viewport manipulator with camera, mouse and keyboard events.
