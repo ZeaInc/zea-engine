@@ -7,7 +7,9 @@ import { Lines } from './Geometry/Lines'
 import Registry from '../Registry'
 
 /**
- *
+ * The GridTreeItem displays a grid of a given size and resolution. The Grid is oriented on the XY plane
+ * and highlights the X and Y axes with Red and Green lines. Grids are useful in displaying scene scale and coordinate system.
+ * The Grid geometry does not return a bounding box and so does not effect the bounding of the scene.
  *
  * @extends {TreeItem}
  */

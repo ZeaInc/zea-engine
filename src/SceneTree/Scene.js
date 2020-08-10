@@ -72,8 +72,13 @@ class Scene {
     console.warn('Deprecated Function. Please access the Scene Root object.')
     this.root.addChild(asset, false)
   }
+
   /**
-   * Sets up and displays the scene grid. Under the hood it is just another TreeItem with Geometry Items for the lines.
+   * Sets up and displays the scene grid of a given size and resolution. The Grid is oriented on the XY plane
+   * and highlights the X and Y axes with Red and Green lines. Grids are useful in displaying scene scale and coordinate system.
+   * The Grid geometry does not return a bounding box and so does not effect the bounding of the scene.
+   * The GridTreeItem display a grid of a given size and resolution. The Grid is oriented on the XY plane
+   * and highlights the X and Y axes with Red and Green lines.
    *
    * @param {number} gridSize - The size of the grid.
    * @param {number} resolution - The resolution of the grid.
@@ -83,7 +88,6 @@ class Scene {
   setupGrid(gridSize = 5, resolution = 50, gridColor = defaultGridColor) {
     const gridTreeItem = new GridTreeItem(gridSize, resolution, gridColor)
     this.root.addChild(gridTreeItem, false)
-
     return gridTreeItem
   }
 
