@@ -119,20 +119,6 @@ class Cylinder extends Mesh {
 
     // Now set the attribute values
     faceIndex = 0
-    for (let i = 0; i < nbLoops - 1; i++) {
-      for (let j = 0; j < nbSides; j++) {
-        let phi = (j / nbSides) * 2.0 * Math.PI
-        const normal1 = new Vec3(Math.sin(phi), Math.cos(phi), 0.0)
-        normals.setFaceVertexValue(faceIndex, 0, normal1)
-        normals.setFaceVertexValue(faceIndex, 1, normal1)
-
-        phi = ((j + 1) / nbSides) * 2.0 * Math.PI
-        const normal2 = new Vec3(Math.sin(phi), Math.cos(phi), 0.0)
-        normals.setFaceVertexValue(faceIndex, 2, normal2)
-        normals.setFaceVertexValue(faceIndex, 3, normal2)
-        faceIndex++
-      }
-    }
     if (caps) {
       const normal = new Vec3(0.0, 0.0, -1.0)
       for (let i = 0; i < nbSides; i++) {
@@ -146,6 +132,20 @@ class Cylinder extends Mesh {
         normals.setFaceVertexValue(faceIndex, 0, normal)
         normals.setFaceVertexValue(faceIndex, 1, normal)
         normals.setFaceVertexValue(faceIndex, 2, normal)
+        faceIndex++
+      }
+    }
+    for (let i = 0; i < nbLoops - 1; i++) {
+      for (let j = 0; j < nbSides; j++) {
+        let phi = (j / nbSides) * 2.0 * Math.PI
+        const normal1 = new Vec3(Math.sin(phi), Math.cos(phi), 0.0)
+        normals.setFaceVertexValue(faceIndex, 0, normal1)
+        normals.setFaceVertexValue(faceIndex, 1, normal1)
+
+        phi = ((j + 1) / nbSides) * 2.0 * Math.PI
+        const normal2 = new Vec3(Math.sin(phi), Math.cos(phi), 0.0)
+        normals.setFaceVertexValue(faceIndex, 2, normal2)
+        normals.setFaceVertexValue(faceIndex, 3, normal2)
         faceIndex++
       }
     }
