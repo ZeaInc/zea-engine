@@ -221,14 +221,9 @@ class Parameter extends EventEmitter {
    * @param {number} index - The index of the bound OperatorOutput.
    */
   setCleanFromOp(value, index) {
-    // console.log('setCleanFromOp:', index)
-    // if (this.__boundOps.length == 3) {
-    //   // console.log(this.getPath())
-    //   console.log('.')
-    // }
     if (index != this.__dirtyOpIndex) {
       if (index < this.__dirtyOpIndex) {
-        // This can happen when an operator in the folowing case.
+        // This can happen when an operator in the following case.
 
         // ParamA [OpC, OpB, OpA]
         // ParamB [OpC, OpA]
@@ -346,7 +341,7 @@ class Parameter extends EventEmitter {
     if (this.__boundOps.length > 0) {
       for (let i = this.__boundOps.length - 1; i >= 0; i--) {
         const operatorOutput = this.__boundOps[i]
-        value = operatorOutput.setValue(value)
+        value = operatorOutput.backPropagateValue(value)
         if (operatorOutput.getMode() == 0 /* OP_WRITE */) return
       }
     }

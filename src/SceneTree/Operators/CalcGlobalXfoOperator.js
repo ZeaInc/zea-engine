@@ -19,10 +19,11 @@ class CalcGlobalXfoOperator extends Operator {
   }
 
   /**
-   * The setValue method.
-   * @param {Xfo} value - the new value being set on the GlobalXfo
+   * The backPropagateValue method inverts the mathematics of the 'evaluate'
+   * method so it can propagate the value backwards to its inputs.
+   * @param {Xfo} value - the new value being set on the output GlobalXfo
    */
-  setValue(value) {
+  backPropagateValue(value) {
     const localXfoParam = this.getInput('LocalXfo').getParam()
     const parentGlobalInput = this.getInput('ParentGlobal')
     if (parentGlobalInput.isConnected()) {
@@ -34,7 +35,8 @@ class CalcGlobalXfoOperator extends Operator {
   }
 
   /**
-   * The evaluate method.
+   * The evaluate method calculates a new global Xfo based on the parents Global Xfo,
+   * and the local Xfo value.
    */
   evaluate() {
     const localXfo = this.getInput('LocalXfo').getValue()

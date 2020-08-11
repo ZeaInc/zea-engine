@@ -64,11 +64,17 @@ class GroupMemberXfoOperator extends Operator {
     this._enabled = true
   }
 
+  /**
+   * used to temporarily disable/enable the operator when the Group bind Xfo is being calculated
+   */
   disable() {
     this._enabled = false
     this.setDirty()
   }
 
+  /**
+   * used to temporarily disable/enable the operator when the Group bind Xfo is being calculated
+   */
   enable() {
     this._enabled = true
     this.setDirty()

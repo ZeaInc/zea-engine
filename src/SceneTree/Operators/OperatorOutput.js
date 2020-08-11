@@ -114,18 +114,18 @@ class OperatorOutput {
   }
 
   /**
-   * The setValue method.
-   * Note: FIXME Sometimes outputs are used in places like statemachines,
-   * where we would want the change to cause an event.
-   * Note: when a user sets a parameter value that is being driven by
-   * an operator, the operator can propagate the value back up the chain
+   * When the value on a Parameter is modified by a user by calling 'setValue,
+   * then if any operators are bound, the value of the Parameter cannot be modified
+   * directly as it is the result of a computation. Instead, the Parameter calls
+   * 'backPropagateValue' on the Operator to cause the Operator to handle propagating
+   * the value to one or more of its inputs.
    * to its inputs.
    * @param {any} value - The value param.
    * @return {any} - The modified value.
    */
-  setValue(value) {
+  backPropagateValue(value) {
     if (this._param) {
-      value = this._op.setValue(value, this)
+      value = this._op.backPropagateValue(value, this)
     }
     return value
   }
