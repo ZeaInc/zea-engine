@@ -110,7 +110,11 @@ class OperatorOutput {
    * @return {any} - The return value.
    */
   getValue() {
-    if (this._param) return this._param.getValueFromOp(this._paramBindIndex)
+    if (this._param) {
+      return this._param.getValueFromOp(this._paramBindIndex)
+    } else {
+      throw new Error('Cannot call getValue on OperatorOutput that is not connected:', this.__name)
+    }
   }
 
   /**
