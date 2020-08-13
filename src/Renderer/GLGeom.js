@@ -148,7 +148,9 @@ class GLGeom extends RefCounted {
 
     this.__shaderBindings = {}
     this.__destroyed = true
-    // this.emit('destructing', {})
+
+    //  Note: PoTree listens to this event. If moved up into RefCounted, make sure it is still emitted.
+    this.emit('destructing', {})
   }
 }
 
