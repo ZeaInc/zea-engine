@@ -51,6 +51,7 @@ class Operator extends BaseItem {
     if (typeof input == 'string') input = new OperatorInput(input)
     input.setOperator(this)
     this.__inputs.set(input.getName(), input)
+    this.setDirty()
     return input
   }
 
@@ -103,6 +104,7 @@ class Operator extends BaseItem {
     output.setOperator(this)
     if (this.getOutput(output.getName())) throw new Error(`Operator output already exists ${output.getName()}`)
     this.__outputs.set(output.getName(), output)
+    this.setDirty()
     return output
   }
 
