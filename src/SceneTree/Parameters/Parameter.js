@@ -43,7 +43,7 @@ class Parameter extends EventEmitter {
     this.__value = value
     this.__dataType = dataType ? dataType : undefined
     this.__boundOps = []
-    this.__dirtyOpIndex = this.__boundOps.length
+    this.__dirtyOpIndex = 0
     this.__cleaning = false
 
     this.getName = this.getName.bind(this)
@@ -145,8 +145,8 @@ class Parameter extends EventEmitter {
     for (let i = index; i < this.__boundOps.length; i++) {
       this.__boundOps[i].setParamBindIndex(i)
     }
-    this.__dirtyOpIndex = 0
-    this.emit('valueChanged', { mode: 0 })
+    // If we weren't already dirty, make sure to emit a 'valueChanged' anyway.
+    if (!this.setDirty(index)) this.emit('valueChanged', { mode: 0 })
     return index
   }
 
@@ -163,8 +163,7 @@ class Parameter extends EventEmitter {
     for (let i = index; i < this.__boundOps.length; i++) {
       this.__boundOps[i].setParamBindIndex(i)
     }
-    this.__dirtyOpIndex = 0
-    this.emit('valueChanged', { mode: 0 })
+    this.setDirty(index - 1)
     return index
   }
 
@@ -241,14 +240,13 @@ class Parameter extends EventEmitter {
         //   } with name: ${op.getName()} is being cleaned immediately, instead of lazily.`
         // )
         console.log(`Parameter is cleaned when it was already clean to that point in the stack:`, this.getPath())
-      } else {
-        const op = this.__boundOps[index].getOperator()
+      } else if (this.__boundOps[index].getMode() != OperatorOutputMode.OP_WRITE) {
+        // A parameter can become dirty (so __dirtyOpIndex == 0), and then another operator bound on top.
+        // if the next op is a WRITE op, then we can fast forward the dirty index.
+        const thisClassName = Registry.getBlueprintName(this)
+        const opClassName = Registry.getBlueprintName(this.__boundOps[index].getOperator())
         throw new Error(
-          `Parameter: ${
-            this.constructor.name
-          } with name: ${this.getName()} is not cleaning all outputs during evaluation of op:: ${
-            op.constructor.name
-          } with name: ${op.getName()}`
+          `Parameter: ${thisClassName} with name: ${this.getName()} is not cleaning all outputs during evaluation of op: ${opClassName} with name: ${op.getName()}`
         )
       }
     }
@@ -284,26 +282,25 @@ class Parameter extends EventEmitter {
       throw new Error(`Cycle detected when cleaning: ${this.getPath()}. Operators need to be rebound to fix errors`)
     }
     this.__cleaning = true
-    // if (this.__boundOps.length == 3) {
-    //   // console.log(this.getPath())
-    //   console.log('.')
-    // }
-    // to clean te parameter, we need to start from the first bound op
-    // that needs to be evaluated, and go down the stack from there.
-    // for (; this.__dirtyOpIndex < index; this.__dirtyOpIndex++) {
+
     while (this.__dirtyOpIndex < index) {
+      const tmp = this.__dirtyOpIndex
       const operatorOutput = this.__boundOps[this.__dirtyOpIndex]
       // The op can get the current value and modify it in place
       // and set the output to clean.
       operatorOutput.getOperator().evaluate()
+
+      if (tmp == this.__dirtyOpIndex) {
+        // During initial configuration of an operator, cleaning outputs might be disabled.
+        const op = this.__boundOps[this.__dirtyOpIndex].getOperator()
+        const opClassName = Registry.getBlueprintName(op)
+        console.warn(
+          `Operator: ${opClassName} with name: ${op.getName()} is not cleaning its outputs during evaluation`
+        )
+        this.__dirtyOpIndex++
+      }
     }
 
-    if (this.__dirtyOpIndex != index) {
-      const op = this.__boundOps[this.__dirtyOpIndex].getOperator()
-      throw new Error(
-        `Operator: ${op.constructor.name} with name: ${op.getName()} is not cleaning its outputs during evaluation`
-      )
-    }
     this.__cleaning = false
   }
 
