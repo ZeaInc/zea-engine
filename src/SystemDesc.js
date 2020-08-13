@@ -150,7 +150,7 @@ function isWebGLSupported() {
   return getGPUDesc() != undefined
 }
 
-function getSystemDesc() {
+const SystemDesc = (function () {
   if (!globalThis.navigator) {
     return {
       isMobileDevice: false,
@@ -271,9 +271,10 @@ function getSystemDesc() {
     gpuDesc,
     deviceCategory,
   }
-}
+})()
 
-const SystemDesc = getSystemDesc()
-console.log(SystemDesc)
+if (!globalThis.ZeaSystemDesc) {
+  globalThis.ZeaSystemDesc = SystemDesc
+}
 
 export { SystemDesc }
