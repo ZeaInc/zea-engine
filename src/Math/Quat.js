@@ -364,12 +364,10 @@ class Quat extends AttrValue {
   /**
    * Sets the state of the `Quat` from two `Vec3`.
    *
-   * @param {Vec3} v0 - The v0 vector.
-   * @param {Vec3} v1 - The v1 vector.
+   * @param {Vec3} v0 - The v0 unit vector.
+   * @param {Vec3} v1 - The v1 unit vector.
    */
   setFrom2Vectors(v0, v1) {
-    v0.normalize()
-    v1.normalize()
     const c = v0.cross(v1)
     const d = v0.dot(v1)
     const s = Math.sqrt((1 + d) * 2)
