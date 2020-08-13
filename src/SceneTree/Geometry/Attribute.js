@@ -56,8 +56,10 @@ class Attribute {
       data.set(this.__data)
       this.__data = data
       this.initRange(prevLength)
-    } else {
+    } else if (newLength < prevLength) {
       this.__data = this.__data.slice(0, newLength)
+    } else {
+      // No change in size. (this can happen when an attribute was already loaded with data.)
     }
   }
 
