@@ -34,8 +34,7 @@
 
 - Technical Overview
 
-  * Release Notes
-    * [zea-engine-1.1.0](release-notes/zea-engine-1.1.0.md)
+  * [Release Notes](CHANGELOG.md)
   * [Acknowledgements](acknowledgements.md)
 
 - API Reference
