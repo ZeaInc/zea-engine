@@ -163,7 +163,7 @@ class Parameter extends EventEmitter {
     for (let i = index; i < this.__boundOps.length; i++) {
       this.__boundOps[i].setParamBindIndex(i)
     }
-    this.setDirty(index - 1)
+    this.setDirty(Math.max(0, index - 1))
     return index
   }
 
