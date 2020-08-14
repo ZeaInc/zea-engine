@@ -72,35 +72,38 @@ class GLRenderer extends GLBaseRenderer {
 
     // ///////////////////////////////////////////////////
     // setup the splash screen
-    const setupSplashScreen = (holdTime) => {
-      const logoBlob = new Blob([logo], { type: 'image/svg+xml' })
-      const logoUrl = URL.createObjectURL(logoBlob)
-      const image = document.createElement('img')
-      image.addEventListener('load', () => {
-        URL.revokeObjectURL(logoUrl), { once: true }
-        image.style.opacity = 1
-        const tick = () => {
-          // Prevent people from removing the image node.
-          if (!image.parentElement != canvasDiv) canvasDiv.appendChild(image)
-          image.style.opacity = +image.style.opacity - 0.02
-          if (+image.style.opacity > 0) {
-            ;(window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
-          } else {
-            canvasDiv.removeChild(image)
+    if (!options.hideSplash) {
+      const setupSplashScreen = (holdTime) => {
+        const logoBlob = new Blob([logo], { type: 'image/svg+xml' })
+        const logoUrl = URL.createObjectURL(logoBlob)
+        const image = document.createElement('img')
+        image.addEventListener('load', () => {
+          URL.revokeObjectURL(logoUrl), { once: true }
+          image.style.opacity = 1
+          const tick = () => {
+            // Prevent people from removing the image node.
+            if (!image.parentElement != canvasDiv) canvasDiv.appendChild(image)
+            image.style.opacity = +image.style.opacity - 0.02
+            if (+image.style.opacity > 0) {
+              ;(window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
+            } else {
+              canvasDiv.removeChild(image)
+            }
           }
-        }
-        setTimeout(tick, holdTime)
-      })
-      image.style.width = canvasDiv.clientWidth * 0.3 + 'px'
-      image.style.position = 'absolute'
-      image.style.top = '50%'
-      image.style.left = '50%'
-      image.style.transform = 'translate(-50%, -50%)'
-      image.style['pointer-events'] = 'none'
-      image.src = logoUrl
-      canvasDiv.appendChild(image)
+          setTimeout(tick, holdTime)
+        })
+        image.style.width = canvasDiv.clientWidth * 0.3 + 'px'
+        image.style.position = 'absolute'
+        image.style.top = '50%'
+        image.style.left = '50%'
+        image.style.transform = 'translate(-50%, -50%)'
+        image.style['pointer-events'] = 'none'
+        image.src = logoUrl
+        canvasDiv.appendChild(image)
+      }
+
+      setupSplashScreen(1500)
     }
-    setupSplashScreen(1500)
   }
 
   /**
