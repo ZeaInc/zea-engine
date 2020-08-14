@@ -547,15 +547,22 @@ class GLViewport extends GLBaseViewport {
 
     if (event.intersectionData != undefined) {
       if (event.intersectionData.geomItem != this.mouseOverItem) {
-        if (this.mouseOverItem) this.mouseOverItem.onMouseLeave(event)
+        if (this.mouseOverItem) {
+          const leaveEvent = { ...event, geomItem: this.mouseOverItem }
+          this.emit('mouseLeaveGeom', leaveEvent)
+          if (leaveEvent.propagating) this.mouseOverItem.onMouseLeave(leaveEvent)
+        }
         this.mouseOverItem = event.intersectionData.geomItem
-        this.mouseOverItem.onMouseEnter(event)
+        this.emit('mouseOverGeom', event)
+        if (event.propagating) this.mouseOverItem.onMouseEnter(event)
       }
 
       event.intersectionData.geomItem.onMouseMove(event)
       if (!event.propagating || this.capturedItem) return
     } else if (this.mouseOverItem) {
-      this.mouseOverItem.onMouseLeave(event)
+      const leaveEvent = { ...event, geomItem: this.mouseOverItem }
+      this.emit('mouseLeaveGeom', leaveEvent)
+      if (leaveEvent.propagating) this.mouseOverItem.onMouseLeave(leaveEvent)
       this.mouseOverItem = null
     }
 
