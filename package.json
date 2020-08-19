@@ -9,11 +9,9 @@
   "author": "Zea Inc.",
   "license": "SEE LICENSE IN LICENSE.md",
   "files": [
-    "/dist/index.cjs.js",
-    "/dist/index.esm.js",
-    "/public-resources/**",
-    "/buildApiDocs.js",
-    "/setup-visual-test.js"
+    "dist/",
+    "public-resources/",
+    "buildApiDocs.js"
   ],
   "scripts": {
     "build": "rollup -c",
@@ -38,7 +36,6 @@
     "@babel/preset-env": "^7.10.4",
     "@percy/cypress": "^2.3.1",
     "@zeainc/jsdocs2md": "^0.0.3",
-    "chai": "^4.2.0",
     "cypress": "^4.12.1",
     "es-dev-server": "^1.57.2",
     "eslint": "^6.5.1",
@@ -48,13 +45,7 @@
     "ink-docstrap": "^1.3.2",
     "jest": "^26.1.0",
     "jest-coverage-badges": "^1.1.2",
-    "karma": "^5.0.4",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-mocha": "^2.0.1",
-    "mocha": "^7.1.2",
     "prettier": "^2.0.2",
-    "resemblejs": "^3.2.4",
     "rollup": "^2.2.0",
     "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-terser": "^5.3.0",
