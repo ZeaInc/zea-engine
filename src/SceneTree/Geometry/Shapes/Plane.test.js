@@ -37,34 +37,7 @@ describe('Plane', () => {
       params: { SizeX: { value: 2 }, SizeY: { value: 2 }, DetailX: { value: 2 }, DetailY: { value: 2 } },
       type: 'Plane',
       numVertices: 9,
-      vertexAttributes: {
-        positions: {
-          data: [-1, -1, 0, 0, -1, 0, 1, -1, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 1, 0, 0, 1, 0, 1, 1, 0],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 9,
-          splits: {},
-          splitValues: [],
-        },
-        normals: {
-          data: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
-          dataType: 'Vec3',
-          defaultValue: 1.7976931348623157e308,
-          length: 9,
-          splits: {},
-          splitValues: [],
-        },
-        texCoords: {
-          data: [0, 0, 0.5, 0, 1, 0, 0, 0.5, 0.5, 0.5, 1, 0.5, 0, 1, 0.5, 1, 1, 1],
-          dataType: 'Vec2',
-          defaultValue: 1.7976931348623157e308,
-          length: 9,
-          splits: {},
-          splitValues: [],
-        },
-      },
-      faceCounts: [0, 4],
-      faceVertexIndices: [3, 4, 1, 0, 4, 5, 2, 1, 6, 7, 4, 3, 7, 8, 5, 4],
+      vertexAttributes: {},
     }
     plane.fromJSON(inputJSON)
 

@@ -208,7 +208,10 @@ class Material extends BaseItem {
    * @return {object} - Returns the json object.
    */
   toJSON(context) {
-    return super.toJSON(context)
+    const j = super.toJSON(context)
+    j.shader = this.__shaderName
+
+    return j
   }
 
   /**
@@ -326,14 +329,8 @@ class Material extends BaseItem {
       if (!srcParam.getImage) this.__makeParameterTexturable(param)
     }
   }
-
-  /**
-   * The destroy is called by the system to cause explicit resources cleanup.
-   * Users should never need to call this method directly.
-   */
-  destroy() {
-    this.removeAllTextures()
-    super.destroy()
-  }
 }
+Registry.register('Material', Material)
+
+export default Material
 export { Material }

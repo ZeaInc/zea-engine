@@ -1,8 +1,8 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
-import { Mesh } from '../Mesh.js'
 import { NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralMesh from './ProceduralMesh'
 
 /**
  * A class for generating a plane geometry.
@@ -17,9 +17,9 @@ import Registry from '../../../Registry'
  * * **DetailX(`NumberParameter`):** Number of divisions along `X`axis.
  * * **DetailY(`NumberParameter`):** Number of divisions along `Y`axis.
  *
- * @extends Mesh
+ * @extends {ProceduralMesh}
  */
-class Plane extends Mesh {
+class Plane extends ProceduralMesh {
   /**
    * Create a plane.
    * @param {number} [SizeX=1.0] - The length of the plane along the X axis.

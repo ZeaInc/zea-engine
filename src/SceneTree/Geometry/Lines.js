@@ -159,7 +159,7 @@ class Lines extends BaseGeom {
    */
   toJSON(context) {
     const j = super.toJSON(context)
-    j.indices = Array.from(this.__indices)
+    if (!context || !context.skipTopology) j.indices = Array.from(this.__indices)
 
     return j
   }
@@ -172,10 +172,11 @@ class Lines extends BaseGeom {
    */
   fromJSON(j, context) {
     super.fromJSON(j, context)
-    this.__indices = Uint32Array.from(j.indices)
+    if (j.indices) this.__indices = Uint32Array.from(j.indices)
   }
 }
 
 Registry.register('Lines', Lines)
 
+export default Lines
 export { Lines }

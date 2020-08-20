@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
-import { Mesh } from '../Mesh.js'
 import { BooleanParameter, NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralMesh from './ProceduralMesh'
 
 /**
  * Represents a cone geometry.
@@ -18,9 +18,9 @@ import Registry from '../../../Registry'
  * * **Detail(`NumberParameter`):** Specifies the number of subdivisions around the `Z` axis.
  * * **Cap(`BooleanParameter`):** Specifies whether the base of the cone is capped or open.
  *
- * @extends Mesh
+ * @extends {ProceduralMesh}
  */
-class Cone extends Mesh {
+class Cone extends ProceduralMesh {
   /**
    * Create a cone.
    * @param {number} radius - The radius of the base of the cone.

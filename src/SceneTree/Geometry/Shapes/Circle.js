@@ -1,7 +1,6 @@
-import { Lines } from '../Lines.js'
-
 import { NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralLines from './ProceduralLines'
 
 /**
  * A class for generating a circle shape using line segments.
@@ -15,9 +14,9 @@ import Registry from '../../../Registry'
  * * **Angle(`NumberParameter`):** Number of segments used to build the circle.
  * * **NumSegments(`NumberParameter`):** Segments angle in radiants.
  *
- * @extends Lines
+ * @extends {ProceduralLines}
  */
-class Circle extends Lines {
+class Circle extends ProceduralLines {
   /**
    * Creates an instance of Circle.
    * @param {number} radius - The radius of the circle.

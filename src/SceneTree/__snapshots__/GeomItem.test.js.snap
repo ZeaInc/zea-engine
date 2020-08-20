@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GeomItem Saving to JSON (serialization). 1`] = `
+Object {
+  "name": "Item",
+  "params": Object {
+    "BoundingBox": Object {
+      "value": Object {
+        "p0": Object {
+          "x": 2.65059232711792,
+          "y": 6.620340824127197,
+          "z": -1.399999976158142,
+        },
+        "p1": Object {
+          "x": 5.389792442321777,
+          "y": 9.379659652709961,
+          "z": 1.399999976158142,
+        },
+      },
+    },
+    "GeomMat": Object {
+      "value": Float32Array [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        4,
+        8,
+        0,
+        1,
+      ],
+    },
+    "GeomOffsetXfo": Object {
+      "value": Object {
+        "ori": Object {
+          "w": 1,
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
+        "tr": Object {
+          "x": 2,
+          "y": 4,
+          "z": 0,
+        },
+      },
+    },
+    "Geometry": Object {
+      "value": Object {
+        "params": Object {
+          "Loops": Object {
+            "range": Array [
+              3,
+              200,
+            ],
+            "step": 1,
+            "value": 12,
+          },
+          "Radius": Object {
+            "value": 1.4,
+          },
+          "Sides": Object {
+            "range": Array [
+              3,
+              200,
+            ],
+            "step": 1,
+            "value": 13,
+          },
+        },
+        "type": "Sphere",
+        "vertexAttributes": Object {},
+      },
+    },
+    "GlobalXfo": Object {
+      "value": Object {
+        "ori": Object {
+          "w": 1,
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
+        "tr": Object {
+          "x": 2,
+          "y": 4,
+          "z": 0,
+        },
+      },
+    },
+    "LocalXfo": Object {
+      "value": Object {
+        "ori": Object {
+          "w": 1,
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
+        "tr": Object {
+          "x": 2,
+          "y": 4,
+          "z": 0,
+        },
+      },
+    },
+    "Material": Object {
+      "value": Object {
+        "name": "myMaterial",
+        "params": Object {
+          "BaseColor": Object {
+            "value": Object {
+              "a": 1,
+              "b": 0.3607843220233917,
+              "g": 0.7137255072593689,
+              "r": 0.3490196168422699,
+            },
+          },
+          "Opacity": Object {
+            "range": Array [
+              0,
+              1,
+            ],
+            "value": 1,
+          },
+        },
+        "shader": "SimpleSurfaceShader",
+        "type": "Material",
+      },
+    },
+    "Visible": Object {
+      "value": true,
+    },
+  },
+  "type": "GeomItem",
+}
+`;

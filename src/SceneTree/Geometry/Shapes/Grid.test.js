@@ -45,16 +45,7 @@ describe('Grid', () => {
         SkipCenterLines: { value: true },
       },
       type: 'Grid',
-      numVertices: 10,
-      vertexAttributes: {
-        positions: {
-          data: [-2, -2, 0, -2, 2, 0, 2, -2, 0, 2, 2, 0, -2, -2, 0, 2, -2, 0, -2, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 10,
-        },
-      },
-      indices: [0, 1, 2, 3, 4, 5, 6, 7, 0, 0],
+      vertexAttributes: {},
     }
     grid.fromJSON(inputJSON)
 

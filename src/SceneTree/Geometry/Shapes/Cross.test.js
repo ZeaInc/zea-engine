@@ -19,36 +19,18 @@ describe('Cross', () => {
     const outputJSON = cross.toJSON()
 
     expect(outputJSON).toEqual({
-      indices: [0, 1, 2, 3, 4, 5],
-      numVertices: 6,
       params: { Size: { value: 4 } },
       type: 'Cross',
-      vertexAttributes: {
-        positions: {
-          data: [-2, 0, 0, 2, 0, 0, 0, 2, 0, 0, -2, 0, 0, 0, 2, 0, 0, -2],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 6,
-        },
-      },
+      vertexAttributes: {},
     })
   })
 
   it('restores from JSON (serialization).', () => {
     const cross = new Cross()
     cross.fromJSON({
-      indices: [0, 1, 2, 3, 4, 5],
-      numVertices: 6,
       params: { Size: { value: 4 } },
       type: 'Cross',
-      vertexAttributes: {
-        positions: {
-          data: [-2, 0, 0, 2, 0, 0, 0, 2, 0, 0, -2, 0, 0, 0, 2, 0, 0, -2],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 6,
-        },
-      },
+      vertexAttributes: {},
     })
 
     const newCross = new Cross(4)

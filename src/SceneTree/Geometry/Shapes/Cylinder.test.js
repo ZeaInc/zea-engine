@@ -34,21 +34,73 @@ describe('Cylinder', () => {
     expect(cylinder.getParameter('BaseZAtZero').getValue()).toBeTruthy()
   })
 
-  it.skip('saves to JSON (serialization).', () => {
-    const cylinder = new Cylinder(3, 6, 8, 3)
+  it('saves to JSON (serialization).', () => {
+    const cylinder = new Cylinder(5, 0.2, 32)
     const outputJSON = cylinder.toJSON()
-    console.log(JSON.stringify(outputJSON))
 
-    expect(outputJSON).toBe({})
+    expect(outputJSON).toEqual({
+      params: {
+        BaseZAtZero: {
+          value: false,
+        },
+        Caps: {
+          value: true,
+        },
+        Height: {
+          value: 0.2,
+        },
+        Loops: {
+          range: [1, 200],
+          step: 1,
+          value: 2,
+        },
+        Radius: {
+          value: 5,
+        },
+        Sides: {
+          range: [3, 200],
+          step: 1,
+          value: 32,
+        },
+      },
+      type: 'Cylinder',
+      vertexAttributes: {},
+    })
   })
 
-  it.skip('restores from JSON (serialization).', () => {
-    const cylinder = new Cylinder(4, 6, 4)
-    const inputStr =
-      '{"params":{"X":{"value":4},"Y":{"value":6},"Z":{"value":4},"BaseZAtZero":{"value":false}},"type":"Cylinder","numVertices":8,"vertexAttributes":{"positions":{"data":[2,-3,2,2,3,2,-2,3,2,-2,-3,2,2,-3,-2,2,3,-2,-2,3,-2,-2,-3,-2],"dataType":"Vec3","defaultValue":0,"length":8,"splits":{},"splitValues":[]},"texCoords":{"data":[0,0,1,0,1,1,0,1,0,1,1,1,1,0,0,0],"dataType":"Vec2","defaultValue":1.7976931348623157e+308,"length":8,"splits":{"0":{"2":1},"1":{"2":0},"2":{"3":5,"5":10},"3":{"3":4,"4":8},"4":{"2":2},"5":{"2":3},"6":{"3":6,"5":11},"7":{"3":7,"4":9}},"splitValues":[{"x":0,"y":0},{"x":1,"y":0},{"x":1,"y":1},{"x":0,"y":1},{"x":0,"y":0},{"x":1,"y":0},{"x":1,"y":1},{"x":0,"y":1},{"x":1,"y":0},{"x":1,"y":1},{"x":0,"y":0},{"x":0,"y":1}]},"normals":{"data":[0,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1],"dataType":"Vec3","defaultValue":1.7976931348623157e+308,"length":8,"splits":{"0":{"2":1,"4":8},"1":{"2":0,"5":13},"2":{"3":5,"5":12},"3":{"3":4,"4":9},"4":{"2":2,"4":11},"5":{"2":3,"5":14},"6":{"3":6,"5":15},"7":{"3":7,"4":10}},"splitValues":[{"x":1,"y":0,"z":0},{"x":1,"y":0,"z":0},{"x":1,"y":0,"z":0},{"x":1,"y":0,"z":0},{"x":-1,"y":0,"z":0},{"x":-1,"y":0,"z":0},{"x":-1,"y":0,"z":0},{"x":-1,"y":0,"z":0},{"x":0,"y":1,"z":0},{"x":0,"y":1,"z":0},{"x":0,"y":1,"z":0},{"x":0,"y":1,"z":0},{"x":0,"y":-1,"z":0},{"x":0,"y":-1,"z":0},{"x":0,"y":-1,"z":0},{"x":0,"y":-1,"z":0}]}},"faceCounts":[0,6],"faceVertexIndices":[0,1,2,3,7,6,5,4,1,0,4,5,3,2,6,7,0,3,7,4,2,1,5,6]}'
-    cylinder.fromJSON(JSON.parse(inputStr))
+  it('restores from JSON (serialization).', () => {
+    const cylinder = new Cylinder()
+    const inputJSON = {
+      params: {
+        BaseZAtZero: {
+          value: false,
+        },
+        Caps: {
+          value: true,
+        },
+        Height: {
+          value: 0.2,
+        },
+        Loops: {
+          range: [1, 200],
+          step: 1,
+          value: 2,
+        },
+        Radius: {
+          value: 5,
+        },
+        Sides: {
+          range: [3, 200],
+          step: 1,
+          value: 32,
+        },
+      },
+      type: 'Cylinder',
+      vertexAttributes: {},
+    }
+    cylinder.fromJSON(inputJSON)
 
-    const newCylinder = new Cylinder(4, 6, 4)
+    const newCylinder = new Cylinder(5, 0.2, 32)
     expect(cylinder.toJSON()).toEqual(newCylinder.toJSON())
   })
 })

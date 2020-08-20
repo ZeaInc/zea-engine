@@ -2,21 +2,6 @@
 
 exports[`Circle saves to JSON (serialization). 1`] = `
 Object {
-  "indices": Array [
-    0,
-    1,
-    1,
-    2,
-    2,
-    3,
-    3,
-    4,
-    4,
-    5,
-    5,
-    0,
-  ],
-  "numVertices": 6,
   "params": Object {
     "Angle": Object {
       "value": 6.283185307179586,
@@ -34,32 +19,6 @@ Object {
     },
   },
   "type": "Circle",
-  "vertexAttributes": Object {
-    "positions": Object {
-      "data": Array [
-        2,
-        0,
-        0,
-        1,
-        1.7320507764816284,
-        0,
-        -1,
-        1.7320507764816284,
-        0,
-        -2,
-        2.4492937051703357e-16,
-        0,
-        -1,
-        -1.7320507764816284,
-        0,
-        1,
-        -1.7320507764816284,
-        0,
-      ],
-      "dataType": "Vec3",
-      "defaultValue": 0,
-      "length": 6,
-    },
-  },
+  "vertexAttributes": Object {},
 }
 `;

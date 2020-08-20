@@ -321,14 +321,6 @@ class BaseItem extends ParameterOwner {
     super.copyFrom(src)
     this.setName(src.getName())
   }
-
-  /**
-   * The destroy is called by the system to cause explicit resources cleanup.
-   * Users should never need to call this method directly.
-   */
-  destroy() {
-    super.destroy()
-  }
 }
 
 export { BaseItem }

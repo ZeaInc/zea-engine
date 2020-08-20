@@ -21,18 +21,16 @@ describe('Rect', () => {
     const outputJSON = rect.toJSON()
 
     const expectedOutput = {
-      params: { X: { value: 3 }, Y: { value: 4 } },
-      type: 'Rect',
-      numVertices: 4,
-      vertexAttributes: {
-        positions: {
-          data: [-1.5, -2, 0, 1.5, -2, 0, 1.5, 2, 0, -1.5, 2, 0],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 4,
+      params: {
+        X: {
+          value: 3,
+        },
+        Y: {
+          value: 4,
         },
       },
-      indices: [0, 1, 1, 2, 2, 3, 3, 0],
+      type: 'Rect',
+      vertexAttributes: {},
     }
 
     expect(outputJSON).toEqual(expectedOutput)
@@ -44,15 +42,7 @@ describe('Rect', () => {
       params: { X: { value: 3 }, Y: { value: 4 } },
       type: 'Rect',
       numVertices: 4,
-      vertexAttributes: {
-        positions: {
-          data: [-1.5, -2, 0, 1.5, -2, 0, 1.5, 2, 0, -1.5, 2, 0],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 4,
-        },
-      },
-      indices: [0, 1, 1, 2, 2, 3, 3, 0],
+      vertexAttributes: {},
     }
     rect.fromJSON(expectedOutput)
 

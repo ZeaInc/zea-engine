@@ -1,6 +1,6 @@
 import { Vec2 } from '../../../Math/Vec2'
-import { Points } from '../Points.js'
-import { NumberParameter } from '../../Parameters/index'
+import ProceduralPoints from './ProceduralPoints'
+import { NumberParameter } from '../../Parameters/NumberParameter'
 import Registry from '../../../Registry'
 
 /**
@@ -15,9 +15,9 @@ import Registry from '../../../Registry'
  * * **Y(`NumberParameter`):** Length of the grid along the `Y` axis.
  * * **XDivisions(`NumberParameter`):** Number of divisions along `X` axis
  * * **YDivisions(`NumberParameter`):** Number of divisions along `Y` axis
- * @extends Points
+ * @extends {ProceduralPoints}
  */
-class PointGrid extends Points {
+class PointGrid extends ProceduralPoints {
   /**
    * Creates an instance of PointGrid.
    *

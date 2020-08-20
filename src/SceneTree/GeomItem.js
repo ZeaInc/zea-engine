@@ -337,14 +337,6 @@ class GeomItem extends BaseGeomItem {
     // always be dirty after cloning.
     this.__geomMatParam.setDirty(this.__cleanGeomMat)
   }
-
-  /**
-   * The destroy is called by the system to cause explicit resources cleanup.
-   * Users should never need to call this method directly.
-   */
-  destroy() {
-    super.destroy()
-  }
 }
 
 Registry.register('GeomItem', GeomItem)

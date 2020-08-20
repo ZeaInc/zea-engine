@@ -714,4 +714,5 @@ class Color extends AttrValue {
 
 Registry.register('Color', Color)
 
+export default Color
 export { Color }

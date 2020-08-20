@@ -457,12 +457,14 @@ class BaseGeom extends ParameterOwner {
     let json = super.toJSON(context)
     if (!json) json = {}
     json.type = Registry.getBlueprintName(this)
-    json.numVertices = this.__numVertices || 0
+    if (!context || !context.skipTopology) {
+      json.numVertices = this.__numVertices || 0
+    }
 
     const vertexAttributes = {}
     for (const [key, attr] of this.__vertexAttributes.entries()) {
-      // if (!opts || !('attrList' in opts) || opts.attrList.indexOf(key) != -1)
-      vertexAttributes[key] = attr.toJSON(context)
+      if (!context || !('skipAttributes' in context) || !context.skipAttributes.includes(key))
+        vertexAttributes[key] = attr.toJSON(context)
     }
     json.vertexAttributes = vertexAttributes
 

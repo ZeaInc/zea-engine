@@ -1,4 +1,4 @@
-import { Lines } from '../Lines.js'
+import ProceduralLines from './ProceduralLines'
 import { NumberParameter } from '../../Parameters/NumberParameter.js'
 import Registry from '../../../Registry'
 
@@ -14,9 +14,9 @@ import Registry from '../../../Registry'
  * **Parameters**
  * * **Size(`NumberParameter`):** Specifies the size of the cross.
  *
- * @extends Lines
+ * @extends {ProceduralLines}
  */
-class Cross extends Lines {
+class Cross extends ProceduralLines {
   /**
    * Create a cross.
    * @param {number} size - The size of the cross.

@@ -1,7 +1,8 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
-import { Mesh } from '../Mesh.js'
+import ProceduralMesh from './ProceduralMesh'
 import Registry from '../../../Registry'
+import NumberParameter from '../../Parameters/NumberParameter'
 
 /**
  * A class for generating a torus geometry.
@@ -10,85 +11,44 @@ import Registry from '../../../Registry'
  * const torus = new Torus(0.4, 1.3)
  * ```
  *
- * @extends Mesh
+ * @extends ProceduralMesh
  */
-class Torus extends Mesh {
+class Torus extends ProceduralMesh {
   /**
    * Creates an instance of Torus.
    *
    * @param {number} [innerRadius=0.5] - The inner radius of the torus.
-   * @param {number} [outerRadius=1.0] - The outer radius of the torus.
+   * @param {number} [outerRadius=3] - The outer radius of the torus.
    * @param {number} [detail=32] - The detail of the cone.
+   * @param {number} [loops=6] - The number of loops.
    */
-  constructor(innerRadius = 0.5, outerRadius = 1.0, detail = 32) {
+  constructor(innerRadius = 0.5, outerRadius = 3, detail = 32, loops = 6) {
     super()
 
-    if (isNaN(innerRadius) || isNaN(outerRadius) || isNaN(detail)) throw new Error('Invalid geom args')
+    if (isNaN(innerRadius) || isNaN(outerRadius) || isNaN(detail) || isNaN(loops)) throw new Error('Invalid geom args')
 
-    this.__innerRadius = innerRadius
-    this.__outerRadius = outerRadius
-    this.__detail = detail >= 3 ? detail : 3
+    this.__innerRadiusParam = this.addParameter(new NumberParameter('InnerRadius', innerRadius))
+    this.__outerRadiusParam = this.addParameter(
+      new NumberParameter('OuterRadius', outerRadius >= 3 ? outerRadius : 3, [3, 200], 1)
+    )
+    this.__detailParam = this.addParameter(new NumberParameter('Detail', detail >= 3 ? detail : 3, [3, 200], 1))
+    this.__loopsParam = this.addParameter(new NumberParameter('Loops', loops >= 3 ? loops : 3, [3, 200], 1))
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
     this.__rebuild()
-  }
 
-  /**
-   * Getter for the inner radius.
-   *
-   * @return {number} - Returns the radius.
-   */
-  get innerRadius() {
-    return this.__innerRadius
-  }
+    const resize = () => {
+      this.__resize()
+    }
+    const rebuild = () => {
+      this.__rebuild()
+    }
 
-  /**
-   * Setter for the inner radius.
-   *
-   * @param {number} val - The radius value.
-   */
-  set innerRadius(val) {
-    this.__innerRadius = val
-    this.__resize()
-  }
-
-  /**
-   * Getter for the outer radius.
-   *
-   * @return {number} - Returns the radius.
-   */
-  get outerRadius() {
-    return this.__outerRadius
-  }
-
-  /**
-   * Setter for the outer radius.
-   *
-   * @param {number} val - The radius value.
-   */
-  set outerRadius(val) {
-    this.__outerRadius = val
-    this.__resize()
-  }
-
-  /**
-   * Getter for the torus detail.
-   *
-   * @return {number} - Returns the detail.
-   */
-  get detail() {
-    return this.__detail
-  }
-
-  /**
-   * Setter for the torus detail.
-   *
-   * @param {number} val - The detail value.
-   */
-  set detail(val) {
-    this.__detail = val >= 3 ? val : 3
-    this.__rebuild()
+    this.__innerRadiusParam.on('valueChanged', resize)
+    this.__outerRadiusParam.on('valueChanged', resize)
+    this.__detailParam.on('valueChanged', rebuild)
+    this.__loopsParam.on('valueChanged', rebuild)
   }
 
   /**
@@ -96,8 +56,10 @@ class Torus extends Mesh {
    * @private
    */
   __rebuild() {
-    const nbSlices = this.__detail
-    const nbLoops = this.__detail * 2
+    const innerRadius = this.__innerRadiusParam.getValue()
+    const outerRadius = this.__outerRadiusParam.getValue()
+    const nbSlices = this.__detailParam.getValue()
+    const nbLoops = this.__loopsParam.getValue()
     const numVertices = nbSlices * nbLoops
 
     this.setNumVertices(numVertices)
@@ -119,10 +81,10 @@ class Torus extends Mesh {
 
         const sphi = Math.sin(phi)
         const cphi = Math.cos(phi)
-        const d = this.__outerRadius + cphi * this.__innerRadius
+        const d = outerRadius + cphi * innerRadius
 
         // Set positions and normals at the same time.
-        positions.getValueRef(vertex).set(ctheta * d, stheta * d, this.__innerRadius * sphi)
+        positions.getValueRef(vertex).set(ctheta * d, stheta * d, innerRadius * sphi)
         normals.getValueRef(vertex).set(ctheta * cphi, stheta * cphi, sphi)
         vertex++
       }
@@ -159,11 +121,13 @@ class Torus extends Mesh {
    * @private
    */
   __resize() {
-    const nbSlices = this.__detail
-    const nbLoops = this.__detail * 2
+    const innerRadius = this.__innerRadiusParam.getValue()
+    const outerRadius = this.__outerRadiusParam.getValue()
+    const nbSlices = this.__detailParam.getValue()
+    const nbLoops = this.__loopsParam.getValue()
 
     const positions = this.getVertexAttribute('positions')
-    const vertex = 0
+    let vertex = 0
     for (let i = 0; i < nbLoops; i++) {
       const theta = (i / nbLoops) * 2.0 * Math.PI
       const ctheta = Math.cos(theta)
@@ -174,11 +138,11 @@ class Torus extends Mesh {
 
         const sphi = Math.sin(phi)
         const cphi = Math.cos(phi)
-        const d = this.__outerRadius + cphi * this.__innerRadius
+        const d = outerRadius + cphi * innerRadius
 
         // Set positions and normals at the same time.
-        positions.getValueRef(vertex).set(ctheta * d, stheta * d, this.__innerRadius * sphi)
-        index++
+        positions.getValueRef(vertex).set(ctheta * d, stheta * d, innerRadius * sphi)
+        vertex++
       }
     }
 

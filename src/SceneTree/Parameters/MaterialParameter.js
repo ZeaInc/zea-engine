@@ -1,4 +1,5 @@
 import { Parameter } from './Parameter.js'
+import Material from '../Material.js'
 
 /**
  * Represents a specific type of parameter, that only stores `Material` values.
@@ -66,7 +67,14 @@ class MaterialParameter extends Parameter {
    * @return {object} - Returns the json object.
    */
   toJSON(context) {
-    return this.__value ? { value: this.__value.getPath() } : undefined
+    let j
+    if (this.__value) {
+      j = {
+        value: !context || !context.onlyPath ? this.__value.toJSON(context) : this.__value.getPath(),
+      }
+    }
+
+    return j
   }
 
   /**
@@ -81,7 +89,7 @@ class MaterialParameter extends Parameter {
       return
     }
 
-    if (j.value instanceof array || j.value instanceof string) {
+    if (j.value instanceof Array || j.value instanceof String) {
       if (context && context.assetItem) {
         const materialLibrary = context.assetItem.getMaterialLibrary()
         const material = materialLibrary.getMaterial(j.value instanceof array ? j.value[1] : j.value)
@@ -89,6 +97,10 @@ class MaterialParameter extends Parameter {
           this.loadValue(material)
         }
       }
+    } else {
+      const material = new Material()
+      material.fromJSON(j.value, context)
+      this.loadValue(material)
     }
   }
 

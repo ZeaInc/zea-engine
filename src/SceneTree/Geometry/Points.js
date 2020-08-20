@@ -92,4 +92,5 @@ class Points extends BaseGeom {
 
 Registry.register('Points', Points)
 
+export default Points
 export { Points }

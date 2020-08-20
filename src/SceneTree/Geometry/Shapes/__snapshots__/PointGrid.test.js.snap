@@ -2,7 +2,6 @@
 
 exports[`PointGrid saves to JSON (serialization). 1`] = `
 Object {
-  "numVertices": 0,
   "params": Object {
     "X": Object {
       "value": 3,
@@ -18,19 +17,6 @@ Object {
     },
   },
   "type": "PointGrid",
-  "vertexAttributes": Object {
-    "positions": Object {
-      "data": Array [],
-      "dataType": "Vec3",
-      "defaultValue": 0,
-      "length": 0,
-    },
-    "texCoords": Object {
-      "data": Array [],
-      "dataType": "Vec2",
-      "defaultValue": 1.7976931348623157e+308,
-      "length": 0,
-    },
-  },
+  "vertexAttributes": Object {},
 }
 `;

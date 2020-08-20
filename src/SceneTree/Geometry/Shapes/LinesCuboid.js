@@ -1,6 +1,6 @@
-import { Lines } from '../Lines.js'
 import { NumberParameter } from '../../Parameters/NumberParameter.js'
 import Registry from '../../../Registry'
+import ProceduralLines from './ProceduralLines'
 
 /**
  * A class for generating a lines cuboid shape(Without faces).
@@ -11,9 +11,9 @@ import Registry from '../../../Registry'
  * * **Z(`NumberParameter`):** Length of the line cuboid along the `Z` axis
  * * **BaseZAtZero(`NumberParameter`):** Property to start or not `Z` axis from position `0.
  *
- * @extends Lines
+ * @extends {ProceduralLines}
  */
-class LinesCuboid extends Lines {
+class LinesCuboid extends ProceduralLines {
   /**
    * Create a lines cuboid.
    * @param {number} x - The length of the line cuboid along the X axis.

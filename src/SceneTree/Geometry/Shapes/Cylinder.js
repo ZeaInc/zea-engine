@@ -1,9 +1,8 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
-import { Mesh } from '../Mesh.js'
-
 import { BooleanParameter, NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralMesh from './ProceduralMesh'
 
 /**
  * A class for generating a cylinder geometry. It is very much like a cuboid but with `N` number of sides.
@@ -20,9 +19,9 @@ import Registry from '../../../Registry'
  * * **Caps(`BooleanParameter`):** Specifies whether the ends of the cylinder are capped or open.
  * * **BaseZAtZero(`BooleanParameter`):** Property to start or not `Z` axis from position `0.
  *
- * @extends Mesh
+ * @extends {ProceduralMesh}
  */
-class Cylinder extends Mesh {
+class Cylinder extends ProceduralMesh {
   /**
    * Create a cylinder.
    * @param {number} radius - The radius of the cylinder.

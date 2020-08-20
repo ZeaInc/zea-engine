@@ -1,7 +1,6 @@
-import { Lines } from '../Lines.js'
-
 import { BooleanParameter, NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralLines from './ProceduralLines'
 
 /**
  * Represents a network of lines that cross each other to form a series of squares or rectangles.
@@ -17,9 +16,9 @@ import Registry from '../../../Registry'
  * * **YDivisions(`NumberParameter`):** Number of divisions along `Y` axis
  * * **SkipCenterLines(`BooleanParameter`):** Property that indicates whether to display the center grid lines or not
  *
- * @extends Lines
+ * @extends {ProceduralLines}
  */
-class Grid extends Lines {
+class Grid extends ProceduralLines {
   /**
    * Create a grid.
    * @param {number} x - The length of the grid along the `X` axis.

@@ -520,8 +520,8 @@ class TreeItem extends BaseItem {
   }
 
   /**
-   * The _childNameChanged event hander.
-   * @param {any} start - The start value.
+   * The _childNameChanged event handler.
+   * @param {object} event - The start value.
    * @private
    */
   _childNameChanged(event) {
@@ -1147,15 +1147,6 @@ class TreeItem extends BaseItem {
     src.getChildren().forEach((srcChildItem) => {
       if (srcChildItem) this.addChild(srcChildItem.clone(), false, false)
     })
-  }
-
-  /**
-   * The destroy is called by the system to cause explicit resources cleanup.
-   * Users should never need to call this method directly.
-   */
-  destroy() {
-    this.removeAllChildren()
-    super.destroy()
   }
 }
 

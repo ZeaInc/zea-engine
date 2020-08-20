@@ -30,8 +30,6 @@ describe('Circle', () => {
   it('restores from JSON (serialization).', () => {
     const circle = new Circle()
     const expectedOutput = {
-      indices: [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 0],
-      numVertices: 6,
       params: {
         Angle: { value: 6.283185307179586 },
         NumSegments: {
@@ -42,33 +40,7 @@ describe('Circle', () => {
         Radius: { value: 2 },
       },
       type: 'Circle',
-      vertexAttributes: {
-        positions: {
-          data: [
-            2,
-            0,
-            0,
-            1,
-            1.7320507764816284,
-            0,
-            -1,
-            1.7320507764816284,
-            0,
-            -2,
-            2.4492937051703357e-16,
-            0,
-            -1,
-            -1.7320507764816284,
-            0,
-            1,
-            -1.7320507764816284,
-            0,
-          ],
-          dataType: 'Vec3',
-          defaultValue: 0,
-          length: 6,
-        },
-      },
+      vertexAttributes: {},
     }
     circle.fromJSON(expectedOutput)
 

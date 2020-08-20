@@ -1444,7 +1444,8 @@ class Mat4 extends AttrValue {
    * @param {object} json - The json param.
    */
   fromJSON(json) {
-    this.__data = new Float32Array(json)
+    if (json instanceof Array) this.__data = new Float32Array(json)
+    else if (json instanceof Object) this.__data = new Float32Array(Object.values(json))
   }
 
   /**

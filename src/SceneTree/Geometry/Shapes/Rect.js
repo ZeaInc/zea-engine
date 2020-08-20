@@ -1,4 +1,4 @@
-import { Lines } from '../Lines.js'
+import ProceduralLines from './ProceduralLines'
 import { NumberParameter } from '../../Parameters/NumberParameter.js'
 import Registry from '../../../Registry'
 
@@ -14,9 +14,9 @@ import Registry from '../../../Registry'
  * * **Y(`NumberParameter`):** Length of the rectangle along the `Y` axis.
  *
  *
- * @extends Lines
+ * @extends {ProceduralLines}
  */
-class Rect extends Lines {
+class Rect extends ProceduralLines {
   /**
    * Create a rect.
    * @param {number} x - The length of the rect along the `X` axis.
@@ -118,4 +118,5 @@ class Rect extends Lines {
 
 Registry.register('Rect', Rect)
 
+export default Rect
 export { Rect }

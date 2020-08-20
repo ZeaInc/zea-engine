@@ -1,9 +1,8 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
-import { Mesh } from '../Mesh.js'
-
 import { NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralMesh from './ProceduralMesh'
 
 /**
  * A class for generating a disc geometry.
@@ -16,9 +15,9 @@ import Registry from '../../../Registry'
  * * **Radius(`NumberParameter`):** Specifies the radius of the disc.
  * * **Sides(`NumberParameter`):** Specifies the resolution, or the disc subdivisions around `Z` axis.
  *
- * @extends Mesh
+ * @extends {ProceduralMesh}
  */
-class Disc extends Mesh {
+class Disc extends ProceduralMesh {
   /**
    * Creates an instance of Disc.
    *

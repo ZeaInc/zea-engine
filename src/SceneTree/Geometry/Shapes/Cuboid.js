@@ -1,8 +1,8 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
-import { Mesh } from '../Mesh.js'
 import { BooleanParameter, NumberParameter } from '../../Parameters/index'
 import Registry from '../../../Registry'
+import ProceduralMesh from './ProceduralMesh'
 
 /**
  * A class for generating a cuboid geometry.
@@ -13,9 +13,9 @@ import Registry from '../../../Registry'
  * * **z(`NumberParameter`):** Length of the line cuboid along the `Z` axis
  * * **BaseZAtZero(`NumberParameter`):** Property to start or not `Z` axis from position `0.
  *
- * @extends Mesh
+ * @extends {ProceduralMesh}
  */
-class Cuboid extends Mesh {
+class Cuboid extends ProceduralMesh {
   /**
    * Create a cuboid.
    * @param {number} x - The length of the cuboid along the X axis.

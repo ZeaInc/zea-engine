@@ -25,29 +25,36 @@ describe('PointGrid', () => {
   })
 
   // There's an issue with flags, that are preventing parameters to be exported.
-  it.skip('saves to JSON (serialization).', () => {
+  it('saves to JSON (serialization).', () => {
     const pointGrid = new PointGrid(3, 3, 6, 6, true)
-    debugger
     const outputJSON = pointGrid.toJSON()
-    console.log(outputJSON)
 
     expect(outputJSON).toMatchSnapshot()
   })
 
-  it.skip('restores from JSON (serialization).', () => {
+  it('restores from JSON (serialization).', () => {
     const pointGrid = new PointGrid()
     const inputJSON = {
-      params: { X: { value: 3 }, Y: { value: 3 }, XDivisions: { value: 6 }, YDivisions: { value: 6 } },
-      type: 'PointGrid',
-      numVertices: 0,
-      vertexAttributes: {
-        positions: { data: [], dataType: 'Vec3', defaultValue: 0, length: 0 },
-        texCoords: { data: [], dataType: 'Vec2', defaultValue: 1.7976931348623157e308, length: 0 },
+      params: {
+        X: {
+          value: 3,
+        },
+        XDivisions: {
+          value: 6,
+        },
+        Y: {
+          value: 3,
+        },
+        YDivisions: {
+          value: 6,
+        },
       },
+      type: 'PointGrid',
+      vertexAttributes: {},
     }
     pointGrid.fromJSON(inputJSON)
 
     const newPointGrid = new PointGrid(3, 3, 6, 6, true)
-    expect(JSON.stringify(pointGrid.toJSON())).toEqual(JSON.stringify(newPointGrid.toJSON()))
+    expect(pointGrid.toJSON()).toEqual(newPointGrid.toJSON())
   })
 })

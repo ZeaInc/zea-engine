@@ -938,8 +938,10 @@ class Mesh extends BaseGeom {
    */
   toJSON(context) {
     const j = super.toJSON(context)
-    j.faceCounts = Array.from(this.__faceCounts)
-    j.faceVertexIndices = Array.from(this.__faceVertexIndices)
+    if (!context || !context.skipTopology) {
+      j.faceCounts = Array.from(this.__faceCounts)
+      j.faceVertexIndices = Array.from(this.__faceVertexIndices)
+    }
 
     return j
   }
@@ -959,4 +961,5 @@ class Mesh extends BaseGeom {
 
 Registry.register('Mesh', Mesh)
 
+export default Mesh
 export { Mesh }

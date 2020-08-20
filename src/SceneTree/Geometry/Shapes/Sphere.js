@@ -1,8 +1,7 @@
 import { Vec2, Vec3 } from '../../../Math/index'
-import { Mesh } from '../Mesh.js'
-
-import { NumberParameter } from '../../Parameters/NumberParameter.js'
+import { NumberParameter } from '../../Parameters/NumberParameter'
 import Registry from '../../../Registry'
+import ProceduralMesh from './ProceduralMesh'
 
 /**
  * A class for generating a sphere geometry.
@@ -16,9 +15,9 @@ import Registry from '../../../Registry'
  * * **Sides(`NumberParameter`):** Specifies the number of subdivisions around the `Z` axis.
  * * **Loops(`NumberParameter`):** Specifies the number of subdivisions(stacks) along the `Z` axis.
  *
- * @extends Mesh
+ * @extends {ProceduralMesh}
  */
-class Sphere extends Mesh {
+class Sphere extends ProceduralMesh {
   /**
    * Creates an instance of Sphere.
    * @param {number} [radius=1.0] - The radius of the sphere.
@@ -187,4 +186,5 @@ class Sphere extends Mesh {
 
 Registry.register('Sphere', Sphere)
 
+export default Sphere
 export { Sphere }
