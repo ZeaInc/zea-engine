@@ -4,6 +4,17 @@ import { ParameterOwner } from '../ParameterOwner.js'
 import { NumberParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
 
+const MANIPULATION_MODES = {
+  // orbit: 'orbit',
+  pan: 0,
+  dolly: 1,
+  focussing: 2,
+  look: 3,
+  turntable: 4,
+  tumbler: 5,
+  /*trackball: 'trackball', Note yet implemented. See here for details: https://www.mattkeeter.com/projects/rotation/*/,
+}
+
 /**
  * Class representing the viewport manipulator with camera, mouse and keyboard events.
  *
@@ -30,7 +41,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     if (name == undefined) name = 'Camera'
     super(name)
 
-    this.__defaultManipulationState = 'orbit'
+    this.__defaultManipulationState = MANIPULATION_MODES.turntable
     this.__manipulationState = this.__defaultManipulationState
     this.__mouseDown = false
     this.__dragging = false
@@ -51,11 +62,15 @@ class CameraMouseAndKeyboard extends ParameterOwner {
 
   /**
    * Sets default manipulation mode.
+   * The value can be on of the keys in #CameraMouseAndKeyboard.MANIPULATION_MODES
    *
-   * @param {string} manipulationMode - The manipulation mode value. Can be 'orbit', or 'look'
+   * @param {string} manipulationMode - The manipulation mode value.
    */
   setDefaultManipulationMode(manipulationMode) {
-    this.__defaultManipulationState = manipulationMode
+    if (typeof manipulationMode == 'string')
+      this.__defaultManipulationState = MANIPULATION_MODES[manipulationMode]
+    else
+      this.__defaultManipulationState = manipulationMode
   }
 
   /**
@@ -106,7 +121,7 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {MouseEvent} event - The event value.
    * @param {Vec2} dragVec - The drag vector value.
    */
-  orbit(event, dragVec) {
+  turntable(event, dragVec) {
     const { viewport } = event
     const camera = viewport.getCamera()
 
@@ -143,6 +158,56 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     } else {
       camera.getParameter('GlobalXfo').setValue(globalXfo)
     }
+  }
+
+  /**
+   * Rotates viewport camera about the target.
+   *
+   * @param {MouseEvent} event - The event value.
+   * @param {Vec2} dragVec - The drag vector value.
+   */
+  tumble(event, dragVec) {
+    const { viewport } = event
+    const camera = viewport.getCamera()
+    const focalDistance = camera.getFocalDistance()
+    const orbitRate = this.__orbitRateParam.getValue()
+
+    const xvec = this.__mouseDownCameraXfo.ori.getXaxis()
+    const yvec = this.__mouseDownCameraXfo.ori.getYaxis()
+    const zvec = this.__mouseDownCameraXfo.ori.getZaxis()
+    const vec = xvec.scale(-dragVec.x).add(yvec.scale(dragVec.y))
+    const rotateAxis = vec.cross(zvec)
+    rotateAxis.normalizeInPlace()
+
+    const dragVecLength = dragVec.length()
+
+    const globalXfo = this.__mouseDownCameraXfo.clone()
+
+    // Orbit
+    const orbit = new Quat()
+    orbit.setFromAxisAndAngle(rotateAxis, (dragVecLength / viewport.getWidth()) * Math.PI * -orbitRate)
+    globalXfo.ori = orbit.multiply(globalXfo.ori)
+
+    globalXfo.tr = this.__mouseDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
+
+    camera.getParameter('GlobalXfo').setValue(globalXfo)
+
+    // Update the mouse pos so the next delta is just the difference to this update.
+    this.__mouseDownPos = event.mousePos
+    this.__mouseDownCameraXfo = globalXfo
+  }
+
+  /**
+   * Rotates viewport camera about the target.
+   *
+   * @param {MouseEvent} event - The event value.
+   * @param {Vec2} dragVec - The drag vector value.
+   */
+  trackball(event, dragVec) {
+    const { viewport } = event
+    const camera = viewport.getCamera()
+    const focalDistance = camera.getFocalDistance()
+    const orbitRate = this.__orbitRateParam.getValue()
   }
 
   /**
@@ -380,11 +445,11 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     this.initDrag(event)
 
     if (event.button == 2) {
-      this.__manipulationState = 'pan'
+      this.__manipulationState = MANIPULATION_MODES.pan
     } else if (event.ctrlKey && event.altKey) {
-      this.__manipulationState = 'dolly'
+      this.__manipulationState = MANIPULATION_MODES.dolly
     } else if (event.ctrlKey || event.button == 2) {
-      this.__manipulationState = 'look'
+      this.__manipulationState = MANIPULATION_MODES.look
     } else {
       this.__manipulationState = this.__defaultManipulationState
     }
@@ -407,16 +472,22 @@ class CameraMouseAndKeyboard extends ParameterOwner {
       this.__mouseDragDelta = mousePos.subtract(this.__mouseDownPos)
     }
     switch (this.__manipulationState) {
-      case 'orbit':
-        this.orbit(event, this.__mouseDragDelta)
+      case MANIPULATION_MODES.turntable:
+        this.turntable(event, this.__mouseDragDelta)
         break
-      case 'look':
+      case MANIPULATION_MODES.tumbler:
+        this.tumble(event, this.__mouseDragDelta)
+        break
+      case MANIPULATION_MODES.trackball:
+        this.trackball(event, this.__mouseDragDelta)
+        break
+      case MANIPULATION_MODES.look:
         this.look(event, this.__mouseDragDelta)
         break
-      case 'pan':
+      case MANIPULATION_MODES.pan:
         this.pan(event, this.__mouseDragDelta)
         break
-      case 'dolly':
+      case MANIPULATION_MODES.dolly:
         this.dolly(event, this.__mouseDragDelta)
         break
     }
@@ -458,7 +529,9 @@ class CameraMouseAndKeyboard extends ParameterOwner {
       const focalDistance = camera.getFocalDistance()
       const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance * modulator
       xfo.tr.addInPlace(movementVec.scale(zoomDist))
-      if (this.__defaultManipulationState == 'orbit') camera.setFocalDistance(camera.getFocalDistance() + zoomDist)
+      if (this.__defaultManipulationState != MANIPULATION_MODES.walk) {
+        camera.setFocalDistance(camera.getFocalDistance() + zoomDist)
+      }
       camera.getParameter('GlobalXfo').setValue(xfo)
 
       count++
@@ -650,12 +723,21 @@ class CameraMouseAndKeyboard extends ParameterOwner {
       const touchPos = new Vec2(touch.pageX, touch.pageY)
       const touchData = this.__ongoingTouches[touch.identifier]
       const dragVec = touchData.pos.subtract(touchPos)
-      if (this.__defaultManipulationState == 'look') {
-        // TODO: scale panning here.
-        dragVec.scaleInPlace(6.0)
-        this.look(event, dragVec)
-      } else {
-        this.orbit(event, dragVec)
+      switch (this.__defaultManipulationState) {
+        case MANIPULATION_MODES.look:
+          // TODO: scale panning here.
+          dragVec.scaleInPlace(6.0)
+          this.look(event, dragVec)
+          break
+        case MANIPULATION_MODES.turntable:
+          this.turntable(event, dragVec)
+          break
+        case MANIPULATION_MODES.tumbler:
+          this.tumbler(event, dragVec)
+          break
+        case MANIPULATION_MODES.trackball:
+          this.trackball(event, dragVec)
+          break
       }
     } else if (touches.length == 2) {
       const touch0 = touches[0]
@@ -734,6 +816,15 @@ class CameraMouseAndKeyboard extends ParameterOwner {
       this.aimFocus(event, pos)
     }
     event.preventDefault()
+  }
+
+  /**
+   * Returns a dictionary of support manipulation modes.
+   *
+   * @param {TouchEvent} event - The touch event that occurs.
+   */
+  static get MANIPULATION_MODES() {
+    return MANIPULATION_MODES
   }
 }
 

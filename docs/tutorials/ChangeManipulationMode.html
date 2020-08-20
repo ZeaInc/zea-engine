@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea Engine</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import { GLRenderer, Scene, Vec3, Color, Cuboid, Material, GeomItem } from './dist/index.esm.js'
+
+      const scene = new Scene()
+      scene.setupGrid(5, 10)
+      const domElement = document.getElementById('app')
+      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      renderer.setScene(scene)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
+
+      const geomItem = new GeomItem('Disc', new Cuboid(2, 2, 2), standardMaterial)
+      scene.getRoot().addChild(geomItem)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(6, 6, 6), new Vec3(0, 0, 0))
+      renderer.getViewport().getManipulator().setDefaultManipulationMode('tumbler')
+    </script>
+  </body>
+</html>
