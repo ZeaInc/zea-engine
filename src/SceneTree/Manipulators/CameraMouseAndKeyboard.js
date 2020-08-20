@@ -5,14 +5,13 @@ import { NumberParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
 
 const MANIPULATION_MODES = {
-  // orbit: 'orbit',
   pan: 0,
   dolly: 1,
   focussing: 2,
   look: 3,
   turntable: 4,
   tumbler: 5,
-  /*trackball: 'trackball', Note yet implemented. See here for details: https://www.mattkeeter.com/projects/rotation/*/
+  trackball: 6,
 }
 
 /**
