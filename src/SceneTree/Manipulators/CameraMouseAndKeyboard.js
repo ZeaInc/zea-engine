@@ -207,6 +207,26 @@ class CameraMouseAndKeyboard extends ParameterOwner {
     const camera = viewport.getCamera()
     const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
+
+    const xvec = this.__mouseDownCameraXfo.ori.getXaxis()
+    const yvec = this.__mouseDownCameraXfo.ori.getYaxis()
+    const zvec = this.__mouseDownCameraXfo.ori.getZaxis()
+    const vec = xvec.scale(-dragVec.x).add(yvec.scale(dragVec.y))
+    const rotateAxis = vec.cross(zvec)
+    rotateAxis.normalizeInPlace()
+
+    const dragVecLength = dragVec.length()
+
+    const globalXfo = this.__mouseDownCameraXfo.clone()
+
+    // Orbit
+    const orbit = new Quat()
+    orbit.setFromAxisAndAngle(rotateAxis, (dragVecLength / viewport.getWidth()) * Math.PI * -orbitRate)
+    globalXfo.ori = orbit.multiply(globalXfo.ori)
+
+    globalXfo.tr = this.__mouseDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
+
+    camera.getParameter('GlobalXfo').setValue(globalXfo)
   }
 
   /**
