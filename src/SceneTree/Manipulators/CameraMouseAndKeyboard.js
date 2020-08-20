@@ -12,7 +12,7 @@ const MANIPULATION_MODES = {
   look: 3,
   turntable: 4,
   tumbler: 5,
-  /*trackball: 'trackball', Note yet implemented. See here for details: https://www.mattkeeter.com/projects/rotation/*/,
+  /*trackball: 'trackball', Note yet implemented. See here for details: https://www.mattkeeter.com/projects/rotation/*/
 }
 
 /**
@@ -67,10 +67,9 @@ class CameraMouseAndKeyboard extends ParameterOwner {
    * @param {string} manipulationMode - The manipulation mode value.
    */
   setDefaultManipulationMode(manipulationMode) {
-    if (typeof manipulationMode == 'string')
+    if (typeof manipulationMode == 'string') {
       this.__defaultManipulationState = MANIPULATION_MODES[manipulationMode]
-    else
-      this.__defaultManipulationState = manipulationMode
+    } else this.__defaultManipulationState = manipulationMode
   }
 
   /**
