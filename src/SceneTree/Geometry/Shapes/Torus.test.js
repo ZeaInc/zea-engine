@@ -40,8 +40,6 @@ describe('Torus', () => {
           value: 3,
         },
         OuterRadius: {
-          range: [3, 200],
-          step: 1,
           value: 5,
         },
       },

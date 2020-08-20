@@ -14,20 +14,7 @@ Object {
     "InnerRadius": Object {
       "value": 3,
     },
-    "Loops": Object {
-      "range": Array [
-        3,
-        200,
-      ],
-      "step": 1,
-      "value": 6,
-    },
     "OuterRadius": Object {
-      "range": Array [
-        3,
-        200,
-      ],
-      "step": 1,
       "value": 5,
     },
   },
