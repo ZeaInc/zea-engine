@@ -22,17 +22,14 @@ class Torus extends ProceduralMesh {
    * @param {number} [detail=32] - The detail of the cone.
    * @param {number} [loops=6] - The number of loops.
    */
-  constructor(innerRadius = 0.5, outerRadius = 3, detail = 32, loops = 6) {
+  constructor(innerRadius = 0.5, outerRadius = 3, detail = 32) {
     super()
 
-    if (isNaN(innerRadius) || isNaN(outerRadius) || isNaN(detail) || isNaN(loops)) throw new Error('Invalid geom args')
+    if (isNaN(innerRadius) || isNaN(outerRadius) || isNaN(detail)) throw new Error('Invalid geom args')
 
     this.__innerRadiusParam = this.addParameter(new NumberParameter('InnerRadius', innerRadius))
-    this.__outerRadiusParam = this.addParameter(
-      new NumberParameter('OuterRadius', outerRadius >= 3 ? outerRadius : 3, [3, 200], 1)
-    )
+    this.__outerRadiusParam = this.addParameter(new NumberParameter('OuterRadius', outerRadius))
     this.__detailParam = this.addParameter(new NumberParameter('Detail', detail >= 3 ? detail : 3, [3, 200], 1))
-    this.__loopsParam = this.addParameter(new NumberParameter('Loops', loops >= 3 ? loops : 3, [3, 200], 1))
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
@@ -48,7 +45,6 @@ class Torus extends ProceduralMesh {
     this.__innerRadiusParam.on('valueChanged', resize)
     this.__outerRadiusParam.on('valueChanged', resize)
     this.__detailParam.on('valueChanged', rebuild)
-    this.__loopsParam.on('valueChanged', rebuild)
   }
 
   /**
@@ -58,8 +54,9 @@ class Torus extends ProceduralMesh {
   __rebuild() {
     const innerRadius = this.__innerRadiusParam.getValue()
     const outerRadius = this.__outerRadiusParam.getValue()
-    const nbSlices = this.__detailParam.getValue()
-    const nbLoops = this.__loopsParam.getValue()
+    const detail = this.__detailParam.getValue()
+    const nbSlices = detail
+    const nbLoops = detail * 2
     const numVertices = nbSlices * nbLoops
 
     this.setNumVertices(numVertices)
@@ -123,8 +120,9 @@ class Torus extends ProceduralMesh {
   __resize() {
     const innerRadius = this.__innerRadiusParam.getValue()
     const outerRadius = this.__outerRadiusParam.getValue()
-    const nbSlices = this.__detailParam.getValue()
-    const nbLoops = this.__loopsParam.getValue()
+    const detail = this.__detailParam.getValue()
+    const nbSlices = detail
+    const nbLoops = detail * 2
 
     const positions = this.getVertexAttribute('positions')
     let vertex = 0

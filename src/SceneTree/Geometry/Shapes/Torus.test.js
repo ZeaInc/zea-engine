@@ -7,7 +7,6 @@ describe('Torus', () => {
     expect(torus.getParameter('InnerRadius').getValue()).toBe(0.5)
     expect(torus.getParameter('OuterRadius').getValue()).toBe(3)
     expect(torus.getParameter('Detail').getValue()).toBe(32)
-    expect(torus.getParameter('Loops').getValue()).toBe(6)
   })
 
   test('test update parameters.', () => {
@@ -15,12 +14,10 @@ describe('Torus', () => {
     torus.getParameter('InnerRadius').setValue(3)
     torus.getParameter('OuterRadius').setValue(5)
     torus.getParameter('Detail').setValue(16)
-    torus.getParameter('Loops').setValue(10)
 
     expect(torus.getParameter('InnerRadius').getValue()).toBe(3)
     expect(torus.getParameter('OuterRadius').getValue()).toBe(5)
     expect(torus.getParameter('Detail').getValue()).toBe(16)
-    expect(torus.getParameter('Loops').getValue()).toBe(10)
   })
 
   it('saves to JSON (serialization).', () => {
@@ -41,11 +38,6 @@ describe('Torus', () => {
         },
         InnerRadius: {
           value: 3,
-        },
-        Loops: {
-          range: [3, 200],
-          step: 1,
-          value: 6,
         },
         OuterRadius: {
           range: [3, 200],
