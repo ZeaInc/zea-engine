@@ -609,39 +609,36 @@ class GLViewport extends GLBaseViewport {
 
   /**
    * Causes an event to occurs when the user presses a key on the keyboard.
-   * @param {string} key - The key the user presses.
    * @param {KeyboardEvent} event - The event that occurs.
    */
-  onKeyPressed(key, event) {
+  onKeyPressed(event) {
     this.__prepareEvent(event)
     if (this.__cameraManipulator) {
-      if (this.__cameraManipulator.onKeyPressed(key, event)) return
+      if (this.__cameraManipulator.onKeyPressed(event)) return
     }
     this.emit('keyPressed', event)
   }
 
   /**
    * Causes an event to occur when the user is pressing a key on the keyboard.
-   * @param {string} key - The key the user is pressing.
    * @param {KeyboardEvent} event - The event that occurs.
    */
-  onKeyDown(key, event) {
+  onKeyDown(event) {
     this.__prepareEvent(event)
     if (this.__cameraManipulator) {
-      if (this.__cameraManipulator.onKeyDown(key, event)) return
+      if (this.__cameraManipulator.onKeyDown(event)) return
     }
     this.emit('keyDown', event)
   }
 
   /**
    * Causes an event to occur  when the user releases a key on the keyboard.
-   * @param {string} key - The key the user releases
    * @param {KeyboardEvent} event - The event that occurs.
    */
-  onKeyUp(key, event) {
+  onKeyUp(event) {
     this.__prepareEvent(event)
     if (this.__cameraManipulator) {
-      if (this.__cameraManipulator.onKeyUp(key, event)) return
+      if (this.__cameraManipulator.onKeyUp(event)) return
     }
     this.emit('keyUp', event)
   }

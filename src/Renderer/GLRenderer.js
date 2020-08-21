@@ -227,22 +227,6 @@ class GLRenderer extends GLBaseRenderer {
     return vp
   }
 
-  /**
-   * The onKeyPressed method.
-   * @param {any} key - The key value.
-   * @param {any} event - The event value.
-   */
-  onKeyPressed(key, event) {
-    switch (key) {
-      case 'b':
-        this.__displayEnvironment = !this.__displayEnvironment
-        this.requestRedraw()
-        break
-      default:
-        super.onKeyPressed(key, event)
-    }
-  }
-
   // //////////////////////////
   // GUI
 

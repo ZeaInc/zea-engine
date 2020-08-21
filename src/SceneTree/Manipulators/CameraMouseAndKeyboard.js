@@ -583,16 +583,16 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   /**
    * Causes an event to occurs when the user presses a key on the keyboard.
    *
-   * @param {string} key - The key the user presses.
    * @param {KeyboardEvent} event - The keyboard event that occurs.
    * @return {boolean} - The return value.
    * @private
    */
-  onKeyPressed(key, event) {
+  onKeyPressed(event) {
     // Note: onKeyPressed is called initially only once, and then we
     // get a series of calls. Here we ignore subsequent events.
     // (TODO: move this logic to a special controller)
     /*
+    const key = String.fromCharCode(event.keyCode).toLowerCase()
     switch (key) {
       case 'w':
         if (this.__keysPressed.indexOf(key) != -1)
@@ -634,22 +634,21 @@ class CameraMouseAndKeyboard extends ParameterOwner {
   /**
    * Causes an event to occur when the user is pressing a key on the keyboard.
    *
-   * @param {string} key - The key the user is pressing.
    * @param {KeyboardEvent} event - The keyboard event that occurs.
    * @private
    */
-  onKeyDown(key, event) {}
+  onKeyDown(event) {}
 
   /**
    * Causes an event to occur when the user releases a key on the keyboard.
    *
-   * @param {string} key - The key the user releases.
    * @param {KeyboardEvent} event - The event that occurs.
    * @private
    */
-  onKeyUp(key, event) {
+  onKeyUp(event) {
     // (TODO: move this logic to a special controller)
     /*
+    const key = String.fromCharCode(event.keyCode).toLowerCase()
     switch (key) {
       case 'w':
         this.__velocity.z += 1.0;

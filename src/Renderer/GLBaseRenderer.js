@@ -646,28 +646,25 @@ class GLBaseRenderer extends ParameterOwner {
 
     document.addEventListener('keypress', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
-      const key = String.fromCharCode(event.keyCode).toLowerCase()
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
-        vp.onKeyPressed(key, event)
+        vp.onKeyPressed(event)
       }
     })
 
     document.addEventListener('keydown', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
-      const key = String.fromCharCode(event.keyCode).toLowerCase()
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
-        vp.onKeyDown(key, event)
+        vp.onKeyDown(event)
       }
     })
 
     document.addEventListener('keyup', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
-      const key = String.fromCharCode(event.keyCode).toLowerCase()
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
-        vp.onKeyUp(key, event)
+        vp.onKeyUp(event)
       }
     })
 

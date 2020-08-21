@@ -206,7 +206,7 @@ class GLBaseViewport extends ParameterOwner {
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
-  onKeyPressed(key, event) {
+  onKeyPressed(event) {
     return false
   }
 
@@ -216,7 +216,7 @@ class GLBaseViewport extends ParameterOwner {
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
-  onKeyDown(key, event) {
+  onKeyDown(event) {
     return false
   }
 
@@ -226,7 +226,7 @@ class GLBaseViewport extends ParameterOwner {
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
-  onKeyUp(key, event) {
+  onKeyUp(event) {
     return false
   }
 }
