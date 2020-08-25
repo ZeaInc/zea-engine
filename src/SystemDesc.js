@@ -196,7 +196,7 @@ const SystemDesc = (function () {
             }
           }
         } else {
-          if (parts.indexOf('TITAN') != -1 || parts.indexOf('Quadro') != -1) {
+          if (parts.indexOf('RTX') || parts.indexOf('TITAN') != -1 || parts.indexOf('Quadro') != -1) {
             deviceCategory = 'High'
           } else {
             deviceCategory = 'Low'
