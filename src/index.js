@@ -21,4 +21,9 @@ const ZeaEngine = {
   ...Renderer,
 }
 
+// Assign ZeaEngine to the global scope.
+if (!globalThis.ZeaEngine) {
+  globalThis.ZeaEngine = ZeaEngine
+}
+
 export default ZeaEngine
