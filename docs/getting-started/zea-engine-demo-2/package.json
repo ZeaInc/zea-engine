@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zeainc/zea-engine": "^1.1.0"
+    "@zeainc/zea-engine": "^1.3.0"
   }
 }
