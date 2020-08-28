@@ -1,3 +1,4 @@
+// eslint-disable-next-line require-jsdoc
 function isIOSDevice() {
   return (
     (navigator.userAgent.match(/iPhone/i) ||
@@ -6,6 +7,7 @@ function isIOSDevice() {
   )
 }
 
+// eslint-disable-next-line require-jsdoc
 function isMobileDevice() {
   return (
     (navigator.userAgent.match(/Android/i) ||
@@ -19,6 +21,7 @@ function isMobileDevice() {
   )
 }
 
+// eslint-disable-next-line require-jsdoc
 function getBrowserDesc() {
   const nVer = navigator.appVersion
   const nAgt = navigator.userAgent
@@ -96,6 +99,7 @@ function getBrowserDesc() {
   }
 }
 
+// eslint-disable-next-line require-jsdoc
 function getGPUDesc() {
   let webgl
   try {
@@ -146,6 +150,7 @@ function getGPUDesc() {
   }
 }
 
+// eslint-disable-next-line require-jsdoc
 function isWebGLSupported() {
   return getGPUDesc() != undefined
 }
@@ -196,7 +201,7 @@ const SystemDesc = (function () {
             }
           }
         } else {
-          if (parts.indexOf('RTX') || parts.indexOf('TITAN') != -1 || parts.indexOf('Quadro') != -1) {
+          if (parts.includes('RTX') || parts.includes('TITAN') || parts.includes('Quadro')) {
             deviceCategory = 'High'
           } else {
             deviceCategory = 'Low'
@@ -243,7 +248,7 @@ const SystemDesc = (function () {
             deviceCategory = 'Low'
           }
         } else {
-          if (parts.indexOf('FirePro') != -1 || parts.indexOf('Quadro') != -1) {
+          if (parts.includes('FirePro') || parts.includes('Quadro')) {
             deviceCategory = 'High'
           } else {
             deviceCategory = 'Low'
