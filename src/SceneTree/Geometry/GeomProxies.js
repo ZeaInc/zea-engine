@@ -32,6 +32,14 @@ class BaseProxy extends EventEmitter {
   }
 
   /**
+   * Returns the bounding box for geometry.
+   * @return {Vec3} - The return value.
+   */
+  getBoundingBox() {
+    return this.boundingBox
+  }
+
+  /**
    * The genBuffers method.
    * @return {any} - The return value.
    */
