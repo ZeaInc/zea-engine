@@ -145,7 +145,7 @@ class GLStandardGeomsPass extends GLPass {
     }
     const glshader = this.__renderer.getOrCreateShader(material.getShaderName())
     glmaterial = new GLMaterial(this.__gl, material, glshader)
-    glmaterial.on('updated', (event) => {
+    glmaterial.on('updated', () => {
       this.__renderer.requestRedraw()
     })
     material.setMetadata('glmaterial', glmaterial)
@@ -175,6 +175,9 @@ class GLStandardGeomsPass extends GLPass {
       throw new Error('Unsupported geom type:' + geom.constructor.name)
     }
     geom.setMetadata('glgeom', glgeom)
+    glgeom.on('updated', () => {
+      this.__renderer.requestRedraw()
+    })
     glgeom.addRef(this)
     return glgeom
   }
