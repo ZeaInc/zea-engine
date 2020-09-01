@@ -1,11 +1,15 @@
+import { EventEmitter } from '../../Utilities/EventEmitter'
+
 /** Class representing an operator input.
+ * @extends EventEmitter
  */
-class OperatorInput {
+class OperatorInput extends EventEmitter {
   /**
    * Create an operator input.
    * @param {string} name - The name value.
    */
   constructor(name) {
+    super()
     this.__name = name
     this._param = undefined
     this._paramValueChanged = this._paramValueChanged.bind(this)
@@ -72,6 +76,7 @@ class OperatorInput {
     if (this._param) {
       this._param.on('valueChanged', this._paramValueChanged)
     }
+    this.emit('paramSet', { param: this._param })
   }
 
   /**

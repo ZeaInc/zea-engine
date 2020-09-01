@@ -1,14 +1,17 @@
 import { OperatorOutputMode } from '../Parameters/index'
+import { EventEmitter } from '../../Utilities/EventEmitter'
 
 /** Class representing an operator output.
+ * @extends EventEmitter
  */
-class OperatorOutput {
+class OperatorOutput extends EventEmitter {
   /**
    * Create an operator output.
    * @param {string} name - The name value.
    * @param {OperatorOutputMode} operatorOutputMode - The mode which the OperatorOutput uses to bind to its target parameter.
    */
   constructor(name, operatorOutputMode = OperatorOutputMode.OP_WRITE) {
+    super()
     this.__name = name
     this._mode = operatorOutputMode
     this._param = undefined
@@ -76,6 +79,7 @@ class OperatorOutput {
     if (this._param) {
       this._paramBindIndex = this._param.bindOperatorOutput(this, index)
     }
+    this.emit('paramSet', { param: this._param })
   }
 
   /**
