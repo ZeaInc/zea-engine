@@ -80,6 +80,40 @@ yarn run test:debug
 
 - Run `yarn run build:watch`. Produces the development version of ZeaEngine and triggers a re-compilation on file changes.
 
+## About E2E testing
+
+The End-to-End (E2E) testing technique allows us to ensure that the rendering results are always the expected ones.
+We use the [Percy visual review platform](https://percy.io/) to capture and compare snapshots.
+It's also a very important part of our CI/CD workflow, so we can catch and fix bugs as soon as they happen.
+
+### How to run the E2E tests
+
+1. From the [Percy project settings](https://percy.io/36dba56e/zea-engine/settings), copy the _project token_.
+
+2. In your terminal, assign the _project token_ to an environment variable. For convenience, you can use a tool such as [direnv](https://direnv.net/).
+
+3. Run:
+
+```bash
+yarn run test:e2e
+```
+
+Or, if you want to inspect the tests as they run:
+
+```bash
+yarn run test:e2e:watch
+```
+
+### How to set up a new E2E test
+
+1. Run:
+
+```bash
+yarn generate e2e-test
+```
+
+You'll be prompted for the test name.
+
 ## Publishing a new build
 
 The npm scripts hook takes care of the heavy lifting, you only need to run:
