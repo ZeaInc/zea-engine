@@ -112,7 +112,7 @@ yarn run test:e2e:watch
 yarn generate e2e-test
 ```
 
-You'll be prompted for the test name.
+You'll be prompted for the test's name.
 
 ## Publishing a new build
 
