@@ -22,6 +22,7 @@ class BaseImage extends BaseItem {
    */
   constructor(name) {
     super(name)
+
     this.width = 0
     this.height = 0
     this.format = 'RGB'

@@ -24,8 +24,10 @@
   * [Changing The Background](tutorials/changing-the-background.md)
   * [Load an Asset File](tutorials/load-an-asset.md)
   * [Setting up Groups and Highlights](tutorials/highlights.md)
-  * [Setting up Labels](tutorials/labels.md)
-  * [Setting up multilingual Labels](tutorials/multilingual-labels.md)
+  * [Using Labels](tutorials/labels.md)
+  * [Styling Labels](tutorials/labels-styling.md)
+  * [Custom fonts in Labels](tutorials/labels-custom-fonts.md)
+  * [Multilingual Labels](tutorials/labels-multilingual.md)
   <!-- * [Loading custom points data](tutorials/custom-points.md) -->
   * [Launching a VR Session](tutorials/VR.md)
 

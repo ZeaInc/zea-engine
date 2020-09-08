@@ -19,8 +19,7 @@ class DataImage extends BaseImage {
   constructor(name) {
     super()
 
-    if (name == undefined) name = this.constructor.name
-    this.__name = name
+    this.__name = name || this.constructor.name
     this.format = 'RGBA'
     this.type = 'UNSIGNED_BYTE'
     this.__loaded = false
