@@ -38,9 +38,15 @@ class ResourceLoader extends EventEmitter {
       for (let i = 0; i < scripts.length; i++) {
         const script = scripts[i]
         if (script.src.includes('zea-engine')) {
+          // This code generatas a URL for the wasm file based ont he position of 'zea-engine' in the path.
+          // e.g.
+          // https://cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine@umd
+          // or
+          // https://unpkg.com/@zeainc/zea-engine@1.5.0/dist/index.cjs.js
+          // Trim off all the parts after the engine section, and then append the parts for public resources.
           const parts = script.src.split('/')
-          parts.pop()
-          parts.pop()
+          const enginePartIndex = parts.findIndex((part) => part.includes('zea-engine'))
+          while (parts.length > enginePartIndex + 1) parts.pop()
           baseUrl = parts.join('/')
           break
         }
