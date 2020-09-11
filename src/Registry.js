@@ -111,5 +111,4 @@ Registry.register('UInt32', UInt32)
 Registry.register('SInt32', SInt32)
 Registry.register('Float32', Float32)
 
-export default Registry
 export { Registry }

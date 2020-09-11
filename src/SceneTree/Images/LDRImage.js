@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { SystemDesc } from '../../SystemDesc.js'
 import { NumberParameter } from '../Parameters/index'
 import { FileImage } from './FileImage.js'

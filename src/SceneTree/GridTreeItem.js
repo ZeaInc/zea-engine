@@ -4,7 +4,7 @@ import { Material } from './Material'
 import { GeomItem } from './GeomItem'
 import { Grid } from './Geometry/Shapes/Grid'
 import { Lines } from './Geometry/Lines'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * The GridTreeItem displays a grid of a given size and resolution. The Grid is oriented on the XY plane
@@ -13,7 +13,7 @@ import Registry from '../Registry'
  *
  * @extends {TreeItem}
  */
-export default class GridTreeItem extends TreeItem {
+class GridTreeItem extends TreeItem {
   /**
    * Creates an instance of GridTree.
    *

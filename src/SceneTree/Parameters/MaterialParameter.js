@@ -1,5 +1,5 @@
 import { Parameter } from './Parameter.js'
-import Material from '../Material.js'
+import { Material } from '../Material.js'
 
 /**
  * Represents a specific type of parameter, that only stores `Material` values.

@@ -1,5 +1,5 @@
 import { Color, Vec3 } from '../../Math/index'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 import { shaderLibrary } from '../ShaderLibrary.js'
 

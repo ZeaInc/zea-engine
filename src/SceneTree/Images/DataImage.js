@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { BaseImage } from '../BaseImage.js'
 
 // let ResourceLoaderWorker = require("worker-loader?inline!./ResourceLoaderWorker.js");

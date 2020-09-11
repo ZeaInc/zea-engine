@@ -1,6 +1,6 @@
 import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 import './GLSL/stack-gl/inverse.js'
 import './GLSL/stack-gl/transpose.js'

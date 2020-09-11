@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 import { Vec2, Vec3 } from '../../Math/index'
 import { decodeText } from '../../Utilities/index'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { VLHImage } from './VLHImage.js'
 
 const EnvMapMapping = {

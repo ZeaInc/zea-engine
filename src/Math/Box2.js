@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-import StringFunctions from '../Utilities/StringFunctions'
+import { StringFunctions } from '../Utilities/StringFunctions'
 
 import { Vec2 } from './Vec2'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * Represents a box in 2D space. Needing two Vec2 vectors describing the corners

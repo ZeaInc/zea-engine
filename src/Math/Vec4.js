@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 import { AttrValue } from './AttrValue.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 import { Vec3 } from './Vec3.js'
 /**
  * Represents a four-dimensional coordinate.

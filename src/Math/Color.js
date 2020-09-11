@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import { AttrValue } from './AttrValue.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * Class representing a color as 4 floating point values.
@@ -716,5 +716,4 @@ class Color extends AttrValue {
 
 Registry.register('Color', Color)
 
-export default Color
 export { Color }

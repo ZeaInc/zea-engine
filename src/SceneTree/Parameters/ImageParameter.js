@@ -1,5 +1,5 @@
 import { Parameter } from './Parameter.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 /**
  * Represents a specific type of parameter, that only stores `BaseImage` values.

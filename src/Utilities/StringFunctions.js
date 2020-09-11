@@ -57,5 +57,4 @@ class StringFunctions {
   }
 }
 
-export default StringFunctions
 export { StringFunctions }

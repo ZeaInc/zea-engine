@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { resourceLoader } from '../ResourceLoader.js'
 
 import { BooleanParameter, NumberParameter } from '../Parameters/index'

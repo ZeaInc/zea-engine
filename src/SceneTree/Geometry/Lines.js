@@ -1,5 +1,5 @@
 import { BaseGeom } from './BaseGeom.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 /**
  *
@@ -178,5 +178,4 @@ class Lines extends BaseGeom {
 
 Registry.register('Lines', Lines)
 
-export default Lines
 export { Lines }

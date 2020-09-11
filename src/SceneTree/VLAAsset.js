@@ -3,7 +3,7 @@ import { FilePathParameter } from './Parameters/FilePathParameter'
 import { AssetItem } from './AssetItem.js'
 import { BinReader } from './BinReader.js'
 import { resourceLoader } from './ResourceLoader.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 import { Version } from './Version.js'
 
 /**

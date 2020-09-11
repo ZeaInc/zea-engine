@@ -1,7 +1,7 @@
 import { Vec2 } from '../../../Math/Vec2'
-import ProceduralPoints from './ProceduralPoints'
+import { ProceduralPoints } from './ProceduralPoints'
 import { NumberParameter } from '../../Parameters/NumberParameter'
-import Registry from '../../../Registry'
+import { Registry } from '../../../Registry'
 
 /**
  * Represents an ordered grid of points along `X` and `Y` axes.

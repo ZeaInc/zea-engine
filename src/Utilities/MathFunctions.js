@@ -375,5 +375,4 @@ class MathFunctions {
   }
 }
 
-export default MathFunctions
 export { UInt8, SInt8, SInt16, UInt16, SInt32, UInt32, Float32, MathFunctions }

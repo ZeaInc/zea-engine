@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import StringFunctions from '../Utilities/StringFunctions'
+import { StringFunctions } from '../Utilities/StringFunctions'
 import { Vec3 } from './Vec3.js'
 import { Mat4 } from './Mat4.js'
 import { Quat } from './Quat.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 const sc_helper = new Vec3(1, 1, 1)
 

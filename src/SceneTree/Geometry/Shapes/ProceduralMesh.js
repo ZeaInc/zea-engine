@@ -1,4 +1,4 @@
-import Mesh from '../Mesh'
+import { Mesh } from '../Mesh'
 
 /**
  * Class representing meshes with a special serialization by removing computed values.
@@ -25,5 +25,4 @@ class ProceduralMesh extends Mesh {
   }
 }
 
-export default ProceduralMesh
 export { ProceduralMesh }

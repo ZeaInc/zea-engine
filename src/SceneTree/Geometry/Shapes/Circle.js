@@ -1,6 +1,6 @@
 import { NumberParameter } from '../../Parameters/index'
-import Registry from '../../../Registry'
-import ProceduralLines from './ProceduralLines'
+import { Registry } from '../../../Registry'
+import { ProceduralLines } from './ProceduralLines'
 
 /**
  * A class for generating a circle shape using line segments.

@@ -1,6 +1,6 @@
 import { Box3 } from '../../Math/index'
 import { EventEmitter } from '../../Utilities/EventEmitter.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 /** Class representing a base geometry proxy.
  * @extends EventEmitter

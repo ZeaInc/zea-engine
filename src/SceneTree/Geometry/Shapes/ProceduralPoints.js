@@ -1,4 +1,4 @@
-import Points from '../Points'
+import { Points } from '../Points'
 
 /**
  * Class representing points with a special serialization by removing computed values.
@@ -25,5 +25,4 @@ class ProceduralPoints extends Points {
   }
 }
 
-export default ProceduralPoints
 export { ProceduralPoints }

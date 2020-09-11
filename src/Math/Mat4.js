@@ -1,7 +1,7 @@
 import { AttrValue } from './AttrValue.js'
 import { Vec3 } from './Vec3.js'
 import { Mat3 } from './Mat3.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * A class representing a 4x4 matrix.

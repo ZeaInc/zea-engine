@@ -1,4 +1,4 @@
-import StringFunctions from './StringFunctions'
+import { StringFunctions } from './StringFunctions'
 import { Vec3 } from '../Math/Vec3'
 
 describe('StringFunctions', () => {

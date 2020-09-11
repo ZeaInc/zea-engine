@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 
 /** Class representing a proxy parameter. Proxies are used to connect

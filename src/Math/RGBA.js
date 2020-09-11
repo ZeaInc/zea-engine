@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import { AttrValue } from './AttrValue.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * Class representing the red, green, blue and alpha channel of a color.

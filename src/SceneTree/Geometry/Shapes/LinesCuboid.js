@@ -1,6 +1,6 @@
 import { NumberParameter } from '../../Parameters/NumberParameter.js'
-import Registry from '../../../Registry'
-import ProceduralLines from './ProceduralLines'
+import { Registry } from '../../../Registry'
+import { ProceduralLines } from './ProceduralLines'
 
 /**
  * A class for generating a lines cuboid shape(Without faces).

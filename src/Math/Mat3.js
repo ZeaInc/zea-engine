@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import { AttrValue } from './AttrValue.js'
 import { Vec3 } from './Vec3.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * A class representing a 3x3 matrix.

@@ -1,8 +1,8 @@
 import { Vec2 } from '../../../Math/Vec2'
 import { Vec3 } from '../../../Math/Vec3'
 import { BooleanParameter, NumberParameter } from '../../Parameters/index'
-import Registry from '../../../Registry'
-import ProceduralMesh from './ProceduralMesh'
+import { Registry } from '../../../Registry'
+import { ProceduralMesh } from './ProceduralMesh'
 
 /**
  * A class for generating a cylinder geometry. It is very much like a cuboid but with `N` number of sides.

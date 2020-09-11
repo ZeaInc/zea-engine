@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { BaseGeom } from './BaseGeom.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 /**
  * Class representing a point primitive drawing type, every vertex specified is a point.
@@ -92,5 +92,4 @@ class Points extends BaseGeom {
 
 Registry.register('Points', Points)
 
-export default Points
 export { Points }

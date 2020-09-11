@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 import { Color } from '../../Math/index'
 import { BooleanParameter, NumberParameter, ColorParameter, StringParameter } from '../Parameters/index'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { DataImage } from './DataImage.js'
 import { labelManager } from './LabelManager.js'
 

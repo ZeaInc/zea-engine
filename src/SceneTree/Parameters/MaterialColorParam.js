@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { ColorParameter } from './ColorParameter.js'
 import { BaseImage } from '../BaseImage.js'
 

@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { StringParameter } from './StringParameter.js'
 
 /**

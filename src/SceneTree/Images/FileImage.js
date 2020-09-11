@@ -1,6 +1,6 @@
 import { Vec4, Color } from '../../Math/index'
 import { loadBinfile } from '../Utils.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { BaseImage } from '../BaseImage.js'
 
 import { GIF } from '../../external/gifuct-js.js'
@@ -9,7 +9,7 @@ import { SystemDesc } from '../../SystemDesc.js'
 
 import { BooleanParameter, NumberParameter, Vec4Parameter } from '../Parameters/index'
 import { FilePathParameter } from '../Parameters/FilePathParameter'
-import MathFunctions from '../../Utilities/MathFunctions'
+import { MathFunctions } from '../../Utilities/MathFunctions'
 
 const imageDataLibrary = {}
 

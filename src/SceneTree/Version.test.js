@@ -1,4 +1,4 @@
-import Version from './Version'
+import { Version } from './Version'
 
 describe('Version', () => {
   test('Check for default version value.', () => {

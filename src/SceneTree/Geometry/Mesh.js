@@ -7,7 +7,7 @@ import { BaseGeom } from './BaseGeom.js'
 import { Attribute } from './Attribute.js'
 
 import { VertexAttribute } from './VertexAttribute.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 /**
  * The Mesh class provides a flexible and fast polygon mesh representation. It supports polygons of arbitrary complexity,
@@ -961,5 +961,4 @@ class Mesh extends BaseGeom {
 
 Registry.register('Mesh', Mesh)
 
-export default Mesh
 export { Mesh }

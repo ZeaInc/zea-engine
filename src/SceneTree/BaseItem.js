@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { ParameterOwner } from './ParameterOwner.js'
 import { BinReader } from './BinReader.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 let numBaseItems = 0
 

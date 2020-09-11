@@ -1,5 +1,5 @@
 import { Color, Xfo, Box3 } from '../Math/index'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 import { BooleanParameter, XfoParameter } from './Parameters/index'
 import { BaseItem } from './BaseItem.js'
 import { CalcGlobalXfoOperator } from './Operators/CalcGlobalXfoOperator.js'

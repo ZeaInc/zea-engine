@@ -2,8 +2,8 @@
 import { Vec3, Box3, Xfo } from '../Math/index'
 import { TreeItem } from './TreeItem.js'
 import { BooleanParameter, NumberParameter } from './Parameters/index'
-import MathFunctions from '../Utilities/MathFunctions'
-import Registry from '../Registry'
+import { MathFunctions } from '../Utilities/MathFunctions'
+import { Registry } from '../Registry'
 
 /**
  * Represents a view of the scene vertex coordinates. Since it is a `TreeItem`,

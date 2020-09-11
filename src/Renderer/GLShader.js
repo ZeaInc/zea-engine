@@ -1,5 +1,5 @@
 import { BaseItem } from '../SceneTree/BaseItem'
-import StringFunctions from '../Utilities/StringFunctions'
+import { StringFunctions } from '../Utilities/StringFunctions'
 
 // Every instance of every shader should have a unique id.
 // This is so that we can uniquely identify the bound shader during

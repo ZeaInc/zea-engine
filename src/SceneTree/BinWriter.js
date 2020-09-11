@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 import { Vec2, Vec3, Quat, Color, Box2, Box3 } from '../Math/index'
-import MathFunctions from '../Utilities/MathFunctions'
+import { MathFunctions } from '../Utilities/MathFunctions'
 
 /**
  * Writes `TypedArray` types in binary using a specific encoding.

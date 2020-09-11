@@ -1,7 +1,7 @@
 import { Color } from '../Math/index'
 import { BooleanParameter, NumberParameter, ColorParameter, ImageParameter } from './Parameters/index'
 import { TreeItem } from './TreeItem.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * A special type of TreeItem(Item with hierarchical abilities) class that represents a banner in a 2D dimension.

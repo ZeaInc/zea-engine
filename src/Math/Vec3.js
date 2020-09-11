@@ -1,5 +1,5 @@
 import { AttrValue } from './AttrValue.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 import { Vec2 } from './Vec2.js'
 
 /**

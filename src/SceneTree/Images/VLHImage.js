@@ -1,5 +1,5 @@
 import { Color } from '../../Math/index'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { BaseImage } from '../BaseImage.js'
 import { resourceLoader } from '../ResourceLoader.js'
 import { FilePathParameter } from '../Parameters/FilePathParameter'

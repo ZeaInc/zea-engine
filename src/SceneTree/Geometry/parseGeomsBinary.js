@@ -4,7 +4,7 @@ import { Lines } from './Lines.js'
 import { Mesh } from './Mesh.js'
 import { BinReader } from '../BinReader.js'
 import { Version } from '../Version.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 // key, toc, geomIndexOffset, geomsRange, isMobileDevice, bufferSlice, genBuffersOpts, context
 const parseGeomsBinary = (data, callback) => {

@@ -2,7 +2,7 @@
 /* eslint-disable valid-jsdoc */
 import { Xfo } from '../Math/index'
 import { TreeItem } from './TreeItem.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * TreeItem type of class designed for making duplications of parts of the tree.

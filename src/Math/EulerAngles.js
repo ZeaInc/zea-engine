@@ -1,5 +1,5 @@
 import { AttrValue } from './AttrValue.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * Class representing euler angles. Euler angles describe rotating an object

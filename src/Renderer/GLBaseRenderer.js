@@ -4,7 +4,7 @@ import { onResize } from '../external/onResize.js'
 import { create3DContext } from './GLContext.js'
 import { GLScreenQuad } from './GLScreenQuad.js'
 import { GLViewport } from './GLViewport.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 // import {
 //     GLTexture2D

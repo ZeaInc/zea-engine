@@ -1,6 +1,6 @@
-import ProceduralLines from './ProceduralLines'
+import { ProceduralLines } from './ProceduralLines'
 import { NumberParameter } from '../../Parameters/NumberParameter.js'
-import Registry from '../../../Registry'
+import { Registry } from '../../../Registry'
 
 /**
  * A class for generating a cross shape, drawing a line on the `X,Y,Z` axes.

@@ -109,4 +109,3 @@ void main(void) {
 }
 
 export { PostProcessing }
-//export default PostProcessing;

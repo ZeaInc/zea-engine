@@ -10,7 +10,7 @@ import { GLMesh } from '../GLMesh.js'
 import { GLMaterial } from '../GLMaterial.js'
 import { GLGeomItemChangeType, GLGeomItem } from '../GLGeomItem.js'
 import { GLTexture2D } from '../GLTexture2D.js'
-import MathFunctions from '../../Utilities/MathFunctions'
+import { MathFunctions } from '../../Utilities/MathFunctions'
 
 const pixelsPerItem = 6 // The number of RGBA pixels per draw item.
 

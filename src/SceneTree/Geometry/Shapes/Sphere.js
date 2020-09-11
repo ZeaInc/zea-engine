@@ -1,7 +1,7 @@
 import { Vec2, Vec3 } from '../../../Math/index'
 import { NumberParameter } from '../../Parameters/NumberParameter'
-import Registry from '../../../Registry'
-import ProceduralMesh from './ProceduralMesh'
+import { Registry } from '../../../Registry'
+import { ProceduralMesh } from './ProceduralMesh'
 
 /**
  * A class for generating a sphere geometry.
@@ -186,5 +186,4 @@ class Sphere extends ProceduralMesh {
 
 Registry.register('Sphere', Sphere)
 
-export default Sphere
 export { Sphere }

@@ -3,7 +3,7 @@ import { TreeItem } from './TreeItem.js'
 import { Group } from './Group.js'
 import { GeomLibrary } from './GeomLibrary.js'
 import { MaterialLibrary } from './MaterialLibrary.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * Represents a TreeItem with rendering and material capabilities.

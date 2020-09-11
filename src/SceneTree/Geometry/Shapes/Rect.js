@@ -1,6 +1,6 @@
-import ProceduralLines from './ProceduralLines'
+import { ProceduralLines } from './ProceduralLines'
 import { NumberParameter } from '../../Parameters/NumberParameter.js'
-import Registry from '../../../Registry'
+import { Registry } from '../../../Registry'
 
 /**
  * A class for generating a rectangle shape.
@@ -118,5 +118,4 @@ class Rect extends ProceduralLines {
 
 Registry.register('Rect', Rect)
 
-export default Rect
 export { Rect }

@@ -109,5 +109,4 @@ class Version {
   }
 }
 
-export default Version
 export { Version }

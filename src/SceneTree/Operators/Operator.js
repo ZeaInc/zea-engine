@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { BaseItem } from '../BaseItem.js'
 import { OperatorInput } from './OperatorInput'
 import { OperatorOutput } from './OperatorOutput'

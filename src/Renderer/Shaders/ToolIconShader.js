@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { FlatSurfaceShader } from './FlatSurfaceShader.js'
 
 class ToolIconShader extends FlatSurfaceShader {

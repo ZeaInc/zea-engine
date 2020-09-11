@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable valid-jsdoc */
 import { EventEmitter } from '../Utilities/EventEmitter'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 // Explicit import of files to avoid importing all the parameter types.
 // Note: Soon these imports should be removed, once all code avoids calling

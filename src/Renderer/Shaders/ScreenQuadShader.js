@@ -62,4 +62,3 @@ void main(void) {
 }
 
 export { ScreenQuadShader }
-//export default ScreenQuadShader;

@@ -1,4 +1,4 @@
-import GridTreeItem from './GridTreeItem'
+import { GridTreeItem } from './GridTreeItem'
 // Although we're not directly using LinesShader, we import it so it registers itself in the registry.
 // eslint-disable-next-line no-unused-vars
 import { LinesShader } from '../Renderer/Shaders/LinesShader'

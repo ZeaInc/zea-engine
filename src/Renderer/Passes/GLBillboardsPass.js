@@ -6,7 +6,7 @@ import { GLImageAtlas } from '../GLImageAtlas.js'
 import { GLTexture2D } from '../GLTexture2D.js'
 import { generateShaderGeomBinding } from '../GeomShaderBinding.js'
 import { GLRenderer } from '../GLRenderer.js'
-import MathFunctions from '../../Utilities/MathFunctions'
+import { MathFunctions } from '../../Utilities/MathFunctions'
 
 const pixelsPerItem = 5 // The number of pixels per draw item.
 

@@ -1,5 +1,5 @@
 import { Color } from '../../Math/Color'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 import './GLSL/stack-gl/transpose.js'

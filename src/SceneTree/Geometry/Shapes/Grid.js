@@ -1,6 +1,6 @@
 import { BooleanParameter, NumberParameter } from '../../Parameters/index'
-import Registry from '../../../Registry'
-import ProceduralLines from './ProceduralLines'
+import { Registry } from '../../../Registry'
+import { ProceduralLines } from './ProceduralLines'
 
 /**
  * Represents a network of lines that cross each other to form a series of squares or rectangles.

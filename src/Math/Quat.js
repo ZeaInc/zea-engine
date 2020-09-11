@@ -4,7 +4,7 @@ import { Vec3 } from './Vec3.js'
 import { Mat3 } from './Mat3.js'
 import { Mat4 } from './Mat4.js'
 import { EulerAngles } from './EulerAngles.js'
-import Registry from '../Registry'
+import { Registry } from '../Registry'
 
 /**
  * Class representing a quaternion. Quaternions are used to represent rotations

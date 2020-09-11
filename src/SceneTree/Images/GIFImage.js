@@ -1,14 +1,14 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Vec4 } from '../../Math/index'
 import { loadBinfile } from '../Utils.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { FileImage } from './FileImage.js'
 
 import { GIF } from '../../external/gifuct-js.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
 import { NumberParameter, Vec4Parameter } from '../Parameters/index'
-import MathFunctions from '../../Utilities/MathFunctions'
+import { MathFunctions } from '../../Utilities/MathFunctions'
 
 /**
  * Class representing a GIF image.

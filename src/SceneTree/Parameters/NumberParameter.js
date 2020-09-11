@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 
 /**
@@ -126,5 +126,4 @@ Registry.register('Property_SInt32', NumberParameter)
 Registry.register('Property_UInt32', NumberParameter)
 Registry.register('Property_Float32', NumberParameter)
 
-export default NumberParameter
 export { NumberParameter }

@@ -4,7 +4,7 @@ import { NumberParameter } from '../Parameters/NumberParameter'
 import { BaseItem } from '../BaseItem'
 import { OperatorInput } from './OperatorInput'
 import { OperatorOutput, OperatorOutputMode } from './OperatorOutput'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 class AddFloatsOperator extends Operator {
   constructor(name) {

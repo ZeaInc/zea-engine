@@ -8,7 +8,7 @@ import { GLShader } from './GLShader.js'
 import { GLTexture2D } from './GLTexture2D.js'
 import { GLRenderTarget } from './GLRenderTarget.js'
 import { generateShaderGeomBinding } from './GeomShaderBinding.js'
-import MathFunctions from '../Utilities/MathFunctions'
+import { MathFunctions } from '../Utilities/MathFunctions'
 
 // eslint-disable-next-line require-jsdoc
 class AtlasLayoutShader extends GLShader {

@@ -4,7 +4,7 @@ import { resourceLoader } from './ResourceLoader.js'
 import { DriveAdapter } from './ResourceLoader/DriveAdapter.js'
 import { SceneSettings } from './SceneSettings.js'
 import { VLAAsset } from './VLAAsset.js'
-import GridTreeItem from './GridTreeItem'
+import { GridTreeItem } from './GridTreeItem'
 
 const defaultGridColor = new Color('#DCDCDC')
 

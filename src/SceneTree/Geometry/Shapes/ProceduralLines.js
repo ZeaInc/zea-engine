@@ -1,4 +1,4 @@
-import Lines from '../Lines'
+import { Lines } from '../Lines'
 
 /**
  * Class representing lines with a special serialization by removing computed values.
@@ -35,5 +35,4 @@ class ProceduralLines extends Lines {
   }
 }
 
-export default ProceduralLines
 export { ProceduralLines }

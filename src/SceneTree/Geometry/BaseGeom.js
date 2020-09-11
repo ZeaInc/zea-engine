@@ -4,7 +4,7 @@
 import { Vec2, Vec3, Box2, Box3 } from '../../Math/index'
 import { ParameterOwner } from '../ParameterOwner.js'
 import { Attribute } from './Attribute.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { VertexAttribute } from './VertexAttribute'
 
 // Defines used to explicity specify types for WebGL.

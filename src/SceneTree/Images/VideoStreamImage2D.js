@@ -1,4 +1,4 @@
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 import { BaseImage } from '../BaseImage.js'
 
 /** Class representing a 2D video stream image.

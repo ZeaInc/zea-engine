@@ -1,8 +1,8 @@
 import { TreeItem } from './TreeItem'
 import { GeomItem } from './GeomItem'
 import { Vec3, Xfo, Color, Mat4, Quat } from '../Math'
-import Material from './Material'
-import Sphere from './Geometry/Shapes/Sphere'
+import { Material } from './Material'
+import { Sphere } from './Geometry/Shapes/Sphere'
 import '../Renderer/Shaders/SimpleSurfaceShader'
 import Fixtures from './_fixtures_/GeomItem.fixture.js'
 

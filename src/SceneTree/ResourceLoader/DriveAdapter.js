@@ -1,4 +1,4 @@
-import StringFunctions from '../../Utilities/StringFunctions'
+import { StringFunctions } from '../../Utilities/StringFunctions'
 
 /**
  * Simple object check.

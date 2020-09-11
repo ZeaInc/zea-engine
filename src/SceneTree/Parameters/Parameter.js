@@ -1,5 +1,5 @@
 import { EventEmitter } from '../../Utilities/EventEmitter.js'
-import Registry from '../../Registry'
+import { Registry } from '../../Registry'
 
 const OperatorOutputMode = {
   OP_WRITE: 0,
