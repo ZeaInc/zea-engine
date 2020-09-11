@@ -8,19 +8,10 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import {
-        Vec3,
-        EulerAngles,
-        Xfo,
-        Color,
-        Cuboid,
-        Material,
-        GeomItem,
-        TreeItem,
-        Scene,
-        GLRenderer,
-      } from './libs/zea-engine/dist/index.esm.js'
+    <script src="../dist/index.umd.js"></script>
+
+    <script>
+      const { Vec3, EulerAngles, Xfo, Color, Cuboid, Material, GeomItem, TreeItem, Scene, GLRenderer } = zeaEngine
 
       const domElement = document.getElementById('app')
 

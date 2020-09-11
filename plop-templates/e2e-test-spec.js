@@ -1,11 +1,11 @@
 describe('{{name}}', () => {
   it('Captures a snapshot', () => {
-    cy.visit('{{dashCase name}}.html')
+    cy.visit('testing-e2e/{{dashCase name}}.html')
     cy.get('canvas').percySnapshot('{{name}}')
   })
 
   it('Captures snapshots of variants', () => {
-    cy.visit('{{dashCase name}}.html', {
+    cy.visit('testing-e2e/{{dashCase name}}.html', {
       onBeforeLoad(win) {
         cy.spy(win, 'postMessage').as('postMessage')
       },

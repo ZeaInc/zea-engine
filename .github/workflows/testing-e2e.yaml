@@ -23,6 +23,6 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn run start &
       - name: E2E testing
-        run: yarn test:e2e
+        run: yarn run test:e2e
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}

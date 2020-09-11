@@ -8,8 +8,10 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import { GLRenderer, Scene, Vec3 } from './libs/zea-engine/dist/index.esm.js'
+    <script src="../dist/index.umd.js"></script>
+
+    <script>
+      const { GLRenderer, Scene, Vec3 } = zeaEngine
 
       const domElement = document.getElementById('app')
 
