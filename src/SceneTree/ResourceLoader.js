@@ -43,10 +43,18 @@ class ResourceLoader extends EventEmitter {
           // https://cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine@umd
           // or
           // https://unpkg.com/@zeainc/zea-engine@1.5.0/dist/index.cjs.js
+          // or
           // Trim off all the parts after the engine section, and then append the parts for public resources.
           const parts = script.src.split('/')
           const enginePartIndex = parts.findIndex((part) => part.includes('zea-engine'))
           while (parts.length > enginePartIndex + 1) parts.pop()
+
+          // Now unpack combined urls to get just the engine part.
+          // e.g.
+          // cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine@umd,npm/@zeainc/zea-ux@umd,npm/@zeainc/zea-kinematics@umd"
+          if (parts[parts.length - 1].includes(',')) {
+            parts[parts.length - 1] = parts[parts.length - 1].split(',')[0]
+          }
           baseUrl = parts.join('/')
           break
         }
