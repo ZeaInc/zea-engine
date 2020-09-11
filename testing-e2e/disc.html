@@ -6,8 +6,10 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import { GLRenderer, Scene, Vec3, Color, Disc, Material, GeomItem } from '../dist/index.esm.js'
+    <script src="../dist/index.umd.js"></script>
+
+    <script>
+      const { GLRenderer, Scene, Vec3, Color, Disc, Material, GeomItem } = zeaEngine
 
       const scene = new Scene()
       const domElement = document.getElementById('app')

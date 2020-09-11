@@ -2,8 +2,9 @@
   "name": "@zeainc/zea-engine",
   "fileName": "index",
   "libraryName": "ZeaEngine",
-  "version": "1.5.0",
+  "version": "1.7.0-umd.1",
   "description": "Zea Engine",
+  "browser": "dist/index.umd.js",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "author": "Zea Inc.",
@@ -14,8 +15,8 @@
     "buildApiDocs.js"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "build:watch": "rollup -c rollup.config.dev.js -w",
+    "build": "rollup -c rollup.config.js",
+    "build:watch": "rollup -w -c rollup.config.js",
     "prepare": "yarn run build",
     "dist": "yarn publish --access=public",
     "docs": "cp CHANGELOG.md docs/ && adg --config adg.config.json",
