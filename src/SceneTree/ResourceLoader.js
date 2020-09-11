@@ -38,7 +38,9 @@ class ResourceLoader extends EventEmitter {
       for (let i = 0; i < scripts.length; i++) {
         const script = scripts[i]
         if (script.src.includes('zea-engine')) {
-          // This code generatas a URL for the wasm file based ont he position of 'zea-engine' in the path.
+          // Note: the WASM file is a resource that must be loaded with the engine. If we know the URL for the
+          // engine library, then we can determine the URL for the WASM file.
+          // This code generates a URL for the WASM file based on the position of 'zea-engine' in the path.
           // e.g.
           // https://cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine@umd
           // or
@@ -59,10 +61,13 @@ class ResourceLoader extends EventEmitter {
           break
         }
       }
+      // If no wasm url can be found, fallback to this one.
       if (!baseUrl) {
         baseUrl = 'https://unpkg.com/@zeainc/zea-engine@0.1.3'
       }
       this.wasmUrl = baseUrl + '/public-resources/unpack.wasm'
+    } else {
+      // If loading in Node.js... TODO.
     }
 
     if (!baseUrl) {
