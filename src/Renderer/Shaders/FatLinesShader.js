@@ -121,6 +121,10 @@ void main(void) {
 
   v_viewPos       = viewPos;
   gl_Position     = projectionMatrix * vec4(viewPos, 1.0);
+  
+  if(Overlay > 0.0){
+    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+  }
 }
 `
     )
@@ -187,6 +191,7 @@ void main(void) {
       defaultValue: new Color(1.0, 1.0, 0.5),
     })
     paramDescs.push({ name: 'Opacity', defaultValue: 1.0 })
+    paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
     return paramDescs
   }
 }

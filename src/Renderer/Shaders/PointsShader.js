@@ -19,6 +19,7 @@ attribute vec3 positions;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform float PointSize;
+uniform float Overlay;
 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="stack-gl/inverse.glsl"/>
@@ -35,6 +36,10 @@ void main(void) {
   gl_Position = modelViewProjectionMatrix * vec4(positions, 1.);
   
   gl_PointSize = PointSize;
+  
+  if(Overlay > 0.0){
+    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+  }
 }
 `
     )
@@ -73,6 +78,7 @@ void main(void) {
       defaultValue: new Color(1.0, 1.0, 0.5),
     })
     paramDescs.push({ name: 'PointSize', defaultValue: 2.0 })
+    paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
     return paramDescs
   }
 }

@@ -20,6 +20,7 @@ attribute vec3 positions;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+uniform float Overlay;
 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="drawItemId.glsl"/>
@@ -43,6 +44,10 @@ void main(void) {
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
   vec4 viewPos = modelViewMatrix * pos;
   gl_Position = projectionMatrix * viewPos;
+  
+  if(Overlay > 0.0){
+    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+  }
 
   v_viewPos = -viewPos.xyz;
 

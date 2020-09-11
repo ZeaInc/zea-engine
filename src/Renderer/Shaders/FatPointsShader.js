@@ -29,6 +29,7 @@ uniform mat4 projectionMatrix;
 <%include file="utils/quadVertexFromID.glsl"/>
 
 uniform float PointSize;
+uniform float Overlay;
 
 /* VS Outputs */
 varying vec2 v_texCoord;
@@ -56,6 +57,9 @@ void main(void) {
   v_viewPos = -viewPos.xyz;
   
   gl_Position = projectionMatrix * viewPos;
+  if(Overlay > 0.0){
+    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+  }
 }
 `
     )
@@ -124,6 +128,7 @@ void main(void) {
     paramDescs.push({ name: 'PointSize', defaultValue: 0.05 })
     paramDescs.push({ name: 'Rounded', defaultValue: 1.0 })
     paramDescs.push({ name: 'BorderWidth', defaultValue: 0.2 })
+    paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
     return paramDescs
   }
 
