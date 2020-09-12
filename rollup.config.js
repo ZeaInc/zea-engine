@@ -22,6 +22,7 @@ export default [
       name: 'zeaEngine',
       file: pkg.browser,
       format: 'umd',
+      sourcemap,
     },
     plugins,
   },
