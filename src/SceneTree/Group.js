@@ -716,8 +716,8 @@ class Group extends TreeItem {
    *
    * @param {Group} src - The group to copy from.
    */
-  copyFrom(src) {
-    super.copyFrom(src)
+  copyFrom(src, context) {
+    super.copyFrom(src, context)
   }
 }
 

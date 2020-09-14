@@ -308,11 +308,12 @@ class Material extends BaseItem {
    * The clone method constructs a new material, copies its values
    * from this material and returns it.
    *
+   * @param {object} context - The context value.
    * @return {Material} - Returns a new cloned material.
    */
-  clone() {
+  clone(context) {
     const cloned = new Material()
-    cloned.copyFrom(this)
+    cloned.copyFrom(this, context)
     return cloned
   }
 
@@ -320,9 +321,10 @@ class Material extends BaseItem {
    * When a Material is copied, first runs `BaseItem` copyFrom method, then sets shader.
    *
    * @param {Material} src - The material to copy from.
+   * @param {object} context - The context value.
    */
-  copyFrom(src) {
-    super.copyFrom(src)
+  copyFrom(src, context) {
+    super.copyFrom(src, context)
     this.setShaderName(src.getShaderName())
     for (const srcParam of src.getParameters()) {
       const param = src.getParameter(srcParam.getName())

@@ -301,8 +301,9 @@ class BaseItem extends ParameterOwner {
    * Clones this base item and returns a new base item.
    * <br>
    * **Note:** Each class should implement clone to be clonable.
+   * @param {object} context - The context value.
    */
-  clone() {
+  clone(context) {
     throw new Error(this.constructor.name + ' does not implement its clone method')
   }
 
@@ -316,9 +317,10 @@ class BaseItem extends ParameterOwner {
    * data from the source object.
    *
    * @param {BaseItem} src - The BaseItem to copy from.
+   * @param {object} context - The context value.
    */
-  copyFrom(src) {
-    super.copyFrom(src)
+  copyFrom(src, context) {
+    super.copyFrom(src, context)
     this.setName(src.getName())
   }
 }

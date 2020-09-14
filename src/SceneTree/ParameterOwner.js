@@ -305,8 +305,9 @@ class ParameterOwner extends EventEmitter {
    * Copies Parameters from another `ParameterOwner` to current object.
    *
    * @param {ParameterOwner} src - The ParameterOwner copy from.
+   * @param {object} context - The context value.
    */
-  copyFrom(src) {
+  copyFrom(src, context) {
     // Note: Loop over the parameters in reverse order,
     // this is because often, parameter dependencies
     // are bottom to top (bottom params dependent on higher params).
@@ -320,7 +321,7 @@ class ParameterOwner extends EventEmitter {
         // Note: we are not cloning the values.
         param.loadValue(srcParam.getValue())
       } else {
-        this.addParameter(srcParam.clone())
+        this.addParameter(srcParam.clone(context))
       }
     }
   }

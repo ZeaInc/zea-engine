@@ -1105,11 +1105,12 @@ class TreeItem extends BaseItem {
    * The clone method constructs a new tree item, copies its values
    * from this item and returns it.
    *
+   * @param {object} context - The context value.
    * @return {TreeItem} - Returns a new cloned tree item.
    */
-  clone() {
+  clone(context) {
     const cloned = new TreeItem()
-    cloned.copyFrom(this)
+    cloned.copyFrom(this, context)
     return cloned
   }
 
@@ -1117,9 +1118,10 @@ class TreeItem extends BaseItem {
    * Copies current TreeItem with all its children.
    *
    * @param {TreeItem} src - The tree item to copy from.
+   * @param {object} context - The context value.
    */
-  copyFrom(src) {
-    super.copyFrom(src)
+  copyFrom(src, context) {
+    super.copyFrom(src, context)
 
     // Share a local Xfo
     // Note: disabled for now.
@@ -1128,7 +1130,7 @@ class TreeItem extends BaseItem {
     // (The root of the tree is a cloned and attached to an Instance node that provides the transform)
 
     src.getChildren().forEach((srcChildItem) => {
-      if (srcChildItem) this.addChild(srcChildItem.clone(), false, false)
+      if (srcChildItem) this.addChild(srcChildItem.clone(context), false, false)
     })
   }
 }
