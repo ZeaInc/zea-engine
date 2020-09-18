@@ -1,7 +1,8 @@
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 
 /**
- * Represents a specific type of parameter, that only stores any type of list values.
+ * A Parameter for storing list(array) values.
  *
  * i.e.:
  * ```javascript
@@ -189,5 +190,7 @@ class ListParameter extends Parameter {
     }
   }
 }
+
+Registry.register('ListParameter', ListParameter)
 
 export { ListParameter }

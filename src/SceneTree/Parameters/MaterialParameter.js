@@ -1,3 +1,4 @@
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 import { Material } from '../Material.js'
 
@@ -132,5 +133,7 @@ class MaterialParameter extends Parameter {
     }
   }
 }
+
+Registry.register('MaterialParameter', MaterialParameter)
 
 export { MaterialParameter }

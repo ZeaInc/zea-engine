@@ -1,5 +1,5 @@
-import { Parameter } from './Parameter.js'
 import { Registry } from '../../Registry'
+import { Parameter } from './Parameter.js'
 
 /**
  * Represents a specific type of parameter, that only stores `BaseImage` values.
@@ -72,5 +72,7 @@ class ImageParameter extends Parameter {
     return clonedParam
   }
 }
+
+Registry.register('ImageParameter', ImageParameter)
 
 export { ImageParameter }

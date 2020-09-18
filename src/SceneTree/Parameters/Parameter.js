@@ -252,11 +252,14 @@ class Parameter extends EventEmitter {
         // A parameter can become dirty (so __dirtyOpIndex == 0), and then another operator bound on top.
         // if the next op is a WRITE op, then we can fast forward the dirty index.
         const thisClassName = Registry.getBlueprintName(this)
-        const opClassName = Registry.getBlueprintName(this.__boundOps[index].getOperator())
+        const op = this.__boundOps[index].getOperator()
+        const opClassName = Registry.getBlueprintName(op)
         throw new Error(
           `Parameter: ${thisClassName} with name: ${this.getName()} is not cleaning all outputs during evaluation of op: ${opClassName} with name: ${op.getName()}`
         )
       }
+    } else {
+      console.log(`cleaned:`, this.getPath())
     }
     this.__value = value
 

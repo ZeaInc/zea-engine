@@ -1,3 +1,4 @@
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 import { resourceLoader } from '../ResourceLoader.js'
 
@@ -177,5 +178,7 @@ class FilePathParameter extends Parameter {
     return clonedParam
   }
 }
+
+Registry.register('FilePathParameter', FilePathParameter)
 
 export { FilePathParameter }
