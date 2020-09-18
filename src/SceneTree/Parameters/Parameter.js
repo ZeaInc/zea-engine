@@ -178,17 +178,25 @@ class Parameter extends EventEmitter {
     if (index < this.__dirtyOpIndex) {
       // Walk back down the stack and dirty each of the other bound operators.
       // If we must dirty all operators in the stack from the last OP_WRITE to the end.
-      for (this.__dirtyOpIndex--; this.__dirtyOpIndex > 0; this.__dirtyOpIndex--) {
-        // Dirty all the other bound ops in the stack until we hit an OP_WRITE
-        if (this.__dirtyOpIndex != index) {
-          // This will cause the other outputs of the operator to become dirty.
-          this.__boundOps[this.__dirtyOpIndex].getOperator().setDirty()
-        }
-        if (this.__boundOps[this.__dirtyOpIndex].getMode() == OperatorOutputMode.OP_WRITE) break
+      // Note: If a setDirty call comes from an op that precedes an OP_WRITE operator, we
+      // can safely discard it, as its output will have no effect on the value of this parameter.
+      let newDirtyIndex = this.__dirtyOpIndex
+      for (newDirtyIndex--; newDirtyIndex > 0; newDirtyIndex--) {
+        // Find the first OP_WRITE binding. (Note: we could cache this)
+        if (this.__boundOps[newDirtyIndex].getMode() == OperatorOutputMode.OP_WRITE) break
       }
-
-      this.emit('valueChanged', { mode: 0 })
-      return true
+      if (newDirtyIndex <= index) {
+        this.__dirtyOpIndex = newDirtyIndex
+        for (newDirtyIndex++; newDirtyIndex < this.__boundOps.length; newDirtyIndex++) {
+          // Dirty all the other bound ops from the OP_WRITE to the top of the stack.
+          if (newDirtyIndex != index) {
+            // This will cause the other outputs of the operator to become dirty.
+            this.__boundOps[newDirtyIndex].getOperator().setDirty()
+          }
+        }
+        this.emit('valueChanged', { mode: 0 })
+        return true
+      }
     }
 
     return false

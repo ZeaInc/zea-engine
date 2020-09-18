@@ -81,7 +81,6 @@ describe('Operator', () => {
     expect(resultParam.isDirty()).toBe(false)
 
     scaleParam.setValue(4)
-
     expect(resultParam.isDirty()).toBe(true)
     expect(resultParam.getValue()).toBe(24)
     expect(resultParam.isDirty()).toBe(false)
@@ -353,6 +352,82 @@ describe('Operator', () => {
     scaleABParam1.setValue(3)
     expect(aParam.getValue()).toBe(12) // (3 * 2) * 2
     expect(bParam.getValue()).toBe(12) // (3 * 2) * 2
+  })
+
+  class DoubleFloatsOperator extends Operator {
+    constructor(name) {
+      super(name)
+      this.addInput(new OperatorInput('in'))
+      this.addOutput(new OperatorOutput('out', OperatorOutputMode.OP_WRITE))
+    }
+
+    evaluate() {
+      const a = this.getInput('in').getValue()
+      this.getOutput('out').setClean(a * 2)
+    }
+  }
+  class MultiOutputOperator extends Operator {
+    constructor(name) {
+      super(name)
+      this.addInput(new OperatorInput('in'))
+      this.addOutput(new OperatorOutput('out0', OperatorOutputMode.OP_WRITE))
+      this.addOutput(new OperatorOutput('out1', OperatorOutputMode.OP_WRITE))
+      this.addOutput(new OperatorOutput('out2', OperatorOutputMode.OP_WRITE))
+    }
+
+    evaluate() {
+      const value = this.getInput('in').getParam().getValue()
+      this.getOutput('out0').setClean(value)
+      this.getOutput('out1').setClean(value)
+      this.getOutput('out2').setClean(value)
+    }
+  }
+
+  test('layering multi-out on a chain', () => {
+    const inAParam = new NumberParameter('inA')
+    const aParam = new NumberParameter('A')
+    const bParam = new NumberParameter('B')
+    const cParam = new NumberParameter('B')
+
+    const doubleOperator0 = new DoubleFloatsOperator()
+    doubleOperator0.getInput('in').setParam(inAParam)
+    doubleOperator0.getOutput('out').setParam(aParam)
+
+    const doubleOperator1 = new DoubleFloatsOperator()
+    doubleOperator1.getInput('in').setParam(aParam)
+    doubleOperator1.getOutput('out').setParam(bParam)
+
+    const doubleOperator2 = new DoubleFloatsOperator()
+    doubleOperator2.getInput('in').setParam(bParam)
+    doubleOperator2.getOutput('out').setParam(cParam)
+
+    inAParam.setValue(2)
+    aParam.setValue(2.5)
+    expect(aParam.getValue()).toBe(4)
+    expect(bParam.getValue()).toBe(8)
+    expect(cParam.getValue()).toBe(16)
+    expect(cParam.isDirty()).toBe(false)
+
+    const multiOutputOperator = new MultiOutputOperator()
+    const inBParam = new NumberParameter('inB', 3)
+    multiOutputOperator.getInput('in').setParam(inBParam)
+    multiOutputOperator.getOutput('out0').setParam(aParam)
+    multiOutputOperator.getOutput('out1').setParam(bParam)
+    multiOutputOperator.getOutput('out2').setParam(cParam)
+
+    expect(aParam.getValue()).toBe(3)
+    expect(bParam.getValue()).toBe(3)
+    expect(cParam.getValue()).toBe(3)
+    expect(cParam.isDirty()).toBe(false)
+
+    // Now dirty the input to the chain.
+    // Because the multi-out layers on top using OP_WRITE outputs,
+    // it should prevent the chain from becoming dirty.
+    inAParam.setValue(4)
+    expect(cParam.isDirty()).toBe(false)
+    expect(aParam.getValue()).toBe(3)
+    expect(bParam.getValue()).toBe(3)
+    expect(cParam.getValue()).toBe(3)
   })
 
   test('save to JSON (serialization).', () => {
