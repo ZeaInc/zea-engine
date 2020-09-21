@@ -258,9 +258,8 @@ class Parameter extends EventEmitter {
           `Parameter: ${thisClassName} with name: ${this.getName()} is not cleaning all outputs during evaluation of op: ${opClassName} with name: ${op.getName()}`
         )
       }
-    } else {
-      console.log(`cleaned:`, this.getPath())
     }
+
     this.__value = value
 
     // As each operator writes its value, the dirty value is incremented
