@@ -978,6 +978,40 @@ class Quat extends AttrValue {
     return result
   }
 
+  /**
+   * Performs a spherical linear interpolation between two Quats.
+   *
+   * @param {Quat} other  - The other Quat to interpolate between.
+   * @param {number} t - Interpolation amount between the two inputs.
+   * @return {Quat} - Returns a new Quat.
+   */
+  slerp(other, t) {
+    /// https://www.lix.polytechnique.fr/~nielsen/WEBvisualcomputing/programs/slerp.cpp
+    // const dotProduct = this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w
+    const dotProduct = this.dot(other)
+
+    // algorithm adapted from Shoemake's paper
+    const lambda = t / 2
+
+    const theta = Math.acos(dotProduct)
+    if (theta < 0.0) theta = -theta
+
+    const st = Math.sin(theta)
+    const sut = Math.sin(lambda * theta)
+    const sout = Math.sin((1 - lambda) * theta)
+    const coeff1 = sout / st
+    const coeff2 = sut / st
+
+    const result = new Quat(
+      coeff1 * this.x + coeff2 * other.x,
+      coeff1 * this.y + coeff2 * other.y,
+      coeff1 * this.z + coeff2 * other.z,
+      coeff1 * this.w + coeff2 * other.w
+    )
+    result.normalizeInPlace()
+    return result
+  }
+
   // /**
   //  * Generates a random vector with the given scale.
   //  * @param {number} scale -  Length of the resulting vector. If ommitted, a unit vector will be returned.
