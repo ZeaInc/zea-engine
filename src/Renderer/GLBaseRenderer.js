@@ -23,10 +23,10 @@ const registeredPasses = {}
 class GLBaseRenderer extends ParameterOwner {
   /**
    * Create a GL base renderer.
-   * @param {any} canvasDiv - The canvasDiv value.
+   * @param {any} $canvas - The $canvas value.
    * @param {any} options - The options value.
    */
-  constructor(canvasDiv, options = {}) {
+  constructor($canvas, options = {}) {
     super()
 
     if (!SystemDesc.gpuDesc) {
@@ -57,7 +57,7 @@ class GLBaseRenderer extends ParameterOwner {
     this.renderGeomDataFbos = this.renderGeomDataFbos.bind(this)
     this.requestRedraw = this.requestRedraw.bind(this)
 
-    this.setupWebGL(canvasDiv, options.webglOptions ? options.webglOptions : {})
+    this.setupWebGL($canvas, options.webglOptions ? options.webglOptions : {})
     this.bindEventHandlers()
 
     for (const passtype in registeredPasses) {
@@ -259,7 +259,7 @@ class GLBaseRenderer extends ParameterOwner {
   resumeDrawing() {
     this.__drawSuspensionLevel--
     if (this.__drawSuspensionLevel == 0) {
-      if (this.__loadingImg) this.__glcanvasDiv.removeChild(this.__loadingImg)
+      if (this.__loadingImg) this.__$canvas.removeChild(this.__loadingImg)
 
       this.renderGeomDataFbos()
       this.requestRedraw()
@@ -447,16 +447,16 @@ class GLBaseRenderer extends ParameterOwner {
    * @return {any} - The return value.
    */
   getDiv() {
-    return this.__glcanvasDiv
+    return this.__$canvas
   }
 
   /**
    * The setupWebGL method.
-   * @param {any} canvasDiv - The canvasDiv value.
+   * @param {any} $canvas - The $canvas value.
    * @param {any} webglOptions - The webglOptions value.
    */
-  setupWebGL(canvasDiv, webglOptions) {
-    const { tagName } = canvasDiv
+  setupWebGL($canvas, webglOptions) {
+    const { tagName } = $canvas
 
     if (!['DIV', 'CANVAS'].includes(tagName)) {
       throw new Error('Only `canvas` and `div` are valid root elements.')
@@ -476,10 +476,10 @@ class GLBaseRenderer extends ParameterOwner {
       this.__glcanvas.style.width = '100%'
       this.__glcanvas.style.height = '100%'
 
-      this.__glcanvasDiv = canvasDiv
-      this.__glcanvasDiv.appendChild(this.__glcanvas)
+      this.__$canvas = $canvas
+      this.__$canvas.appendChild(this.__glcanvas)
     } else {
-      this.__glcanvas = canvasDiv
+      this.__glcanvas = $canvas
     }
 
     onResize(this.__glcanvas, (event) => {

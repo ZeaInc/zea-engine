@@ -29,11 +29,11 @@ const ALL_PASSES = PassType.OPAQUE | PassType.TRANSPARENT | PassType.OVERLAY
 class GLRenderer extends GLBaseRenderer {
   /**
    * Create a GL renderer.
-   * @param {any} canvasDiv - The canvasDiv value.
+   * @param {any} $canvas - The $canvas value.
    * @param {any} options - The options value.
    */
-  constructor(canvasDiv, options = {}) {
-    super(canvasDiv, options, {
+  constructor($canvas, options = {}) {
+    super($canvas, options, {
       antialias: true,
       depth: true,
     })
@@ -80,24 +80,24 @@ class GLRenderer extends GLBaseRenderer {
           image.style.opacity = 1
           const tick = () => {
             // Prevent people from removing the image node.
-            if (!image.parentElement != canvasDiv) canvasDiv.appendChild(image)
+            if (!image.parentElement != $canvas) $canvas.appendChild(image)
             image.style.opacity = +image.style.opacity - 0.02
             if (+image.style.opacity > 0) {
               ;(window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
             } else {
-              canvasDiv.removeChild(image)
+              $canvas.removeChild(image)
             }
           }
           setTimeout(tick, holdTime)
         })
-        image.style.width = canvasDiv.clientWidth * 0.3 + 'px'
+        image.style.width = $canvas.clientWidth * 0.3 + 'px'
         image.style.position = 'absolute'
         image.style.top = '50%'
         image.style.left = '50%'
         image.style.transform = 'translate(-50%, -50%)'
         image.style['pointer-events'] = 'none'
         image.src = logoUrl
-        canvasDiv.appendChild(image)
+        $canvas.appendChild(image)
       }
 
       setupSplashScreen(1500)
