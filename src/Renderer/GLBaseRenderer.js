@@ -465,6 +465,10 @@ class GLBaseRenderer extends ParameterOwner {
     const rootIsDiv = tagName === 'DIV'
 
     if (rootIsDiv) {
+      console.warn(
+        'Using a `div` as root element is deprecated. Use a `canvas` instead. See: https://zea.live/zea-engine/#/getting-started/get-started-with-engine?id=basic-setup'
+      )
+
       this.__glcanvas = document.createElement('canvas')
       this.__glcanvas.style.position = webglOptions.canvasPosition ? webglOptions.canvasPosition : 'absolute'
       this.__glcanvas.style.left = '0px'
