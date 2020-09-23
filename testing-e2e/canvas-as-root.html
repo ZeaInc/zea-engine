@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea Engine</title>
+
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      #renderer {
+        height: 100%;
+        width: 100%;
+      }
+
+      .main-wrapper {
+        display: grid;
+        grid-template-areas:
+          'top top top'
+          'left main right'
+          'bottom bottom bottom';
+        grid-template-columns: 200px 1fr 200px;
+        grid-template-rows: 50px 1fr 50px;
+        height: 100vh;
+      }
+
+      .pane {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .top {
+        border: 1px solid blue;
+        grid-area: top;
+      }
+
+      .bottom {
+        border: 1px solid green;
+        grid-area: bottom;
+      }
+    </style>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3 } = zeaEngine
+
+      const scene = new Scene()
+      const $renderer = document.getElementById('renderer')
+      const renderer = new GLRenderer($renderer, { hideSplash: true })
+      renderer.setScene(scene)
+
+      scene.setupGrid(3.0, 20)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 9.7), new Vec3(0, 0, 0.4))
+    </script>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <div class="top pane">top</div>
+      <div class="pane">left</div>
+      <canvas id="renderer"></canvas>
+      <div class="pane">right</div>
+      <div class="bottom pane">bottom</div>
+    </div>
+  </body>
+</html>

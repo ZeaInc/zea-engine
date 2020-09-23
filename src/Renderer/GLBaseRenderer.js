@@ -28,6 +28,7 @@ class GLBaseRenderer extends ParameterOwner {
    */
   constructor(canvasDiv, options = {}) {
     super()
+
     if (!SystemDesc.gpuDesc) {
       console.warn('Unable to create renderer')
       return
@@ -455,15 +456,27 @@ class GLBaseRenderer extends ParameterOwner {
    * @param {any} webglOptions - The webglOptions value.
    */
   setupWebGL(canvasDiv, webglOptions) {
-    this.__glcanvas = document.createElement('canvas')
-    this.__glcanvas.style.position = webglOptions.canvasPosition ? webglOptions.canvasPosition : 'absolute'
-    this.__glcanvas.style.left = '0px'
-    this.__glcanvas.style.top = '0px'
-    this.__glcanvas.style.width = '100%'
-    this.__glcanvas.style.height = '100%'
+    const { tagName } = canvasDiv
 
-    this.__glcanvasDiv = canvasDiv
-    this.__glcanvasDiv.appendChild(this.__glcanvas)
+    if (!['DIV', 'CANVAS'].includes(tagName)) {
+      throw new Error('Only `canvas` and `div` are valid root elements.')
+    }
+
+    const rootIsDiv = tagName === 'DIV'
+
+    if (rootIsDiv) {
+      this.__glcanvas = document.createElement('canvas')
+      this.__glcanvas.style.position = webglOptions.canvasPosition ? webglOptions.canvasPosition : 'absolute'
+      this.__glcanvas.style.left = '0px'
+      this.__glcanvas.style.top = '0px'
+      this.__glcanvas.style.width = '100%'
+      this.__glcanvas.style.height = '100%'
+
+      this.__glcanvasDiv = canvasDiv
+      this.__glcanvasDiv.appendChild(this.__glcanvas)
+    } else {
+      this.__glcanvas = canvasDiv
+    }
 
     onResize(this.__glcanvas, (event) => {
       this.__onResize()
