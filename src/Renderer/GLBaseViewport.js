@@ -3,14 +3,15 @@ import { ParameterOwner, BaseImage, NumberParameter } from '../SceneTree/index'
 import { GLHDRImage } from './GLHDRImage.js'
 import { GLTexture2D } from './GLTexture2D.js'
 
-/** Class representing a GL base viewport.
+/**
+ * Class representing a GL base viewport.
  * @extends ParameterOwner
  * @private
  */
 class GLBaseViewport extends ParameterOwner {
   /**
    * Create a GL base viewport.
-   * @param {any} renderer - The renderer value.
+   * @param {GLRenderer} renderer - The renderer value.
    */
   constructor(renderer) {
     super()
@@ -163,6 +164,41 @@ class GLBaseViewport extends ParameterOwner {
 
   // ///////////////////////////
   // Events
+  /**
+   * Handler of the `pointerdown` event fired when the pointer device is initially pressed.
+   *
+   * @param {PointerEvent} event - The DOM event produced by a pointer
+   */
+  onPointerDown(event) {
+    console.warn('@GLBaseViewport#onPointerDown - Implement me!')
+  }
+
+  /**
+   * Handler of the `pointerup` event fired when the pointer device is finally released.
+   *
+   * @param {PointerEvent} event - The DOM event produced by a pointer
+   */
+  onPointerUp(event) {
+    console.warn('@GLBaseViewport#onPointerUp - Implement me!')
+  }
+
+  /**
+   * Handler of the `pointermove` event fired when the pointer device changes coordinates, and the pointer has not been cancelled
+   *
+   * @param {PointerEvent} event - The DOM event produced by a pointer
+   */
+  onPointerMove(event) {
+    console.warn('@GLBaseViewport#onPointerMove - Implement me!')
+  }
+
+  /**
+   * Handler of the `pointerleave` event fired when the pointer device is moved out of the hit test boundaries of an element.
+   *
+   * @param {PointerEvent} event - The DOM event produced by a pointer
+   */
+  onPointerLeave(event) {
+    console.warn('@GLBaseViewport#onPointerLeave - Implement me!')
+  }
 
   /**
    * Causes an event to occur when a user presses a mouse button over an element.

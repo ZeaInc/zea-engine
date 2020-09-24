@@ -13,10 +13,10 @@ import { CameraManipulator } from '../SceneTree/index'
 class GLViewport extends GLBaseViewport {
   /**
    * Create a GL viewport.
-   * @param {any} renderer - The renderer value.
+   * @param {GLRenderer} renderer - The renderer value.
    * @param {string} name - The name value.
-   * @param {any} width - The width of the viewport
-   * @param {any} height - The height of the viewport
+   * @param {number} width - The width of the viewport
+   * @param {number} height - The height of the viewport
    */
   constructor(renderer, name, width, height) {
     super(renderer)
@@ -48,7 +48,8 @@ class GLViewport extends GLBaseViewport {
   }
 
   /**
-   * The resize method.
+   * Dynamically resizes viewport.
+   *
    * @param {number} width - The width value.
    * @param {number} height - The height value.
    */
