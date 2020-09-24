@@ -295,8 +295,8 @@ class GLViewport extends GLBaseViewport {
       }
 
       // Cache the intersection tests result so subsequent queries will return the same value.
-      // Note: every new mouse event will generate a new mousePos value, so the cache
-      // is only valid for a given event propagation, and for that exact mousePos value.
+      // Note: every new mouse event will generate a new pointerPos value, so the cache
+      // is only valid for a given event propagation, and for that exact pointerPos value.
       if (screenPos === this.__screenPos) {
         return this.__intersectionData
       }
@@ -533,16 +533,18 @@ class GLViewport extends GLBaseViewport {
       this.renderGeomDataFbo()
     }
 
-    const pointerPos = this.__getPointerPos(event)
-    event.pointerPos = pointerPos
-    event.pointerRay = this.calcRayFromScreenPos(pointerPos)
+    if (event instanceof PointerEvent) {
+      const pointerPos = this.__getPointerPos(event)
+      event.pointerPos = pointerPos
+      event.pointerRay = this.calcRayFromScreenPos(pointerPos)
 
-    const intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
-    if (intersectionData != undefined) {
-      event.intersectionData = intersectionData
+      const intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+      if (intersectionData != undefined) {
+        event.intersectionData = intersectionData
+      }
+
+      this.__ongoingPointers.push(event)
     }
-
-    this.__ongoingPointers.push(event)
   }
 
   /**
@@ -678,7 +680,7 @@ class GLViewport extends GLBaseViewport {
    * @param {KeyboardEvent} event - The event that occurs.
    */
   onKeyPressed(event) {
-    this.__prepareEvent(event)
+    this.__preparePointerEvent(event)
     if (this.__cameraManipulator) {
       if (this.__cameraManipulator.onKeyPressed(event)) return
     }
@@ -690,7 +692,7 @@ class GLViewport extends GLBaseViewport {
    * @param {KeyboardEvent} event - The event that occurs.
    */
   onKeyDown(event) {
-    this.__prepareEvent(event)
+    this.__preparePointerEvent(event)
     if (this.__cameraManipulator) {
       if (this.__cameraManipulator.onKeyDown(event)) return
     }
@@ -702,7 +704,7 @@ class GLViewport extends GLBaseViewport {
    * @param {KeyboardEvent} event - The event that occurs.
    */
   onKeyUp(event) {
-    this.__prepareEvent(event)
+    this.__preparePointerEvent(event)
     if (this.__cameraManipulator) {
       if (this.__cameraManipulator.onKeyUp(event)) return
     }
@@ -714,7 +716,7 @@ class GLViewport extends GLBaseViewport {
    * @param {MouoseWheelEvent} event - The event that occurs.
    */
   onWheel(event) {
-    this.__prepareEvent(event)
+    this.__preparePointerEvent(event)
     if (event.intersectionData != undefined) {
       event.intersectionData.geomItem.onWheel(event)
       if (!event.propagating) return

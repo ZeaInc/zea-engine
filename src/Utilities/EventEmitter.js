@@ -68,6 +68,8 @@ class EventEmitter {
    * })
    * ```
    *
+   * @param {string} eventName - The eventName value
+   * @param {function} listener - The listener value
    */
   once(eventName, listener) {
     const cb = (event) => {

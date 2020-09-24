@@ -338,7 +338,7 @@ class CameraManipulator extends ParameterOwner {
    * The initDrag method.
    *
    * @private
-   * @param {MouseEvent} event - The event value.
+   * @param {PointerEvent} event - The event value.
    */
   initDrag(event) {
     const { viewport } = event

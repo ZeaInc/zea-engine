@@ -35,13 +35,7 @@
       renderer.setScene(scene)
 
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
-      standardMaterial.getParameter('BaseColor').setValue(new Color('#00AA00'))
-
       const geomItem = new GeomItem('Geom1', new Cuboid(), standardMaterial)
-      scene.getRoot().addChild(geomItem)
-
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
-      renderer.frameAll()
 
       renderer.getViewport().on('pointerDownOnGeom', (event) => {
         console.log(event.intersectionData.geomItem.getPath())
@@ -51,15 +45,22 @@
       material.getParameter('BaseColor').setValue(new Color(1, 0, 0))
 
       renderer.getViewport().on('pointerOverGeom', (event) => {
+        standardMaterial.getParameter('BaseColor').setValue(new Color(1, 0, 0))
         const geomItem = event?.intersectionData?.geomItem
 
-        geomItem.getParameter('Material').setValue(material)
+        // geomItem.getParameter('Material').setValue(material)
         console.log('Enter')
       })
 
-      renderer.getViewport().on('pointerLeaveGeom', (e) => {
+      renderer.getViewport().on('pointerLeaveGeom', (event) => {
+        const geomItem = event?.geomItem
+        geomItem.getParameter('Material').setValue(standardMaterial)
+
         console.log('Leave')
       })
+
+      scene.getRoot().addChild(geomItem)
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 3, 2.7), new Vec3(0, 0, 0))
     </script>
   </body>
 </html>
