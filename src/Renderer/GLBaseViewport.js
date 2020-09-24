@@ -18,6 +18,8 @@ class GLBaseViewport extends ParameterOwner {
     this.__renderer = renderer
     this.__doubleClickTimeMSParam = this.addParameter(new NumberParameter('DoubleClickTimeMS', 200))
     this.__fbo = undefined
+    // Since there is not multi touch on `PointerEvent`, we need to store pointers pressed.
+    this.__ongoingPointers = []
 
     const sceneSet = () => {
       const settings = renderer.getScene().settings
@@ -201,29 +203,11 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Causes an event to occur when a user presses a mouse button over an element.
-   * @param {any} event - The event that occurs.
-   * @return {boolean} - The return value.
-   */
-  onMouseDown(event) {
-    return false
-  }
-
-  /**
    * Causes an event to occur when a user releases a mouse button over a element.
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
   onMouseUp(event) {
-    return false
-  }
-
-  /**
-   * Causes an event to occur when the mouse pointer is moving while over an element.
-   * @param {any} event - The event that occurs.
-   * @return {boolean} - The return value.
-   */
-  onMouseMove(event) {
     return false
   }
 

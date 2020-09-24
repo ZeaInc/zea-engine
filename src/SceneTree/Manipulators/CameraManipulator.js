@@ -80,7 +80,7 @@ class CameraManipulator extends ParameterOwner {
 
     this.__defaultManipulationState = MANIPULATION_MODES.turntable
     this.__manipulationState = this.__defaultManipulationState
-    this.__mouseDown = false
+    this.__pointerDown = false
     this.__dragging = false
     this.__mouseDragDelta = new Vec2()
     this.__keyboardMovement = false
@@ -123,13 +123,13 @@ class CameraManipulator extends ParameterOwner {
 
     if (this.__keyboardMovement) {
       const globalXfo = camera.getParameter('GlobalXfo').getValue()
-      this.__mouseDownCameraXfo = globalXfo.clone()
-      this.__mouseDownZaxis = globalXfo.ori.getZaxis()
-      const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
-      this.__mouseDownCameraTarget = globalXfo.tr.add(targetOffset)
+      this.__pointerDownCameraXfo = globalXfo.clone()
+      this.__pointerDownZaxis = globalXfo.ori.getZaxis()
+      const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
+      this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
     }
 
-    const globalXfo = this.__mouseDownCameraXfo.clone()
+    const globalXfo = this.__pointerDownCameraXfo.clone()
 
     // Orbit
     const orbit = new Quat()
@@ -166,13 +166,13 @@ class CameraManipulator extends ParameterOwner {
 
     if (this.__keyboardMovement) {
       const globalXfo = camera.getParameter('GlobalXfo').getValue()
-      this.__mouseDownCameraXfo = globalXfo.clone()
-      this.__mouseDownZaxis = globalXfo.ori.getZaxis()
-      const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
-      this.__mouseDownCameraTarget = globalXfo.tr.add(targetOffset)
+      this.__pointerDownCameraXfo = globalXfo.clone()
+      this.__pointerDownZaxis = globalXfo.ori.getZaxis()
+      const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
+      this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
     }
 
-    const globalXfo = this.__mouseDownCameraXfo.clone()
+    const globalXfo = this.__pointerDownCameraXfo.clone()
 
     // Orbit
     const orbit = new Quat()
@@ -184,7 +184,7 @@ class CameraManipulator extends ParameterOwner {
     pitch.rotateX((dragVec.y / viewport.getHeight()) * Math.PI * -orbitRate)
     globalXfo.ori.multiplyInPlace(pitch)
 
-    globalXfo.tr = this.__mouseDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
+    globalXfo.tr = this.__pointerDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
 
     if (this.__keyboardMovement) {
       // TODO: debug this potential regression. we now use the generic method which emits a signal.
@@ -208,29 +208,29 @@ class CameraManipulator extends ParameterOwner {
     const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
-    const xvec = this.__mouseDownCameraXfo.ori.getXaxis()
-    const yvec = this.__mouseDownCameraXfo.ori.getYaxis()
-    const zvec = this.__mouseDownCameraXfo.ori.getZaxis()
+    const xvec = this.__pointerDownCameraXfo.ori.getXaxis()
+    const yvec = this.__pointerDownCameraXfo.ori.getYaxis()
+    const zvec = this.__pointerDownCameraXfo.ori.getZaxis()
     const vec = xvec.scale(-dragVec.x).add(yvec.scale(dragVec.y))
     const rotateAxis = vec.cross(zvec)
     rotateAxis.normalizeInPlace()
 
     const dragVecLength = dragVec.length()
 
-    const globalXfo = this.__mouseDownCameraXfo.clone()
+    const globalXfo = this.__pointerDownCameraXfo.clone()
 
     // Orbit
     const orbit = new Quat()
     orbit.setFromAxisAndAngle(rotateAxis, (dragVecLength / viewport.getWidth()) * Math.PI * -orbitRate)
     globalXfo.ori = orbit.multiply(globalXfo.ori)
 
-    globalXfo.tr = this.__mouseDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
+    globalXfo.tr = this.__pointerDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
 
     camera.getParameter('GlobalXfo').setValue(globalXfo)
 
     // Update the mouse pos so the next delta is just the difference to this update.
-    this.__mouseDownPos = event.mousePos
-    this.__mouseDownCameraXfo = globalXfo
+    this.__pointerDownPos = event.pointerPos
+    this.__pointerDownCameraXfo = globalXfo
   }
 
   /**
@@ -245,23 +245,23 @@ class CameraManipulator extends ParameterOwner {
     const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
-    const xvec = this.__mouseDownCameraXfo.ori.getXaxis()
-    const yvec = this.__mouseDownCameraXfo.ori.getYaxis()
-    const zvec = this.__mouseDownCameraXfo.ori.getZaxis()
+    const xvec = this.__pointerDownCameraXfo.ori.getXaxis()
+    const yvec = this.__pointerDownCameraXfo.ori.getYaxis()
+    const zvec = this.__pointerDownCameraXfo.ori.getZaxis()
     const vec = xvec.scale(-dragVec.x).add(yvec.scale(dragVec.y))
     const rotateAxis = vec.cross(zvec)
     rotateAxis.normalizeInPlace()
 
     const dragVecLength = dragVec.length()
 
-    const globalXfo = this.__mouseDownCameraXfo.clone()
+    const globalXfo = this.__pointerDownCameraXfo.clone()
 
     // Orbit
     const orbit = new Quat()
     orbit.setFromAxisAndAngle(rotateAxis, (dragVecLength / viewport.getWidth()) * Math.PI * -orbitRate)
     globalXfo.ori = orbit.multiply(globalXfo.ori)
 
-    globalXfo.tr = this.__mouseDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
+    globalXfo.tr = this.__pointerDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
 
     camera.getParameter('GlobalXfo').setValue(globalXfo)
   }
@@ -287,7 +287,7 @@ class CameraManipulator extends ParameterOwner {
     delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
     delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight))
 
-    camera.getParameter('GlobalXfo').setValue(this.__mouseDownCameraXfo.multiply(delta))
+    camera.getParameter('GlobalXfo').setValue(this.__pointerDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -302,7 +302,7 @@ class CameraManipulator extends ParameterOwner {
     const dollyDist = dragVec.x * this.__dollySpeedParam.getValue()
     const delta = new Xfo()
     delta.tr.set(0, 0, dollyDist)
-    camera.getParameter('GlobalXfo').setValue(this.__mouseDownCameraXfo.multiply(delta))
+    camera.getParameter('GlobalXfo').setValue(this.__pointerDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -329,9 +329,9 @@ class CameraManipulator extends ParameterOwner {
     delta.tr.addInPlace(yAxis.scale((panDelta.y / viewport.getHeight()) * cameraPlaneHeight))
 
     const zoomDist = dragDist * focalDistance
-    camera.setFocalDistance(this.__mouseDownFocalDist + zoomDist)
+    camera.setFocalDistance(this.__pointerDownFocalDist + zoomDist)
     delta.tr.z += zoomDist
-    camera.getParameter('GlobalXfo').setValue(this.__mouseDownCameraXfo.multiply(delta))
+    camera.getParameter('GlobalXfo').setValue(this.__pointerDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -345,16 +345,16 @@ class CameraManipulator extends ParameterOwner {
     const camera = viewport.getCamera()
     const focalDistance = camera.getFocalDistance()
 
-    this.__mouseDown = true
+    this.__pointerDown = true
     this.__calculatingDragAction = false
-    this.__mouseDownPos = event.mousePos
-    this.__mouseDownViewport = viewport
+    this.__pointerDownPos = event.pointerPos
+    this.__pointerDownViewport = viewport
     this.__mouseDragDelta.set(0, 0)
-    this.__mouseDownCameraXfo = camera.getParameter('GlobalXfo').getValue().clone()
-    this.__mouseDownZaxis = this.__mouseDownCameraXfo.ori.getZaxis()
-    const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
-    this.__mouseDownCameraTarget = camera.getParameter('GlobalXfo').getValue().tr.add(targetOffset)
-    this.__mouseDownFocalDist = focalDistance
+    this.__pointerDownCameraXfo = camera.getParameter('GlobalXfo').getValue().clone()
+    this.__pointerDownZaxis = this.__pointerDownCameraXfo.ori.getZaxis()
+    const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
+    this.__pointerDownCameraTarget = camera.getParameter('GlobalXfo').getValue().tr.add(targetOffset)
+    this.__pointerDownFocalDist = focalDistance
 
     camera.getParameter('GlobalXfo').on('valueChanged', this.__globalXfoChangedDuringDrag)
 
@@ -367,11 +367,11 @@ class CameraManipulator extends ParameterOwner {
   __globalXfoChangedDuringDrag() {
     if (!this.__calculatingDragAction) {
       if (this.__dragging) {
-        const camera = this.__mouseDownViewport.getCamera()
+        const camera = this.__pointerDownViewport.getCamera()
         camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
         this.__dragging = false
       }
-      this.initDrag({ viewport: this.__mouseDownViewport, mousePos: this.__mouseDownPos })
+      this.initDrag({ viewport: this.__pointerDownViewport, pointerPos: this.__pointerDownPos })
     }
   }
 
@@ -388,7 +388,7 @@ class CameraManipulator extends ParameterOwner {
       camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
       this.__dragging = false
     }
-    this.__mouseDown = false
+    this.__pointerDown = false
   }
 
   /**
@@ -482,12 +482,12 @@ class CameraManipulator extends ParameterOwner {
   /**
    * Causes an event to occur when the user starts to drag an element.
    *
-   * @param {MouseEvent} event - The mouse event that occurs.
+   * @param {PointerEvent} event - The mouse event that occurs.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     // this.initDrag(event)
     if (this.__dragging) {
-      const camera = this.__mouseDownViewport.getCamera()
+      const camera = this.__pointerDownViewport.getCamera()
       camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
       this.__dragging = false
     }
@@ -502,6 +502,7 @@ class CameraManipulator extends ParameterOwner {
     } else {
       this.__manipulationState = this.__defaultManipulationState
     }
+
     event.stopPropagation()
     event.preventDefault()
   }
@@ -511,14 +512,14 @@ class CameraManipulator extends ParameterOwner {
    *
    * @param {MouseEvent} event - The mouse event that occurs.
    */
-  onMouseMove(event) {
-    if (!this.__mouseDown) return
-    const mousePos = event.mousePos
+  onPointerMove(event) {
+    if (!this.__pointerDown) return
+    const pointerPos = event.pointerPos
     this.__calculatingDragAction = true
     if (this.__keyboardMovement) {
-      this.__mouseDragDelta = mousePos
+      this.__mouseDragDelta = pointerPos
     } else {
-      this.__mouseDragDelta = mousePos.subtract(this.__mouseDownPos)
+      this.__mouseDragDelta = pointerPos.subtract(this.__pointerDownPos)
     }
     switch (this.__manipulationState) {
       case MANIPULATION_MODES.turntable:

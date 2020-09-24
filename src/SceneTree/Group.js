@@ -370,9 +370,9 @@ class Group extends TreeItem {
   __bindItem(item, index) {
     if (!(item instanceof TreeItem)) return
 
-    item.on('mouseDown', this.onMouseDown)
+    item.on('pointerDown', this.onPointerDown)
     item.on('mouseUp', this.onMouseUp)
-    item.on('mouseMove', this.onMouseMove)
+    item.on('pointerMove', this.onPointerMove)
     item.on('mouseEnter', this.onMouseEnter)
     item.on('mouseLeave', this.onMouseLeave)
 
@@ -495,9 +495,9 @@ class Group extends TreeItem {
       }
     }, true)
 
-    item.off('mouseDown', this.onMouseDown)
+    item.off('pointerDown', this.onPointerDown)
     item.off('mouseUp', this.onMouseUp)
-    item.off('mouseMove', this.onMouseMove)
+    item.off('pointerMove', this.onPointerMove)
     item.off('mouseEnter', this.onMouseEnter)
     item.off('mouseLeave', this.onMouseLeave)
 
@@ -615,8 +615,8 @@ class Group extends TreeItem {
    * @private
    * @param {MouseEvent} event - The mouse event that occurs.
    */
-  onMouseDown(event) {
-    super.onMouseDown(event)
+  onPointerDown(event) {
+    super.onPointerDown(event)
   }
 
   /**
@@ -636,8 +636,8 @@ class Group extends TreeItem {
    * @private
    * @param {MouseEvent} event - The mouse event that occurs.
    */
-  onMouseMove(event) {
-    super.onMouseMove(event)
+  onPointerMove(event) {
+    super.onPointerMove(event)
   }
 
   // ////////////////////////////////////////

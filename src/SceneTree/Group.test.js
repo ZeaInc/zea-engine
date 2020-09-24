@@ -86,13 +86,13 @@ describe('Group', () => {
     group.addItem(parent)
 
     const mockFn = jest.fn()
-    group.on('mouseDown', mockFn)
+    group.on('pointerDown', mockFn)
 
     const event = {
       detail: 'foo',
       propagating: true,
     }
-    child.onMouseDown(event)
+    child.onPointerDown(event)
 
     expect(mockFn).toHaveBeenCalledWith(event)
   })

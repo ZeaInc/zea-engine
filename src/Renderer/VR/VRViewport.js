@@ -532,7 +532,7 @@ class VRViewport extends GLBaseViewport {
       const event = {
         viewport: this,
       }
-      this.capturedElement.onMouseMove(event)
+      this.capturedElement.onPointerMove(event)
     }
 
     // ///////////////////////
