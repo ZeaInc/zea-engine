@@ -114,15 +114,9 @@ class Lines extends BaseGeom {
 
     let indices
     if (buffers.numVertices < Math.pow(2, 8)) {
-      indices = new Uint8Array(this.__indices.length)
-      this.__indices.forEach((value, index) => {
-        indices[index] = value
-      })
+      indices = new Uint8Array(this.__indices)
     } else if (buffers.numVertices < Math.pow(2, 16)) {
-      indices = new Uint16Array(this.__indices.length)
-      this.__indices.forEach((value, index) => {
-        indices[index] = value
-      })
+      indices = new Uint16Array(this.__indices)
     } else {
       indices = this.__indices
     }

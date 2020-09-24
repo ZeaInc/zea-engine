@@ -1,33 +1,45 @@
-import { shaderLibrary } from '../ShaderLibrary'
-import { GLShader } from '../GLShader.js'
+import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-
-import './GLSL/stack-gl/inverse.js'
+import { shaderLibrary } from '../ShaderLibrary.js'
+import { GLShader } from '../GLShader.js'
 import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
-import './GLSL/glsl-bits.js'
 
-class StandardSurfaceGeomDataShader extends GLShader {
-  constructor(gl, floatGeomBuffer) {
+import { FatLinesShader } from './FatLinesShader.js'
+/** Shader for drawing Fat lines
+ * @extends GLShader
+ * @private
+ */
+class FatLinesGeomDataShader extends FatLinesShader {
+  constructor(gl) {
     super(gl)
+
     this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
-      'StandardSurfaceGeomDataShader.vertexShader',
+      'FatLinesGeomDataShader.vertexShader',
       `
 precision highp float;
 
-attribute vec3 positions;
+instancedattribute vec2 segmentIndices;
+attribute float vertexIDs;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-uniform float Overlay;
 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="drawItemId.glsl"/>
 <%include file="drawItemTexture.glsl"/>
 <%include file="modelMatrix.glsl"/>
 
+uniform sampler2D positionsTexture;
+uniform int positionsTextureSize;
 
+uniform float LineThickness;
+uniform float Overlay;
+
+<%include file="calcFatLinesViewPos.glsl"/>
+
+/* VS Outputs */
 varying float v_drawItemId;
 varying vec4 v_geomItemData;
 varying vec3 v_viewPos;
@@ -39,27 +51,32 @@ void main(void) {
   v_drawItemId = float(drawItemId);
   v_geomItemData = getInstanceData(drawItemId);
 
-  vec4 pos = vec4(positions, 1.);
+  int vertexID = int(vertexIDs);
+
   mat4 modelMatrix = getModelMatrix(drawItemId);
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
-  vec4 viewPos = modelViewMatrix * pos;
-  gl_Position = projectionMatrix * viewPos;
+
+  vec3  viewNormal;
+  vec2  texCoord;
+  vec3  pos;
+  v_viewPos       = calcFatLinesViewPos(vertexID, modelViewMatrix, viewNormal, texCoord, pos);
+  gl_Position     = projectionMatrix * vec4(v_viewPos, 1.0);
   
+
+  v_drawItemID = float(getDrawItemId());
+  
+  v_worldPos      = (modelMatrix * vec4(pos, 1.0)).xyz;
+
   if(Overlay > 0.0){
     gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
   }
 
-  v_viewPos = -viewPos.xyz;
-
-  v_drawItemID = float(getDrawItemId());
-  
-  v_worldPos      = (modelMatrix * pos).xyz;
 }
 `
     )
 
     this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
-      'StandardSurfaceGeomDataShader.fragmentShader',
+      'FatLinesShader.fragmentShader',
       `
 precision highp float;
 
@@ -85,12 +102,12 @@ vec4 getCutaway(int id) {
 
 #endif
 
+/* VS Outputs */
 varying float v_drawItemId;
 varying vec4 v_geomItemData;
 varying vec3 v_viewPos;
 varying float v_drawItemID;
 varying vec3 v_worldPos;
-
 
 #ifdef ENABLE_ES3
     out vec4 fragColor;
@@ -128,7 +145,6 @@ void main(void) {
         fragColor.r = (mod(v_drawItemID, 256.) + 0.5) / 255.;
         fragColor.g = (floor(v_drawItemID / 256.) + 0.5) / 255.;
 
-
         // encode the dist as a 16 bit float
         vec2 float16bits = encode16BitFloatInto2xUInt8(dist);
         fragColor.b = float16bits.x;
@@ -142,9 +158,29 @@ void main(void) {
 }
 `
     )
+    this.finalize()
+  }
+
+  bind(renderstate) {
+    if (super.bind(renderstate)) {
+      renderstate.supportsInstancing = false
+      return true
+    }
+    return false
+  }
+
+  static getParamDeclarations() {
+    const paramDescs = super.getParamDeclarations()
+    paramDescs.push({
+      name: 'BaseColor',
+      defaultValue: new Color(1.0, 1.0, 0.5),
+    })
+    paramDescs.push({ name: 'Opacity', defaultValue: 1.0 })
+    paramDescs.push({ name: 'LineThickness', defaultValue: 1.0 })
+    paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
+    return paramDescs
   }
 }
 
-Registry.register('StandardSurfaceGeomDataShader', StandardSurfaceGeomDataShader)
-
-export { StandardSurfaceGeomDataShader }
+Registry.register('FatLinesGeomDataShader', FatLinesGeomDataShader)
+export { FatLinesGeomDataShader }
