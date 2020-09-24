@@ -30,7 +30,7 @@ branchSelectionOutlineColor.a = 0.1
  * * **pointerDown:** Emitted when a pointerDown event happens in an item.
  * * **pointerUp:** Emitted when a pointerUp event happens in an item.
  * * **pointerMove:** Emitted when a pointerMove event happens in an item.
- * * **mouseEnter:** Emitted when a mouseEnter event happens in an item.
+ * * **pointerEnter:** Emitted when a pointerEnter event happens in an item.
  *
  * @extends {BaseItem}
  */
@@ -58,8 +58,8 @@ class TreeItem extends BaseItem {
     this.onPointerDown = this.onPointerDown.bind(this)
     this.onPointerUp = this.onPointerUp.bind(this)
     this.onPointerMove = this.onPointerMove.bind(this)
-    this.onMouseEnter = this.onMouseEnter.bind(this)
-    this.onMouseLeave = this.onMouseLeave.bind(this)
+    this.onPointerEnter = this.onPointerEnter.bind(this)
+    this.onPointerLeave = this.onPointerLeave.bind(this)
 
     // /////////////////////////////////////
     // Add parameters.
@@ -873,10 +873,10 @@ class TreeItem extends BaseItem {
    *
    * @param {MouseEvent} event - The mouse event that occurs.
    */
-  onMouseEnter(event) {
-    this.emit('mouseEnter', event)
+  onPointerEnter(event) {
+    this.emit('pointerEnter', event)
     if (event.propagating && this.__ownerItem) {
-      this.__ownerItem.onMouseEnter(event)
+      this.__ownerItem.onPointerEnter(event)
     }
   }
 
@@ -885,10 +885,10 @@ class TreeItem extends BaseItem {
    *
    * @param {MouseEvent} event - The mouse event that occurs.
    */
-  onMouseLeave(event) {
-    this.emit('mouseLeave', event)
+  onPointerLeave(event) {
+    this.emit('pointerLeave', event)
     if (event.propagating && this.__ownerItem) {
-      this.__ownerItem.onMouseLeave(event)
+      this.__ownerItem.onPointerLeave(event)
     }
   }
 

@@ -240,6 +240,15 @@ class GLBaseViewport extends ParameterOwner {
   onKeyUp(event) {
     return false
   }
+
+  /**
+   *
+   * @param {id} pointerId
+   * @return {number} - index result of the find.
+   */
+  _getOngoingPointerIndexById(pointerId) {
+    return this.__ongoingPointers.findIndex((pointer) => pointer.pointerId === pointerId)
+  }
 }
 
 export { GLBaseViewport }

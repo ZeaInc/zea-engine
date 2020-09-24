@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import { Vec2, Vec3, Ray, Mat4 } from '../Math/index'
 import { Camera } from '../SceneTree/index'
 import { GLBaseViewport } from './GLBaseViewport.js'
@@ -283,7 +284,7 @@ class GLViewport extends GLBaseViewport {
   /**
    * The getGeomDataAtPos method.
    * @param {Vec2} screenPos - The screen position.
-   * @param {Ray} pointerRay - The mouseRay value.
+   * @param {Ray} pointerRay - The pointerRay value.
    * @return {object} - The return value.
    */
   getGeomDataAtPos(screenPos, pointerRay) {
@@ -605,13 +606,14 @@ class GLViewport extends GLBaseViewport {
         if (this.pointerOverItem) {
           // Note: spread operators cause errors on iOS 11
           const leaveEvent = { geomItem: this.pointerOverItem }
-          for (let key in event) leaveEvent[key] = event[key]
-          this.emit('mouseLeaveGeom', leaveEvent)
-          if (leaveEvent.propagating) this.pointerOverItem.onMouseLeave(leaveEvent)
+          for (const key in event) leaveEvent[key] = event[key]
+
+          this.emit('pointerLeaveGeom', leaveEvent)
+          if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
         }
         this.pointerOverItem = event.intersectionData.geomItem
-        this.emit('mouseOverGeom', event)
-        if (event.propagating) this.pointerOverItem.onMouseEnter(event)
+        this.emit('pointerOverGeom', event)
+        if (event.propagating) this.pointerOverItem.onPointerLeave(event)
       }
 
       event.intersectionData.geomItem.onPointerMove(event)
@@ -619,9 +621,9 @@ class GLViewport extends GLBaseViewport {
     } else if (this.pointerOverItem) {
       // Note: spread operators cause errors on iOS 11
       const leaveEvent = { geomItem: this.pointerOverItem }
-      for (let key in event) leaveEvent[key] = event[key]
-      this.emit('mouseLeaveGeom', leaveEvent)
-      if (leaveEvent.propagating) this.pointerOverItem.onMouseLeave(leaveEvent)
+      for (const key in event) leaveEvent[key] = event[key]
+      this.emit('pointerLeaveGeom', leaveEvent)
+      if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
       this.pointerOverItem = null
     }
 
@@ -634,7 +636,7 @@ class GLViewport extends GLBaseViewport {
 
   /**
    * Causes an event to occur when a user releases a mouse button over a element.
-   * @param {MouseEvent} event - The event that occurs.
+   * @param {PointerEvent} event - The event that occurs.
    */
   onPointerUp(event) {
     this.__preparePointerEvent(event)
@@ -654,7 +656,11 @@ class GLViewport extends GLBaseViewport {
       if (!event.propagating) return
     }
 
-    this.__ongoingPointers.splice()
+    const eventIdx = this._getOngoingPointerIndexById(event.pointerId)
+    if (eventIdx >= 0) {
+      this.__ongoingPointers.splice(eventIdx, 1)
+    }
+
     this.emit('pointerUp', event)
   }
 
@@ -662,9 +668,9 @@ class GLViewport extends GLBaseViewport {
    * Causes an event to occur when the mouse pointer is moved out of an element.
    * @param {MouseEvent} event - The event that occurs.
    */
-  onMouseLeave(event) {
-    this.__prepareEvent(event)
-    this.emit('mouseLeave', event)
+  onPointerLeave(event) {
+    this.__preparePointerEvent(event)
+    this.emit('pointerLeave', event)
   }
 
   /**

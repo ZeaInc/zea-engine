@@ -44,9 +44,9 @@ class MaterialParameter extends Parameter {
   setValue(material) {
     // 0 == normal set. 1 = changed via cleaner fn, 2 = change by loading/cloning code.
     if (this.__value !== material) {
-      if (this.__value) {
+      /*if (this.__value) {
         this.__value.off('parameterValueChanged', this.__valueParameterValueChanged)
-      }
+      }*/
       this.__value = material
       if (this.__value) {
         this.__value.on('parameterValueChanged', this.__valueParameterValueChanged)

@@ -474,7 +474,7 @@ class CameraManipulator extends ParameterOwner {
     if (event.intersectionData) {
       const camera = event.viewport.getCamera()
       const cameraGlobalXfo = camera.getParameter('GlobalXfo').getValue()
-      const pos = cameraGlobalXfo.tr.add(event.mouseRay.dir.scale(event.intersectionData.dist))
+      const pos = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
       this.aimFocus(event, pos)
     }
   }

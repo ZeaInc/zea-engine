@@ -373,8 +373,8 @@ class Group extends TreeItem {
     item.on('pointerDown', this.onPointerDown)
     item.on('pointerUp', this.onPointerUp)
     item.on('pointerMove', this.onPointerMove)
-    item.on('mouseEnter', this.onMouseEnter)
-    item.on('mouseLeave', this.onMouseLeave)
+    item.on('pointerEnter', this.onPointerEnter)
+    item.on('pointerLeave', this.onPointerLeave)
 
     // ///////////////////////////////
     // Update the Material
@@ -498,8 +498,8 @@ class Group extends TreeItem {
     item.off('pointerDown', this.onPointerDown)
     item.off('pointerUp', this.onPointerUp)
     item.off('pointerMove', this.onPointerMove)
-    item.off('mouseEnter', this.onMouseEnter)
-    item.off('mouseLeave', this.onMouseLeave)
+    item.off('pointerEnter', this.onPointerEnter)
+    item.off('pointerLeave', this.onPointerLeave)
 
     if (item instanceof TreeItem) {
       this.memberXfoOps[index].detach()

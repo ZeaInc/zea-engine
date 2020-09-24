@@ -64,7 +64,7 @@ testingHarness.registerTest('Geometry/HitTesting', (domElement, resources) => {
   })
   vp.addEventListener('pointerMove', (event) => {
     if (drawing) {
-      const intersectionData = vp.getGeomDataAtPos(event.mousePos, event.mouseRay)
+      const intersectionData = vp.getGeomDataAtPos(event.pointerPos, event.pointerRay)
       if (intersectionData) {
         addLocator(intersectionData.intersectionPos)
       }
