@@ -609,12 +609,34 @@ class GLBaseRenderer extends ParameterOwner {
 
     document.addEventListener('pointermove', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
+
       calcRendererCoords(event)
       if (!pointerIsDown) activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
 
       const viewport = activeGLRenderer.getActiveViewport()
       if (viewport) {
         viewport.onPointerMove(event)
+      }
+
+      return false
+    })
+
+    document.addEventListener('pointerup', (event) => {
+      if (activeGLRenderer != this || !isValidCanvas()) return
+
+      calcRendererCoords(event)
+      pointerIsDown = false
+      const viewport = activeGLRenderer.getActiveViewport()
+      if (viewport) {
+        viewport.onPointerUp(event)
+      }
+      if (mouseLeft) {
+        const vp = activeGLRenderer.getActiveViewport()
+        if (vp) {
+          vp.onMouseLeave(event)
+          event.preventDefault()
+        }
+        activeGLRenderer = undefined
       }
 
       return false
@@ -645,25 +667,6 @@ class GLBaseRenderer extends ParameterOwner {
       } else {
         mouseLeft = true
       }
-    })
-    document.addEventListener('mouseup', (event) => {
-      if (activeGLRenderer != this || !isValidCanvas()) return
-      event.undoRedoManager = this.undoRedoManager
-      calcRendererCoords(event)
-      pointerIsDown = false
-      const vp = activeGLRenderer.getActiveViewport()
-      if (vp) {
-        vp.onMouseUp(event)
-      }
-      if (mouseLeft) {
-        const vp = activeGLRenderer.getActiveViewport()
-        if (vp) {
-          vp.onMouseLeave(event)
-          event.preventDefault()
-        }
-        activeGLRenderer = undefined
-      }
-      return false
     })
 
     // document.addEventListener('dblclick', (event) =>{

@@ -552,7 +552,7 @@ class CameraManipulator extends ParameterOwner {
    *
    * @param {MouseEvent} event - The mouse event that occurs.
    */
-  onMouseUp(event) {
+  onPointerUp(event) {
     if (this.__dragging) {
       this.endDrag(event)
       this.emit('movementFinished', {})

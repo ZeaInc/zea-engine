@@ -636,25 +636,26 @@ class GLViewport extends GLBaseViewport {
    * Causes an event to occur when a user releases a mouse button over a element.
    * @param {MouseEvent} event - The event that occurs.
    */
-  onMouseUp(event) {
-    this.__prepareEvent(event)
+  onPointerUp(event) {
+    this.__preparePointerEvent(event)
 
     if (this.capturedItem) {
-      this.capturedItem.onMouseUp(event)
+      this.capturedItem.onPointerUp(event)
       return
     }
 
     if (event.intersectionData != undefined) {
-      event.intersectionData.geomItem.onMouseUp(event)
+      event.intersectionData.geomItem.onPointerUp(event)
       if (!event.propagating) return
     }
 
     if (this.__cameraManipulator) {
-      this.__cameraManipulator.onMouseUp(event)
+      this.__cameraManipulator.onPointerUp(event)
       if (!event.propagating) return
     }
 
-    this.emit('mouseUp', event)
+    this.__ongoingPointers.splice()
+    this.emit('pointerUp', event)
   }
 
   /**
@@ -769,7 +770,7 @@ class GLViewport extends GLBaseViewport {
     this.__prepareEvent(event)
 
     if (this.capturedItem) {
-      this.capturedItem.onMouseUp(event)
+      this.capturedItem.onPointerUp(event)
       return
     }
 

@@ -70,7 +70,7 @@ testingHarness.registerTest('Geometry/HitTesting', (domElement, resources) => {
       }
     }
   })
-  vp.addEventListener('mouseUp', (event) => {
+  vp.addEventListener('pointerUp', (event) => {
     if (drawing) {
       drawing = false
     }

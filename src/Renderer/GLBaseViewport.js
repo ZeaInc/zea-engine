@@ -203,15 +203,6 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Causes an event to occur when a user releases a mouse button over a element.
-   * @param {any} event - The event that occurs.
-   * @return {boolean} - The return value.
-   */
-  onMouseUp(event) {
-    return false
-  }
-
-  /**
    * Causes an event to occur when the mouse pointer is moved out of an element.
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.

@@ -28,7 +28,7 @@ branchSelectionOutlineColor.a = 0.1
  * * **childAdded:** Emitted when a item is added as a child.
  * * **childRemoved:** Emitted when an item is removed from the child nodes.
  * * **pointerDown:** Emitted when a pointerDown event happens in an item.
- * * **mouseUp:** Emitted when a mouseUp event happens in an item.
+ * * **pointerUp:** Emitted when a pointerUp event happens in an item.
  * * **pointerMove:** Emitted when a pointerMove event happens in an item.
  * * **mouseEnter:** Emitted when a mouseEnter event happens in an item.
  *
@@ -56,7 +56,7 @@ class TreeItem extends BaseItem {
     this.__childItemsMapping = {}
 
     this.onPointerDown = this.onPointerDown.bind(this)
-    this.onMouseUp = this.onMouseUp.bind(this)
+    this.onPointerUp = this.onPointerUp.bind(this)
     this.onPointerMove = this.onPointerMove.bind(this)
     this.onMouseEnter = this.onMouseEnter.bind(this)
     this.onMouseLeave = this.onMouseLeave.bind(this)
@@ -845,19 +845,20 @@ class TreeItem extends BaseItem {
   /**
    * Causes an event to occur when a user releases a mouse button over a element.
    *
-   * @param {MouseEvent} event - The mouse event that occurs.
+   * @param {PointerEvent} event - The mouse event that occurs.
    */
-  onMouseUp(event) {
-    this.emit('mouseUp', event)
+  onPointerUp(event) {
+    this.emit('pointerUp', event)
+
     if (event.propagating && this.__ownerItem) {
-      this.__ownerItem.onMouseUp(event)
+      this.__ownerItem.onPointerUp(event)
     }
   }
 
   /**
-   * Causes an event to occur when the mouse pointer is moving while over an element.
+   * Causes an event to occur when the pointer is moving while over an element.
    *
-   * @param {MouseEvent} event - The mouse event that occurs.
+   * @param {PointerEvent} event - The mouse event that occurs.
    */
   onPointerMove(event) {
     this.emit('pointerMove', event)
