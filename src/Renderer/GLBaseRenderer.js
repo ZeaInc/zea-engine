@@ -692,6 +692,38 @@ class GLBaseRenderer extends ParameterOwner {
       },
       false
     )
+
+    this.__glcanvas.addEventListener(
+      'touchend',
+      (event) => {
+        event.stopPropagation()
+        event.preventDefault()
+
+        for (let i = 0; i < event.touches.length; i++) {
+          calcRendererCoords(event.touches[i])
+        }
+
+        event.pointerType = POINTER_TYPES.touch
+        this.getViewport().onPointerUp(event)
+      },
+      false
+    )
+
+    this.__glcanvas.addEventListener(
+      'touchmove',
+      (event) => {
+        event.stopPropagation()
+        event.preventDefault()
+
+        for (let i = 0; i < event.touches.length; i++) {
+          calcRendererCoords(event.touches[i])
+        }
+
+        event.pointerType = POINTER_TYPES.touch
+        this.getViewport().onPointerMove(event)
+      },
+      false
+    )
     /** Touch Events End */
 
     const onWheel = (event) => {

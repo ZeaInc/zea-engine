@@ -521,30 +521,20 @@ class GLViewport extends GLBaseViewport {
     event.stopPropagation = () => {
       event.propagating = false
     }
+
     event.setCapture = (item) => {
       this.capturedItem = item
     }
+
     event.getCapture = (item) => {
       return this.capturedItem
     }
+
     event.releaseCapture = () => {
       this.capturedItem = null
       // TODO: This should be a request, which is fulfilled next time
       // a frame is drawn.
       this.renderGeomDataFbo()
-    }
-
-    if (event instanceof MouseEvent || event instanceof TouchEvent) {
-      const pointerPos = this.__getPointerPos(event)
-      event.pointerPos = pointerPos
-      event.pointerRay = this.calcRayFromScreenPos(pointerPos)
-
-      const intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
-      if (intersectionData != undefined) {
-        event.intersectionData = intersectionData
-      }
-
-      this.__ongoingPointers.push(event)
     }
   }
 
@@ -562,7 +552,6 @@ class GLViewport extends GLBaseViewport {
       return
     }
 
-    console.log('pointerType:', event.pointerType)
     let pointerPos
     if (event.pointerType === POINTER_TYPES.mouse) {
       pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
@@ -572,12 +561,11 @@ class GLViewport extends GLBaseViewport {
         pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
       }
     }
-    if (!pointerPos) throw new Error('@GLViewport#onPointerDown - Invalid pointer position')
 
     event.pointerPos = pointerPos
     event.pointerRay = this.calcRayFromScreenPos(pointerPos)
 
-    const intersectionData = this.getGeomDataAtPos(pointerPos, event.touchRay)
+    const intersectionData = this.getGeomDataAtPos(pointerPos, event.pointerRay)
     if (intersectionData != undefined) {
       event.intersectionData = intersectionData
       event.intersectionData.geomItem.onPointerDown(event)
@@ -612,53 +600,8 @@ class GLViewport extends GLBaseViewport {
   }
 
   /**
-   * Causes an event to occur when the pointer device is moving.
-   *
-   * @param {MouseEvent|TouchEvent} event - The event that occurs.
-   */
-  onPointerMove(event) {
-    this.__preparePointerEvent(event)
-
-    if (this.capturedItem) {
-      this.capturedItem.onPointerMove(event)
-      return
-    }
-
-    if (event.intersectionData != undefined) {
-      if (event.intersectionData.geomItem != this.pointerOverItem) {
-        if (this.pointerOverItem) {
-          // Note: spread operators cause errors on iOS 11
-          const leaveEvent = { geomItem: this.pointerOverItem }
-          for (const key in event) leaveEvent[key] = event[key]
-
-          this.emit('pointerLeaveGeom', leaveEvent)
-          if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
-        }
-        this.pointerOverItem = event.intersectionData.geomItem
-        this.emit('pointerOverGeom', event)
-        if (event.propagating) this.pointerOverItem.onPointerLeave(event)
-      }
-
-      event.intersectionData.geomItem.onPointerMove(event)
-      if (!event.propagating || this.capturedItem) return
-    } else if (this.pointerOverItem) {
-      // Note: spread operators cause errors on iOS 11
-      const leaveEvent = { geomItem: this.pointerOverItem }
-      for (const key in event) leaveEvent[key] = event[key]
-      this.emit('pointerLeaveGeom', leaveEvent)
-      if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
-      this.pointerOverItem = null
-    }
-
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onPointerMove(event)
-      if (!event.propagating) return
-    }
-    this.emit('pointerMove', event)
-  }
-
-  /**
    * Causes an event to occur when a user releases a mouse button over a element.
+   *
    * @param {MouseEvent|TouchEvent} event - The event that occurs.
    */
   onPointerUp(event) {
@@ -671,20 +614,91 @@ class GLViewport extends GLBaseViewport {
 
     if (event.intersectionData != undefined) {
       event.intersectionData.geomItem.onPointerUp(event)
+
       if (!event.propagating) return
     }
 
     if (this.__cameraManipulator) {
       this.__cameraManipulator.onPointerUp(event)
+
       if (!event.propagating) return
     }
 
-    const eventIdx = this._getOngoingPointerIndexById(event.pointerId)
-    if (eventIdx >= 0) {
-      this.__ongoingPointers.splice(eventIdx, 1)
+    this.emit('pointerUp', event)
+  }
+
+  /**
+   * Causes an event to occur when the pointer device is moving.
+   *
+   * @param {MouseEvent|TouchEvent} event - The event that occurs.
+   */
+  onPointerMove(event) {
+    this.__preparePointerEvent(event)
+
+    if (this.capturedItem) {
+      if (event.pointerType === POINTER_TYPES.touch) {
+        event.touchPositions = []
+        event.touchRays = []
+
+        for (let index = 0; index < event.touches.length; index++) {
+          const touch = event.touches[index]
+          const touchPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+          event.touchPositions[index] = touchPos
+          event.touchRays[index] = this.calcRayFromScreenPos(touchPos)
+        }
+
+        event.pointerPos = event.touchPositions[0]
+        event.pointerRay = event.touchRays[0]
+      }
+
+      this.capturedItem.onPointerMove(event)
+      return
     }
 
-    this.emit('pointerUp', event)
+    if (event.pointerType === POINTER_TYPES.mouse) {
+      const pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
+      event.pointerPos = pointerPos
+      event.pointerRay = this.calcRayFromScreenPos(pointerPos)
+
+      const intersectionData = this.getGeomDataAtPos(pointerPos, event.pointerRay)
+      if (intersectionData != undefined) {
+        event.intersectionData = intersectionData
+      }
+
+      if (event.intersectionData) {
+        if (event.intersectionData.geomItem != this.pointerOverItem) {
+          if (this.pointerOverItem) {
+            // Note: spread operators cause errors on iOS 11
+            const leaveEvent = { geomItem: this.pointerOverItem }
+            for (const key in event) leaveEvent[key] = event[key]
+
+            this.emit('pointerLeaveGeom', leaveEvent)
+            if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
+          }
+
+          this.pointerOverItem = event.intersectionData.geomItem
+          this.emit('pointerOverGeom', event)
+          if (event.propagating) this.pointerOverItem.onPointerEnter(event)
+        }
+
+        event.intersectionData.geomItem.onPointerMove(event)
+        if (!event.propagating || this.capturedItem) return
+      } else if (this.pointerOverItem) {
+        // Note: spread operators cause errors on iOS 11
+        const leaveEvent = { geomItem: this.pointerOverItem }
+        for (const key in event) leaveEvent[key] = event[key]
+
+        this.emit('pointerLeaveGeom', leaveEvent)
+        if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
+        this.pointerOverItem = null
+      }
+    }
+
+    if (this.__cameraManipulator) {
+      this.__cameraManipulator.onPointerMove(event)
+      if (!event.propagating) return
+    }
+    this.emit('pointerMove', event)
   }
 
   /**
