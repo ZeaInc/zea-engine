@@ -3,6 +3,7 @@ import { Vec2, Vec3, Quat, Xfo } from '../../Math/index'
 import { ParameterOwner } from '../ParameterOwner.js'
 import { NumberParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
+import { POINTER_TYPES } from '../../Utilities/EnumUtils'
 
 const MANIPULATION_MODES = {
   pan: 0,
@@ -466,17 +467,21 @@ class CameraManipulator extends ParameterOwner {
   }
 
   /**
-   * Causes an event to occur when a user double clicks a mouse button over an element.
+   * Causes an event to occur when a user double presses a pointer over an element.
    *
-   * @param {MouseEvent} event - The mouse event that occurs.
+   * @param {MouseEvent|TouchEvent} event - The pointer event that occurs
+   * @memberof CameraManipulator
    */
-  onDoubleClick(event) {
-    if (event.intersectionData) {
-      const camera = event.viewport.getCamera()
+  onPointerDoublePress(event) {
+    if ('intersectionData' in event) {
+      const { viewport } = event
+      const camera = viewport.getCamera()
       const cameraGlobalXfo = camera.getParameter('GlobalXfo').getValue()
       const pos = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
       this.aimFocus(event, pos)
     }
+
+    event.preventDefault()
   }
 
   /**
@@ -846,24 +851,6 @@ class CameraManipulator extends ParameterOwner {
       this.__endTouch(touches[i])
     }
     if (Object.keys(this.__ongoingTouches).length == 0) this.endDrag(event)
-  }
-
-  /**
-   * Causes an event to occur when the user double taps an element on a touch screen.
-   *
-   * @param {TouchEvent} event - The touch event that occurs.
-   */
-  onDoubleTap(event) {
-    if (event.intersectionData) {
-      const { viewport } = event
-      const camera = viewport.getCamera()
-      const pos = camera
-        .getParameter('GlobalXfo')
-        .getValue()
-        .tr.add(event.touchRay.dir.scale(event.intersectionData.dist))
-      this.aimFocus(event, pos)
-    }
-    event.preventDefault()
   }
 
   /**

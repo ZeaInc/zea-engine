@@ -7,6 +7,7 @@ import { GLScreenQuad } from './GLScreenQuad'
 import { GLViewport } from './GLViewport'
 import { Registry } from '../Registry'
 import { VRViewport } from './VR/VRViewport'
+import { POINTER_TYPES } from '../Utilities/EnumUtils'
 
 let activeGLRenderer = undefined
 let pointerIsDown = false
@@ -592,78 +593,65 @@ class GLBaseRenderer extends ParameterOwner {
       event.rendererY = (event.clientY - rect.top) * dpr
     }
 
-    /** Pointer Events Start */
-    this.__glcanvas.addEventListener(
-      'pointerdown',
-      (event) => {
-        event.stopPropagation()
-        event.preventDefault()
-        calcRendererCoords(event)
-        pointerIsDown = true
-        activeGLRenderer = this
-        activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
-        const viewport = activeGLRenderer.getActiveViewport()
+    /** Mouse Events Start */
+    this.__glcanvas.addEventListener('mousedown', (event) => {
+      calcRendererCoords(event)
+      pointerIsDown = true
+      activeGLRenderer = this
+      activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
+      const viewport = activeGLRenderer.getActiveViewport()
+      if (viewport) {
+        event.pointerType = POINTER_TYPES.mouse
+        viewport.onPointerDown(event)
+      }
+
+      pointerLeft = false
+      return false
+    })
+
+    document.addEventListener('mouseup', (event) => {
+      if (activeGLRenderer != this || !isValidCanvas()) return
+
+      calcRendererCoords(event)
+      pointerIsDown = false
+      const viewport = activeGLRenderer.getActiveViewport()
+      if (viewport) {
+        event.pointerType = POINTER_TYPES.mouse
+        viewport.onPointerUp(event)
+      }
+
+      if (pointerLeft) {
         if (viewport) {
-          viewport.onPointerDown(event)
+          event.pointerType = POINTER_TYPES.mouse
+          viewport.onPointerLeave(event)
+          event.preventDefault()
         }
 
-        pointerLeft = false
-        return false
-      },
-      false
-    )
+        activeGLRenderer = undefined
+      }
 
-    document.addEventListener(
-      'pointermove',
-      (event) => {
-        event.stopPropagation()
-        event.preventDefault()
-        if (activeGLRenderer != this || !isValidCanvas()) return
+      return false
+    })
 
-        calcRendererCoords(event)
-        if (!pointerIsDown) activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
+    document.addEventListener('mousemove', (event) => {
+      if (activeGLRenderer != this || !isValidCanvas()) return
 
-        const viewport = activeGLRenderer.getActiveViewport()
-        if (viewport) {
-          viewport.onPointerMove(event)
-        }
+      calcRendererCoords(event)
+      if (!pointerIsDown) activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
 
-        return false
-      },
-      false
-    )
+      const viewport = activeGLRenderer.getActiveViewport()
+      if (viewport) {
+        event.pointerType = POINTER_TYPES.mouse
+        viewport.onPointerMove(event)
+      }
+      return false
+    })
 
-    document.addEventListener(
-      'pointerup',
-      (event) => {
-        event.stopPropagation()
-        event.preventDefault()
-        if (activeGLRenderer != this || !isValidCanvas()) return
-
-        calcRendererCoords(event)
-        pointerIsDown = false
-        const viewport = activeGLRenderer.getActiveViewport()
-        if (viewport) {
-          viewport.onPointerUp(event)
-        }
-
-        if (pointerLeft) {
-          const vp = activeGLRenderer.getActiveViewport()
-          if (vp) {
-            vp.onPointerLeave(event)
-            event.preventDefault()
-          }
-          activeGLRenderer = undefined
-        }
-
-        return false
-      },
-      false
-    )
-
-    this.__glcanvas.addEventListener('pointerenter', (event) => {
+    this.__glcanvas.addEventListener('mouseenter', (event) => {
       if (!pointerIsDown) {
         activeGLRenderer = this
+        event.pointerType = POINTER_TYPES.mouse
+
         calcRendererCoords(event)
         // TODO: Check mouse pos.
         activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
@@ -671,12 +659,13 @@ class GLBaseRenderer extends ParameterOwner {
       }
     })
 
-    this.__glcanvas.addEventListener('pointerleave', (event) => {
+    this.__glcanvas.addEventListener('mouseleave', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
 
       if (!pointerIsDown) {
         const viewport = activeGLRenderer.getActiveViewport()
         if (viewport) {
+          event.pointerType = POINTER_TYPES.mouse
           viewport.onPointerLeave(event)
           event.preventDefault()
         }
@@ -685,8 +674,25 @@ class GLBaseRenderer extends ParameterOwner {
         pointerLeft = true
       }
     })
+    /** Mouse Events End */
 
-    /** Pointer Events End */
+    /** Touch Events Start */
+    this.__glcanvas.addEventListener(
+      'touchstart',
+      (event) => {
+        event.stopPropagation()
+        event.preventDefault()
+
+        for (let i = 0; i < event.touches.length; i++) {
+          calcRendererCoords(event.touches[i])
+        }
+
+        event.pointerType = POINTER_TYPES.touch
+        this.getViewport().onPointerDown(event)
+      },
+      false
+    )
+    /** Touch Events End */
 
     const onWheel = (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
@@ -731,42 +737,6 @@ class GLBaseRenderer extends ParameterOwner {
         vp.onKeyUp(event)
       }
     })
-
-    /* this.__glcanvas.addEventListener(
-      'touchmove',
-      (event) => {
-        event.stopPropagation()
-        event.undoRedoManager = this.undoRedoManager
-        for (let i = 0; i < event.touches.length; i++) {
-          calcRendererCoords(event.touches[i])
-        }
-        this.getViewport().onTouchMove(event)
-      },
-      false
-    )
-
-    this.__glcanvas.addEventListener(
-      'touchend',
-      (event) => {
-        event.stopPropagation()
-        event.undoRedoManager = this.undoRedoManager
-        for (let i = 0; i < event.touches.length; i++) {
-          calcRendererCoords(event.touches[i])
-        }
-        this.getViewport().onTouchEnd(event)
-      },
-      false
-    )
-
-    this.__glcanvas.addEventListener(
-      'touchcancel',
-      (event) => {
-        event.stopPropagation()
-        event.undoRedoManager = this.undoRedoManager
-        this.getViewport().onTouchCancel(event)
-      },
-      false
-    )*/
   }
 
   /**

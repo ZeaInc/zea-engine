@@ -169,7 +169,7 @@ class GLBaseViewport extends ParameterOwner {
   /**
    * Handler of the `pointerdown` event fired when the pointer device is initially pressed.
    *
-   * @param {PointerEvent} event - The DOM event produced by a pointer
+   * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
   onPointerDown(event) {
     console.warn('@GLBaseViewport#onPointerDown - Implement me!')
@@ -178,7 +178,7 @@ class GLBaseViewport extends ParameterOwner {
   /**
    * Handler of the `pointerup` event fired when the pointer device is finally released.
    *
-   * @param {PointerEvent} event - The DOM event produced by a pointer
+   * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
   onPointerUp(event) {
     console.warn('@GLBaseViewport#onPointerUp - Implement me!')
@@ -187,16 +187,25 @@ class GLBaseViewport extends ParameterOwner {
   /**
    * Handler of the `pointermove` event fired when the pointer device changes coordinates, and the pointer has not been cancelled
    *
-   * @param {PointerEvent} event - The DOM event produced by a pointer
+   * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
   onPointerMove(event) {
     console.warn('@GLBaseViewport#onPointerMove - Implement me!')
   }
 
   /**
+   * Handler of the `pointerenter` event fired when the pointer device is moved into the hit test boundaries of an element.
+   *
+   * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
+   */
+  onPointerEnter(event) {
+    console.warn('@GLBaseViewport#onPointerEnter - Implement me!')
+  }
+
+  /**
    * Handler of the `pointerleave` event fired when the pointer device is moved out of the hit test boundaries of an element.
    *
-   * @param {PointerEvent} event - The DOM event produced by a pointer
+   * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
   onPointerLeave(event) {
     console.warn('@GLBaseViewport#onPointerLeave - Implement me!')

@@ -4,7 +4,7 @@ import { Camera } from '../SceneTree/index'
 import { GLBaseViewport } from './GLBaseViewport.js'
 import { GLFbo } from './GLFbo.js'
 import { GLTexture2D } from './GLTexture2D.js'
-
+import { POINTER_TYPES } from '../Utilities/EnumUtils'
 import { CameraManipulator } from '../SceneTree/index'
 
 /**
@@ -473,12 +473,13 @@ class GLViewport extends GLBaseViewport {
    * Calculates the event coordinates relative to the viewport.
    * There could be multiple viewports connected to the current renderer.
    *
-   * @param {PointerEvent} event - The event that occurs.
+   * @param {number} rendererX - The rendererX value
+   * @param {number} rendererY - The rendererY value
    * @return {Vec2} - Returns a new Vec2.
    * @private
    */
-  __getPointerPos(event) {
-    return new Vec2(event.rendererX - this.getPosX(), event.rendererY - this.getPosY())
+  __getPointerPos(rendererX, rendererY) {
+    return new Vec2(rendererX - this.getPosX(), rendererY - this.getPosY())
   }
 
   /**
@@ -511,7 +512,7 @@ class GLViewport extends GLBaseViewport {
   /**
    * Prepares pointer event by adding properties of the engine to it.
    *
-   * @param {Event} event - The event that occurs in the canvas
+   * @param {MouseEvent|TouchEvent} event - The event that occurs in the canvas
    * @private
    */
   __preparePointerEvent(event) {
@@ -533,7 +534,7 @@ class GLViewport extends GLBaseViewport {
       this.renderGeomDataFbo()
     }
 
-    if (event instanceof PointerEvent) {
+    if (event instanceof MouseEvent || event instanceof TouchEvent) {
       const pointerPos = this.__getPointerPos(event)
       event.pointerPos = pointerPos
       event.pointerRay = this.calcRayFromScreenPos(pointerPos)
@@ -550,7 +551,7 @@ class GLViewport extends GLBaseViewport {
   /**
    * Handler of the `pointerdown` event fired when the pointer device is initially pressed.
    *
-   * @param {PointerEvent} event - The DOM event produced by a pointer
+   * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    * @return {boolean} -
    */
   onPointerDown(event) {
@@ -561,8 +562,26 @@ class GLViewport extends GLBaseViewport {
       return
     }
 
-    if (event.intersectionData != undefined) {
+    console.log('pointerType:', event.pointerType)
+    let pointerPos
+    if (event.pointerType === POINTER_TYPES.mouse) {
+      pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
+    } else if (event.pointerType === POINTER_TYPES.touch) {
+      if (event.touches.length == 1) {
+        const touch = event.touches[0]
+        pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+      }
+    }
+    if (!pointerPos) throw new Error('@GLViewport#onPointerDown - Invalid pointer position')
+
+    event.pointerPos = pointerPos
+    event.pointerRay = this.calcRayFromScreenPos(pointerPos)
+
+    const intersectionData = this.getGeomDataAtPos(pointerPos, event.touchRay)
+    if (intersectionData != undefined) {
+      event.intersectionData = intersectionData
       event.intersectionData.geomItem.onPointerDown(event)
+
       if (!event.propagating || this.capturedItem) return
 
       this.emit('pointerDownOnGeom', event)
@@ -572,15 +591,17 @@ class GLViewport extends GLBaseViewport {
     const downTime = Date.now()
     if (downTime - this.__prevDownTime < this.__doubleClickTimeMSParam.getValue()) {
       if (this.__cameraManipulator) {
-        this.__cameraManipulator.onDoubleClick(event)
+        this.__cameraManipulator.onPointerDoublePress(event)
         if (!event.propagating) return
       }
 
-      this.emit('pointerDoubleClicked', event)
+      this.emit('pointerDoublePressed', event)
     } else {
       this.__prevDownTime = downTime
+
       if (this.__cameraManipulator) {
         this.__cameraManipulator.onPointerDown(event)
+
         if (!event.propagating) return
       }
 
@@ -593,7 +614,7 @@ class GLViewport extends GLBaseViewport {
   /**
    * Causes an event to occur when the pointer device is moving.
    *
-   * @param {PointerEvent} event - The event that occurs.
+   * @param {MouseEvent|TouchEvent} event - The event that occurs.
    */
   onPointerMove(event) {
     this.__preparePointerEvent(event)
@@ -638,7 +659,7 @@ class GLViewport extends GLBaseViewport {
 
   /**
    * Causes an event to occur when a user releases a mouse button over a element.
-   * @param {PointerEvent} event - The event that occurs.
+   * @param {MouseEvent|TouchEvent} event - The event that occurs.
    */
   onPointerUp(event) {
     this.__preparePointerEvent(event)
@@ -668,7 +689,7 @@ class GLViewport extends GLBaseViewport {
 
   /**
    * Causes an event to occur when the mouse pointer is moved out of an element.
-   * @param {MouseEvent} event - The event that occurs.
+   * @param {MouseEvent|TouchEvent} event - The event that occurs.
    */
   onPointerLeave(event) {
     this.__preparePointerEvent(event)
