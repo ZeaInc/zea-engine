@@ -419,56 +419,6 @@ class GLViewport extends GLBaseViewport {
 
   // ///////////////////////////
   // Events
-
-  /**
-   * The __eventMousePos method calculates the event coordinates relative to the viewprot.
-   * There could be multiple viewports connected to the current renderer.
-   * @param {any} event - The event that occurs.
-   * @return {Vec2} - Returns a new Vec2.
-   * @private
-   */
-  __eventMousePos(event) {
-    return new Vec2(event.rendererX - this.getPosX(), event.rendererY - this.getPosY())
-  }
-
-  /**
-   * The __prepareEvent method.
-   * @param {any} event - The event that occurs.
-   * @private
-   */
-  __prepareEvent(event) {
-    event.viewport = this
-    event.propagating = true
-    event.stopPropagation = () => {
-      event.propagating = false
-    }
-    event.setCapture = (item) => {
-      this.capturedItem = item
-    }
-    event.getCapture = (item) => {
-      return this.capturedItem
-    }
-    event.releaseCapture = () => {
-      this.capturedItem = null
-      // TODO: This should be a request, which is fulfilled next time
-      // a frame is drawn.
-      this.renderGeomDataFbo()
-    }
-
-    if (event instanceof MouseEvent) {
-      const mousePos = this.__eventMousePos(event)
-      event.mousePos = mousePos
-      event.mouseRay = this.calcRayFromScreenPos(mousePos)
-
-      const intersectionData = this.getGeomDataAtPos(event.mousePos, event.mouseRay)
-      if (intersectionData != undefined) {
-        // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getParameter('Material').getValue().getName());
-        // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getParameter('Material').getValue().getName());
-        event.intersectionData = intersectionData
-      }
-    }
-  }
-
   /**
    * Calculates the event coordinates relative to the viewport.
    * There could be multiple viewports connected to the current renderer.
@@ -483,17 +433,8 @@ class GLViewport extends GLBaseViewport {
   }
 
   /**
-   * The setCapture method.
-   * @param {any} target - The target value.
-   * @private
-   */
-  setCapture(target) {
-    this.capturedItem = target
-  }
-
-  /**
    * The getCapture method.
-   * @return {any} - The return value.
+   * @return {BaseItem} - The return value.
    */
   getCapture() {
     return this.capturedItem
@@ -573,7 +514,6 @@ class GLViewport extends GLBaseViewport {
       if (!event.propagating || this.capturedItem) return
 
       this.emit('pointerDownOnGeom', event)
-      if (!event.propagating) return
     }
 
     const downTime = Date.now()
@@ -636,21 +576,6 @@ class GLViewport extends GLBaseViewport {
     this.__preparePointerEvent(event)
 
     if (this.capturedItem) {
-      if (event.pointerType === POINTER_TYPES.touch) {
-        event.touchPositions = []
-        event.touchRays = []
-
-        for (let index = 0; index < event.touches.length; index++) {
-          const touch = event.touches[index]
-          const touchPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
-          event.touchPositions[index] = touchPos
-          event.touchRays[index] = this.calcRayFromScreenPos(touchPos)
-        }
-
-        event.pointerPos = event.touchPositions[0]
-        event.pointerRay = event.touchRays[0]
-      }
-
       this.capturedItem.onPointerMove(event)
       return
     }
@@ -659,45 +584,58 @@ class GLViewport extends GLBaseViewport {
       const pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
       event.pointerPos = pointerPos
       event.pointerRay = this.calcRayFromScreenPos(pointerPos)
-
-      const intersectionData = this.getGeomDataAtPos(pointerPos, event.pointerRay)
-      if (intersectionData != undefined) {
-        event.intersectionData = intersectionData
+    } else if (event.pointerType === POINTER_TYPES.touch) {
+      event.touchPos = []
+      event.touchRay = []
+      for (let index = 0; index < event.touches.length; index++) {
+        const touch = event.touches[index]
+        const touchPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+        event.touchPos[index] = touchPos
+        event.touchRay[index] = this.calcRayFromScreenPos(touchPos)
       }
 
-      if (event.intersectionData) {
-        if (event.intersectionData.geomItem != this.pointerOverItem) {
-          if (this.pointerOverItem) {
-            // Note: spread operators cause errors on iOS 11
-            const leaveEvent = { geomItem: this.pointerOverItem }
-            for (const key in event) leaveEvent[key] = event[key]
+      event.pointerPos = event.touchPos[0]
+      event.pointerRay = event.touchRay[0]
+    }
 
-            this.emit('pointerLeaveGeom', leaveEvent)
-            if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
-          }
+    const intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+    if (intersectionData != undefined) {
+      event.intersectionData = intersectionData
+    }
 
-          this.pointerOverItem = event.intersectionData.geomItem
-          this.emit('pointerOverGeom', event)
-          if (event.propagating) this.pointerOverItem.onPointerEnter(event)
+    if (event.intersectionData) {
+      if (event.intersectionData.geomItem != this.pointerOverItem) {
+        if (this.pointerOverItem) {
+          // Note: spread operators cause errors on iOS 11
+          const leaveEvent = { geomItem: this.pointerOverItem }
+          for (const key in event) leaveEvent[key] = event[key]
+
+          this.emit('pointerLeaveGeom', leaveEvent)
+          if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
         }
 
-        event.intersectionData.geomItem.onPointerMove(event)
-        if (!event.propagating || this.capturedItem) return
-      } else if (this.pointerOverItem) {
-        // Note: spread operators cause errors on iOS 11
-        const leaveEvent = { geomItem: this.pointerOverItem }
-        for (const key in event) leaveEvent[key] = event[key]
-
-        this.emit('pointerLeaveGeom', leaveEvent)
-        if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
-        this.pointerOverItem = null
+        this.pointerOverItem = event.intersectionData.geomItem
+        this.emit('pointerOverGeom', event)
+        if (event.propagating) this.pointerOverItem.onPointerEnter(event)
       }
+
+      event.intersectionData.geomItem.onPointerMove(event)
+      if (!event.propagating || this.capturedItem) return
+    } else if (this.pointerOverItem) {
+      // Note: spread operators cause errors on iOS 11
+      const leaveEvent = { geomItem: this.pointerOverItem }
+      for (const key in event) leaveEvent[key] = event[key]
+
+      this.emit('pointerLeaveGeom', leaveEvent)
+      if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
+      this.pointerOverItem = null
     }
 
     if (this.__cameraManipulator) {
       this.__cameraManipulator.onPointerMove(event)
       if (!event.propagating) return
     }
+
     this.emit('pointerMove', event)
   }
 
@@ -767,69 +705,11 @@ class GLViewport extends GLBaseViewport {
   // Touch events
 
   /**
-   * The __eventTouchPos method.
-   * @param {any} touch - The touch value.
-   * @return {Vec2} - The return value.
-   * @private
-   */
-  __eventTouchPos(touch) {
-    return new Vec2(touch.rendererX - this.getPosX(), touch.rendererY - this.getPosY())
-  }
-
-  /**
-   * The event that occurs when the user moves his/her finger across a touch screen.
-   * @param {TouchEvent} event - The event that occurs.
-   */
-  onTouchMove(event) {
-    this.__prepareEvent(event)
-
-    if (this.capturedItem) {
-      event.touchPos = []
-      event.touchRay = []
-      for (let index = 0; index < event.touches.length; index++) {
-        const touch = event.touches[index]
-        const touchPos = this.__eventTouchPos(touch)
-        event.touchPos[index] = touchPos
-        event.touchRay[index] = this.calcRayFromScreenPos(touchPos)
-      }
-      event.mousePos = event.touchPos[0]
-      event.mouseRay = event.touchRay[0]
-      this.capturedItem.onPointerMove(event)
-      return
-    }
-
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onTouchMove(event)
-      return
-    }
-    this.emit('touchMove', event)
-  }
-
-  /**
-   * Causes an event to occur when the user removes his/her finger from an element.
-   * @param {TouchEvent} event - The event that occurs.
-   */
-  onTouchEnd(event) {
-    this.__prepareEvent(event)
-
-    if (this.capturedItem) {
-      this.capturedItem.onPointerUp(event)
-      return
-    }
-
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onTouchEnd(event)
-      return
-    }
-    this.emit('touchEnd', event)
-  }
-
-  /**
    * Causes an event to occur when the touch event gets interrupted.
    * @param {TouchEvent} event - The event that occurs.
    */
   onTouchCancel(event) {
-    this.__prepareEvent(event)
+    this.__preparePointerEvent(event)
 
     if (this.capturedItem) {
       this.capturedItem.onTouchCancel(event)

@@ -681,8 +681,6 @@ class GLBaseRenderer extends ParameterOwner {
       'touchstart',
       (event) => {
         event.stopPropagation()
-        event.preventDefault()
-
         for (let i = 0; i < event.touches.length; i++) {
           calcRendererCoords(event.touches[i])
         }
@@ -697,8 +695,6 @@ class GLBaseRenderer extends ParameterOwner {
       'touchend',
       (event) => {
         event.stopPropagation()
-        event.preventDefault()
-
         for (let i = 0; i < event.touches.length; i++) {
           calcRendererCoords(event.touches[i])
         }
@@ -713,8 +709,6 @@ class GLBaseRenderer extends ParameterOwner {
       'touchmove',
       (event) => {
         event.stopPropagation()
-        event.preventDefault()
-
         for (let i = 0; i < event.touches.length; i++) {
           calcRendererCoords(event.touches[i])
         }

@@ -509,16 +509,7 @@ class CameraManipulator extends ParameterOwner {
         this.__manipulationState = this.__defaultManipulationState
       }
     } else if (event.pointerType === POINTER_TYPES.touch) {
-      if (Object.keys(this.__ongoingTouches).length == 0) this.__manipMode = undefined
-
-      const touches = event.changedTouches
-      for (let i = 0; i < touches.length; i++) {
-        this.__startTouch(touches[i])
-      }
-
-      if (Object.keys(this.__ongoingTouches).length == 1) {
-        this.initDrag(event)
-      }
+      this._onTouchStart(event)
     }
 
     event.stopPropagation()
@@ -531,11 +522,11 @@ class CameraManipulator extends ParameterOwner {
    * @param {MouseEvent} event - The mouse event that occurs.
    */
   onPointerMove(event) {
-    event.stopPropagation()
-    event.preventDefault()
-
     if (event.pointerType === POINTER_TYPES.mouse) this._onMouseMove(event)
     if (event.pointerType === POINTER_TYPES.touch) this._onTouchMove(event)
+
+    event.stopPropagation()
+    event.preventDefault()
   }
 
   /**
@@ -583,7 +574,6 @@ class CameraManipulator extends ParameterOwner {
    * @private
    */
   _onTouchMove(event) {
-    console.log('Touch Move')
     this.__calculatingDragAction = true
 
     const touches = event.touches
@@ -638,6 +628,9 @@ class CameraManipulator extends ParameterOwner {
    * @param {MouseEvent} event - The mouse event that occurs.
    */
   onPointerUp(event) {
+    event.stopPropagation()
+    event.preventDefault()
+
     if (event.pointerType === POINTER_TYPES.mouse) {
       if (this.__dragging) {
         this.endDrag(event)
@@ -646,20 +639,14 @@ class CameraManipulator extends ParameterOwner {
       }
     } else if (event.pointerType === POINTER_TYPES.touch) {
       event.preventDefault()
-
-      if (Object.keys(this.__ongoingTouches).length == 0) this.__manipMode = undefined
-
       const touches = event.changedTouches
+
       for (let i = 0; i < touches.length; i++) {
-        this.__startTouch(touches[i])
+        this.__endTouch(touches[i])
       }
 
-      if (Object.keys(this.__ongoingTouches).length == 1) {
-        this.initDrag(event)
-      }
+      if (Object.keys(this.__ongoingTouches).length == 0) this.endDrag(event)
     }
-
-    event.stopPropagation()
   }
 
   /**
@@ -838,10 +825,7 @@ class CameraManipulator extends ParameterOwner {
    *
    * @param {TouchEvent} event - The touch event that occurs.
    */
-  onTouchStart(event) {
-    event.preventDefault()
-    event.stopPropagation()
-
+  _onTouchStart(event) {
     if (Object.keys(this.__ongoingTouches).length == 0) this.__manipMode = undefined
 
     const touches = event.changedTouches
