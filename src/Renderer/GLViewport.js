@@ -348,6 +348,7 @@ class GLViewport extends GLBaseViewport {
         console.warn('Geom data buffer returns invalid pass id:', passId)
         return
       }
+
       const geomItemAndDist = pass.getGeomItemAndDist(geomData)
 
       if (geomItemAndDist) {
@@ -362,6 +363,7 @@ class GLViewport extends GLBaseViewport {
           geomData,
         }
       }
+
       return this.__intersectionData
     }
   }
@@ -488,27 +490,24 @@ class GLViewport extends GLBaseViewport {
   onPointerDown(event) {
     this.__preparePointerEvent(event)
 
+    if (event.pointerType === POINTER_TYPES.mouse) {
+      event.pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
+    } else if (event.pointerType === POINTER_TYPES.touch) {
+      if (event.touches.length == 1) {
+        const touch = event.touches[0]
+        event.pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+      }
+    }
+
+    event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
+    event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+
     if (this.capturedItem) {
       this.capturedItem.onPointerDown(event)
       return
     }
 
-    let pointerPos
-    if (event.pointerType === POINTER_TYPES.mouse) {
-      pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
-    } else if (event.pointerType === POINTER_TYPES.touch) {
-      if (event.touches.length == 1) {
-        const touch = event.touches[0]
-        pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
-      }
-    }
-
-    event.pointerPos = pointerPos
-    event.pointerRay = this.calcRayFromScreenPos(pointerPos)
-
-    const intersectionData = this.getGeomDataAtPos(pointerPos, event.pointerRay)
-    if (intersectionData != undefined) {
-      event.intersectionData = intersectionData
+    if (event.intersectionData != undefined) {
       event.intersectionData.geomItem.onPointerDown(event)
 
       if (!event.propagating || this.capturedItem) return
@@ -576,11 +575,6 @@ class GLViewport extends GLBaseViewport {
   onPointerMove(event) {
     this.__preparePointerEvent(event)
 
-    if (this.capturedItem) {
-      this.capturedItem.onPointerMove(event)
-      return
-    }
-
     if (event.pointerType === POINTER_TYPES.mouse) {
       const pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
       event.pointerPos = pointerPos
@@ -602,6 +596,11 @@ class GLViewport extends GLBaseViewport {
     const intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     if (intersectionData != undefined) {
       event.intersectionData = intersectionData
+    }
+
+    if (this.capturedItem) {
+      this.capturedItem.onPointerMove(event)
+      return
     }
 
     if (event.intersectionData) {
