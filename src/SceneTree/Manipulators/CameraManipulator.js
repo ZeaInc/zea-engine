@@ -581,6 +581,7 @@ class CameraManipulator extends ParameterOwner {
       const touch = touches[0]
       const touchPos = new Vec2(touch.pageX, touch.pageY)
       const touchData = this.__ongoingTouches[touch.identifier]
+      if (!touchData) return
       const dragVec = touchPos.subtract(touchData.pos)
       switch (this.__defaultManipulationState) {
         case MANIPULATION_MODES.look:
@@ -604,6 +605,7 @@ class CameraManipulator extends ParameterOwner {
       const touch1 = touches[1]
       const touchData1 = this.__ongoingTouches[touch1.identifier]
 
+      if (!touchData0 || !touchData1) return
       const touch0Pos = new Vec2(touch0.pageX, touch0.pageY)
       const touch1Pos = new Vec2(touch1.pageX, touch1.pageY)
       const startSeparation = touchData1.pos.subtract(touchData0.pos).length()

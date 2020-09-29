@@ -526,6 +526,7 @@ class GLViewport extends GLBaseViewport {
       this.emit('pointerDoublePressed', event)
     } else {
       this.__prevDownTime = downTime
+      if (!event.propagating || this.capturedItem) return
 
       if (this.__cameraManipulator) {
         this.__cameraManipulator.onPointerDown(event)
