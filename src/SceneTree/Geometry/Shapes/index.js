@@ -1,3 +1,7 @@
+export * from './ProceduralPoints.js'
+export * from './ProceduralLines.js'
+export * from './ProceduralMesh.js'
+
 export * from './PointGrid.js'
 
 export * from './Rect.js'

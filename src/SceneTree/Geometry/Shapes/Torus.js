@@ -33,25 +33,13 @@ class Torus extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-    const rebuild = () => {
-      this.__rebuild()
-    }
-
-    this.__innerRadiusParam.on('valueChanged', resize)
-    this.__outerRadiusParam.on('valueChanged', resize)
-    this.__detailParam.on('valueChanged', rebuild)
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     const innerRadius = this.__innerRadiusParam.getValue()
     const outerRadius = this.__outerRadiusParam.getValue()
     const detail = this.__detailParam.getValue()
@@ -108,16 +96,13 @@ class Torus extends ProceduralMesh {
         faceIndex++
       }
     }
-
-    this.setBoundingBoxDirty()
-    this.emit('geomDataTopologyChanged', {})
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    * @private
    */
-  __resize() {
+  resize() {
     const innerRadius = this.__innerRadiusParam.getValue()
     const outerRadius = this.__outerRadiusParam.getValue()
     const detail = this.__detailParam.getValue()
@@ -143,9 +128,6 @@ class Torus extends ProceduralMesh {
         vertex++
       }
     }
-
-    this.setBoundingBoxDirty()
-    this.emit('geomDataChanged', {})
   }
 }
 

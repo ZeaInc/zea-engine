@@ -40,25 +40,13 @@ class Plane extends ProceduralMesh {
     this.__detailYParam = this.addParameter(new NumberParameter('DetailY', DetailY))
     if (addNormals) this.addVertexAttribute('normals', Vec3)
     if (addTextureCoords) this.addVertexAttribute('texCoords', Vec2)
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-    const rebuild = () => {
-      this.__rebuild()
-    }
-    this.__sizeXParam.on('valueChanged', resize)
-    this.__sizeYParam.on('valueChanged', resize)
-    this.__detailXParam.on('valueChanged', rebuild)
-    this.__detailYParam.on('valueChanged', rebuild)
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     const detailX = this.__detailXParam.getValue()
     const detailY = this.__detailYParam.getValue()
     this.setNumVertices((detailX + 1) * (detailY + 1))
@@ -100,17 +88,15 @@ class Plane extends ProceduralMesh {
       }
     }
 
-    this.__resize(false)
-    this.emit('geomDataTopologyChanged', {})
+    this.resize()
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    *
    * @private
-   * @param {boolean} [emit=true] - If `true` emits `geomDataChanged` event.
    */
-  __resize(emit = true) {
+  resize() {
     const sizeX = this.__sizeXParam.getValue()
     const sizeY = this.__sizeYParam.getValue()
     const detailX = this.__detailXParam.getValue()
@@ -125,9 +111,6 @@ class Plane extends ProceduralMesh {
         voff++
       }
     }
-
-    this.setBoundingBoxDirty()
-    if (emit) this.emit('geomDataChanged', {})
   }
 }
 

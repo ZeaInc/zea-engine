@@ -28,10 +28,10 @@ class Rect extends ProceduralLines {
     if (isNaN(x) || isNaN(y)) throw new Error('Invalid geom args')
 
     this.__x = this.addParameter(new NumberParameter('X', x))
-    this.__x.on('valueChanged', this.__resize.bind(this))
+    this.__x.on('valueChanged', this.resize.bind(this))
     this.__y = this.addParameter(new NumberParameter('Y', y))
-    this.__y.on('valueChanged', this.__resize.bind(this))
-    this.__rebuild()
+    this.__y.on('valueChanged', this.resize.bind(this))
+    this.rebuild()
   }
 
   /**
@@ -79,30 +79,28 @@ class Rect extends ProceduralLines {
   setSize(x, y) {
     this.__x.setValue(x)
     this.__y.setValue(y)
-    this.__resize()
+    this.resize()
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     this.setNumVertices(4)
     this.setNumSegments(4)
     this.setSegmentVertexIndices(0, 0, 1)
     this.setSegmentVertexIndices(1, 1, 2)
     this.setSegmentVertexIndices(2, 2, 3)
     this.setSegmentVertexIndices(3, 3, 0)
-    this.__resize(false)
-    this.emit('geomDataTopologyChanged', {})
+    this.resize(false)
   }
 
   /**
-   * The __resize method.
-   * @param {number} emit - emit a 'geomDataChanged' event.
+   * The resize method.
    * @private
    */
-  __resize(emit) {
+  resize() {
     const x = this.__x.getValue()
     const y = this.__y.getValue()
 
@@ -111,8 +109,6 @@ class Rect extends ProceduralLines {
     positions.getValueRef(1).set(0.5 * x, -0.5 * y, 0.0)
     positions.getValueRef(2).set(0.5 * x, 0.5 * y, 0.0)
     positions.getValueRef(3).set(-0.5 * x, 0.5 * y, 0.0)
-    this.setBoundingBoxDirty()
-    if (emit) this.emit('geomDataChanged', {})
   }
 }
 

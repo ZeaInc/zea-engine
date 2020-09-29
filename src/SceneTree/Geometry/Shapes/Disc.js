@@ -34,42 +34,13 @@ class Disc extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    this.__rebuild()
   }
 
   /**
-   * Returns the value of the `radius` parameter.
-   *
-   * @return {number} - Returns the radius.
-   */
-  get radius() {
-    return this.__radius
-  }
-
-  /**
-   * Sets the value of the `radius` parameter.
-   *
-   * @param {number} val - The radius value.
-   */
-  set radius(val) {
-    this.__radius = val
-    this.__resize()
-  }
-
-  /**
-   * Sets the value of the `sides` parameter.
-   * @param {number} val - The number of sides.
-   */
-  set sides(val) {
-    this.__sides = val >= 3 ? val : 3
-    this.__rebuild()
-  }
-
-  /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     const nbSides = this.__sidesParam.getValue()
 
     this.setNumVertices(nbSides + 1)
@@ -107,15 +78,14 @@ class Disc extends ProceduralMesh {
       texCoords.getValueRef(i + 1).set(Math.sin(phi) * 0.5 + 0.5, Math.cos(phi) * 0.5 + 0.5)
     }
 
-    this.setBoundingBoxDirty()
-    this.__resize()
+    this.resize()
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    * @private
    */
-  __resize() {
+  resize() {
     const nbSides = this.__sidesParam.getValue()
     const radius = this.__radiusParam.getValue()
     const positions = this.getVertexAttribute('positions')
@@ -123,8 +93,6 @@ class Disc extends ProceduralMesh {
       const phi = (i / nbSides) * 2.0 * Math.PI
       positions.getValueRef(i + 1).set(Math.sin(phi) * radius, Math.cos(phi) * radius, 0.0)
     }
-    this.setBoundingBoxDirty()
-    this.emit('geomDataChanged', {})
   }
 }
 

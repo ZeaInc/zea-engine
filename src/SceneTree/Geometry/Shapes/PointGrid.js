@@ -37,21 +37,13 @@ class PointGrid extends ProceduralPoints {
     this.__yDivisions = this.addParameter(new NumberParameter('YDivisions', yDivisions))
 
     if (addTextureCoords) this.addVertexAttribute('texCoords', Vec2)
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-
-    this.__x.on('valueChanged', resize)
-    this.__y.on('valueChanged', resize)
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     this.setNumVertices(this.__xDivisions * this.__yDivisions)
 
     const texCoords = this.getVertexAttribute('texCoords')
@@ -64,16 +56,14 @@ class PointGrid extends ProceduralPoints {
         }
       }
     }
-    this.__resize(false)
-    this.emit('geomDataTopologyChanged', {})
+    this.resize()
   }
 
   /**
-   * The __resize method.
-   * @param {number} emit - emit a 'geomDataChanged' event.
+   * The resize method.
    * @private
    */
-  __resize(emit = true) {
+  resize() {
     const positions = this.getVertexAttribute('positions')
     for (let i = 0; i < this.__yDivisions; i++) {
       const y = (i / (this.__yDivisions - 1) - 0.5) * this.__y
@@ -82,8 +72,6 @@ class PointGrid extends ProceduralPoints {
         positions.getValueRef(i * this.__xDivisions + j).set(x, y, 0.0)
       }
     }
-    this.setBoundingBoxDirty()
-    if (emit) this.emit('geomDataChanged', {})
   }
 }
 

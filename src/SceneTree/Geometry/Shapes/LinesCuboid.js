@@ -29,25 +29,13 @@ class LinesCuboid extends ProceduralLines {
     this.__z = this.addParameter(new NumberParameter('Z', z))
 
     this.__baseZAtZero = this.addParameter(new NumberParameter('BaseZAtZero', baseZAtZero))
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-    const rebuild = () => {
-      this.__rebuild()
-    }
-    this.__x.on('valueChanged', resize)
-    this.__y.on('valueChanged', resize)
-    this.__z.on('valueChanged', resize)
-    this.__baseZAtZero.on('valueChanged', rebuild)
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     this.setNumVertices(8)
     this.setNumSegments(12)
     this.setSegmentVertexIndices(0, 0, 1)
@@ -64,17 +52,15 @@ class LinesCuboid extends ProceduralLines {
     this.setSegmentVertexIndices(9, 1, 5)
     this.setSegmentVertexIndices(10, 2, 6)
     this.setSegmentVertexIndices(11, 3, 7)
-    this.__resize(false)
-    this.emit('geomDataTopologyChanged', {})
+    this.resize()
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    *
-   * @param {boolean} [emit=true]
    * @private
    */
-  __resize(emit = true) {
+  resize() {
     const x = this.__x.getValue()
     const y = this.__y.getValue()
     const z = this.__z.getValue()
@@ -94,9 +80,6 @@ class LinesCuboid extends ProceduralLines {
     positions.getValueRef(5).set(0.5 * x, 0.5 * y, zoff * z)
     positions.getValueRef(6).set(-0.5 * x, 0.5 * y, zoff * z)
     positions.getValueRef(7).set(-0.5 * x, -0.5 * y, zoff * z)
-
-    this.setBoundingBoxDirty()
-    if (emit) this.emit('geomDataChanged', {})
   }
 }
 

@@ -33,40 +33,27 @@ class Circle extends ProceduralLines {
     this.__numSegments = this.addParameter(
       new NumberParameter('NumSegments', numSegments >= 3 ? numSegments : 3, [3, 200], 1)
     )
-
-    const resize = () => {
-      this.__resize()
-    }
-    const rebuild = () => {
-      this.__rebuild()
-    }
-    this.__radius.on('valueChanged', resize)
-    this.__angle.on('valueChanged', rebuild)
-    this.__numSegments.on('valueChanged', rebuild)
-    this.__rebuild()
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     const segs = this.__numSegments.getValue()
     this.setNumVertices(segs)
     const arc = this.__angle.getValue() < Math.PI * 2
     if (arc) this.setNumSegments(segs - 1)
     else this.setNumSegments(segs)
     for (let i = 0; i < (arc ? segs - 1 : segs); i++) this.setSegmentVertexIndices(i, i, (i + 1) % segs)
-    this.__resize(false)
-    this.emit('geomDataTopologyChanged', {})
+    this.resize()
   }
 
   /**
-   * The __resize method.
-   * @param {boolean} emit - The emit value.
+   * The resize method.
    * @private
    */
-  __resize(emit) {
+  resize() {
     const radius = this.__radius.getValue()
     const segs = this.__numSegments.getValue()
     const step = this.__angle.getValue() / segs
@@ -74,8 +61,6 @@ class Circle extends ProceduralLines {
     for (let i = 0; i < segs; i++) {
       positions.getValueRef(i).set(Math.cos(step * i) * radius, Math.sin(step * i) * radius, 0.0)
     }
-    this.setBoundingBoxDirty()
-    if (emit) this.emit('geomDataChanged', {})
   }
 }
 

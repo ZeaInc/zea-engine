@@ -35,24 +35,13 @@ class Sphere extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-    const rebuild = () => {
-      this.__rebuild()
-    }
-    this.__radiusParam.on('valueChanged', resize)
-    this.__sidesParam.on('valueChanged', rebuild)
-    this.__loopsParam.on('valueChanged', rebuild)
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     const radius = this.__radiusParam.getValue()
     const nbSides = this.__sidesParam.getValue()
     const nbLoops = this.__loopsParam.getValue()
@@ -144,16 +133,13 @@ class Sphere extends ProceduralMesh {
         faceIndex++
       }
     }
-
-    this.setBoundingBoxDirty()
-    this.emit('geomDataTopologyChanged', {})
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    * @private
    */
-  __resize() {
+  resize() {
     const radius = this.__radiusParam.getValue()
     const nbSides = this.__sidesParam.getValue()
     const nbLoops = this.__loopsParam.getValue()
@@ -179,9 +165,6 @@ class Sphere extends ProceduralMesh {
     }
     positions.getValueRef(vertex).set(0.0, 0.0, -radius)
     vertex++
-
-    this.setBoundingBoxDirty()
-    this.emit('geomDataChanged', {})
   }
 }
 

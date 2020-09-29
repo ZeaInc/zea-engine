@@ -27,32 +27,25 @@ class Cross extends ProceduralLines {
     if (isNaN(size)) throw new Error('Invalid geom args')
 
     this.__sizeParam = this.addParameter(new NumberParameter('Size', size))
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-    this.__sizeParam.on('valueChanged', resize)
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     this.setNumVertices(6)
     this.setNumSegments(3)
     this.setSegmentVertexIndices(0, 0, 1)
     this.setSegmentVertexIndices(1, 2, 3)
     this.setSegmentVertexIndices(2, 4, 5)
-    this.__resize()
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    * @private
    */
-  __resize() {
+  resize() {
     const size = this.__sizeParam.getValue()
     const positions = this.getVertexAttribute('positions')
     positions.getValueRef(0).set(-0.5 * size, 0, 0)
@@ -61,8 +54,6 @@ class Cross extends ProceduralLines {
     positions.getValueRef(3).set(0, -0.5 * size, 0)
     positions.getValueRef(4).set(0, 0, 0.5 * size)
     positions.getValueRef(5).set(0, 0, -0.5 * size)
-    this.setBoundingBoxDirty()
-    this.emit('geomDataChanged', {})
   }
 }
 

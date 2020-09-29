@@ -45,13 +45,13 @@ class Cylinder extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    this.__rebuild()
+    this.rebuild()
 
     const resize = () => {
-      this.__resize()
+      this.resize()
     }
     const rebuild = () => {
-      this.__rebuild()
+      this.rebuild()
     }
     this.__radiusParam.on('valueChanged', resize)
     this.__heightParam.on('valueChanged', resize)
@@ -62,10 +62,10 @@ class Cylinder extends ProceduralMesh {
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     this.clear()
 
     const nbSides = this.__sidesParam.getValue()
@@ -178,15 +178,14 @@ class Cylinder extends ProceduralMesh {
       faceIndex++
     }
 
-    this.emit('geomDataTopologyChanged', {})
-    this.__resize()
+    this.resize()
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    * @private
    */
-  __resize() {
+  resize() {
     const nbSides = this.__sidesParam.getValue()
     const nbLoops = this.__loopsParam.getValue()
     const radius = this.__radiusParam.getValue()
@@ -217,9 +216,6 @@ class Cylinder extends ProceduralMesh {
     }
 
     this.computeVertexNormals()
-
-    this.setBoundingBoxDirty()
-    this.emit('geomDataChanged', {})
   }
 }
 

@@ -45,15 +45,6 @@ class Cuboid extends ProceduralMesh {
     this.setNumVertices(8)
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    this.__rebuild()
-
-    const resize = () => {
-      this.__resize()
-    }
-    this.__xParam.on('valueChanged', resize)
-    this.__yParam.on('valueChanged', resize)
-    this.__zParam.on('valueChanged', resize)
-    this.__baseZAtZeroParam.on('valueChanged', resize)
   }
 
   /**
@@ -81,10 +72,10 @@ class Cuboid extends ProceduralMesh {
   }
 
   /**
-   * The __rebuild method.
+   * The rebuild method.
    * @private
    */
-  __rebuild() {
+  rebuild() {
     const normals = this.getVertexAttribute('normals')
     for (let i = 0; i < 6; i++) {
       let normal
@@ -102,10 +93,10 @@ class Cuboid extends ProceduralMesh {
           normal = new Vec3(-1, 0, 0)
           break
         case 4:
-          normal = new Vec3(0, 1, 0)
+          normal = new Vec3(0, -1, 0)
           break
         case 5:
-          normal = new Vec3(0, -1, 0)
+          normal = new Vec3(0, 1, 0)
           break
       }
       normals.setFaceVertexValue(i, 0, normal)
@@ -120,14 +111,14 @@ class Cuboid extends ProceduralMesh {
       texCoords.setFaceVertexValue(i, 2, new Vec2(1, 1))
       texCoords.setFaceVertexValue(i, 3, new Vec2(0, 1))
     }
-    this.__resize()
+    this.resize()
   }
 
   /**
-   * The __resize method.
+   * The resize method.
    * @private
    */
-  __resize() {
+  resize() {
     const x = this.__xParam.getValue()
     const y = this.__yParam.getValue()
     const z = this.__zParam.getValue()
@@ -146,9 +137,6 @@ class Cuboid extends ProceduralMesh {
     positions.getValueRef(5).set(0.5 * x, 0.5 * y, zoff * z)
     positions.getValueRef(6).set(-0.5 * x, 0.5 * y, zoff * z)
     positions.getValueRef(7).set(-0.5 * x, -0.5 * y, zoff * z)
-
-    this.setBoundingBoxDirty()
-    this.emit('geomDataChanged', {})
   }
 }
 
