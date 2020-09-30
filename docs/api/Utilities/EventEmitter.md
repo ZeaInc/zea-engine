@@ -22,7 +22,7 @@ Example: Registering a listener for a custom event, and then emitting that event
 * [EventEmitter](#EventEmitter)
     * [new EventEmitter()](#new-EventEmitter)
     * [on(eventName, listener) ⇒ <code>number</code>](#on)
-    * [once()](#once)
+    * [once(eventName, listener)](#once)
     * [off(eventName, listener)](#off)
     * ~~[.addListener(eventName, listener)](#EventEmitter+addListener) ⇒ <code>number</code>~~
     * ~~[.removeListener(eventName, listener)](#EventEmitter+removeListener)~~
@@ -63,6 +63,12 @@ asset.once('loaded', () => {
 })
 ```
 
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | The eventName value |
+| listener | <code>function</code> | The listener value |
 
 <a name="EventEmitter+off"></a>
 

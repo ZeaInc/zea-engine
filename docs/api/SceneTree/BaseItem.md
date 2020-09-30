@@ -31,8 +31,8 @@ Base class for Items in the scene. It can be parameterized and can emit events.
         * [toJSON(context) ⇒ <code>object</code>](#toJSON)
         * [fromJSON(j, context)](#fromJSON)
         * [readBinary(reader, context)](#readBinary)
-        * [clone()](#clone)
-        * [copyFrom(src)](#copyFrom)
+        * [clone(context)](#clone)
+        * [copyFrom(src, context)](#copyFrom)
     * _static_
         * [getNumBaseItems() ⇒ <code>number</code>](#getNumBaseItems)
 
@@ -245,6 +245,11 @@ Clones this base item and returns a new base item.
 **Note:** Each class should implement clone to be clonable.
 
 
+
+| Param | Type | Description |
+| --- | --- | --- |
+| context | <code>object</code> | The context value. |
+
 <a name="BaseItem+copyFrom"></a>
 
 ### copyFrom
@@ -261,6 +266,7 @@ data from the source object.
 | Param | Type | Description |
 | --- | --- | --- |
 | src | [<code>BaseItem</code>](#BaseItem) | The BaseItem to copy from. |
+| context | <code>object</code> | The context value. |
 
 <a name="BaseItem.getNumBaseItems"></a>
 

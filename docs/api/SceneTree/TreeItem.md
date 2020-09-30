@@ -17,10 +17,10 @@ It has the capability to add and remove children.
 * **highlightChanged:** _todo_
 * **childAdded:** Emitted when a item is added as a child.
 * **childRemoved:** Emitted when an item is removed from the child nodes.
-* **mouseDown:** Emitted when a mouseDown event happens in an item.
-* **mouseUp:** Emitted when a mouseUp event happens in an item.
-* **mouseMove:** Emitted when a mouseMove event happens in an item.
-* **mouseEnter:** Emitted when a mouseEnter event happens in an item.
+* **pointerDown:** Emitted when a pointerDown event happens in an item.
+* **pointerUp:** Emitted when a pointerUp event happens in an item.
+* **pointerMove:** Emitted when a pointerMove event happens in an item.
+* **pointerEnter:** Emitted when a pointerEnter event happens in an item.
 
 
 **Extends**: <code>[BaseItem](api/SceneTree/BaseItem.md)</code>  
@@ -60,17 +60,17 @@ It has the capability to add and remove children.
         * ~~[.indexOfChild(childItem)](#TreeItem+indexOfChild) ⇒ <code>number</code>~~
         * [resolvePath(path, index) ⇒ <code>BaseItem</code> \| <code>Parameter</code>](#resolvePath)
         * [traverse(callback, includeThis)](#traverse)
-        * [onMouseDown(event)](#onMouseDown)
-        * [onMouseUp(event)](#onMouseUp)
-        * [onMouseMove(event)](#onMouseMove)
-        * [onMouseEnter(event)](#onMouseEnter)
-        * [onMouseLeave(event)](#onMouseLeave)
+        * [onPointerDown(event)](#onPointerDown)
+        * [onPointerUp(event)](#onPointerUp)
+        * [onPointerMove(event)](#onPointerMove)
+        * [onPointerEnter(event)](#onPointerEnter)
+        * [onPointerLeave(event)](#onPointerLeave)
         * [onWheel(event)](#onWheel)
         * [toJSON(context) ⇒ <code>object</code>](#toJSON)
         * [fromJSON(j, context)](#fromJSON)
         * [readBinary(reader, context)](#readBinary)
-        * [clone()](#clone)
-        * [copyFrom(src)](#copyFrom)
+        * [clone(context)](#clone)
+        * [copyFrom(src, context)](#copyFrom)
     * _static_
         * [getSelectionOutlineColor() ⇒ <code>Color</code>](#getSelectionOutlineColor)
         * [setSelectionOutlineColor(color)](#setSelectionOutlineColor)
@@ -419,42 +419,42 @@ Note: Depth only used by selection sets for now.
 | callback | <code>function</code> |  | The callback value. |
 | includeThis | <code>boolean</code> | <code>true</code> | Fire the callback for this item. |
 
-<a name="TreeItem+onMouseDown"></a>
+<a name="TreeItem+onPointerDown"></a>
 
-### onMouseDown
-Causes an event to occur when a user presses a mouse button over an element.
+### onPointerDown
+Causes an event to occur when a user presses a pointer(mouse, touch, pencil, etc.) over an element.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The mouse event that occurs. |
+| event | <code>PointerEvent</code> | The event value |
 
-<a name="TreeItem+onMouseUp"></a>
+<a name="TreeItem+onPointerUp"></a>
 
-### onMouseUp
+### onPointerUp
 Causes an event to occur when a user releases a mouse button over a element.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The mouse event that occurs. |
+| event | <code>PointerEvent</code> | The mouse event that occurs. |
 
-<a name="TreeItem+onMouseMove"></a>
+<a name="TreeItem+onPointerMove"></a>
 
-### onMouseMove
-Causes an event to occur when the mouse pointer is moving while over an element.
+### onPointerMove
+Causes an event to occur when the pointer is moving while over an element.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The mouse event that occurs. |
+| event | <code>PointerEvent</code> | The mouse event that occurs. |
 
-<a name="TreeItem+onMouseEnter"></a>
+<a name="TreeItem+onPointerEnter"></a>
 
-### onMouseEnter
+### onPointerEnter
 Causes an event to occur when the mouse pointer is moved onto an element.
 
 
@@ -463,9 +463,9 @@ Causes an event to occur when the mouse pointer is moved onto an element.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The mouse event that occurs. |
 
-<a name="TreeItem+onMouseLeave"></a>
+<a name="TreeItem+onPointerLeave"></a>
 
-### onMouseLeave
+### onPointerLeave
 Causes an event to occur when the mouse pointer is moved out of an element.
 
 
@@ -530,6 +530,11 @@ from this item and returns it.
 
 
 **Returns**: [<code>TreeItem</code>](#TreeItem) - - Returns a new cloned tree item.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| context | <code>object</code> | The context value. |
+
 <a name="TreeItem+copyFrom"></a>
 
 ### copyFrom
@@ -540,6 +545,7 @@ Copies current TreeItem with all its children.
 | Param | Type | Description |
 | --- | --- | --- |
 | src | [<code>TreeItem</code>](#TreeItem) | The tree item to copy from. |
+| context | <code>object</code> | The context value. |
 
 <a name="TreeItem.getSelectionOutlineColor"></a>
 

@@ -7,59 +7,58 @@ Class representing a GL base renderer.
 **Extends**: <code>[ParameterOwner](api/SceneTree/ParameterOwner.md)</code>  
 
 * [GLBaseRenderer ⇐ <code>ParameterOwner</code>](#GLBaseRenderer)
-    * [new GLBaseRenderer(canvasDiv, options)](#new-GLBaseRenderer)
+    * [new GLBaseRenderer($canvas, options)](#new-GLBaseRenderer)
     * _instance_
         * [gl](#gl)
         * [addShaderPreprocessorDirective(name, value)](#addShaderPreprocessorDirective)
-        * [getShaderPreproc() ⇒ <code>any</code>](#getShaderPreproc)
-        * [getWidth() ⇒ <code>any</code>](#getWidth)
-        * [getHeight() ⇒ <code>any</code>](#getHeight)
+        * [getShaderPreproc() ⇒ <code>object</code>](#getShaderPreproc)
+        * [getWidth() ⇒ <code>number</code>](#getWidth)
+        * [getHeight() ⇒ <code>number</code>](#getHeight)
         * [addViewport(name) ⇒ <code>GLViewport</code>](#addViewport)
         * [getViewport(index) ⇒ <code>GLViewport</code>](#getViewport)
         * [getViewportAtPos(offsetX, offsetY) ⇒ <code>GLViewport</code>](#getViewportAtPos)
         * [activateViewport(vp)](#activateViewport)
         * [activateViewportAtPos(offsetX, offsetY)](#activateViewportAtPos)
-        * [getActiveViewport() ⇒ <code>any</code>](#getActiveViewport)
+        * [getActiveViewport() ⇒ <code>GLViewport</code>](#getActiveViewport)
         * [suspendDrawing()](#suspendDrawing)
         * [resumeDrawing()](#resumeDrawing)
         * [renderGeomDataFbos()](#renderGeomDataFbos)
-        * [setupGrid(gridSize, gridColor, resolution, lineThickness) ⇒ <code>any</code>](#setupGrid)
-        * [getScene() ⇒ <code>any</code>](#getScene)
+        * ~~[.setupGrid(gridSize, gridColor, resolution, lineThickness)](#GLBaseRenderer+setupGrid) ⇒ <code>GridTreeItem</code>~~
+        * [getScene() ⇒ <code>Scene</code>](#getScene)
         * [setScene(scene)](#setScene)
         * [addTreeItem(treeItem)](#addTreeItem)
         * [removeTreeItem(treeItem)](#removeTreeItem)
         * [getGL() ⇒ <code>any</code>](#getGL)
         * [resizeFbos(width, height)](#resizeFbos)
-        * [getDiv() ⇒ <code>any</code>](#getDiv)
-        * [setupWebGL(canvasDiv, webglOptions)](#setupWebGL)
+        * [getDiv() ⇒ <code>HTMLElement</code>](#getDiv)
+        * [setupWebGL($canvas, webglOptions)](#setupWebGL)
         * [bindEventHandlers()](#bindEventHandlers)
-        * [setUndoRedoManager(undoRedoManager)](#setUndoRedoManager)
-        * [getGLCanvas() ⇒ <code>any</code>](#getGLCanvas)
-        * [getScreenQuad() ⇒ <code>any</code>](#getScreenQuad)
+        * [getGLCanvas() ⇒ <code>HTMLCanvasElement</code>](#getGLCanvas)
+        * [getScreenQuad() ⇒ <code>GLScreenQuad</code>](#getScreenQuad)
         * [onWheel(event)](#onWheel)
         * [frameAll(viewportIndex)](#frameAll)
-        * [getOrCreateShader(shaderName) ⇒ <code>any</code>](#getOrCreateShader)
-        * [addPass(pass, passtype, updateIndices) ⇒ <code>any</code>](#addPass)
+        * [getOrCreateShader(shaderName) ⇒ <code>GLShader</code>](#getOrCreateShader)
+        * [addPass(pass, passtype, updateIndices) ⇒ <code>number</code>](#addPass)
         * [registerPass(itemAddedFn, itemRemovedFn)](#registerPass)
         * [getPass(index) ⇒ <code>any</code>](#getPass)
         * [findPass(constructor) ⇒ <code>any</code>](#findPass)
         * [getGizmoPass() ⇒ <code>any</code>](#getGizmoPass)
         * [supportsVR() ⇒ <code>any</code>](#supportsVR)
-        * [getVRViewport() ⇒ <code>any</code>](#getVRViewport)
-        * [getXRViewport() ⇒ <code>any</code>](#getXRViewport)
-        * [isXRViewportPresenting() ⇒ <code>any</code>](#isXRViewportPresenting)
-        * [isContinuouslyDrawing() ⇒ <code>any</code>](#isContinuouslyDrawing)
+        * [getVRViewport() ⇒ <code>VRViewport</code>](#getVRViewport)
+        * [getXRViewport() ⇒ <code>Promise</code>](#getXRViewport)
+        * [isXRViewportPresenting() ⇒ <code>boolean</code>](#isXRViewportPresenting)
+        * [isContinuouslyDrawing() ⇒ <code>boolean</code>](#isContinuouslyDrawing)
         * [startContinuousDrawing()](#startContinuousDrawing)
         * [stopContinuousDrawing()](#stopContinuousDrawing)
         * [toggleContinuousDrawing()](#toggleContinuousDrawing)
         * [drawItemChanged()](#drawItemChanged)
         * [requestRedraw() ⇒ <code>boolean</code>](#requestRedraw)
-        * [bindGLBaseRenderer(renderstate)](#bindGLBaseRenderer)
-        * [drawScene(renderstate)](#drawScene)
-        * [drawHighlightedGeoms(renderstate)](#drawHighlightedGeoms)
-        * [drawSceneGeomData(renderstate)](#drawSceneGeomData)
+        * [bindGLBaseRenderer(renderState)](#bindGLBaseRenderer)
+        * [drawScene(renderState)](#drawScene)
+        * [drawHighlightedGeoms(renderState)](#drawHighlightedGeoms)
+        * [drawSceneGeomData(renderState, [mask])](#drawSceneGeomData)
     * _static_
-        * [registerPass(cls, passtype)](#registerPass)
+        * [registerPass(cls, passType)](#registerPass)
 
 <a name="new_GLBaseRenderer_new"></a>
 
@@ -69,8 +68,8 @@ Create a GL base renderer.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| canvasDiv | <code>any</code> | The canvasDiv value. |
-| options | <code>any</code> | The options value. |
+| $canvas | <code>HTMLElement</code> \| <code>HTMLCanvasElement</code> | The canvasDiv value. |
+| options | <code>object</code> | The options value. |
 
 <a name="GLBaseRenderer+gl"></a>
 
@@ -88,7 +87,7 @@ The addShaderPreprocessorDirective method.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | The name value. |
-| value | <code>any</code> | The value param. |
+| value | <code>string</code> | The value param. |
 
 <a name="GLBaseRenderer+getShaderPreproc"></a>
 
@@ -96,25 +95,25 @@ The addShaderPreprocessorDirective method.
 The getShaderPreproc method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>object</code> - - The return value.  
 <a name="GLBaseRenderer+getWidth"></a>
 
 ### getWidth
-The getWidth method.
+Returns HTMLCanvasElement's width
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>number</code> - - The return value.  
 <a name="GLBaseRenderer+getHeight"></a>
 
 ### getHeight
-The getHeight method.
+Returns HTMLCanvasElement's Height
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>number</code> - - The return value.  
 <a name="GLBaseRenderer+addViewport"></a>
 
 ### addViewport
-Add a viewport.
+Adds a new viewport(viewing region) to the scene.
 
 
 **Returns**: <code>[GLViewport](api/Renderer/GLViewport.md)</code> - - The return value.  
@@ -126,7 +125,7 @@ Add a viewport.
 <a name="GLBaseRenderer+getViewport"></a>
 
 ### getViewport
-The getViewport method.
+Returns a viewport element by specifying its index in the list of viewports.
 
 
 **Returns**: <code>[GLViewport](api/Renderer/GLViewport.md)</code> - - The return value.  
@@ -138,7 +137,7 @@ The getViewport method.
 <a name="GLBaseRenderer+getViewportAtPos"></a>
 
 ### getViewportAtPos
-The getViewportAtPos method.
+Returns a viewport element under the specified XY coordinates.
 
 
 **Returns**: <code>[GLViewport](api/Renderer/GLViewport.md)</code> - - The return value.  
@@ -151,7 +150,7 @@ The getViewportAtPos method.
 <a name="GLBaseRenderer+activateViewport"></a>
 
 ### activateViewport
-The activateViewport method.
+Sets as `active` the specified viewport.
 
 
 
@@ -162,7 +161,7 @@ The activateViewport method.
 <a name="GLBaseRenderer+activateViewportAtPos"></a>
 
 ### activateViewportAtPos
-The activateViewportAtPos method.
+Sets as àctive` the viewport under the specified XY coordinates.
 
 
 
@@ -174,10 +173,10 @@ The activateViewportAtPos method.
 <a name="GLBaseRenderer+getActiveViewport"></a>
 
 ### getActiveViewport
-The getActiveViewport method.
+Returns current active viewport.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[GLViewport](api/Renderer/GLViewport.md)</code> - - The return value.  
 <a name="GLBaseRenderer+suspendDrawing"></a>
 
 ### suspendDrawing
@@ -198,47 +197,49 @@ The renderGeomDataFbos method. Frame buffer (FBO).
 
 <a name="GLBaseRenderer+setupGrid"></a>
 
-### setupGrid
-Setup the grid in the scene.
+### ~~glBaseRenderer.setupGrid(gridSize, gridColor, resolution, lineThickness) ⇒ <code>GridTreeItem</code>~~
+***Deprecated***
+
+Sets up and displays the scene grid of a given size and resolution.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[GridTreeItem](api/SceneTree/GridTreeItem.md)</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| gridSize | <code>any</code> | The size of the grid. |
+| gridSize | <code>number</code> | The size of the grid. |
 | gridColor | <code>[Color](api/Math/Color.md)</code> | The color of the grid. |
-| resolution | <code>any</code> | The resolution of the grid. |
-| lineThickness | <code>any</code> | The thickness of the grid lines. |
+| resolution | <code>number</code> | The resolution of the grid. |
+| lineThickness | <code>number</code> | The thickness of the grid lines. |
 
 <a name="GLBaseRenderer+getScene"></a>
 
 ### getScene
-The getScene method.
+Returns current scene(Environment where all assets live) object.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[Scene](api/SceneTree/Scene.md)</code> - - The return value.  
 <a name="GLBaseRenderer+setScene"></a>
 
 ### setScene
-The setScene method.
+Sets scene to the renderer.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| scene | <code>any</code> | The scene value. |
+| scene | <code>[Scene](api/SceneTree/Scene.md)</code> | The scene value. |
 
 <a name="GLBaseRenderer+addTreeItem"></a>
 
 ### addTreeItem
-Add tree items to the scene.
+Adds tree items to the scene.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| treeItem | <code>any</code> | The tree item to add. |
+| treeItem | <code>[TreeItem](api/SceneTree/TreeItem.md)</code> | The tree item to add. |
 
 <a name="GLBaseRenderer+removeTreeItem"></a>
 
@@ -249,7 +250,7 @@ Remove tree items from the scene.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| treeItem | <code>any</code> | The tree item to remove. |
+| treeItem | <code>[TreeItem](api/SceneTree/TreeItem.md)</code> | The tree item to remove. |
 
 <a name="GLBaseRenderer+getGL"></a>
 
@@ -267,59 +268,48 @@ The resizeFbos method. Frame buffer (FBO).
 
 | Param | Type | Description |
 | --- | --- | --- |
-| width | <code>any</code> | The width of the frame buffer. |
-| height | <code>any</code> | The height of the frame buffer. |
+| width | <code>number</code> | The width of the frame buffer. |
+| height | <code>number</code> | The height of the frame buffer. |
 
 <a name="GLBaseRenderer+getDiv"></a>
 
 ### getDiv
-The getDiv method.
+Returns host div of the canvas element.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>HTMLElement</code> - - The return value.  
 <a name="GLBaseRenderer+setupWebGL"></a>
 
 ### setupWebGL
-The setupWebGL method.
+Setups the WebGL configuration for the renderer, specifying the canvas element where our
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| canvasDiv | <code>any</code> | The canvasDiv value. |
-| webglOptions | <code>any</code> | The webglOptions value. |
+| $canvas | <code>HTMLCanvasElement</code> \| <code>HTMLElement</code> | The $canvas value. |
+| webglOptions | <code>object</code> | The webglOptions value. |
 
 <a name="GLBaseRenderer+bindEventHandlers"></a>
 
 ### bindEventHandlers
-The bindEventHandlers method.
+Binds IO event handlers to the canvas
 
-
-<a name="GLBaseRenderer+setUndoRedoManager"></a>
-
-### setUndoRedoManager
-The setUndoRedoManager method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| undoRedoManager | <code>object</code> | The undoRedoManager state. |
 
 <a name="GLBaseRenderer+getGLCanvas"></a>
 
 ### getGLCanvas
-The getGLCanvas method.
+Returns canvas element where our scene lives.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>HTMLCanvasElement</code> - - The return value.  
 <a name="GLBaseRenderer+getScreenQuad"></a>
 
 ### getScreenQuad
 The getScreenQuad method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[GLScreenQuad](api/Renderer/GLScreenQuad.md)</code> - - The return value.  
 <a name="GLBaseRenderer+onWheel"></a>
 
 ### onWheel
@@ -329,7 +319,7 @@ Causes an event to occur when the mouse wheel is rolled up or down over an eleme
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event that occurs. |
+| event | <code>WheelEvent</code> | The event that occurs. |
 
 <a name="GLBaseRenderer+frameAll"></a>
 
@@ -348,7 +338,7 @@ The frameAll method.
 The getOrCreateShader method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[GLShader](api/Renderer/GLShader.md)</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -360,7 +350,7 @@ The getOrCreateShader method.
 The addPass method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>number</code> - - The return value.  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -377,8 +367,8 @@ The registerPass method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| itemAddedFn | <code>any</code> | The itemAddedFn value. |
-| itemRemovedFn | <code>any</code> | The itemRemovedFn value. |
+| itemAddedFn | <code>function</code> | The itemAddedFn value. |
+| itemRemovedFn | <code>function</code> | The itemRemovedFn value. |
 
 <a name="GLBaseRenderer+getPass"></a>
 
@@ -424,28 +414,28 @@ The supportsVR method.
 The getVRViewport method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[VRViewport](api/Renderer/VR/VRViewport.md)</code> - - The return value.  
 <a name="GLBaseRenderer+getXRViewport"></a>
 
 ### getXRViewport
 The getXRViewport method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>Promise</code> - - The return value.  
 <a name="GLBaseRenderer+isXRViewportPresenting"></a>
 
 ### isXRViewportPresenting
 The isXRViewportPresenting method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 <a name="GLBaseRenderer+isContinuouslyDrawing"></a>
 
 ### isContinuouslyDrawing
 The isContinuouslyDrawing method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 <a name="GLBaseRenderer+startContinuousDrawing"></a>
 
 ### startContinuousDrawing
@@ -486,7 +476,7 @@ The bindGLBaseRenderer method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| renderstate | <code>any</code> | The renderstate value. |
+| renderState | <code>object</code> | The renderState value. |
 
 <a name="GLBaseRenderer+drawScene"></a>
 
@@ -497,7 +487,7 @@ The drawScene method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| renderstate | <code>any</code> | The renderstate value. |
+| renderState | <code>object</code> | The renderState value. |
 
 <a name="GLBaseRenderer+drawHighlightedGeoms"></a>
 
@@ -508,7 +498,7 @@ The drawHighlightedGeoms method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| renderstate | <code>any</code> | The renderstate value. |
+| renderState | <code>object</code> | The renderState value. |
 
 <a name="GLBaseRenderer+drawSceneGeomData"></a>
 
@@ -517,9 +507,10 @@ The drawSceneGeomData method.
 
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| renderstate | <code>any</code> | The renderstate value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| renderState | <code>object</code> |  | The renderState value. |
+| [mask] | <code>number</code> | <code>255</code> | The mask value |
 
 <a name="GLBaseRenderer.registerPass"></a>
 
@@ -530,6 +521,6 @@ The registerPass method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| cls | <code>any</code> | The cls value. |
-| passtype | <code>any</code> | The passtype value. |
+| cls | <code>function</code> | The cls value. |
+| passType | <code>PassType</code> | The passtype value. |
 

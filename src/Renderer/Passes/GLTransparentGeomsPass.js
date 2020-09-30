@@ -311,7 +311,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     }
     for (const transparentItem of this.visibleItems) {
       const shaders = transparentItem.shaders
-      if (shaders.glgeomdatashader) {
+      if (!shaders.glgeomdatashader) {
         continue
       }
       if (cache.currentglShader != shaders.glgeomdatashader) {

@@ -7,7 +7,7 @@ Class representing a GL renderer.
 **Extends**: <code>[GLBaseRenderer](api/Renderer/GLBaseRenderer.md)</code>  
 
 * [GLRenderer ⇐ <code>GLBaseRenderer</code>](#GLRenderer)
-    * [new GLRenderer(canvasDiv, options)](#new-GLRenderer)
+    * [new GLRenderer($canvas, options)](#new-GLRenderer)
     * [exposure](#exposure)
     * [exposure](#exposure)
     * [gamma](#gamma)
@@ -26,7 +26,6 @@ Class representing a GL renderer.
     * [createSelectedGeomsFbo()](#createSelectedGeomsFbo)
     * [getFbo() ⇒ <code>any</code>](#getFbo)
     * [createOffscreenFbo(format)](#createOffscreenFbo)
-    * [createRayCastRenderTarget()](#createRayCastRenderTarget)
     * [raycastWithRay() ⇒ <code>any</code>](#raycastWithRay)
     * [raycast() ⇒ <code>any</code>](#raycast)
     * [drawBackground(renderstate)](#drawBackground)
@@ -41,7 +40,7 @@ Create a GL renderer.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| canvasDiv | <code>any</code> | The canvasDiv value. |
+| $canvas | <code>any</code> | The $canvas value. |
 | options | <code>any</code> | The options value. |
 
 <a name="GLRenderer+exposure"></a>
@@ -201,12 +200,6 @@ The createOffscreenFbo method.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | format | <code>any</code> | <code>RGB</code> | The format value. |
-
-<a name="GLRenderer+createRayCastRenderTarget"></a>
-
-### createRayCastRenderTarget
-The createRayCastRenderTarget method.
-
 
 <a name="GLRenderer+raycastWithRay"></a>
 

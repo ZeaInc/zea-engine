@@ -9,7 +9,7 @@ Class representing a GL viewport.
 * [GLViewport ⇐ <code>GLBaseViewport</code>](#GLViewport)
     * [new GLViewport(renderer, name, width, height)](#new-GLViewport)
     * [resize(width, height)](#resize)
-    * [getCamera() ⇒ <code>any</code>](#getCamera)
+    * [getCamera() ⇒ <code>Camera</code>](#getCamera)
     * [setCamera(camera)](#setCamera)
     * [getManipulator() ⇒ <code>any</code>](#getManipulator)
     * [setManipulator(manipulator)](#setManipulator)
@@ -22,21 +22,18 @@ Class representing a GL viewport.
     * [getGeomDataFbo() ⇒ <code>GLFbo</code>](#getGeomDataFbo)
     * [renderGeomDataFbo()](#renderGeomDataFbo)
     * [invalidateGeomDataBuffer()](#invalidateGeomDataBuffer)
-    * [getGeomDataAtPos(screenPos, mouseRay) ⇒ <code>object</code>](#getGeomDataAtPos)
+    * [getGeomDataAtPos(screenPos, pointerRay) ⇒ <code>object</code>](#getGeomDataAtPos)
     * [getGeomItemsInRect(tl, br) ⇒ <code>Set</code>](#getGeomItemsInRect)
-    * [getCapture() ⇒ <code>any</code>](#getCapture)
+    * [getCapture() ⇒ <code>BaseItem</code>](#getCapture)
     * [releaseCapture()](#releaseCapture)
-    * [onMouseDown(event) ⇒ <code>any</code>](#onMouseDown)
-    * [onMouseMove(event)](#onMouseMove)
-    * [onMouseUp(event)](#onMouseUp)
-    * [onMouseLeave(event)](#onMouseLeave)
+    * [onPointerDown(event) ⇒ <code>boolean</code>](#onPointerDown)
+    * [onPointerUp(event)](#onPointerUp)
+    * [onPointerMove(event)](#onPointerMove)
+    * [onPointerLeave(event)](#onPointerLeave)
     * [onKeyPressed(event)](#onKeyPressed)
     * [onKeyDown(event)](#onKeyDown)
     * [onKeyUp(event)](#onKeyUp)
     * [onWheel(event)](#onWheel)
-    * [onTouchStart(event)](#onTouchStart)
-    * [onTouchMove(event)](#onTouchMove)
-    * [onTouchEnd(event)](#onTouchEnd)
     * [onTouchCancel(event)](#onTouchCancel)
     * [draw()](#draw)
 
@@ -48,15 +45,15 @@ Create a GL viewport.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| renderer | <code>any</code> | The renderer value. |
+| renderer | <code>[GLRenderer](api/Renderer/GLRenderer.md)</code> | The renderer value. |
 | name | <code>string</code> | The name value. |
-| width | <code>any</code> | The width of the viewport |
-| height | <code>any</code> | The height of the viewport |
+| width | <code>number</code> | The width of the viewport |
+| height | <code>number</code> | The height of the viewport |
 
 <a name="GLViewport+resize"></a>
 
 ### resize
-The resize method.
+Dynamically resizes viewport.
 
 
 
@@ -68,20 +65,20 @@ The resize method.
 <a name="GLViewport+getCamera"></a>
 
 ### getCamera
-The getCamera method.
+Returns current camera object
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[Camera](api/SceneTree/Camera.md)</code> - - The return value.  
 <a name="GLViewport+setCamera"></a>
 
 ### setCamera
-The setCamera method.
+Sets current camera object
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| camera | <code>any</code> | The camera value. |
+| camera | <code>[Camera](api/SceneTree/Camera.md)</code> | The camera value. |
 
 <a name="GLViewport+getManipulator"></a>
 
@@ -191,7 +188,7 @@ The getGeomDataAtPos method.
 | Param | Type | Description |
 | --- | --- | --- |
 | screenPos | <code>[Vec2](api/Math/Vec2.md)</code> | The screen position. |
-| mouseRay | <code>[Ray](api/Math/Ray.md)</code> | The mouseRay value. |
+| pointerRay | <code>[Ray](api/Math/Ray.md)</code> | The pointerRay value. |
 
 <a name="GLViewport+getGeomItemsInRect"></a>
 
@@ -213,57 +210,57 @@ Gathers all the geoms renders in a given rectangle of the viewport.
 The getCapture method.
 
 
-**Returns**: <code>any</code> - - The return value.  
+**Returns**: <code>[BaseItem](api/SceneTree/BaseItem.md)</code> - - The return value.  
 <a name="GLViewport+releaseCapture"></a>
 
 ### releaseCapture
 The releaseCapture method.
 
 
-<a name="GLViewport+onMouseDown"></a>
+<a name="GLViewport+onPointerDown"></a>
 
-### onMouseDown
-Causes an event to occur when a user presses a mouse button over an element.
-
-
-**Returns**: <code>any</code> - - The return value.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>any</code> | The event that occurs. |
-
-<a name="GLViewport+onMouseMove"></a>
-
-### onMouseMove
-Causes an event to occur when the mouse pointer is moving while over an element.
+### onPointerDown
+Handler of the `pointerdown` event fired when the pointer device is initially pressed.
 
 
+**Returns**: <code>boolean</code> - -  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event that occurs. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The DOM event produced by a pointer |
 
-<a name="GLViewport+onMouseUp"></a>
+<a name="GLViewport+onPointerUp"></a>
 
-### onMouseUp
+### onPointerUp
 Causes an event to occur when a user releases a mouse button over a element.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event that occurs. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event that occurs. |
 
-<a name="GLViewport+onMouseLeave"></a>
+<a name="GLViewport+onPointerMove"></a>
 
-### onMouseLeave
+### onPointerMove
+Causes an event to occur when the pointer device is moving.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event that occurs. |
+
+<a name="GLViewport+onPointerLeave"></a>
+
+### onPointerLeave
 Causes an event to occur when the mouse pointer is moved out of an element.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event that occurs. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event that occurs. |
 
 <a name="GLViewport+onKeyPressed"></a>
 
@@ -308,39 +305,6 @@ Causes an event to occur when the mouse wheel is rolled up or down over an eleme
 | Param | Type | Description |
 | --- | --- | --- |
 | event | <code>MouoseWheelEvent</code> | The event that occurs. |
-
-<a name="GLViewport+onTouchStart"></a>
-
-### onTouchStart
-Causes an event to occur when the user touches an element on a touch screen.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>TouchEvent</code> | The event that occurs. |
-
-<a name="GLViewport+onTouchMove"></a>
-
-### onTouchMove
-The event that occurs when the user moves his/her finger across a touch screen.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>TouchEvent</code> | The event that occurs. |
-
-<a name="GLViewport+onTouchEnd"></a>
-
-### onTouchEnd
-Causes an event to occur when the user removes his/her finger from an element.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>TouchEvent</code> | The event that occurs. |
 
 <a name="GLViewport+onTouchCancel"></a>
 

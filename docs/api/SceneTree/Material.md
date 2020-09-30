@@ -22,8 +22,8 @@ Use this to apply materials to your assets or item parts.
     * [toJSON(context) ⇒ <code>object</code>](#toJSON)
     * [fromJSON(j, context)](#fromJSON)
     * [readBinary(reader, context)](#readBinary)
-    * [clone()](#clone)
-    * [copyFrom(src)](#copyFrom)
+    * [clone(context)](#clone)
+    * [copyFrom(src, context)](#copyFrom)
 
 <a name="new_Material_new"></a>
 
@@ -139,6 +139,11 @@ from this material and returns it.
 
 
 **Returns**: [<code>Material</code>](#Material) - - Returns a new cloned material.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| context | <code>object</code> | The context value. |
+
 <a name="Material+copyFrom"></a>
 
 ### copyFrom
@@ -149,6 +154,7 @@ When a Material is copied, first runs `BaseItem` copyFrom method, then sets shad
 | Param | Type | Description |
 | --- | --- | --- |
 | src | [<code>Material</code>](#Material) | The material to copy from. |
+| context | <code>object</code> | The context value. |
 
 
 

@@ -24,7 +24,7 @@ Not only hosting parameters, but their events.
     * [fromJSON(j, context)](#fromJSON)
     * [readBinary(reader, context)](#readBinary)
     * [toString() ⇒ <code>string</code>](#toString)
-    * [copyFrom(src)](#copyFrom)
+    * [copyFrom(src, context)](#copyFrom)
 
 <a name="new_ParameterOwner_new"></a>
 
@@ -211,6 +211,7 @@ Copies Parameters from another `ParameterOwner` to current object.
 | Param | Type | Description |
 | --- | --- | --- |
 | src | [<code>ParameterOwner</code>](#ParameterOwner) | The ParameterOwner copy from. |
+| context | <code>object</code> | The context value. |
 
 
 
