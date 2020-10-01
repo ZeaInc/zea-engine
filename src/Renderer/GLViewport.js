@@ -340,7 +340,7 @@ class GLViewport extends GLBaseViewport {
         gl.readPixels(screenPos.x, this.__height - screenPos.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, geomData)
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         if (geomData[0] == 0 && geomData[1] == 0) return undefined
-        passId = 0
+        passId = Math.floor(geomData[1] / 64)
       }
       this.__geomDataBufferFbo.unbind()
       const pass = this.__renderer.getPass(passId)

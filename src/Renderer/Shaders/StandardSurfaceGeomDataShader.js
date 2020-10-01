@@ -128,7 +128,7 @@ void main(void) {
         ///////////////////////////////////
         // UInt8 buffer
         fragColor.r = (mod(v_drawItemID, 256.) + 0.5) / 255.;
-        fragColor.g = (floor(v_drawItemID / 256.) + 0.5) / 255.;
+        fragColor.g = (floor(v_drawItemID / 256.) + (float(passId) * 64.) + 0.5) / 255.;
 
 
         // encode the dist as a 16 bit float
