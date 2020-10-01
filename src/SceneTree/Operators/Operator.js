@@ -17,6 +17,7 @@ class Operator extends BaseItem {
     super(name)
     this.__inputs = new Map()
     this.__outputs = new Map()
+    this.setDirty = this.setDirty.bind(this)
   }
 
   /**
