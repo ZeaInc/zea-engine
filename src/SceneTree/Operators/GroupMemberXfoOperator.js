@@ -1,6 +1,7 @@
 import { Xfo } from '../../Math/Xfo'
 import { Operator } from './Operator'
-import { OperatorOutput, OperatorOutputMode } from './OperatorOutput'
+import { OperatorOutput } from './OperatorOutput'
+import { OperatorOutputMode } from '../Parameters/Parameter'
 import { OperatorInput } from './OperatorInput'
 
 /** An operator for aiming items at targets.

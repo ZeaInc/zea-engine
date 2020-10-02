@@ -1,4 +1,4 @@
-import { OperatorOutputMode } from '../Parameters/index'
+import { OperatorOutputMode } from '../Parameters/Parameter'
 import { EventEmitter } from '../../Utilities/EventEmitter'
 
 /** Class representing an operator output.
@@ -221,4 +221,4 @@ class OperatorOutput extends EventEmitter {
   }
 }
 
-export { OperatorOutput, OperatorOutputMode }
+export { OperatorOutput }

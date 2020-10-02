@@ -3,7 +3,8 @@ import { Operator } from './Operator'
 import { NumberParameter } from '../Parameters/NumberParameter'
 import { BaseItem } from '../BaseItem'
 import { OperatorInput } from './OperatorInput'
-import { OperatorOutput, OperatorOutputMode } from './OperatorOutput'
+import { OperatorOutput } from './OperatorOutput'
+import { OperatorOutputMode } from '../Parameters/Parameter'
 import { Registry } from '../../Registry'
 
 class AddFloatsOperator extends Operator {
