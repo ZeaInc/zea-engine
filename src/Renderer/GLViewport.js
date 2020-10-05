@@ -119,7 +119,7 @@ class GLViewport extends GLBaseViewport {
    * @return {any} - The return value.
    */
   getManipulator() {
-    return this.__cameraManipulator
+    return this.manipulator
   }
 
   /**
@@ -127,7 +127,8 @@ class GLViewport extends GLBaseViewport {
    * @param {any} manipulator - The manipulator value.
    */
   setManipulator(manipulator) {
-    this.__cameraManipulator = manipulator
+    this.manipulator = manipulator
+    // this.manipulator.activate
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -352,6 +353,9 @@ class GLViewport extends GLBaseViewport {
       const geomItemAndDist = pass.getGeomItemAndDist(geomData)
 
       if (geomItemAndDist) {
+        const materialParameter = geomItemAndDist.geomItem.getParameter('Material')
+        if (materialParameter && !materialParameter.getValue().visibleInGeomDataBuffer) return
+
         if (!pointerRay) pointerRay = this.calcRayFromScreenPos(screenPos)
         const intersectionPos = pointerRay.start.add(pointerRay.dir.scale(geomItemAndDist.dist))
         this.__intersectionData = {
@@ -517,8 +521,8 @@ class GLViewport extends GLBaseViewport {
 
     const downTime = Date.now()
     if (downTime - this.__prevDownTime < this.__doubleClickTimeMSParam.getValue()) {
-      if (this.__cameraManipulator) {
-        this.__cameraManipulator.onPointerDoublePress(event)
+      if (this.manipulator) {
+        this.manipulator.onPointerDoublePress(event)
         if (!event.propagating) return
       }
 
@@ -527,8 +531,8 @@ class GLViewport extends GLBaseViewport {
       this.__prevDownTime = downTime
       if (!event.propagating || this.capturedItem) return
 
-      if (this.__cameraManipulator) {
-        this.__cameraManipulator.onPointerDown(event)
+      if (this.manipulator) {
+        this.manipulator.onPointerDown(event)
 
         if (!event.propagating) return
       }
@@ -547,6 +551,18 @@ class GLViewport extends GLBaseViewport {
   onPointerUp(event) {
     this.__preparePointerEvent(event)
 
+    if (event.pointerType === POINTER_TYPES.mouse) {
+      event.pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
+    } else if (event.pointerType === POINTER_TYPES.touch) {
+      if (event.touches.length == 1) {
+        const touch = event.touches[0]
+        event.pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+      }
+    }
+
+    event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
+    event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+
     if (this.capturedItem) {
       this.capturedItem.onPointerUp(event)
       return
@@ -556,10 +572,12 @@ class GLViewport extends GLBaseViewport {
       event.intersectionData.geomItem.onPointerUp(event)
 
       if (!event.propagating) return
+
+      this.emit('pointerUp', event)
     }
 
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onPointerUp(event)
+    if (this.manipulator) {
+      this.manipulator.onPointerUp(event)
 
       if (!event.propagating) return
     }
@@ -593,11 +611,7 @@ class GLViewport extends GLBaseViewport {
       event.pointerRay = event.touchRay[0]
     }
 
-    const intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
-    if (intersectionData != undefined) {
-      event.intersectionData = intersectionData
-    }
-
+    event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     if (this.capturedItem) {
       this.capturedItem.onPointerMove(event)
       return
@@ -606,33 +620,34 @@ class GLViewport extends GLBaseViewport {
     if (event.intersectionData) {
       if (event.intersectionData.geomItem != this.pointerOverItem) {
         if (this.pointerOverItem) {
-          // Note: spread operators cause errors on iOS 11
-          const leaveEvent = { geomItem: this.pointerOverItem }
-          for (const key in event) leaveEvent[key] = event[key]
+          event.leftGeometry = this.pointerOverItem
+          this.pointerOverItem.onPointerLeave(event)
 
-          this.emit('pointerLeaveGeom', leaveEvent)
-          if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
+          if (event.propagating) this.emit('pointerLeaveGeom', event)
         }
 
         this.pointerOverItem = event.intersectionData.geomItem
+        this.pointerOverItem.onPointerEnter(event)
+
+        if (!event.propagating) return
+
         this.emit('pointerOverGeom', event)
-        if (event.propagating) this.pointerOverItem.onPointerEnter(event)
       }
 
       event.intersectionData.geomItem.onPointerMove(event)
       if (!event.propagating || this.capturedItem) return
     } else if (this.pointerOverItem) {
-      // Note: spread operators cause errors on iOS 11
-      const leaveEvent = { geomItem: this.pointerOverItem }
-      for (const key in event) leaveEvent[key] = event[key]
-
-      this.emit('pointerLeaveGeom', leaveEvent)
-      if (leaveEvent.propagating) this.pointerOverItem.onPointerLeave(leaveEvent)
+      event.leftGeometry = this.pointerOverItem
+      this.pointerOverItem.onPointerLeave(event)
       this.pointerOverItem = null
+
+      if (!event.propagating) return
+
+      this.emit('pointerLeaveGeom', event)
     }
 
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onPointerMove(event)
+    if (this.manipulator) {
+      this.manipulator.onPointerMove(event)
       if (!event.propagating) return
     }
 
@@ -654,8 +669,8 @@ class GLViewport extends GLBaseViewport {
    */
   onKeyPressed(event) {
     this.__preparePointerEvent(event)
-    if (this.__cameraManipulator) {
-      if (this.__cameraManipulator.onKeyPressed(event)) return
+    if (this.manipulator) {
+      if (this.manipulator.onKeyPressed(event)) return
     }
     this.emit('keyPressed', event)
   }
@@ -666,8 +681,8 @@ class GLViewport extends GLBaseViewport {
    */
   onKeyDown(event) {
     this.__preparePointerEvent(event)
-    if (this.__cameraManipulator) {
-      if (this.__cameraManipulator.onKeyDown(event)) return
+    if (this.manipulator) {
+      if (this.manipulator.onKeyDown(event)) return
     }
     this.emit('keyDown', event)
   }
@@ -678,8 +693,8 @@ class GLViewport extends GLBaseViewport {
    */
   onKeyUp(event) {
     this.__preparePointerEvent(event)
-    if (this.__cameraManipulator) {
-      if (this.__cameraManipulator.onKeyUp(event)) return
+    if (this.manipulator) {
+      if (this.manipulator.onKeyUp(event)) return
     }
     this.emit('keyUp', event)
   }
@@ -695,8 +710,8 @@ class GLViewport extends GLBaseViewport {
       if (!event.propagating) return
     }
 
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onWheel(event)
+    if (this.manipulator) {
+      this.manipulator.onWheel(event)
       return
     }
     this.emit('mouseWheel', event)
@@ -716,8 +731,8 @@ class GLViewport extends GLBaseViewport {
       return
     }
 
-    if (this.__cameraManipulator) {
-      this.__cameraManipulator.onTouchCancel(event)
+    if (this.manipulator) {
+      this.manipulator.onTouchCancel(event)
       return
     }
     this.emit('touchCancel', event)
