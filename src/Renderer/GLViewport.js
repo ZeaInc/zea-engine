@@ -571,7 +571,11 @@ class GLViewport extends GLBaseViewport {
     if (event.intersectionData != undefined) {
       event.intersectionData.geomItem.onPointerUp(event)
 
-      if (!event.propagating) return
+      if (!event.propagating) {
+        if (this.manipulator) this.manipulator.onPointerUp(event)
+
+        return
+      }
 
       this.emit('pointerUp', event)
     }
@@ -580,9 +584,9 @@ class GLViewport extends GLBaseViewport {
       this.manipulator.onPointerUp(event)
 
       if (!event.propagating) return
-    }
 
-    this.emit('pointerUp', event)
+      this.emit('pointerUp', event)
+    }
   }
 
   /**

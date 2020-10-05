@@ -124,6 +124,7 @@
         })
 
         selfEventItem.on('pointerUp', (event) => {
+          event.stopPropagation()
           selfEventItemLabel.getParameter('Text').setValue(`<pointerUp> event`)
           startBackToDefaultTextTimeout()
         })
