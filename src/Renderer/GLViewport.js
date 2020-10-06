@@ -416,10 +416,19 @@ class GLViewport extends GLBaseViewport {
 
         const geomItemAndDist = this.__renderer.getPass(passId).getGeomItemAndDist(geomData)
         if (geomItemAndDist) {
+          const materialParameter = geomItemAndDist.geomItem.getParameter('Material')
+          if (materialParameter && !materialParameter.getValue().visibleInGeomDataBuffer) continue
+
           geomItems.add(geomItemAndDist.geomItem)
         }
       }
-      return geomItems
+
+      return [...geomItems].filter((geomItem) => {
+        const materialParameter = geomItem.getParameter('Material')
+        if (materialParameter && !materialParameter.getValue().visibleInGeomDataBuffer) return false
+
+        return true
+      })
     }
   }
 
