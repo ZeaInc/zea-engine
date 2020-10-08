@@ -149,36 +149,6 @@ class Cone extends ProceduralMesh {
       positions.getValueRef(basePoint).set(0.0, 0.0, 0.0)
     }
 
-    // ////////////////////////////
-    // setNormals
-    const normals = this.getVertexAttribute('normals')
-
-    let normalElevation
-    const divider = height
-    if (Math.abs(height) < 1.0e-12) normalElevation = height < 0 ? -1.0e-12 : 1.0e-12
-    normalElevation = 0
-
-    let tri = 0
-    for (let i = 0; i < nbSides; i++) {
-      const theta1 = ((i + 1) / nbSides) * 2.0 * Math.PI
-      const theta2 = (i / nbSides) * 2.0 * Math.PI
-      const theta = (theta1 + theta2) * 0.5
-
-      normals.setFaceVertexValue(tri, 0, new Vec3(-Math.cos(theta1), -Math.sin(theta1), normalElevation).normalize())
-      normals.setFaceVertexValue(tri, 1, new Vec3(-Math.cos(theta2), -Math.sin(theta2), normalElevation).normalize())
-      normals.setFaceVertexValue(tri, 2, new Vec3(-Math.cos(theta), -Math.sin(theta), normalElevation).normalize())
-      tri++
-    }
-    if (cap) {
-      const normal = new Vec3(0.0, -1.0, 0.0)
-      for (let i = 0; i < nbSides; i++) {
-        normals.setFaceVertexValue(tri, 0, normal)
-        normals.setFaceVertexValue(tri, 1, normal)
-        normals.setFaceVertexValue(tri, 2, normal)
-        tri++
-      }
-    }
-
     this.computeVertexNormals()
 
     this.setBoundingBoxDirty()
