@@ -43,38 +43,53 @@ class GLAudioItemsPass extends GLPass {
     super.init(renderer, passIndex)
 
     if (!audioCtx) return
-
-    this.__renderer.registerPass(
-      (treeItem) => {
-        if (treeItem instanceof AudioItem) {
-          treeItem.on('audioSourceCreated', (event) => {
-            const { audioSource } = event
-            this.addAudioSource(treeItem, audioSource, treeItem)
-          })
-          return true
-        }
-        if (treeItem instanceof GeomItem) {
-          const material = treeItem.getParameter('Material').getValue()
-          if (material) {
-            const baseColorParam = material.getParameter('BaseColor')
-            if (baseColorParam && baseColorParam.getImage && baseColorParam.getImage()) {
-              const image = baseColorParam.getImage()
-              image.on('loaded', () => {
-                if (image.getAudioSource) {
-                  const audioSource = image.getAudioSource()
-                  if (audioSource instanceof HTMLMediaElement || audioSource instanceof AudioBufferSourceNode)
-                    this.addAudioSource(treeItem, audioSource, image)
-                }
-              })
-            }
-          }
-          // Let other passes handle this item.
-          return false
-        }
-      },
-      (treeItem) => {}
-    )
   }
+
+  /**
+   * The itemAddedToScene method is called on each pass when a new item
+   * is added to the scene, and the renderer must decide how to render it.
+   * It allows Passes to select geometries to handle the drawing of.
+   * @param {TreeItem} treeItem - The treeItem value.
+   * @param {object} rargs - Extra return values are passed back in this object.
+   * The object contains a parameter 'continueInSubTree', which can be set to false,
+   * so the subtree of this node will not be traversed after this node is handled.
+   * @return {Boolean} - The return value.
+   */
+  itemAddedToScene(treeItem, rargs) {
+    if (treeItem instanceof AudioItem) {
+      treeItem.on('audioSourceCreated', (event) => {
+        const { audioSource } = event
+        this.addAudioSource(treeItem, audioSource, treeItem)
+      })
+      return true
+    }
+    if (treeItem instanceof GeomItem) {
+      const material = treeItem.getParameter('Material').getValue()
+      if (material) {
+        const baseColorParam = material.getParameter('BaseColor')
+        if (baseColorParam && baseColorParam.getImage && baseColorParam.getImage()) {
+          const image = baseColorParam.getImage()
+          image.on('loaded', () => {
+            if (image.getAudioSource) {
+              const audioSource = image.getAudioSource()
+              if (audioSource instanceof HTMLMediaElement || audioSource instanceof AudioBufferSourceNode)
+                this.addAudioSource(treeItem, audioSource, image)
+            }
+          })
+        }
+      }
+      // Let other passes handle this item.
+      return false
+    }
+  }
+  /**
+   * The itemRemovedFromScene method is called on each pass when aa item
+   * is removed to the scene, and the pass must handle cleaning up any resources.
+   * @param {TreeItem} treeItem - The treeItem value.
+   * @param {object} rargs - Extra return values are passed back in this object.
+   * @return {Boolean} - The return value.
+   */
+  itemRemovedFromScene(treeItem, rargs) {}
 
   /**
    * The addAudioSource method.
@@ -244,8 +259,6 @@ class GLAudioItemsPass extends GLPass {
     this.__updateListenerPosition(renderstate.viewXfo)
   }
 }
-
-GLRenderer.registerPass(GLAudioItemsPass, PassType.OVERLAY)
 
 // Hack so Audio Item can access the context.
 if (window.navigator) {

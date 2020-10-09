@@ -16,6 +16,7 @@ let mouseIsDown = false
 let mouseLeft = false
 
 const registeredPasses = {}
+const loggedErrors = {}
 
 /** Class representing a GL base renderer.
  * @extends ParameterOwner
@@ -36,6 +37,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     this.__shaders = {}
     this.__passes = {}
+    this.__passesRegistrationOrder = []
     this.__passCallbacks = []
 
     this.__childItemAdded = this.__childItemAdded.bind(this)
@@ -332,6 +334,25 @@ class GLBaseRenderer extends ParameterOwner {
     // Note: we can have BaseItems in the tree now.
     if (!(treeItem instanceof TreeItem)) return
 
+    for (let i = this.__passesRegistrationOrder.length - 1; i >= 0; i--) {
+      const pass = this.__passesRegistrationOrder[i]
+      try {
+        const rargs = {
+          continueInSubTree: true,
+        }
+        const handled = pass.itemAddedToScene(treeItem, rargs)
+        if (handled) {
+          if (!rargs.continueInSubTree) return
+          break
+        }
+      } catch (error) {
+        if (!loggedErrors[pass.constructor.name]) {
+          loggedErrors[pass.constructor.name] = error.message
+          console.warn(error.message)
+        }
+      }
+    }
+
     for (const passCbs of this.__passCallbacks) {
       const rargs = {
         continueInSubTree: true,
@@ -364,6 +385,18 @@ class GLBaseRenderer extends ParameterOwner {
 
     treeItem.off('childAdded', this.__childItemAdded)
     treeItem.off('childRemoved', this.__childItemRemoved)
+
+    for (let i = this.__passesRegistrationOrder.length - 1; i >= 0; i--) {
+      const pass = this.__passesRegistrationOrder[i]
+      const rargs = {
+        continueInSubTree: true,
+      }
+      const handled = pass.itemRemovedFromScene(treeItem, rargs)
+      if (handled) {
+        if (!rargs.continueInSubTree) return
+        break
+      }
+    }
 
     for (const passCbs of this.__passCallbacks) {
       if (!passCbs.itemRemovedFn) continue
@@ -830,7 +863,7 @@ class GLBaseRenderer extends ParameterOwner {
         offset += passSet.length
       }
     }
-
+    this.__passesRegistrationOrder.push(pass)
     this.requestRedraw()
     return index
   }
@@ -841,6 +874,7 @@ class GLBaseRenderer extends ParameterOwner {
    * @param {any} itemRemovedFn - The itemRemovedFn value.
    */
   registerPass(itemAddedFn, itemRemovedFn) {
+    console.warn('Deprecated, GLPass must now implement #itemAddedToScene and #itemRemovedFromScene instead')
     // insert at the beginning so it is called first.
     this.__passCallbacks.splice(0, 0, {
       itemAddedFn,

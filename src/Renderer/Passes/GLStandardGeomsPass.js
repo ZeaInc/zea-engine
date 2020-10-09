@@ -36,56 +36,72 @@ class GLStandardGeomsPass extends GLPass {
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex)
+  }
 
-    this.__renderer.registerPass(
-      (treeItem) => {
-        if (treeItem instanceof GeomItem) {
-          const geomItem = treeItem
-          if (!geomItem.getMetadata('glgeomItem')) {
-            const checkGeom = (geomItem) => {
-              if (this.filterGeomItem(geomItem)) {
-                const geomParam = geomItem.getParameter('Geometry')
-                if (geomParam.getValue() == undefined) {
-                  // we will add this geomItem once it receives its geom.
-                  // TODO: what happens if the item is removed from the tree
-                  // and then geom assigned? (maybe impossible with our tools)
-                  // e.g. a big asset loaded, added to the tree, then removed again
-                  // The geoms will get assigned after the tree is removed.
-                  const geomAssigned = () => {
-                    this.addGeomItem(geomItem)
-                    geomParam.off('valueChanged', geomAssigned)
-                  }
-                  geomParam.on('valueChanged', geomAssigned)
-                } else {
-                  this.addGeomItem(geomItem)
-                }
-                return true
-              } else {
-                return false
+  /**
+   * The itemAddedToScene method is called on each pass when a new item
+   * is added to the scene, and the renderer must decide how to render it.
+   * It allows Passes to select geometries to handle the drawing of.
+   * @param {TreeItem} treeItem - The treeItem value.
+   * @param {object} rargs - Extra return values are passed back in this object.
+   * The object contains a parameter 'continueInSubTree', which can be set to false,
+   * so the subtree of this node will not be traversed after this node is handled.
+   * @return {Boolean} - The return value.
+   */
+  itemAddedToScene(treeItem, rargs) {
+    if (treeItem instanceof GeomItem) {
+      const geomItem = treeItem
+      if (!geomItem.getMetadata('glgeomItem')) {
+        const checkGeom = (geomItem) => {
+          if (this.filterGeomItem(geomItem)) {
+            const geomParam = geomItem.getParameter('Geometry')
+            if (geomParam.getValue() == undefined) {
+              // we will add this geomItem once it receives its geom.
+              // TODO: what happens if the item is removed from the tree
+              // and then geom assigned? (maybe impossible with our tools)
+              // e.g. a big asset loaded, added to the tree, then removed again
+              // The geoms will get assigned after the tree is removed.
+              const geomAssigned = () => {
+                this.addGeomItem(geomItem)
+                geomParam.off('valueChanged', geomAssigned)
               }
-            }
-
-            if (geomItem.getParameter('Material').getValue() == undefined) {
-              console.warn('Scene item :' + geomItem.getPath() + ' has no material')
-              // TODO: listen for when the material is assigned.(like geoms below)
-              return false
+              geomParam.on('valueChanged', geomAssigned)
             } else {
-              return checkGeom(geomItem)
+              this.addGeomItem(geomItem)
             }
+            return true
           } else {
             return false
           }
-        } else {
+        }
+
+        if (geomItem.getParameter('Material').getValue() == undefined) {
+          console.warn('Scene item :' + geomItem.getPath() + ' has no material')
+          // TODO: listen for when the material is assigned.(like geoms below)
           return false
+        } else {
+          return checkGeom(geomItem)
         }
-      },
-      (treeItem) => {
-        if (treeItem instanceof GeomItem && treeItem.getMetadata('glgeomItem')) {
-          return this.removeGeomItem(treeItem)
-        }
+      } else {
         return false
       }
-    )
+    } else {
+      return false
+    }
+  }
+
+  /**
+   * The itemRemovedFromScene method is called on each pass when aa item
+   * is removed to the scene, and the pass must handle cleaning up any resources.
+   * @param {TreeItem} treeItem - The treeItem value.
+   * @param {object} rargs - Extra return values are passed back in this object.
+   * @return {Boolean} - The return value.
+   */
+  itemRemovedFromScene(treeItem, rargs) {
+    if (treeItem instanceof GeomItem && treeItem.getMetadata('glgeomItem')) {
+      return this.removeGeomItem(treeItem)
+    }
+    return false
   }
 
   /**
