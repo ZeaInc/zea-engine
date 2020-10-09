@@ -3,6 +3,7 @@ import { BinReader } from './BinReader.js'
 import { loadBinfile } from './Utils.js'
 import { PointsProxy, LinesProxy, MeshProxy } from './Geometry/GeomProxies.js'
 import { EventEmitter } from '../Utilities/index'
+import { resourceLoader } from './ResourceLoader.js'
 
 // The GeomLibrary parses geometry data using workers.
 // This can be difficult to debug, so you can disable this
@@ -17,7 +18,6 @@ import GeomParserWorker from 'web-worker:./Geometry/GeomParserWorker.js'
 // } from './Geometry/parseGeomsBinary.js';
 
 /** Class representing a geometry library.
- * @private
  */
 class GeomLibrary extends EventEmitter {
   /**
@@ -44,9 +44,17 @@ class GeomLibrary extends EventEmitter {
    * The clear method.
    */
   clear() {
-    this.__loaded = 0
-    this.__numGeoms = 0
+    this.__loadedCount = 0
+    this.__numGeoms = -1
     this.geoms = []
+  }
+
+  /**
+   * The returns true if all the geometries have been loaded and the loaded event has already been emitted.
+   * @return {Boolean} - True if all geometries are already loaded, else false.
+   */
+  isLoaded() {
+    return this.__loadedCount == this.__numGeoms
   }
 
   /**
@@ -146,7 +154,7 @@ class GeomLibrary extends EventEmitter {
       this.emit('streamFileParsed', {})
       return numGeoms
     }
-    if (this.__numGeoms == 0) {
+    if (this.__numGeoms == -1) {
       // Note: for loading geom streams, we need to know the total number
       // ahead of time to be able to generate accurate progress reports.
       this.__numGeoms = numGeoms
@@ -276,10 +284,10 @@ class GeomLibrary extends EventEmitter {
 
     // Once all the geoms from all the files are loaded and parsed
     // fire the loaded signal.
-    this.__loaded += loaded
-    // console.log("this.__loaded:" + this.__loaded +" this.__numGeoms:" + this.__numGeoms);
-    if (this.__loaded == this.__numGeoms) {
-      // console.log("GeomLibrary Loaded:" + this.__name + " count:" + geomDatas.length + " loaded:" + this.__loaded);
+    this.__loadedCount += loaded
+    // console.log("this.__loadedCount:" + this.__loadedCount +" this.__numGeoms:" + this.__numGeoms);
+    if (this.__loadedCount == this.__numGeoms) {
+      // console.log("GeomLibrary Loaded:" + this.__name + " count:" + geomDatas.length + " loaded:" + this.__loadedCount);
       this.__terminateWorkers()
       this.emit('loaded')
     }
