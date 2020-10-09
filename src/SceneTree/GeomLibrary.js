@@ -110,19 +110,13 @@ class GeomLibrary extends EventEmitter {
   }
 
   /**
-   * The loadUrl method.
+   * The loadArchive method.
    * @param {any} fileUrl - The fileUrl value.
    */
-  loadUrl(fileUrl) {
-    loadBinfile(
-      fileUrl,
-      (data) => {
-        this.loadBin(data)
-      },
-      (statusText) => {
-        console.warn(statusText)
-      }
-    )
+  loadArchive(fileUrl) {
+    resourceLoader.loadArchive(fileUrl).then((entries) => {
+      this.loadBin(entries)
+    })
   }
 
   /**

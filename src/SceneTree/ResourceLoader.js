@@ -10,6 +10,13 @@ import ResourceLoaderWorker from 'web-worker:./ResourceLoader/ResourceLoaderWork
 //     ResourceLoaderWorker_onmessage
 // } from './ResourceLoaderWorker.js';
 
+function checkStatus(response) {
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} - ${response.statusText}`)
+  }
+  return response
+}
+
 /**
  * Class for delegating resource loading, enabling an abstraction of a cloud file system to be implemented.
  *
@@ -28,6 +35,7 @@ class ResourceLoader extends EventEmitter {
     this.__totalWork = 0
     this.__doneWork = 0
     this.__callbacks = {}
+    this.promiseCache = {}
 
     this.__workers = []
     this.__nextWorker = 0
@@ -120,8 +128,7 @@ class ResourceLoader extends EventEmitter {
           if (event.data.type === 'WASM_LOADED') {
             resolve(worker)
           } else if (event.data.type === 'FINISHED') {
-            const data = event.data
-
+            // const data = event.data
             // const text = [
             //   '==================== ResourceLoaderWorker.js ====================',
             //   `Filename: ${data.resourceId}`,
@@ -132,7 +139,6 @@ class ResourceLoader extends EventEmitter {
             // }
             // console.log(text.join('\n'))
 
-            this.addWorkDone(event.data.resourceId, 1) // loading done...
             this.__onFinishedReceiveFileData(event.data)
           } else if (event.data.type === 'ERROR') {
             const data = event.data
@@ -215,35 +221,104 @@ class ResourceLoader extends EventEmitter {
    * @param {boolean} addLoadWork - The addLoadWork value.
    */
   loadUrl(resourceId, url, callback, addLoadWork = true) {
-    if (addLoadWork) {
-      this.addWork(resourceId, 3) // Add work in 2 chunks. Loading, unpacking, parsing.
-    } else {
-      // the work for loading and parsing the work is already registered..
-      // See BinAsset. It knows that it will load a sequence of files
-      // and has already registered this work once is determined the
-      // total number of files in the stream.
-    }
+    console.warn(`deprecated use #loadArchive`)
+    this.loadArchive(url).then((entries) => {
+      callback(entries)
+    })
+  }
 
-    if (!(resourceId in this.__callbacks)) this.__callbacks[resourceId] = []
-    this.__callbacks[resourceId].push(callback)
+  /**
+   * Loads a JSON file, returning a promise that resolves to the JSON data value.
+   * Note: using the resource loader to centralize data loading enables progress to be tracked and displayed
+   * @param {string} url - The url of the data to load.
+   * @return {Promise} - The promise value.
+   */
+  loadJSON(url) {
+    if (this.promiseCache[url]) return this.promiseCache[url]
 
-    function checkStatus(response) {
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} - ${response.statusText}`)
-      }
-      return response
-    }
-    fetch(url)
-      .then((response) => checkStatus(response) && response.arrayBuffer())
-      .then((buffer) => {
-        this.__getWorker().then((worker) => {
-          worker.postMessage({
-            type: 'unpack',
-            resourceId,
-            buffer,
-          })
+    this.addWork(url, 1)
+
+    const promise = new Promise(
+      (resolve, reject) => {
+        fetch(url).then((response) => {
+          this.addWorkDone(url, 1)
+          if (checkStatus(response)) resolve(response.json())
+          else reject(response.status)
         })
-      })
+      },
+      () => {}
+    )
+
+    this.promiseCache[url] = promise
+    return promise
+  }
+
+  /**
+   * Loads a text file, returning a promise that resolves to the JSON data value.
+   * Note: using the resource loader to centralize data loading enables progress to be tracked and displayed
+   * @param {string} url - The url of the data to load.
+   * @return {Promise} - The promise value.
+   */
+  loadText(url) {
+    if (this.promiseCache[url]) return this.promiseCache[url]
+
+    this.addWork(url, 1)
+
+    const promise = new Promise(
+      (resolve, reject) => {
+        fetch(url).then((response) => {
+          this.addWorkDone(url, 1)
+          if (checkStatus(response)) resolve(response.text())
+          else reject(response.status)
+        })
+      },
+      () => {}
+    )
+
+    this.promiseCache[url] = promise
+    return promise
+  }
+
+  /**
+   * Loads an archive file, returning a promise that resolves to the JSON data value.
+   * Note: using the resource loader to centralize data loading enables progress to be tracked and displayed
+   * @param {string} url - The url of the data to load.
+   * @return {Promise} - The promise value.
+   */
+  loadArchive(url) {
+    if (this.promiseCache[url]) return this.promiseCache[url]
+
+    this.addWork(url, 2) // Add work in 2 chunks. Loading, unpacking.
+
+    const promise = new Promise(
+      (resolve, reject) => {
+        if (!(url in this.__callbacks)) this.__callbacks[url] = []
+        this.__callbacks[url].push(resolve)
+        fetch(url)
+          .then((response) => {
+            this.addWorkDone(url, 1)
+            if (checkStatus(response)) return response.arrayBuffer()
+            else reject(response.status)
+          })
+          .then((buffer) => {
+            const resourceId = url
+            if (!(resourceId in this.__callbacks)) this.__callbacks[resourceId] = []
+            this.__callbacks[resourceId].push(resolve)
+
+            this.__getWorker().then((worker) => {
+              worker.postMessage({
+                type: 'unpack',
+                resourceId,
+                buffer,
+              })
+            })
+          })
+      },
+      () => {}
+    )
+
+    this.promiseCache[url] = promise
+    return promise
   }
 
   /**
@@ -262,7 +337,6 @@ class ResourceLoader extends EventEmitter {
       delete this.__callbacks[resourceId]
     }
     this.emit('loaded', { resourceId })
-    this.addWorkDone(resourceId, 1) // parsing done...
   }
 
   /**

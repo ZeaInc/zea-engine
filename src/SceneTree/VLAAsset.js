@@ -109,7 +109,7 @@ class VLAAsset extends AssetItem {
       versions: {},
     }
 
-    const loadBinary = (entries) => {
+    resourceLoader.loadArchive(url).then((entries) => {
       // Load the tree file. This file contains
       // the scene tree of the asset, and also
       // tells us how many geom files will need to be loaded.
@@ -133,44 +133,32 @@ class VLAAsset extends AssetItem {
         this.__geomLibrary.readBinaryBuffer(fileId, entries.geoms.buffer, context)
         onGeomsDone()
       } else {
-        // add the work for the the geom files....
-        resourceLoader.addWork(fileId, 4 * numGeomsFiles) // (load + parse + extra)
-
         // Note: Lets just load all the goem files in parallel.
         loadAllGeomFiles()
       }
-    }
+    })
 
     const loadAllGeomFiles = () => {
       const promises = []
       for (let geomFileID = 0; geomFileID < numGeomsFiles; geomFileID++) {
         // console.log('LoadingGeom File:', geomFileID)
         const geomFileUrl = folder + stem + geomFileID + '.vlageoms'
-        promises.push(loadGeomsfile(geomFileID, geomFileUrl, context))
+        promises.push(loadGeomsfile(geomFileUrl, context))
       }
       Promise.all(promises).then(() => {
         if (onGeomsDone) onGeomsDone()
       })
     }
 
-    const loadGeomsfile = (index, geomFileUrl) => {
+    const loadGeomsfile = (geomFileUrl) => {
       return new Promise((resolve) => {
-        resourceLoader.loadUrl(
-          fileId + index,
-          geomFileUrl,
-          (entries) => {
-            const geomsData = entries[Object.keys(entries)[0]]
-            this.__geomLibrary.readBinaryBuffer(fileId, geomsData.buffer, context)
-            resolve()
-          },
-          false
-        ) // <----
-        // Note: Don't add load work as we already pre-added it at the beginning
-        // and after the Tree file was loaded...
+        resourceLoader.loadArchive(geomFileUrl).then((entries) => {
+          const geomsData = entries[Object.keys(entries)[0]]
+          this.__geomLibrary.readBinaryBuffer(fileId, geomsData.buffer, context)
+          resolve()
+        })
       })
     }
-
-    resourceLoader.loadUrl(fileId, url, loadBinary)
 
     // To ensure that the resource loader knows when
     // parsing is done, we listen to the GeomLibrary streamFileLoaded
