@@ -505,15 +505,18 @@ class GLViewport extends GLBaseViewport {
 
     if (event.pointerType === POINTER_TYPES.mouse) {
       event.pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
+
+      event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
+      event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     } else if (event.pointerType === POINTER_TYPES.touch) {
       if (event.touches.length == 1) {
         const touch = event.touches[0]
         event.pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+
+        event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
+        event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
       }
     }
-
-    event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
-    event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
 
     if (this.capturedItem) {
       this.capturedItem.onPointerDown(event)
@@ -562,15 +565,16 @@ class GLViewport extends GLBaseViewport {
 
     if (event.pointerType === POINTER_TYPES.mouse) {
       event.pointerPos = this.__getPointerPos(event.rendererX, event.rendererY)
+      event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
+      event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     } else if (event.pointerType === POINTER_TYPES.touch) {
       if (event.touches.length == 1) {
         const touch = event.touches[0]
         event.pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
+        event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
+        event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
       }
     }
-
-    event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
-    event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
 
     if (this.capturedItem) {
       this.capturedItem.onPointerUp(event)

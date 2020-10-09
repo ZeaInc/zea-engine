@@ -579,7 +579,7 @@ class CameraManipulator extends ParameterOwner {
     const touches = event.touches
     if (touches.length == 1 && this.__manipMode != 'panAndZoom') {
       const touch = touches[0]
-      const touchPos = new Vec2(touch.pageX, touch.pageY)
+      const touchPos = new Vec2(touch.clientX, touch.clientY)
       const touchData = this.__ongoingTouches[touch.identifier]
       if (!touchData) return
       const dragVec = touchPos.subtract(touchData.pos)
@@ -606,8 +606,8 @@ class CameraManipulator extends ParameterOwner {
       const touchData1 = this.__ongoingTouches[touch1.identifier]
 
       if (!touchData0 || !touchData1) return
-      const touch0Pos = new Vec2(touch0.pageX, touch0.pageY)
-      const touch1Pos = new Vec2(touch1.pageX, touch1.pageY)
+      const touch0Pos = new Vec2(touch0.clientX, touch0.clientY)
+      const touch1Pos = new Vec2(touch1.clientX, touch1.clientY)
       const startSeparation = touchData1.pos.subtract(touchData0.pos).length()
       const dragSeparation = touch1Pos.subtract(touch0Pos).length()
       const separationDist = startSeparation - dragSeparation
@@ -805,7 +805,7 @@ class CameraManipulator extends ParameterOwner {
   __startTouch(touch) {
     this.__ongoingTouches[touch.identifier] = {
       identifier: touch.identifier,
-      pos: new Vec2(touch.pageX, touch.pageY),
+      pos: new Vec2(touch.clientX, touch.clientY),
     }
   }
 
@@ -835,9 +835,9 @@ class CameraManipulator extends ParameterOwner {
       this.__startTouch(touches[i])
     }
 
-    if (Object.keys(this.__ongoingTouches).length == 1) {
-      this.initDrag(event)
-    }
+    // if (Object.keys(this.__ongoingTouches).length == 1) {
+    this.initDrag(event)
+    // }
   }
 
   /**
@@ -852,7 +852,7 @@ class CameraManipulator extends ParameterOwner {
     // switch (this.__manipMode) {
     // case 'camera-manipulation':
     //     let touch = touches[0];
-    //     let releasePos = new Vec2(touch.pageX, touch.pageY);
+    //     let releasePos = new Vec2(touch.clientX, touch.clientY);
     //     viewport.getCamera().onDragEnd(event, releasePos);
     //     break;
     // }
