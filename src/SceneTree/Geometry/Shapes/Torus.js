@@ -33,6 +33,8 @@ class Torus extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
+    
+    this.topologyParams.push('Detail')
   }
 
   /**

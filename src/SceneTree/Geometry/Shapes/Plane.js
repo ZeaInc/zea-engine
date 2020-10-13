@@ -40,6 +40,10 @@ class Plane extends ProceduralMesh {
     this.__detailYParam = this.addParameter(new NumberParameter('DetailY', DetailY))
     if (addNormals) this.addVertexAttribute('normals', Vec3)
     if (addTextureCoords) this.addVertexAttribute('texCoords', Vec2)
+
+    
+    this.topologyParams.push('DetailX')
+    this.topologyParams.push('DetailY')
   }
 
   /**

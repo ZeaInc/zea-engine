@@ -45,20 +45,10 @@ class Cylinder extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    this.rebuild()
 
-    const resize = () => {
-      this.resize()
-    }
-    const rebuild = () => {
-      this.rebuild()
-    }
-    this.__radiusParam.on('valueChanged', resize)
-    this.__heightParam.on('valueChanged', resize)
-    this.__sidesParam.on('valueChanged', rebuild)
-    this.__loopsParam.on('valueChanged', rebuild)
-    this.__capsParam.on('valueChanged', rebuild)
-    this.__baseZAtZeroParam.on('valueChanged', resize)
+    this.topologyParams.push('Sides')
+    this.topologyParams.push('Loops')
+    this.topologyParams.push('Caps')
   }
 
   /**
@@ -66,8 +56,6 @@ class Cylinder extends ProceduralMesh {
    * @private
    */
   rebuild() {
-    this.clear()
-
     const nbSides = this.__sidesParam.getValue()
     const nbLoops = this.__loopsParam.getValue()
     const caps = this.__capsParam.getValue()

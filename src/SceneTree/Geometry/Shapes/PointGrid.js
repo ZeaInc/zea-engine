@@ -37,6 +37,9 @@ class PointGrid extends ProceduralPoints {
     this.__yDivisions = this.addParameter(new NumberParameter('YDivisions', yDivisions))
 
     if (addTextureCoords) this.addVertexAttribute('texCoords', Vec2)
+    
+    this.topologyParams.push('XDivisions')
+    this.topologyParams.push('YDivisions')
   }
 
   /**

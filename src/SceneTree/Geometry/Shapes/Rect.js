@@ -35,54 +35,6 @@ class Rect extends ProceduralLines {
   }
 
   /**
-   * Getter for the length of the rect along the `X` axis.
-   *
-   * @return {number} - Returns the length.
-   */
-  get x() {
-    return this.__x.getValue()
-  }
-
-  /**
-   * Setter for the length of the rect along the `X` axis.
-   *
-   * @param {number} val - The length along the `X` axis.
-   */
-  set x(val) {
-    this.__x.setValue(val)
-  }
-
-  /**
-   * Getter for the length of the rect along the `Y` axis.
-   *
-   * @return {number} - Returns the length.
-   */
-  get y() {
-    return this.__y.getValue()
-  }
-
-  /**
-   * Setter for the length of the rect along the U axis.
-   *
-   * @param {number} val - The length along the `Y` axis.
-   */
-  set y(val) {
-    this.__y.setValue(val)
-  }
-
-  /**
-   * Setter for the size of the rect.
-   *
-   * @param {number} x - The length along the `X` axis.
-   * @param {number} y - The length along the `Y` axis.
-   */
-  setSize(x, y) {
-    this.__x.setValue(x)
-    this.__y.setValue(y)
-    this.resize()
-  }
-
-  /**
    * The rebuild method.
    * @private
    */

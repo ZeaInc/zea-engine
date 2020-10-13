@@ -33,6 +33,8 @@ class Circle extends ProceduralLines {
     this.__numSegments = this.addParameter(
       new NumberParameter('NumSegments', numSegments >= 3 ? numSegments : 3, [3, 200], 1)
     )
+    
+    this.topologyParams.push('NumSegments')
   }
 
   /**

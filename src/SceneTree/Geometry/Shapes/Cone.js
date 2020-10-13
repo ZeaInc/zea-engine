@@ -40,6 +40,9 @@ class Cone extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
+
+    this.topologyParams.push('Detail')
+    this.topologyParams.push('Cap')
   }
 
   /**
@@ -47,8 +50,6 @@ class Cone extends ProceduralMesh {
    * @private
    */
   rebuild() {
-    this.clear()
-
     const nbSides = this.__detailParam.getValue()
     const radius = this.__radiusParam.getValue()
     const height = this.__heightParam.getValue()

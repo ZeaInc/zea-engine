@@ -37,6 +37,10 @@ class Grid extends ProceduralLines {
     this.__xDivisionsParam = this.addParameter(new NumberParameter('XDivisions', xDivisions))
     this.__yDivisionsParam = this.addParameter(new NumberParameter('YDivisions', yDivisions))
     this.__skipCenterLinesParam = this.addParameter(new BooleanParameter('SkipCenterLines', skipCenterLines))
+
+    this.topologyParams.push('XDivisions')
+    this.topologyParams.push('YDivisions')
+    this.topologyParams.push('SkipCenterLines')
   }
 
   /**

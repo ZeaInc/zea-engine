@@ -35,6 +35,9 @@ class Sphere extends ProceduralMesh {
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
+
+    this.topologyParams.push('Sides')
+    this.topologyParams.push('Loops')
   }
 
   /**
