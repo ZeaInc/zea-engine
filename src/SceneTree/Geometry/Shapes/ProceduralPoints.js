@@ -45,6 +45,7 @@ class ProceduralPoints extends Points {
       this.emit('geomDataTopologyChanged')
     } else {
       this.dirtyVertices = true
+      this.setBoundingBoxDirty()
       // Let the renderer know that the geometry has changed and must be re-uploaded to the GPU.
       this.emit('geomDataChanged')
     }
