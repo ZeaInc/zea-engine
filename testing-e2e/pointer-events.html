@@ -247,6 +247,8 @@
         renderer.getViewport().on('pointerDownOnGeom', (event) => {
           vpEventItemLabel.getParameter('Text').setValue(`<pointerDownOnGeom> event`)
           clearTimeout(goToDefaultTextTimeout)
+
+          window.postMessage('done-double-down-on-geom')
         })
 
         renderer.getViewport().on('pointerUp', (event) => {
@@ -262,6 +264,15 @@
 
       // Positioning the camera to a better perspective view
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 5, 3), new Vec3(0, 0, 0))
+
+      {
+        renderer
+          .getViewport()
+          .getCamera()
+          .on('movementFinished', () => {
+            window.postMessage('done-wheeling')
+          })
+      }
     </script>
   </body>
 </html>
