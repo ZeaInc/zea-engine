@@ -60,8 +60,10 @@ class ProceduralPoints extends Points {
   update() {
     if (this.dirtyTopology) {
       this.rebuild()
+      this.dirtyTopology = false
     } else if (this.dirtyVertices) {
       this.resize()
+      this.dirtyVertices = false
     }
   }
 

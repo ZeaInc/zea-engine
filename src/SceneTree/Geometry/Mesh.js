@@ -116,7 +116,9 @@ class Mesh extends BaseGeom {
     }
     this.__faceCounts = faceCounts
 
-    for (const attr of this.__faceAttributes) attr.resize(numFaces)
+    this.__faceAttributes.forEach((attr) => {
+      attr.resize(numFaces)
+    })
   }
 
   /**
