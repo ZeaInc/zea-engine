@@ -400,7 +400,6 @@ class CameraManipulator extends ParameterOwner {
    * @param {Vec3} pos - The position value.
    */
   aimFocus(event, pos) {
-    debugger
     const { viewport } = event
     const camera = viewport.getCamera()
 
@@ -458,7 +457,6 @@ class CameraManipulator extends ParameterOwner {
         this.__focusIntervalId = setTimeout(applyMovement, 20)
       } else {
         this.__focusIntervalId = undefined
-        console.log('Moving')
         this.emit('movementFinished', {})
         camera.emit('movementFinished', {})
       }
@@ -636,8 +634,9 @@ class CameraManipulator extends ParameterOwner {
     event.preventDefault()
 
     if (event.pointerType === POINTER_TYPES.mouse) {
-      if (this.__dragging) {
-        this.endDrag(event)
+      this.endDrag(event)
+
+      if (!this.__pointerDragDelta.approxEqual(new Vec2(0, 0))) {
         this.emit('movementFinished', {})
         event.viewport.getCamera().emit('movementFinished', {})
       }
