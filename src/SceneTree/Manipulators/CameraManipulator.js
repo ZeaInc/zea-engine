@@ -400,6 +400,7 @@ class CameraManipulator extends ParameterOwner {
    * @param {Vec3} pos - The position value.
    */
   aimFocus(event, pos) {
+    debugger
     const { viewport } = event
     const camera = viewport.getCamera()
 
@@ -457,6 +458,7 @@ class CameraManipulator extends ParameterOwner {
         this.__focusIntervalId = setTimeout(applyMovement, 20)
       } else {
         this.__focusIntervalId = undefined
+        console.log('Moving')
         this.emit('movementFinished', {})
         camera.emit('movementFinished', {})
       }

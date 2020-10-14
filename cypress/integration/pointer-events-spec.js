@@ -1,15 +1,13 @@
 import { createTouchEvents, cyFocusCanvas } from './utils'
 
 describe('pointer-events', () => {
-  beforeEach(() => {
+  it('Mouse Move - Camera Manipulator', () => {
     cy.visit('testing-e2e/pointer-events.html', {
       onBeforeLoad(win) {
         cy.spy(win, 'postMessage').as('postMessage')
       },
     })
-  })
 
-  it('Mouse Move - Camera Manipulator', () => {
     cy.get('canvas').trigger('mousedown', 600, 500).trigger('mousemove', 650, 500).trigger('mouseup', 650, 500)
 
     cy.get('@postMessage')
@@ -19,18 +17,42 @@ describe('pointer-events', () => {
   })
 
   it('Mouse Enter - Geometry', () => {
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
+
     cyFocusCanvas()
 
-    cy.get('canvas').trigger('mousemove', 100, 230).trigger('mousemove', 250, 230).percySnapshot(`MouseEnterGeometry`)
+    cy.get('canvas').trigger('mousemove', 100, 230).trigger('mousemove', 250, 230)
+    cy.get('@postMessage')
+      .its('lastCall.args.0')
+      .should('equal', 'done-enter-geometry')
+      .percySnapshot(`MouseEnterGeometry`)
   })
 
   it('Mouse Leave - Geometry', () => {
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
     cyFocusCanvas()
 
-    cy.get('canvas').trigger('mousemove', 250, 230).trigger('mousemove', 100, 230).percySnapshot(`MouseLeaveGeometry`)
+    cy.get('canvas').trigger('mousemove', 250, 230).trigger('mousemove', 100, 230)
+    cy.get('@postMessage')
+      .its('lastCall.args.0')
+      .should('equal', 'done-leave-geometry')
+      .percySnapshot(`MouseLeaveGeometry`)
   })
 
   it('Wheel Zoom In - Camera Manipulator', () => {
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
     cyFocusCanvas()
 
     cy.get('canvas').trigger('wheel', {
@@ -46,6 +68,11 @@ describe('pointer-events', () => {
   })
 
   it('Wheel Zoom Out - Camera Manipulator', () => {
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
     cyFocusCanvas()
 
     cy.get('canvas').trigger('wheel', {
@@ -60,7 +87,12 @@ describe('pointer-events', () => {
       .percySnapshot(`WheelZoomOutCameraManipulator`)
   })
 
-  it('Double Click - Geometry', () => {
+  it.only('Double Click - Geometry', () => {
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
     cy.get('canvas')
       .trigger('mousedown', 800, 300)
       .trigger('mouseup', 800, 300)
@@ -74,6 +106,8 @@ describe('pointer-events', () => {
   })
 
   it('Touch Move - Camera manipulator', () => {
+    cy.visit('testing-e2e/pointer-events.html')
+
     const eTouchStart = createTouchEvents([600, 600])
     const eTouch = createTouchEvents([550, 600])
 
@@ -85,6 +119,12 @@ describe('pointer-events', () => {
   })
 
   it('Double Tap - Geometry', () => {
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
+
     const eTouch = createTouchEvents([800, 300])
     cy.get('canvas')
       .trigger('touchstart', eTouch)
@@ -99,6 +139,8 @@ describe('pointer-events', () => {
   })
 
   it('Touch Zoom In - Camera manipulator', () => {
+    cy.visit('testing-e2e/pointer-events.html')
+
     const eTouchStart = createTouchEvents([600, 600, 650, 600])
     const eTouch = createTouchEvents([500, 600, 700, 600])
 
@@ -110,6 +152,8 @@ describe('pointer-events', () => {
   })
 
   it('Touch Zoom Out - Camera manipulator', () => {
+    cy.visit('testing-e2e/pointer-events.html')
+
     const eTouchStart = createTouchEvents([500, 600, 700, 600])
     const eTouch = createTouchEvents([600, 600, 650, 600])
 

@@ -107,6 +107,7 @@
 
           selfEventItemLabel.getParameter('Text').setValue(`<pointerEnter> event`)
           clearTimeout(goToDefaultTextTimeout)
+          window.postMessage('done-enter-geometry')
         })
 
         selfEventItem.on('pointerLeave', (event) => {
@@ -114,6 +115,8 @@
 
           selfEventItemLabel.getParameter('Text').setValue(`<pointerLeave> event`)
           startBackToDefaultTextTimeout()
+
+          window.postMessage('done-leave-geometry')
         })
 
         selfEventItem.on('pointerDown', (event) => {
