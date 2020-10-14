@@ -65,7 +65,7 @@ class GLPass extends ParameterOwner {
    * @return {Boolean} - The return value.
    */
   itemAddedToScene(treeItem, rargs) {
-    throw Error(` ${this.constructor.name} must implement itemAddedToScene and itemRemovedFromScene`)
+    throw Error(`${this.constructor.name} must implement itemAddedToScene and itemRemovedFromScene`)
     return false
   }
 
@@ -77,7 +77,7 @@ class GLPass extends ParameterOwner {
    * @return {Boolean} - The return value.
    */
   itemRemovedFromScene(treeItem, rargs) {
-    throw Error(` ${this.constructor.name} must implement itemAddedToScene and itemRemovedFromScene`)
+    throw Error(`${this.constructor.name} must implement itemAddedToScene and itemRemovedFromScene`)
     return false
   }
 
