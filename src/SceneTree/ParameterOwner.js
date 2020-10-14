@@ -27,6 +27,7 @@ class ParameterOwner extends EventEmitter {
 
     this.__params = []
     this.__paramMapping = {}
+    this.deprecatedParamMapping = {}
     this.__paramEventHandlers = {}
   }
 
@@ -101,14 +102,33 @@ class ParameterOwner extends EventEmitter {
   }
 
   /**
+   * Add a mapping from one name to a new parameter.
+   * This is used to handle migrating parameters to new names.
+   *
+   * @param {string} key - The parameter name.
+   * @param {string} paramName - The parameter name.
+   * @return {boolean} - The return value.
+   */
+  addParameterDeprecationMapping(key, paramName) {
+    this.deprecatedParamMapping[key] = paramName
+  }
+
+  /**
    * Returns `Parameter` object using the given name
    *
    * @param {string} paramName - The parameter name.
    * @return {Parameter} - Parameter object value
    */
   getParameter(paramName) {
-    const index = this.__paramMapping[paramName]
-    if (index == -1) return null
+    let index = this.__paramMapping[paramName]
+    if (index == undefined) {
+      const newParamName = this.deprecatedParamMapping[paramName]
+      if (!newParamName) return null
+      else {
+        console.warn(`Parameter name ${paramName} is now deprecated. Please use ${newParamName} instead.`)
+        index = this.__paramMapping[newParamName]
+      }
+    }
     return this.__params[index]
   }
 

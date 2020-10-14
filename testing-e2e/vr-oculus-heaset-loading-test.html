@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>vr-oculus-heaset-loading-test - Zea Engine</title>
+
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Xfo, VLAAsset } = zeaEngine
+
+      const domElement = document.getElementById('app')
+
+      const scene = new Scene()
+      scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.5, 0.5, 0.5), new Vec3(0, 0, 0))
+
+      const asset = new VLAAsset()
+      asset.getParameter('FilePath').setValue('../public-resources/Oculus.vla')
+      asset.getGeometryLibrary().on('loaded', () => {
+        const HMD = asset.getChildByName('HMD')
+        HMD.getParameter('LocalXfo').setValue(new Xfo(new Vec3(0, 0, 200)))
+
+        const LeftController = asset.getChildByName('LeftController')
+        LeftController.getParameter('LocalXfo').setValue(new Xfo(new Vec3(-200, 0, 0)))
+
+        const RightController = asset.getChildByName('RightController')
+        RightController.getParameter('LocalXfo').setValue(new Xfo(new Vec3(200, 0, 0)))
+
+        window.postMessage('done-loading')
+      })
+      scene.getRoot().addChild(asset)
+
+      renderer.getViewport().on('mouseDownOnGeom', (event) => {
+        console.log(event.intersectionData.geomItem.getName())
+      })
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.5, 0.5, -0.5), new Vec3(0, 0, 0))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.5, -0.5, 0.5), new Vec3(0, 0, 0))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>

@@ -122,7 +122,7 @@ class VLHImage extends BaseImage {
   __loadVLH(fileId, file) {
     this.type = 'FLOAT'
 
-    resourceLoader.loadUrl(fileId, file.url, (entries) => {
+    resourceLoader.loadArchive(file.url).then((entries) => {
       if (!entries.ldr || !entries.cdm) {
         for (const name in entries) {
           if (name.endsWith('.jpg')) {

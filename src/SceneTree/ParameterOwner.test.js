@@ -55,4 +55,11 @@ describe('ParameterOwner', () => {
   it('removing a nonexisting param.', () => {})
 
   it('replacing a nonexisting param.', () => {})
+  it('deprecating a param.', () => {
+    const parameterOwner = new ParameterOwner()
+    const foo = parameterOwner.addParameter(new Parameter('foo', 1, 'Number'))
+    parameterOwner.addParameterDeprecationMapping('bar', 'foo')
+    const bar = parameterOwner.getParameter('bar')
+    expect(bar).toEqual(foo)
+  })
 })

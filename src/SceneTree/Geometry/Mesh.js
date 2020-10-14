@@ -889,9 +889,10 @@ class Mesh extends BaseGeom {
   readBinary(reader, context) {
     super.loadBaseGeomBinary(reader)
     this.setFaceCounts(reader.loadUInt32Array())
+    const numFaces = this.getNumFaces()
 
     // Note: we can remove this. We can infer this from the above faceCounts array.
-    const faceVertexCounts = reader.loadUInt8Array(this.getNumFaces())
+    const faceVertexCounts = reader.loadUInt8Array(numFaces)
     const offsetRange = reader.loadSInt32Vec2()
     const bytes = reader.loadUInt8()
     let faceVertexIndexDeltas
@@ -899,16 +900,34 @@ class Mesh extends BaseGeom {
     else if (bytes == 2) faceVertexIndexDeltas = reader.loadUInt16Array()
     else if (bytes == 4) faceVertexIndexDeltas = reader.loadUInt32Array()
 
-    const numFaces = this.getNumFaces()
+    // ///////////////////////////////////////////////////
+    // Note: The Mesh compression system needs a thorough review.
+    // The C++ classes are not storing face indices in a sorted manner.
+    // So quads precede triangles in the indexing, which isn't supposed to happen.
+    // We should force the C++ code to store quads and triangles in order.
+    // e.g. implement the 'addFace' method in C++ so it automatically does this.
+
+    let numFaceVerts = 3
     let offset = 0
+    const faceOffsetsByCount = this.__faceCounts.map((fc, index) => {
+      const result = offset
+      offset += fc * numFaceVerts
+      numFaceVerts++
+      return result
+    })
+
+    let srcOffset = 0
     let prevCount = 0
-    let faceOffsets = []
+    const faceOffsets = []
     for (let faceIndex = 0; faceIndex < numFaces; faceIndex++) {
-      const count = this.getFaceVertexCount(faceIndex)
+      const fc = faceVertexCounts[faceIndex]
+      const offset = faceOffsetsByCount[fc]
+      const count = fc + 3
       faceOffsets[faceIndex] = offset
       for (let j = 0; j < count; j++) {
+        const srcFaceVertex = srcOffset + j
         const faceVertex = offset + j
-        const delta = faceVertexIndexDeltas[faceVertex] + offsetRange.x
+        const delta = faceVertexIndexDeltas[srcFaceVertex] + offsetRange.x
         if (faceIndex == 0) this.__faceVertexIndices[faceVertex] = delta
         else {
           let prevFaceVertex = faceOffsets[faceIndex - 1]
@@ -916,10 +935,10 @@ class Mesh extends BaseGeom {
           this.__faceVertexIndices[faceVertex] = this.__faceVertexIndices[prevFaceVertex] + delta
         }
       }
-      offset += count
+      srcOffset += count
+      faceOffsetsByCount[fc] += count
       prevCount = count
     }
-    this.__numPopulatedFaceVertexIndices = offset
 
     if (!this.hasVertexAttribute('normals')) {
       this.computeVertexNormals()

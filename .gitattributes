@@ -5,11 +5,6 @@
 *.max filter=lfs diff=lfs merge=lfs -text
 *.bin filter=lfs diff=lfs merge=lfs -text
 *.hdr filter=lfs diff=lfs merge=lfs -text
-*.vlh filter=lfs diff=lfs merge=lfs -text
-*.vla filter=lfs diff=lfs merge=lfs -text
-*.vlenv filter=lfs diff=lfs merge=lfs -text
-*.zenv filter=lfs diff=lfs merge=lfs -text
-*.zmesh filter=lfs diff=lfs merge=lfs -text
 
 #3dsmax arechived scripts.
 *.mzp filter=lfs diff=lfs merge=lfs -text 
@@ -19,3 +14,9 @@
 # keep line endings LF
 # https://docs.github.com/en/github/using-git/configuring-git-to-handle-line-endings
 * text eol=lf
+
+*.vlh binary
+*.vla binary
+*.vlenv binary
+*.zenv binary
+*.zmesh binary

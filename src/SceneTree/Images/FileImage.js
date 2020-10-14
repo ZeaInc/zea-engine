@@ -369,7 +369,7 @@ class FileImage extends BaseImage {
       return hdrtint
     }
 
-    resourceLoader.loadUrl(file.id, file.url, (entries) => {
+    resourceLoader.loadArchive(file.url).then((entries) => {
       let ldr
       let cdm
       for (const name in entries) {

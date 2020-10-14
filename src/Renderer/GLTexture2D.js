@@ -388,6 +388,11 @@ class GLTexture2D extends RefCounted {
             break
           case gl.RG:
             numChannels = 2
+            // Note: when uploading UNSIGNED_BYTE  RG textures, I received the following error: ArrayBuffer not big enough for request
+            // This answer on stack overflow lead me to this fix.
+            // https://stackoverflow.com/questions/42789896/webgl-error-arraybuffer-not-big-enough-for-request-in-case-of-gl-luminance
+            // The same fix maybe need to be applied to single channel textures above, although I have not seen the error. 
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, 2)
             break
           case gl.RGB:
             numChannels = 3

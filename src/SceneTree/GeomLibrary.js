@@ -110,19 +110,13 @@ class GeomLibrary extends EventEmitter {
   }
 
   /**
-   * The loadUrl method.
+   * The loadArchive method.
    * @param {any} fileUrl - The fileUrl value.
    */
-  loadUrl(fileUrl) {
-    loadBinfile(
-      fileUrl,
-      (data) => {
-        this.loadBin(data)
-      },
-      (statusText) => {
-        console.warn(statusText)
-      }
-    )
+  loadArchive(fileUrl) {
+    resourceLoader.loadArchive(fileUrl).then((entries) => {
+      this.loadBin(entries)
+    })
   }
 
   /**
@@ -155,69 +149,73 @@ class GeomLibrary extends EventEmitter {
 
     const toc = reader.loadUInt32Array(numGeoms)
 
-    let numCores = window.navigator.hardwareConcurrency
-    if (!numCores) {
-      if (isMobile) numCores = 2
-      else numCores = 4
-    }
-    const numGeomsPerWorkload = Math.max(1, Math.floor(numGeoms / numCores + 1))
-
-    // TODO: Use SharedArrayBuffer once available.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer
-
-    let offset = 0
-    while (offset < numGeoms) {
-      const bufferSlice_start = toc[offset]
-      let bufferSlice_end
-      let geomsRange
-      if (offset + numGeomsPerWorkload >= numGeoms) {
-        geomsRange = [offset, numGeoms]
-        bufferSlice_end = buffer.byteLength
-      } else {
-        geomsRange = [offset, offset + numGeomsPerWorkload]
-        bufferSlice_end = toc[geomsRange[1]]
+    if (multiThreadParsing) {
+      let numCores = window.navigator.hardwareConcurrency
+      if (!numCores) {
+        if (isMobile) numCores = 2
+        else numCores = 4
       }
-      const bufferSlice = buffer.slice(bufferSlice_start, bufferSlice_end)
-      offset += numGeomsPerWorkload
+      const numGeomsPerWorkload = Math.max(1, Math.floor(numGeoms / numCores + 1))
 
-      // ////////////////////////////////////////////
-      // Multi Threaded Parsing
-      if (multiThreadParsing) {
-        this.__workers[this.__nextWorker].postMessage(
-          {
-            key,
-            toc,
-            geomIndexOffset,
-            geomsRange,
-            isMobileDevice: reader.isMobileDevice,
-            bufferSlice,
-            genBuffersOpts: this.__genBuffersOpts,
-            context: {
-              versions: context.versions,
-            },
-          },
-          [bufferSlice]
-        )
-        this.__nextWorker = (this.__nextWorker + 1) % this.__workers.length
-      } else {
+      // TODO: Use SharedArrayBuffer once available.
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer
+
+      let offset = 0
+      while (offset < numGeoms) {
+        const bufferSlice_start = toc[offset]
+        let bufferSlice_end
+        let geomsRange
+        if (offset + numGeomsPerWorkload >= numGeoms) {
+          geomsRange = [offset, numGeoms]
+          bufferSlice_end = buffer.byteLength
+        } else {
+          geomsRange = [offset, offset + numGeomsPerWorkload]
+          bufferSlice_end = toc[geomsRange[1]]
+        }
+        const bufferSlice = buffer.slice(bufferSlice_start, bufferSlice_end)
+        offset += numGeomsPerWorkload
+
         // ////////////////////////////////////////////
-        // Main Threaded Parsing
-        parseGeomsBinary(
-          {
-            key,
-            toc,
-            geomIndexOffset,
-            geomsRange,
-            isMobileDevice: reader.isMobileDevice,
-            bufferSlice,
-            genBuffersOpts: this.__genBuffersOpts,
-            context,
-          },
-          (data, transferables) => {
-            this.__recieveGeomDatas(data.key, data.geomDatas, data.geomIndexOffset, data.geomsRange)
-          }
-        )
+        // Multi Threaded Parsing
+          this.__workers[this.__nextWorker].postMessage(
+            {
+              key,
+              toc,
+              geomIndexOffset,
+              geomsRange,
+              isMobileDevice: reader.isMobileDevice,
+              bufferSlice,
+              genBuffersOpts: this.__genBuffersOpts,
+              context: {
+                versions: context.versions,
+              },
+            },
+            [bufferSlice]
+          )
+          this.__nextWorker = (this.__nextWorker + 1) % this.__workers.length
       }
+    } else {
+      // ////////////////////////////////////////////
+      // Main Threaded Parsing
+      const bufferSlice = buffer.slice(toc[0], buffer.byteLength)
+      const geomsRange = [0, numGeoms]
+      // const geomsRange = [3, 4]
+      // const bufferSlice = buffer.slice(toc[3], toc[4])
+      parseGeomsBinary(
+        {
+          key,
+          toc,
+          geomIndexOffset,
+          geomsRange,
+          isMobileDevice: reader.isMobileDevice,
+          bufferSlice,
+          genBuffersOpts: this.__genBuffersOpts,
+          context,
+        },
+        (data, transferables) => {
+          this.__recieveGeomDatas(data.key, data.geomDatas, data.geomIndexOffset, data.geomsRange)
+        }
+      )
     }
     return numGeoms
   }
