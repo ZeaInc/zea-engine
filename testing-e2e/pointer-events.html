@@ -247,8 +247,6 @@
         renderer.getViewport().on('pointerDownOnGeom', (event) => {
           vpEventItemLabel.getParameter('Text').setValue(`<pointerDownOnGeom> event`)
           clearTimeout(goToDefaultTextTimeout)
-
-          window.postMessage('done-double-down-on-geom')
         })
 
         renderer.getViewport().on('pointerUp', (event) => {
@@ -270,7 +268,7 @@
           .getViewport()
           .getCamera()
           .on('movementFinished', () => {
-            window.postMessage('done-wheeling')
+            window.postMessage('done-moving-camera')
           })
       }
     </script>
