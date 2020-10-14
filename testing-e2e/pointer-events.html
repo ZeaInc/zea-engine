@@ -28,7 +28,7 @@
     <canvas id="root"></canvas>
 
     <script crossorigin src="../dist/index.umd.js"></script>
-    <script>
+    <script type="module">
       const {
         GLRenderer,
         Scene,
@@ -266,14 +266,12 @@
       // Positioning the camera to a better perspective view
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 5, 3), new Vec3(0, 0, 0))
 
-      {
-        renderer
-          .getViewport()
-          .getCamera()
-          .on('movementFinished', () => {
-            window.postMessage('done-moving-camera')
-          })
-      }
+      renderer
+        .getViewport()
+        .getCamera()
+        .on('movementFinished', () => {
+          window.postMessage('done-moving-camera')
+        })
     </script>
   </body>
 </html>
