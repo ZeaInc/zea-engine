@@ -10,7 +10,8 @@ describe('Rect', () => {
 
   it('sets rectangle size', () => {
     const rect = new Rect()
-    rect.setSize(3, 4)
+    rect.getParameter('X').setValue(3)
+    rect.getParameter('Y').setValue(4)
 
     expect(rect.getParameter('X').getValue()).toBe(3)
     expect(rect.getParameter('Y').getValue()).toBe(4)
