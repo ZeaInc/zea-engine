@@ -518,6 +518,10 @@ class GLBaseRenderer extends ParameterOwner {
 
     this.__onResize()
 
+    window.addEventListener('orientationchange', (event) => {
+      this.__onResize()
+    })
+
     webglOptions.preserveDrawingBuffer = true
     webglOptions.stencil = webglOptions.stencil ? webglOptions.stencil : false
     webglOptions.alpha = webglOptions.alpha ? webglOptions.alpha : false

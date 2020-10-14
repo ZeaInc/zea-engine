@@ -1,7 +1,7 @@
 <a name="ListParameter"></a>
 
 ### ListParameter 
-Represents a specific type of parameter, that only stores any type of list values.
+A Parameter for storing list(array) values.
 
 i.e.:
 ```javascript

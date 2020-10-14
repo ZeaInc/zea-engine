@@ -20,10 +20,15 @@ class RouterOperator extends Operator {
 
   /**
    * The addRoute method.
+   * @param {Parameter} param - The parameter to router values to.
    * @return {OperatorOutput} - The added output.
    */
-  addRoute() {
-    return this.addOutput(new OperatorOutput('Output' + this.__outputs.size))
+  addRoute(param) {
+    const output = this.addOutput(new OperatorOutput('Output' + this.__outputs.size))
+    if (param) {
+      output.setParam(param)
+    }
+    return output
   }
 
   /**

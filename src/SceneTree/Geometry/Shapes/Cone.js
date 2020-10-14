@@ -79,7 +79,7 @@ class Cone extends ProceduralMesh {
 
     positions.getValueRef(tipPoint).set(0.0, 0.0, height)
     for (let i = 0; i < nbSides; i++) {
-      const theta = (i / nbSides) * 2.0 * Math.PI
+      const theta = -((i / nbSides) * 2.0 * Math.PI)
       positions.getValueRef(i).set(radius * Math.cos(theta), radius * Math.sin(theta), 0.0)
     }
     if (cap) {
@@ -101,41 +101,11 @@ class Cone extends ProceduralMesh {
     }
 
     // ////////////////////////////
-    // setNormals
-    const normals = this.getVertexAttribute('normals')
-
-    let normalElevation
-    const divider = height
-    if (Math.abs(height) < 1.0e-12) normalElevation = height < 0 ? -1.0e-12 : 1.0e-12
-    normalElevation = radius / divider
-
-    let tri = 0
-    for (let i = 0; i < nbSides; i++) {
-      const theta1 = ((i + 1) / nbSides) * 2.0 * Math.PI
-      const theta2 = (i / nbSides) * 2.0 * Math.PI
-      const theta = (theta1 + theta2) * 0.5
-
-      normals.setFaceVertexValue(tri, 0, new Vec3(Math.cos(theta1), normalElevation, Math.sin(theta1)).normalize())
-      normals.setFaceVertexValue(tri, 1, new Vec3(Math.cos(theta2), normalElevation, Math.sin(theta2)).normalize())
-      normals.setFaceVertexValue(tri, 2, new Vec3(Math.cos(theta), normalElevation, Math.sin(theta)).normalize())
-      tri++
-    }
-    if (cap) {
-      const normal = new Vec3(0.0, -1.0, 0.0)
-      for (let i = 0; i < nbSides; i++) {
-        normals.setFaceVertexValue(tri, 0, normal)
-        normals.setFaceVertexValue(tri, 1, normal)
-        normals.setFaceVertexValue(tri, 2, normal)
-        tri++
-      }
-    }
-
-    // ////////////////////////////
     // setUVs
     const texCoords = this.getVertexAttribute('texCoords')
 
     // Now set the attrbute values
-    tri = 0
+    let tri = 0
     for (let i = 0; i < nbSides; i++) {
       texCoords.setFaceVertexValue(tri, 0, new Vec2((i + 1) / nbSides, 0.0))
       texCoords.setFaceVertexValue(tri, 1, new Vec2(i / nbSides, 0.0))
@@ -152,6 +122,8 @@ class Cone extends ProceduralMesh {
 
     this.setBoundingBoxDirty()
     this.emit('geomDataTopologyChanged', {})
+
+    this.__resize()
   }
 
   /**
@@ -170,12 +142,14 @@ class Cone extends ProceduralMesh {
     const positions = this.getVertexAttribute('positions')
     positions.getValueRef(tipPoint).set(0.0, 0.0, height)
     for (let i = 0; i < nbSides; i++) {
-      const theta = (i / nbSides) * 2.0 * Math.PI
+      const theta = -((i / nbSides) * 2.0 * Math.PI)
       positions.getValueRef(i).set(radius * Math.cos(theta), radius * Math.sin(theta), 0.0)
     }
     if (this.__cap) {
       positions.getValueRef(basePoint).set(0.0, 0.0, 0.0)
     }
+
+    this.computeVertexNormals()
 
     this.setBoundingBoxDirty()
     this.emit('geomDataChanged', {})

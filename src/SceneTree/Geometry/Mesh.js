@@ -51,6 +51,8 @@ class Mesh extends BaseGeom {
     this.vertexEdges = undefined
     this.numEdges = 0
     this.edgeAngles = new Float32Array()
+
+    this.edgeVecs = []
   }
 
   /**
@@ -73,8 +75,7 @@ class Mesh extends BaseGeom {
    * The clear method.
    */
   clear() {
-    this.__faceVertexIndices = undefined
-    this.__faceCounts = []
+    this.init()
   }
 
   /**
@@ -432,7 +433,7 @@ class Mesh extends BaseGeom {
         const pn = positions.getValueRef(faceVerts[j])
         const v0 = prev.subtract(p0)
         const v1 = pn.subtract(p0)
-        faceNormal.addInPlace(v0.cross(v1).normalize())
+        faceNormal.addInPlace(v1.cross(v0).normalize())
         prev = pn
       }
       if (faceNormal.lengthSquared() < Number.EPSILON) {
@@ -457,7 +458,7 @@ class Mesh extends BaseGeom {
   calculateEdgeAngles() {
     if (this.vertexEdges == undefined) this.genTopologyInfo()
 
-    if (!this.hasFaceAttribute('normals')) this.computeFaceNormals()
+    this.computeFaceNormals()
 
     const positions = this.getVertexAttribute('positions')
     const faceNormals = this.getFaceAttribute('normals')
@@ -490,8 +491,6 @@ class Mesh extends BaseGeom {
    * @return {VertexAttribute} - The return value.
    */
   computeVertexNormals(hardAngle = 1.0 /* radians */) {
-    // console.log("computeVertexNormals");
-
     this.calculateEdgeAngles()
 
     const faceNormals = this.getFaceAttribute('normals')

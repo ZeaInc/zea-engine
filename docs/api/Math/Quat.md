@@ -19,6 +19,7 @@ to understand intuitively.
         * [z](#z)
         * [w ⇒ <code>number</code>](#w)
         * [w](#w)
+        * [isEqual(other) ⇒ <code>boolean</code>](#isEqual)
         * [set(x, y, z, w)](#set)
         * [setDataArray(float32Array)](#setDataArray)
         * [setFromOther(other)](#setFromOther)
@@ -61,6 +62,7 @@ to understand intuitively.
         * [mirror(axisIndex)](#mirror)
         * [toMat4() ⇒ <code>Mat4</code>](#toMat4)
         * [lerp(other, t)](#lerp)
+        * [slerp(other, t)](#slerp)
         * [clone()](#clone)
         * [toJSON() ⇒ <code>object</code>](#toJSON)
         * [fromJSON(j)](#fromJSON)
@@ -152,6 +154,18 @@ Setter for `w`.
 | Param | Type | Description |
 | --- | --- | --- |
 | val | <code>number</code> | The val param. |
+
+<a name="Quat+isEqual"></a>
+
+### isEqual
+Checks if this Quat is exactly the same as another Quat.
+
+
+**Returns**: <code>boolean</code> - - Returns `true` if are the same Vector, otherwise, `false`.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Quat</code>](#Quat) | The other Quat to compare with. |
 
 <a name="Quat+set"></a>
 
@@ -579,6 +593,19 @@ Converts this Quat to a Mat4 (a 4x4 matrix).
 
 ### lerp
 Performs a linear interpolation between two Quats.
+
+
+**Returns**: [<code>Quat</code>](#Quat) - - Returns a new Quat.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Quat</code>](#Quat) | The other Quat to interpolate between. |
+| t | <code>number</code> | Interpolation amount between the two inputs. |
+
+<a name="Quat+slerp"></a>
+
+### slerp
+Performs a spherical linear interpolation between two Quats.
 
 
 **Returns**: [<code>Quat</code>](#Quat) - - Returns a new Quat.  

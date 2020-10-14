@@ -124,6 +124,16 @@ class Quat extends AttrValue {
   }
 
   /**
+   * Checks if this Quat is exactly the same as another Quat.
+   *
+   * @param {Quat} other - The other Quat to compare with.
+   * @return {boolean} - Returns `true` if are the same Vector, otherwise, `false`.
+   */
+  isEqual(other) {
+    return this.x == other.x && this.y == other.y && this.z == other.z && this.w == other.w
+  }
+
+  /**
    * Setter from scalar components.
    *
    * @param {number} x - The x axis rotation.
@@ -169,31 +179,31 @@ class Quat extends AttrValue {
 
     switch (eulerAngles.order) {
       case 0:
-        /* 'XYZ' */
+        // 'XYZ'
         ordered.set(eulerAngles.x, -eulerAngles.y, eulerAngles.z)
         break
       case 1:
-        /* 'YZX' */
+        // 'YZX'
         ordered.set(eulerAngles.y, -eulerAngles.z, eulerAngles.x)
         break
       case 2:
-        /* 'ZXY' */
+        // 'ZXY'
         ordered.set(eulerAngles.z, -eulerAngles.x, eulerAngles.y)
         break
       case 3:
-        /* 'XZY' */
+        // 'XZY'
         ordered.set(eulerAngles.x, eulerAngles.z, eulerAngles.y)
         break
       case 4:
-        /* 'ZYX' */
+        // 'ZYX'
         ordered.set(eulerAngles.z, eulerAngles.y, eulerAngles.x)
         break
       case 5:
-        /* 'YXZ' */
+        // 'YXZ'
         ordered.set(eulerAngles.y, eulerAngles.x, eulerAngles.z)
         break
       default:
-        throw new Error('sdrty')
+        throw new Error('Invalid EulerAngles order:', eulerAngles.order)
     }
 
     const ti = ordered.x * 0.5
@@ -217,43 +227,43 @@ class Quat extends AttrValue {
 
     switch (eulerAngles.order) {
       case 0:
-        /* ' XYZ' */
+        // ' XYZ'
         this.x = ai
         this.y = -aj
         this.z = ak
         break
       case 1:
-        /* 'YZX' */
+        // 'YZX'
         this.x = ak
         this.y = ai
         this.z = -aj
         break
       case 2:
-        /* 'ZXY' */
+        // 'ZXY'
         this.x = -aj
         this.y = ak
         this.z = ai
         break
       case 3:
-        /* 'XZY' */
+        // 'XZY'
         this.x = ai
         this.y = ak
         this.z = aj
         break
       case 4:
-        /* 'ZYX' */
+        // 'ZYX'
         this.x = ak
         this.y = aj
         this.z = ai
         break
       case 5:
-        /* 'YXZ' */
+        // 'YXZ'
         this.x = aj
         this.y = ai
         this.z = ak
         break
       default:
-        throw new Error('sdrty')
+        throw new Error('Invalid EulerAngles order:', eulerAngles.order)
     }
   }
 
@@ -601,7 +611,7 @@ class Quat extends AttrValue {
 
     // TODO: evaluate use of glm_invsqrt here?
     len = 1 / Math.sqrt(len)
-    return new Quat(x * len, y * len, z * len)
+    return new Quat(x * len, y * len, z * len, w * len)
   }
 
   /**
@@ -973,6 +983,40 @@ class Quat extends AttrValue {
       this.y + t * (other.y - this.y),
       this.z + t * (other.z - this.z),
       this.w + t * (other.w - this.w)
+    )
+    result.normalizeInPlace()
+    return result
+  }
+
+  /**
+   * Performs a spherical linear interpolation between two Quats.
+   *
+   * @param {Quat} other  - The other Quat to interpolate between.
+   * @param {number} t - Interpolation amount between the two inputs.
+   * @return {Quat} - Returns a new Quat.
+   */
+  slerp(other, t) {
+    /// https://www.lix.polytechnique.fr/~nielsen/WEBvisualcomputing/programs/slerp.cpp
+    // const dotProduct = this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w
+    const dotProduct = this.dot(other)
+
+    // algorithm adapted from Shoemake's paper
+    const lambda = t / 2
+
+    const theta = Math.acos(dotProduct)
+    if (theta < 0.0) theta = -theta
+
+    const st = Math.sin(theta)
+    const sut = Math.sin(lambda * theta)
+    const sout = Math.sin((1 - lambda) * theta)
+    const coeff1 = sout / st
+    const coeff2 = sut / st
+
+    const result = new Quat(
+      coeff1 * this.x + coeff2 * other.x,
+      coeff1 * this.y + coeff2 * other.y,
+      coeff1 * this.z + coeff2 * other.z,
+      coeff1 * this.w + coeff2 * other.w
     )
     result.normalizeInPlace()
     return result

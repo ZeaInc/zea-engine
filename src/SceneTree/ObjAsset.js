@@ -18,7 +18,7 @@ import { FilePathParameter } from './Parameters/FilePathParameter'
 
 /**
  * Class designed to load and handle `.obj` files.
- * Which define the grometry and other properties for objects.
+ * Which define the geometry and other properties for objects.
  *
  * **Parameters**
  * * **splitObjects(`BooleanParameter`):** _todo_

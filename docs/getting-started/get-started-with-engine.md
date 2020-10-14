@@ -1,355 +1,194 @@
-# Getting Started using the engine
+# Getting started with the Zea Engine
 
-Zea Engine is used to build interactive web applications using JavaScript. In this tutorial, we will learn how to load the engine in the browser and set up your first scene.
+ℹ️ Before we begin, please make sure you're already familiar with [Setting up your workspace](getting-started/development-setup.md).
+
+The Zea Engine is useful for building interactive web applications with JavaScript.
+
+In this tutorial, we will learn how to load the Zea Engine in the browser and set up your first scene: the grid below.
+
+🎥 Try interacting with this demo:
 
 <div class="glitch-embed-wrap" style="height: 420px; width: 100%;">
   <iframe
-    src="https://glitch.com/embed/#!/embed/zea-web-demo?path=index.html&previewSize=100"
-    title="zea-web-demo on Glitch"
+    src="https://glitch.com/embed/#!/embed/zea-demo-grid?path=index.html&previewSize=100&attributionHidden=true"
+    title="zea-demo-grid on Glitch"
     allow="geolocation; microphone; camera; midi; vr; encrypted-media"
     style="height: 100%; width: 100%; border: 0;">
   </iframe>
 </div>
-<br>
 
-## Introduction to NPM and Unpkg
+## Introduction to npm and unpkg
 
-Zea distributes its libraries via NPM. NPM is the world's largest package manager and distributes files for the majority of JavaScript libraries.
+Zea Inc. distributes its libraries via [npm](https://www.npmjs.com/), which is the world's largest JavaScript package manager.
 
-> To see the list of pages available from Zea Inc. access the NPM page for Zea:
-https://www.npmjs.com/package/@zeainc/zea-engine
+To list the pages available from Zea Inc. follow this link: https://www.jsdelivr.com/?query=%40zeainc%2F
 
+Libraries hosted on npm can be accessed using various techniques. Among the easiest ones is to use tools like [unpkg](https://unpkg.com/), which generates URLs for each file in each package on npm, making it possible to load into the browser directly without needing to download the entire package.
 
-### Unpkg.com
-Libraries hosted on NPM can be accessed using various techniques, and this tutorial will demonstrate several of them. One of the easiest ways to access packages from NPM is to use tools like Unpkg. Unpkg generates URLs for each file in each package on NPM, making it possible to load into the browser directly without needing to download the entire package.
+ℹ️ For example, this is the unpkg URL for the Zea Engine: https://unpkg.com/@zeainc/zea-engine
 
-> For example, the Unpkg URL for the engine on NPM is the following: https://unpkg.com/@zeainc/zea-engine
+If you open that URL in your browser, you will see that it displays the compiled engine's file contents. You may also notice that the URL redirects to the full path and the latest version, and in that version, the UMD build of the engine.
 
-If you open that URL in the browser, you will see it display the compiled engine's file contents. You may also notice that the URL redirects to contain the full path to the latest version, and in that version, the CommonJS build of the engine.
+## Accessing the latest UMD build
 
-> https://unpkg.com/@zeainc/zea-engine/dist/index.umd.js
+[UMD](https://github.com/umdjs/umd) is a technique for distributing JavaScript packages which are capable of working everywhere, be it in the client, on the server, or elsewhere.
 
-#### Accessing the latest ES6 Module
+Within [the Zea Engine's dist folder](https://unpkg.com/@zeainc/zea-engine/dist/), there are several build files: CommonJS, ESM, and UMD. If you're not sure about which one to use, go for the UMD build, due to it's flexibility.
 
-In this tutorial, we will start by loading the engine directly off Unpkg as an ES6 Module. Within the engine dist folder, there are two build files. A CommonJS build, and an ESM build. Developers should use the ESM build.
+In this tutorial, we will start by loading the Zea Engine directly off unpkg as a UMD module.
 
-To load this file, you can specify the path within the package.
+To load this file, you can specify the path within the package: https://unpkg.com/@zeainc/zea-engine/dist/index.umd.js
 
-https://unpkg.com/@zeainc/zea-engine/dist/index.esm.js
-
-> Note: we omitted the version number, which means we default to the latest version. Initially, that is fine, but you will need to download the packages to your system for more control over which version you wish to load. Downloading the packages is covered later in the tutorial.
-
+ℹ️ Note: we omitted the version number, which means we default to the latest version. Initially, that is fine, but eventually you will need to lock the packages to a specific version, in that way you will have full control over which version you wish to load.
 
 
 ## Basic Setup
-First, let's create a directory for our demo project:
 
-```sh
-> mkdir zea-engine-demo
-> cd zea-engine-demo
-```
-
-*Throughout the Guides we will use diff blocks to show you what changes we're making to directories, files, and code.*
-*Now we'll create the following HTML file and its contents:*
-
-**project**
-
-```diff
- zea-engine-demo
- + |- index.html
-```
-
-**Index.html**
- 
-```html
-<!doctype html>
-<html>
-  <head>
-    <title>Getting Started using Zea Engine</title>
-  </head>
- <body>
-    <div id="app"></div>
-  </body>
-
-  <script crossorigin src="//cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine"></script>
-  <script type="module">
-    const { Scene, GLRenderer } = globalThis.zeaEngine
-  </script>
-</html>
-```
-
-Zea Engine is exported using [UMD](https://github.com/umdjs/umd) module format, which is intended to work everywhere(Client or Server).
-When importing the script in your html, it will setup the "zeaEngine" object in the global scope, which is accessible through `window` or `globalThis` objects.
-
-
-The module script allows us to directly import classes defined in the engine into the scope of the running script. 
-
-```javascript
-const { Scene, GLRenderer } = globalThis.zeaEngine
-```
-Now, we can use the classes of the engine to leverage our development.
- 
-```javascript
-// Retrieves the div from the DOM tree that the renderer will attach the canvas element to.
-const domElement = document.getElementById("app");
-
-// Constructs the Scene object that will own all the data.
-const scene = new Scene();
-
-// A helper function creates a grid with size 10.0 and with 10 subdivisions in each direction. 
-scene.setupGrid(10.0, 10);
-
-// Constructs the renderer, providing the DOM element retrieved earlier.
-const renderer = new GLRenderer(domElement);
-
-// Connecting the Renderer to the scene so that the renderer starts to render the scene.
-renderer.setScene(scene);
-```
-
-
-![getting-started-0](../_media/getting-started-0.png)
-
-# Setting up a src directory
-
-```diff
- zea-engine-demo
-  |- package.json
-  |- index.html
-+ |- /src
-+   |- index.js
-```
-
-**src/index.js**
-
-```javascript
-const { Scene, GLRenderer } = globalThis.zeaEngine
- 
-const domElement = document.getElementById("app");
- 
-const scene = new Scene();
-scene.setupGrid(10.0, 10);
- 
-const renderer = new GLRenderer(domElement);
-renderer.setScene(scene);
-renderer.resumeDrawing();
-```
-
-> "../node_modules/@zeainc/zea-engine/dist/index.esm.js"
-
-The module path now needs to resolve up one folder before traversing down into the node_modules folder.
- 
-**index.html**
-```diff
-<!doctype html>
-<html>
-  <head>
- 
-    <title>Getting Started using Zea Engine</title>
-    <script src="https://unpkg.com/@zeainc/zea-engine/dist/zea-engine.js"></script>
-  </head>
-  <body>
-    <div id="app"></div>
-+    <script type="module" src="src/index.js"></script>
--  <script type="module">
--
-- const { Scene, GLRenderer } = globalThis.zeaEngine
-
-- const domElement = document.getElementById("app");
-
-- const scene = new Scene();
-- scene.setupGrid(10.0, 10);
-
-- const renderer = new GLRenderer(domElement);
-- renderer.setScene(scene);
-- renderer.resumeDrawing();
--
--  </script>
-</html>
-```
-
-**Running a server**
-The HTML file can no longer run without a local server running. ES6 modules are subject to the same-origin policy. You need to run your script from a local server, opening the file directly with a browser will not work.
-
-
-**Install the server Globally via NPM**
-npm install --global http-server
-Now you can run the server in the folder of the demo.
+First, let's create a basic file structure for our demo project by running these commands in your terminal:
 
 ```bash
-> http-server
-Starting up http-server, serving ./
-Available on:
-  http://192.168.2.24:8080
-  http://127.0.0.1:8080
+mkdir zea-engine-demo
+cd zea-engine-demo
+touch index.html index.js
 ```
 
-Loading the given URL in the browser should now generate the following result.
+You should end up with something like this:
 
-
-![getting-started-1](../_media/getting-started-1.png)
-
-# Installing Engine Locally
-As a project grows, it becomes preferable to use NPM to manage downloading packages for us. To start using npm, initialize the package.json file and add the engine as one of the dependencies.
-
-```
-npm init -y
-npm install @zeainc/zea-engine
+```bash
+zea-engine-demo
+├── index.html
+└── index.js
 ```
 
-We also need to adjust our package.json file to make sure we mark our package as private and remove the main entry. Removing the main extry will prevent an accidental publish of your code.
-If you want to learn more about the inner workings of package.json, we recommend reading the npm documentation.
+Now, let's add some content to them (feel free to copy/paste):
 
-**package.json**
-```diff
- {
-    "name": "zea-engine-demo",
-    "version": "1.0.0",
-    "description": "",
-    "private": true,
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-      "zea-engine": "^1.3.0",
-    },
-  }
+📄 **index.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting started using the Zea Engine</title>
+
+    <!-- Styles to display the canvas as we need. -->
+    <style>
+      body {
+        height: 100vh;
+        margin: 0;
+      }
+
+      #renderer {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+
+    <!-- Import the Zea Engine -->
+    <script crossorigin src="https://unpkg.com/@zeainc/zea-engine@2"></script>
+
+    <!-- Import the webpage's javascript file -->
+    <script src="/script.js" type="module"></script>
+  </head>
+  <body>
+    <!-- The canvas we use as renderer -->
+    <canvas id="renderer" />
+  </body>
+</html>
 ```
-Now we can modify the html file to load directly out of the local node modules folder.
+
+📄 **index.js**
  
-**index.js**
-```diff
-import { 
-  Scene,
-  GLRenderer 
--} from "https://unpkg.com/@zeainc/zea-engine/dist/index.esm.js"
-+} from "../node-modules@zeainc/zea-engine@/dist/index.esm.js"
-```
-Instead of loading zea-engine off the Unpkg servers, we'll load it from a local system. Loading from a local system gives more control over which version we use, and means all data is served from a controlled environment.
+Since the Zea Engine is being loaded using [UMD](https://github.com/umdjs/umd), it will add the `zeaEngine` object to the global scope, which is accessible through `window.zeaEngine` or `globalThis.zeaEngine` ([check globalThis support here](https://caniuse.com/mdn-javascript_builtins_globalthis)).
 
-*Note: After downloading and extracting the 'getting-started-2.zip' archive, you will need to run 'npm install' in the folder to cause npm to download the engine package specified in the package.json file.*
+```javascript
+const { GLRenderer, Scene } = window.zeaEngine
 
-# Using Webpack to bundle the engine
-Webpack is used to compile JavaScript modules and is a popular tool in web development. For more information on getting started using Webpack, we recommend reading follow the following tutorial: https://webpack.js.org/guides/getting-started/ 
+// Retrieve the canvas from the DOM tree.
+// The renderer will attach to it.
+const $canvas = document.getElementById('renderer')
 
-**Install the webpack-cli (the tool used to run webpack on the command line):**
+// Construct the Scene object that will own all the data.
+const scene = new Scene()
 
-```sh
-> npm install webpack webpack-cli --save-dev
-```
+// Create a grid with size 10.0 and with 10 subdivisions in each direction. 
+scene.setupGrid(10.0, 10)
 
-First, we'll adjust our directory structure, separating the "source" code (/src) from our "distribution" code (/dist). The "source" code is the code that we'll write and edit. The "distribution" code is the minimized and optimized output of our build process that will load in the browser. Adjust the directory structure as follows:
+// Construct the renderer, providing the canvas retrieved earlier.
+const renderer = new GLRenderer($canvas)
 
-**project**
-
-```diff
-  |- package.json
-+ |- /dist
-+   |- index.html
-- |- index.html
-  |- /src
-    |- index.js
+// Connect the Renderer to the Scene so that the Renderer starts to render the scene.
+renderer.setScene(scene)
 ```
 
-**src/index.js**
+## Running a local server
 
-```diff
-import { 
-  Scene,
-  GLRenderer 
-- } from "./node_modules/@zeainc/zea-engine/dist/index.esm.js"
-+ } from "@zeainc/zea-engine"
+The index.html file can not be loaded without a local server, since the index.js file would be blocked by [the CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). To be able to load our page in the browser, we will use [es-dev-server](https://www.npmjs.com/package/es-dev-server), a web server for development without bundling.
 
-const domElement = document.getElementById("app");
- 
-const scene = new Scene();
-scene.setupGrid(10.0, 10);
- 
-const renderer = new GLRenderer(domElement);
-renderer.setScene(scene);
-renderer.resumeDrawing();
+Run this command in your terminal:
+
+```bash
+npx es-dev-server
 ```
 
-Now that Webpack will bundle the scripts, the import statement needs to be modified.
-The Webpack bundling tool knows that installed modules are in the node_modules folder and to remove that from the beginning of the path. Webpack then opens the package.json file and reads where to find the script file in the dist folder,  so we can now remove that part.
-Now, since we'll be bundling our scripts, modify the other script tag to load the bundle, instead of the raw /src file:
+You should get an output like this:
 
-**dist/index.html**
-```diff
- <!doctype html>
-  <html>
-   <head>
-    <title>Getting Started using Zea Engine</title>
-   </head>
-   <body>
-    <div id="app"></div>
--    <script src="./src/index.js"></script>
-+    <script src="main.js"></script>
-   </body>
-  </html>
+```bash
+es-dev-server started on http://localhost:8000
+  Serving files from '/Users/me/zea-engine-demo'.
+  Using auto compatibility mode, transforming code on older browsers based on user agent.
 ```
 
-By stating what dependencies a module needs, Webpack can use this information to build a dependency graph. It then uses the graph to generate an optimized bundle where scripts will be executed in the correct order.
-With that said, let's run npx Webpack, which will take our script at src/index.js as the entry point, and generate dist/main.js as the output:
+📷  Loading the given URL in your browser should generate the following result:
 
-```sh
-> npx webpack
-Hash: 566904c80f5d19766290
-Version: webpack 4.43.0
-Time: 4401ms
-Built at: 2020-07-15 10:36:11 a.m.
-  Asset     Size  Chunks                    Chunk Names
-main.js  852 KiB       0  [emitted]  [big]  main
-Entrypoint main [big] = main.js
-[1] ./src/index.js 277 bytes {0} [built]
-[3] (webpack)/buildin/harmony-module.js 573 bytes {0} [built]
-[5] (webpack)/buildin/global.js 472 bytes {0} [built]
-    + 6 hidden modules
+![getting-started-grid](../_media/getting-started-grid.png ':class=screenshot')
 
-WARNING in configuration
-The 'mode' option has not been set; Webpack will fallback to 'production' for this value. Set 'mode' option to 'development' or 'production' to enable defaults for each environment.
-You can also set it to 'none' to disable any default behavior. Learn more: https://webpack.js.org/configuration/mode/
+## Remix your own Zea Engine app
 
-WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB). Larger asset sizes can impact web performance.
-Assets:
-  main.js (852 KiB)
+Using what we just learned, you can now remix your own Zea Engine apps. Try, for example, changing the number of divisions within the grid:
 
-WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). Larger asset sizes can impact web performance.
-Entrypoints:
-  main (852 KiB)
-      main.js
+https://glitch.com/edit/#!/zea-demo-grid
 
+## Debugging Zea Engine apps
 
-WARNING in Webpack performance recommendations:
-You can limit your bundles' size by using import() or require.ensure to lazy load some parts of your application.
-For more info visit https://webpack.js.org/guides/code-splitting/
-```
- 
-Your output may vary slightly, but if the build is successful, you are good to go. Also, don't worry about the warning, we'll tackle that later.
-Open index.html in your browser and, if everything went right, you should see the following:
+ℹ️ Please make sure you're already familiar with [debugging JavaScript in Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/javascript).
 
-> Note: webpack has transpiled the es6 modules into standard javascript, which does not have the Same Origin policy enforced on es6 modules. 
-> This means you can > load the HTML file directly without running the server. However, if you still have the server running, you can also use the served url.
-> http://127.0.0.1:8080/dist/
+Now, let's debug a hypothetical situation. For some reason, your grid is not rendering, and all you get is a strange looking white plane, like this:
 
-If you are getting a syntax error in the middle of minified JavaScript when opening index.html in the browser, set development mode and run npx webpack again. This is related to running npx webpack on latest Node.js (v12.5+) instead of LTS version.
+📷  A strange looking white plane, Aka, the 🐞:
 
-![getting-started-3](../_media/getting-started-3.png)
+![getting-started-strange-plane](../_media/getting-started-strange-plane.png ':class=screenshot')
 
-<div class="download-section">
-  <a class="download-btn" title="Download"
-    onClick="downloadTutorial('getting-started-3.zip', ['./getting-started/zea-engine-demo-3/package.json', './getting-started/zea-engine-demo-3/dist/index.html', './getting-started/zea-engine-demo-3/src/index.js', './getting-started/zea-engine-demo-3/webpack.config.js'])" download>
-    Download
-  </a>
-</div>
-<br>
+### Step 1
 
-> Note: After downloading and extracting the 'getting-started-3.zip' archive, you will need to run the following commands in the folder
-> 1. 'npm install'
-> 2. 'npx webpack'
+Open the DevTools Sources panel and locate the index.js file:
 
+![getting-started-sources-panel](../_media/getting-started-sources-panel.png ':class=screenshot')
+
+### Step 2
+
+Pause the code with a breakpoint:
+
+![getting-started-breakpoint-start](../_media/getting-started-breakpoint-start.png ':class=screenshot')
+
+### Step 3
+
+Step through the code until the end of the file:
+
+![getting-started-breakpoint-end](../_media/getting-started-breakpoint-end.png ':class=screenshot')
+
+Aha! Looks like we're so thrilled about learning the Zea Engine ways, that we accidentally left an extra line at the end. It turns out the strange looking white plane is actually a very crammed grid, with 10000 subdivisions in each direction.
+
+### Step 4
+
+Remove or comment the problematic line. Your grid should render again:
+
+![getting-started-commented-line](../_media/getting-started-commented-line.png ':class=screenshot')
+
+![getting-started-working-grid](../_media/getting-started-working-grid.png ':class=screenshot')
 
 # Conclusion
 

@@ -1,4 +1,4 @@
-import { OperatorOutputMode } from '../Parameters/index'
+import { OperatorOutputMode } from '../Parameters/Parameter'
 import { EventEmitter } from '../../Utilities/EventEmitter'
 
 /** Class representing an operator output.
@@ -197,7 +197,7 @@ class OperatorOutput extends EventEmitter {
     // Once operators have persistent connections,
     // we will simply uninstall the output from the parameter.
     this.detached = true
-    this._paramBindIndex = this._param.unbindOperator(this)
+    this._paramBindIndex = this._param ? this._param.unbindOperator(this) : -1
   }
 
   /**
@@ -205,7 +205,9 @@ class OperatorOutput extends EventEmitter {
    */
   reattach() {
     this.detached = false
-    this._paramBindIndex = this._param.bindOperatorOutput(this, this._paramBindIndex)
+    if (this._param) {
+      this._paramBindIndex = this._param.bindOperatorOutput(this, this._paramBindIndex)
+    }
   }
 
   /**
@@ -219,4 +221,4 @@ class OperatorOutput extends EventEmitter {
   }
 }
 
-export { OperatorOutput, OperatorOutputMode }
+export { OperatorOutput }

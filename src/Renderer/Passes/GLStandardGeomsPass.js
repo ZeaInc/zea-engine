@@ -218,7 +218,8 @@ class GLStandardGeomsPass extends GLPass {
     this.__dirtyItemIndices.push(index)
 
     const gl = this.__gl
-    const glgeomItem = new GLGeomItem(gl, geomItem, glgeom, index, flags)
+    const supportInstancing = gl.floatTexturesSupported
+    const glgeomItem = new GLGeomItem(gl, geomItem, glgeom, index, supportInstancing)
     geomItem.setMetadata('glgeomItem', glgeomItem)
 
     glgeomItem.on('updated', (event) => {

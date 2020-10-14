@@ -9,7 +9,7 @@
 
 - Getting started
   * [Setting up your workspace](getting-started/development-setup.md)
-  * [Getting Started using Zea Engine](getting-started/get-started-with-engine.md)
+  * [Getting started with the Zea Engine](getting-started/get-started-with-engine.md)
 
 <!-- - Tutorials
   * [Using Groups](concepts/groups.md)
@@ -203,6 +203,8 @@
     * [NumberParameter.test](api/SceneTree/Parameters/NumberParameter.test)
     * [Parameter](api/SceneTree/Parameters/Parameter)
     * [Parameter.test](api/SceneTree/Parameters/Parameter.test)
+    * [QuatParameter](api/SceneTree/Parameters/QuatParameter)
+    * [QuatParameter.test](api/SceneTree/Parameters/QuatParameter.test)
     * [StringParameter](api/SceneTree/Parameters/StringParameter)
     * [StringParameter.test](api/SceneTree/Parameters/StringParameter.test)
     * [StructParameter](api/SceneTree/Parameters/StructParameter)

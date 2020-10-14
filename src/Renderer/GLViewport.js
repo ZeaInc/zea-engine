@@ -171,9 +171,11 @@ class GLViewport extends GLBaseViewport {
    * @param {array} treeItems - The treeItems value.
    */
   frameView(treeItems) {
-    if (this.__width > 0 && this.__height > 0) this.__camera.frameView(this, treeItems)
-    else {
-      console.warn('Unable to frameView while Viewport with and height are 0.')
+    if (this.__width > 0 && this.__height > 0) {
+      this.__camera.frameView(this, treeItems)
+    } else {
+      // Wait till the window is resized and try again.
+      this.once('resized', () => this.frameView())
     }
   }
 

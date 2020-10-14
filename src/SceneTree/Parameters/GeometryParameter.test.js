@@ -1,5 +1,6 @@
 import { GeometryParameter } from './GeometryParameter'
 import { Cylinder } from '../Geometry/Shapes/Cylinder'
+import { Cuboid } from '../Geometry/Shapes/Cuboid'
 import { GeomItem } from '../../SceneTree/GeomItem'
 
 describe('GeometryParameter', () => {
@@ -22,6 +23,31 @@ describe('GeometryParameter', () => {
     geometryParameter.setValue(geomItem)
 
     expect(geometryParameter.getValue()).toEqual(geomItem)
+  })
+
+  it('replaces a value.', () => {
+    const geometryParameter = new GeometryParameter('Foo', new Cylinder())
+
+    const cuboid = new Cuboid()
+    geometryParameter.setValue(cuboid)
+
+    expect(geometryParameter.getValue()).toEqual(cuboid)
+  })
+
+  it('propagate events.', () => {
+    const geometryParameter = new GeometryParameter('Foo')
+
+    const cuboid = new Cuboid()
+    geometryParameter.setValue(cuboid)
+
+    let changed = false
+    geometryParameter.on('boundingBoxChanged', () => {
+      changed = true
+    })
+
+    cuboid.getParameter('X').setValue(3)
+
+    expect(changed).toEqual(true)
   })
 
   /* it('saves to JSON (serialization).', () => {

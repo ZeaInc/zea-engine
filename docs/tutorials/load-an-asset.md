@@ -1,4 +1,3 @@
-
 # Loading Asset Files
 In this tutorial we will show how to load a simple Obj asset. For each type of asset, the correct Asset class must be constructed and used to load the file. 
 

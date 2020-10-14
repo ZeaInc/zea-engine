@@ -1,3 +1,4 @@
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 import { Material } from '../Material.js'
 
@@ -27,8 +28,10 @@ class MaterialParameter extends Parameter {
    * @param {Material} value - The value of the parameter.
    */
   constructor(name, value) {
-    super(name, value, 'Material')
+    super(name, undefined, 'Material')
+
     this.__valueParameterValueChanged = this.__valueParameterValueChanged.bind(this)
+    this.setValue(value)
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -132,5 +135,7 @@ class MaterialParameter extends Parameter {
     }
   }
 }
+
+Registry.register('MaterialParameter', MaterialParameter)
 
 export { MaterialParameter }

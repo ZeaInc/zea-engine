@@ -1,3 +1,4 @@
+import { Registry } from '../../Registry'
 import { Vec3 } from '../../Math/index'
 import { Parameter } from './Parameter.js'
 
@@ -51,5 +52,7 @@ class Vec3Parameter extends Parameter {
     return clonedParam
   }
 }
+
+Registry.register('Vec3Parameter', Vec3Parameter)
 
 export { Vec3Parameter }

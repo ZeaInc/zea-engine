@@ -1,6 +1,8 @@
 import { MaterialParameter } from './MaterialParameter'
 import { Material } from '../Material'
 import { BinReader } from '../BinReader'
+import { ColorParameter } from './ColorParameter'
+import { Color } from '../../Math'
 
 describe('MaterialParameter', () => {
   it('has an initial value.', () => {
@@ -23,6 +25,31 @@ describe('MaterialParameter', () => {
     expect(materialParameter.getValue()).toEqual(material)
   })
 
+  it('replaces a value.', () => {
+    const materialParameter = new MaterialParameter('Foo', new Material('itemMaterial1'))
+
+    const material2 = new Material('itemMaterial2')
+    materialParameter.setValue(material2)
+
+    expect(materialParameter.getValue()).toEqual(material2)
+  })
+
+  it('propagate events.', () => {
+    const materialParameter = new MaterialParameter('Foo')
+
+    const material = new Material('itemMaterial1')
+    material.addParameter(new ColorParameter('Color', new Color(1, 0, 0)))
+    materialParameter.setValue(material)
+
+    let changedParam
+    materialParameter.on('valueParameterValueChanged', (event) => {
+      changedParam = event.param
+    })
+
+    material.getParameter('Color').setValue(new Color(0, 1, 0))
+
+    expect(changedParam).toEqual(material.getParameter('Color'))
+  })
   /*it.skip('saves to JSON (serialization).', () => {
     const materialParameter = new MaterialParameter('Foo')
     const material = new Material('itemMaterial')

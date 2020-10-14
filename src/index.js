@@ -12,7 +12,7 @@ import * as Utilities from './Utilities/index'
 import * as SceneTree from './SceneTree/index'
 import * as Renderer from './Renderer/index'
 
-const ZeaEngine = {
+export const ZeaEngine = {
   SystemDesc,
   Registry,
   ...Math,
@@ -20,5 +20,3 @@ const ZeaEngine = {
   ...SceneTree,
   ...Renderer,
 }
-
-export default ZeaEngine

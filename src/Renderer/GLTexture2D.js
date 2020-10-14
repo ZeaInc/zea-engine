@@ -151,8 +151,12 @@ class GLTexture2D extends RefCounted {
    * @param {boolean} emit - The emit value.
    */
   configure(params, emit = true) {
-    if (!('type' in params) || !('format' in params) || !('width' in params) || !('height' in params))
-      throw new Error('Invalid texture params')
+    if (!('type' in params) || !('format' in params) || !('width' in params) || !('height' in params)) {
+      if (!params.type) throw new Error(`Invalid texture params. 'type' not provided`)
+      if (!params.format) throw new Error(`Invalid texture params. 'format' not provided`)
+      if (!params.width) throw new Error(`Invalid texture params. 'width' not provided`)
+      if (!params.height) throw new Error(`Invalid texture params. 'height' not provided`)
+    }
 
     const gl = this.__gl
     const width = params.width

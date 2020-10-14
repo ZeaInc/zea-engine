@@ -1,5 +1,5 @@
 import { Registry } from '../../Registry'
-import { Vec4 } from '../../Math/index'
+import { Quat } from '../../Math/index'
 import { Parameter } from './Parameter.js'
 
 /**
@@ -7,22 +7,22 @@ import { Parameter } from './Parameter.js'
  *
  * i.e.:
  * ```javascript
- * const vec4Param = new Vec4Parameter('MyVec4', new Vec4(1.2, 3.4, 1, 4.2))
+ * const quatParam = new QuatParameter('MyQuat', new Quat(1.2, 3.4, 1, 4.2))
  * //'myParameterOwnerItem' is an instance of a 'ParameterOwner' class.
  * // Remember that only 'ParameterOwner' and classes that extend from it can host 'Parameter' objects.
- * myParameterOwnerItem.addParameter(vec4Param)
+ * myParameterOwnerItem.addParameter(quatParam)
  * ```
  *
  * @extends Parameter
  */
-class Vec4Parameter extends Parameter {
+class QuatParameter extends Parameter {
   /**
-   * Create a Vec4 parameter.
-   * @param {string} name - The name of the Vec4 parameter.
-   * @param {Vec4} value - The value of the parameter.
+   * Create a Quat parameter.
+   * @param {string} name - The name of the Quat parameter.
+   * @param {Quat} value - The value of the parameter.
    */
   constructor(name, value) {
-    super(name, value ? value : new Vec4(), 'Vec4')
+    super(name, value ? value : new Quat(), 'Quat')
   }
 
   // ////////////////////////////////////////
@@ -42,17 +42,17 @@ class Vec4Parameter extends Parameter {
   // Clone
 
   /**
-   * The clone method constructs a new Vec4 parameter, copies its values
+   * The clone method constructs a new Quat parameter, copies its values
    * from this parameter and returns it.
    *
-   * @return {Vec4Parameter} - Returns a new Vec4 parameter.
+   * @return {QuatParameter} - Returns a new Quat parameter.
    */
   clone() {
-    const clonedParam = new Vec4Parameter(this.__name, this.__value.clone())
+    const clonedParam = new QuatParameter(this.__name, this.__value.clone())
     return clonedParam
   }
 }
 
-Registry.register('Vec4Parameter', Vec4Parameter)
+Registry.register('QuatParameter', QuatParameter)
 
-export { Vec4Parameter }
+export { QuatParameter }

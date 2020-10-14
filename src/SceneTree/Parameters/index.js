@@ -6,6 +6,7 @@ export * from './Vec2Parameter.js'
 export * from './Vec3Parameter.js'
 export * from './Vec4Parameter.js'
 export * from './ColorParameter.js'
+export * from './QuatParameter.js'
 export * from './Mat3Parameter.js'
 export * from './Mat4Parameter.js'
 export * from './XfoParameter.js'
@@ -17,8 +18,6 @@ export * from './StructParameter.js'
 export * from './TreeItemParameter.js'
 export * from './ItemSetParameter.js'
 // export * from './KinematicGroupParameter.js';
-
-export * from './ProxyParameter.js'
 
 // Note: can't be imported, because ParameterOwner imports these Parameters
 // export * from './MaterialParameter.js';

@@ -40,16 +40,6 @@ class GLMaterial extends EventEmitter {
   }
 
   /**
-   * The generateShaderBinding method.
-   */
-  generateShaderBinding() {
-    const params = this.__material.getParameters()
-    for (const param of params) {
-      bindParam(gl, param)
-    }
-  }
-
-  /**
    * The bind method.
    * @param {any} renderstate - The renderstate value.
    * @param {any} warnMissingUnifs - The renderstate value.

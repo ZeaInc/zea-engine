@@ -21,13 +21,13 @@ class GLGeomItem extends EventEmitter {
    * @param {any} id - The id value.
    * @param {number} flags - The flags value.
    */
-  constructor(gl, geomItem, glGeom, id, flags = null) {
+  constructor(gl, geomItem, glGeom, id, supportInstancing = false) {
     super()
     this.gl = gl
     this.geomItem = geomItem
     this.glGeom = glGeom
     this.id = id
-    this.flags = flags
+    this.supportInstancing = supportInstancing
     this.visible = this.geomItem.isVisible()
     this.culled = false
 
@@ -42,7 +42,7 @@ class GLGeomItem extends EventEmitter {
     this.updateVisibility = this.updateVisibility.bind(this)
     this.destroy = this.destroy.bind(this)
 
-    if (!gl.floatTexturesSupported) {
+    if (!this.supportInstancing) {
       this.geomMatrixDirty = true
       this.geomMatrixChanged = () => {
         this.geomMatrixDirty = true
@@ -55,7 +55,7 @@ class GLGeomItem extends EventEmitter {
     }
 
     this.cutAwayChanged = () => {
-      if (!gl.floatTexturesSupported) {
+      if (!this.supportInstancing) {
         this.cutDataChanged = true
       } else {
         this.emit('updated', { type: GLGeomItemChangeType.GEOMITEM_CHANGED })
@@ -75,7 +75,7 @@ class GLGeomItem extends EventEmitter {
     this.geomItem.on('highlightChanged', this.highlightChanged)
     this.glGeom.on('updated', this.glGeomUpdated)
 
-    if (!gl.floatTexturesSupported) {
+    if (!this.supportInstancing) {
       const materialId = 0
       let flags = 0
       if (this.geomItem.isCutawayEnabled()) {
@@ -119,14 +119,6 @@ class GLGeomItem extends EventEmitter {
   }
 
   /**
-   * The getFlags method.
-   * @return {any} - The return value.
-   */
-  getFlags() {
-    return this.flags
-  }
-
-  /**
    * The updateVisibility method.
    */
   updateVisibility() {
@@ -157,7 +149,7 @@ class GLGeomItem extends EventEmitter {
     const gl = this.gl
     const unifs = renderstate.unifs
 
-    if (!gl.floatTexturesSupported) {
+    if (!this.supportInstancing) {
       const modelMatrixunif = unifs.modelMatrix
       if (modelMatrixunif) {
         if (this.geomMatrixDirty) {

@@ -21,6 +21,7 @@
     "dist": "yarn publish --access=public",
     "docs": "cp CHANGELOG.md docs/ && adg --config adg.config.json",
     "docs-w": "cp CHANGELOG.md docs/ && adg -w --config=adg.config.json",
+    "docs:serve": "docsify serve docs/",
     "generate": "plop",
     "release": "standard-version",
     "start": "es-dev-server",
@@ -45,6 +46,7 @@
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^4.3.0",
     "ink-docstrap": "^1.3.2",
     "jest": "^26.1.0",
     "jest-coverage-badges": "^1.1.2",
@@ -55,6 +57,12 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-web-worker-loader": "^1.3.0",
     "standard-version": "^9.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
   },
   "standard-version": {
     "skip": {

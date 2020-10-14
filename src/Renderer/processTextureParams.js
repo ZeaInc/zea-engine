@@ -1,5 +1,8 @@
 const processTextureParams = function (gl, params) {
-  if (!params.width || !params.height) throw new Error('Invalid texture params')
+  if (!params.width || !params.height) {
+    if (!params.width) throw new Error(`Invalid texture params. 'width' not provided`)
+    if (!params.height) throw new Error(`Invalid texture params. 'height' not provided`)
+  }
 
   const maxSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
   if (params.width <= 0 || params.width > maxSize || params.height <= 0 || params.height > maxSize) {

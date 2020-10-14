@@ -146,6 +146,7 @@ class Parameter extends EventEmitter {
       this.__boundOps[i].setParamBindIndex(i)
     }
     // If we weren't already dirty, make sure to emit a 'valueChanged' anyway.
+    this.__findFirstOP_WRITE()
     if (!this.setDirty(index)) this.emit('valueChanged', { mode: 0 })
     return index
   }
@@ -163,8 +164,22 @@ class Parameter extends EventEmitter {
     for (let i = index; i < this.__boundOps.length; i++) {
       this.__boundOps[i].setParamBindIndex(i)
     }
+    this.__findFirstOP_WRITE()
     this.setDirty(Math.max(0, index - 1))
     return index
+  }
+
+  /**
+   * Find the first operator in our stack which writes using an OP_WRITE connection.
+   * All operators before this op can be ignored during dirty propagation.
+   * @private
+   */
+  __findFirstOP_WRITE() {
+    this.__firstOP_WRITE = this.__boundOps.length
+    for (this.__firstOP_WRITE--; this.__firstOP_WRITE > 0; this.__firstOP_WRITE--) {
+      // Find the first OP_WRITE binding. (Note: we could cache this)
+      if (this.__boundOps[this.__firstOP_WRITE].getMode() == OperatorOutputMode.OP_WRITE) break
+    }
   }
 
   /**
@@ -176,19 +191,22 @@ class Parameter extends EventEmitter {
   setDirty(index) {
     // Determine the first operator in the stack that must evaluate to clean the parameter.
     if (index < this.__dirtyOpIndex) {
-      // Walk back down the stack and dirty each of the other bound operators.
       // If we must dirty all operators in the stack from the last OP_WRITE to the end.
-      for (this.__dirtyOpIndex--; this.__dirtyOpIndex > 0; this.__dirtyOpIndex--) {
-        // Dirty all the other bound ops in the stack until we hit an OP_WRITE
-        if (this.__dirtyOpIndex != index) {
-          // This will cause the other outputs of the operator to become dirty.
-          this.__boundOps[this.__dirtyOpIndex].getOperator().setDirty()
+      // Note: If a setDirty call comes from an op that precedes an OP_WRITE operator, we
+      // can safely discard it, as its output will have no effect on the value of this parameter.
+      let newDirtyIndex = this.__firstOP_WRITE
+      if (newDirtyIndex <= index) {
+        this.__dirtyOpIndex = newDirtyIndex
+        for (newDirtyIndex++; newDirtyIndex < this.__boundOps.length; newDirtyIndex++) {
+          // Dirty all the other bound ops from the OP_WRITE to the top of the stack.
+          if (newDirtyIndex != index) {
+            // This will cause the other outputs of the operator to become dirty.
+            this.__boundOps[newDirtyIndex].getOperator().setDirty()
+          }
         }
-        if (this.__boundOps[this.__dirtyOpIndex].getMode() == OperatorOutputMode.OP_WRITE) break
+        this.emit('valueChanged', { mode: 0 })
+        return true
       }
-
-      this.emit('valueChanged', { mode: 0 })
-      return true
     }
 
     return false
@@ -244,12 +262,16 @@ class Parameter extends EventEmitter {
         // A parameter can become dirty (so __dirtyOpIndex == 0), and then another operator bound on top.
         // if the next op is a WRITE op, then we can fast forward the dirty index.
         const thisClassName = Registry.getBlueprintName(this)
-        const opClassName = Registry.getBlueprintName(this.__boundOps[index].getOperator())
+        const op = this.__boundOps[index].getOperator()
+        const opClassName = Registry.getBlueprintName(op)
         throw new Error(
           `Parameter: ${thisClassName} with name: ${this.getName()} is not cleaning all outputs during evaluation of op: ${opClassName} with name: ${op.getName()}`
         )
       }
+    } else {
+      // console.log(`cleaned:`, this.getPath())
     }
+
     this.__value = value
 
     // As each operator writes its value, the dirty value is incremented

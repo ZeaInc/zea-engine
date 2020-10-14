@@ -1,4 +1,5 @@
 /* eslint-disable require-jsdoc */
+import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
 
 /**
@@ -152,5 +153,7 @@ class TreeItemParameter extends Parameter {
     }
   }
 }
+
+Registry.register('TreeItemParameter', TreeItemParameter)
 
 export { TreeItemParameter }

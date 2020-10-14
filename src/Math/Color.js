@@ -400,7 +400,7 @@ class Color extends AttrValue {
   }
 
   /**
-   * Returns the hexadecimal value of this color.
+   * Returns the hexadecimal value of this color, including the leading "#" character.
    *
    * @return {string} - Returns the hex value.
    */

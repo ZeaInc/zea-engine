@@ -69,7 +69,7 @@ class Torus extends ProceduralMesh {
     const normals = this.getVertexAttribute('normals')
     let vertex = 0
     for (let i = 0; i < nbLoops; i++) {
-      const theta = (i / nbLoops) * 2.0 * Math.PI
+      const theta = -((i / nbLoops) * 2.0 * Math.PI)
       const ctheta = Math.cos(theta)
       const stheta = Math.sin(theta)
 
