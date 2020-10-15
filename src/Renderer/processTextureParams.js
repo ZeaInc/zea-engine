@@ -34,6 +34,7 @@ const processTextureParams = function (gl, params) {
   processParam('flipY', false)
   processParam('mipMapped', false)
 
+  processParam('depthInternalFormat')
   processParam('depthFormat')
   processParam('depthType')
 

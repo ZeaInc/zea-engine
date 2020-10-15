@@ -399,7 +399,7 @@ class GLFbo {
    */
   clear() {
     const gl = this.__gl
-    gl.colorMask(true, true, true, true) // Don't write to the color channels at all
+    gl.colorMask(true, true, true, true)
     gl.clearColor(...this.__clearColor)
     if (this.__createDepthTexture) {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)

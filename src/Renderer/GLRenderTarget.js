@@ -187,7 +187,7 @@ class GLRenderTarget extends EventEmitter {
   }
 
   /**
-   * The bindForReading method.
+   * Binds the render target in preparation for 'readPixels' calls to pull data back to main memory.
    */
   bindForReading() {
     const gl = this.__gl
