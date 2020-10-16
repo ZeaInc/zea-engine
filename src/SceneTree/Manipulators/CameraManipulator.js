@@ -1,9 +1,10 @@
 /* eslint-disable require-jsdoc */
-import { Vec2, Vec3, Quat, Xfo } from '../../Math/index'
+import { Vec2, Vec3, Quat, Xfo, Ray } from '../../Math/index'
 import { ParameterOwner } from '../ParameterOwner.js'
 import { NumberParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
 import { POINTER_TYPES } from '../../Utilities/EnumUtils'
+import { PassType } from '../../Renderer/Passes/GLPass.js'
 
 const MANIPULATION_MODES = {
   pan: 0,
@@ -13,6 +14,7 @@ const MANIPULATION_MODES = {
   turntable: 4,
   tumbler: 5,
   trackball: 6,
+  walk: 7,
 }
 
 /**
@@ -86,16 +88,21 @@ class CameraManipulator extends ParameterOwner {
     this.__pointerDragDelta = new Vec2()
     this.__keyboardMovement = false
     this.__keysPressed = []
-    this.__maxVel = 0.002
     this.__velocity = new Vec3()
+    this.__prevVelocityIntegrationTime = -1
 
     this.__ongoingTouches = {}
 
     this.__globalXfoChangedDuringDrag = this.__globalXfoChangedDuringDrag.bind(this)
 
-    this.__orbitRateParam = this.addParameter(new NumberParameter('orbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
-    this.__dollySpeedParam = this.addParameter(new NumberParameter('dollySpeed', 0.02))
-    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('mouseWheelDollySpeed', 0.0005))
+    this.__orbitRateParam = this.addParameter(new NumberParameter('OrbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
+    this.__dollySpeedParam = this.addParameter(new NumberParameter('DollySpeed', 0.02))
+    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('MouseWheelDollySpeed', 0.0005))
+    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('WalkSpeed', 6)) // Value is in meters/second
+    
+    this.addParameterDeprecationMapping('orbitRate', 'OrbitRate')
+    this.addParameterDeprecationMapping('dollySpeed', 'DollySpeed')
+    this.addParameterDeprecationMapping('mouseWheelDollySpeed', 'MouseWheelDollySpeed')
   }
 
   /**
@@ -698,9 +705,52 @@ class CameraManipulator extends ParameterOwner {
   __integrateVelocityChange(event) {
     const { viewport } = event
     const camera = viewport.getCamera()
-    const delta = new Xfo()
-    delta.tr = this.__velocity.normalize().scale(this.__maxVel)
-    camera.getParameter('GlobalXfo').setValue(camera.getParameter('GlobalXfo').getValue().multiply(delta))
+
+    if (this.__prevVelocityIntegrationTime > 0) {
+      const time = performance.now()
+      const timeDelta = (time - this.__prevVelocityIntegrationTime) / 1000
+      const speed = this.getParameter('WalkSpeed').getValue()
+      const movement = new Xfo()
+      movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
+
+      const cameraXfo = camera.getParameter('GlobalXfo').getValue()
+
+      
+      if (speed > 0.0) {
+        // As we move over a terrain, it can be helpfull to allow users to walk 
+        // over surfaces without falling through them. This allows users to look 
+        // down while walking forwards for example.
+        // Calculate where we might be soon
+        movement.tr = this.__velocity.normalize().scale(speed * 0.2)
+        const newXfo = cameraXfo.multiply(movement)
+        const ray = new Ray(newXfo.tr, newXfo.ori.getZaxis())
+        ray.dir.negateInPlace()
+
+        // Raycast from 1.5 meter up - 3 meters down.
+        newXfo.tr.z += 1.0
+        const dist = 3.0
+        const area = 0.5
+        const results = viewport.getRenderer().raycastCluster(newXfo, ray, dist, area, PassType.OPAQUE);
+
+        if (results.length > 0) {
+          const avgDist = 0
+          for (const result in results) {
+            avgDist += result.dist
+          }
+          avgDist /= results.length
+
+          // Snap the movement vector to make the user rest on the ground.
+          movement.tr.z = avgDist - 1.0
+        }
+      }
+      
+      camera.getParameter('GlobalXfo').setValue(cameraXfo.multiply(movement))
+    }
+
+
+
+
+    this.__prevVelocityIntegrationTime = time
   }
 
   /**
@@ -713,44 +763,43 @@ class CameraManipulator extends ParameterOwner {
   onKeyPressed(event) {
     // Note: onKeyPressed is called initially only once, and then we
     // get a series of calls. Here we ignore subsequent events.
-    // (TODO: move this logic to a special controller)
-    /*
-    const key = String.fromCharCode(event.keyCode).toLowerCase()
-    switch (key) {
-      case 'w':
-        if (this.__keysPressed.includes(key))
+    if (this.__defaultManipulationState == MANIPULATION_MODES.walk) {
+      const key = String.fromCharCode(event.key).toLowerCase()
+      switch (key) {
+        case 'w':
+          if (this.__keysPressed.includes(key))
+            return false;
+          this.__velocity.z -= 1.0;
+          break;
+        case 's':
+          if (this.__keysPressed.includes(key))
+            return false;
+          this.__velocity.z += 1.0;
+          break;
+        case 'a':
+          if (this.__keysPressed.includes(key))
+            return false;
+          this.__velocity.x -= 1.0;
+          break;
+        case 'd':
+          if (this.__keysPressed.includes(key))
+            return false;
+          this.__velocity.x += 1.0;
+          break;
+        default:
           return false;
-        this.__velocity.z -= 1.0;
-        break;
-      case 's':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.z += 1.0;
-        break;
-      case 'a':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.x -= 1.0;
-        break;
-      case 'd':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.x += 1.0;
-        break;
-      default:
-        return false;
-    }
-    this.__keysPressed.push(key);
-    if (!this.__keyboardMovement) {
-      this.__keyboardMovement = true;
-      let animationFrame = ()=>{
-        this.__integrateVelocityChange(event)
-        if (this.__keyboardMovement)
-          window.requestAnimationFrame(animationFrame);
       }
-      window.requestAnimationFrame(animationFrame);
+      this.__keysPressed.push(key);
+      if (!this.__keyboardMovement) {
+        this.__keyboardMovement = true;
+        let animationFrame = ()=>{
+          this.__integrateVelocityChange(event)
+          if (this.__keyboardMovement)
+            window.requestAnimationFrame(animationFrame);
+        }
+        window.requestAnimationFrame(animationFrame);
+      }
     }
-    */
     return false // no keys handled
   }
 
@@ -769,8 +818,6 @@ class CameraManipulator extends ParameterOwner {
    * @private
    */
   onKeyUp(event) {
-    // (TODO: move this logic to a special controller)
-    /*
     const key = String.fromCharCode(event.keyCode).toLowerCase()
     switch (key) {
       case 'w':
@@ -792,7 +839,6 @@ class CameraManipulator extends ParameterOwner {
     this.__keysPressed.splice(keyIndex, 1);
     if (this.__keysPressed.length == 0)
       this.__keyboardMovement = false;
-    */
   }
 
   // ///////////////////////////////////
