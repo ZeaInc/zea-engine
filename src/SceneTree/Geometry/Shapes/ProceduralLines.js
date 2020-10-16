@@ -54,12 +54,13 @@ class ProceduralLines extends Lines {
 
   /**
    * If the Procedural geometry is out of date, for example if a parameter has been changed,
-   *  this method explicitly forces the geometry to be recomputed.
+   * this method explicitly forces the geometry to be recomputed.
    */
   update() {
     if (this.dirtyTopology) {
       this.rebuild()
       this.dirtyTopology = false
+      this.dirtyVertices = false
     } else if (this.dirtyVertices) {
       this.resize()
       this.dirtyVertices = false
