@@ -43,7 +43,7 @@ class GLViewport extends GLBaseViewport {
 
     // Each user has a separate camera, and so the default
     //  camera cannot be part of the scene.
-    this.setCamera(new Camera('Default'))
+    this.setCamera(new Camera('DefaultCamera'))
     this.setManipulator(new CameraManipulator())
 
     this.resize(width, height)
@@ -570,7 +570,7 @@ class GLViewport extends GLBaseViewport {
       event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
       event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     } else if (event.pointerType === POINTER_TYPES.touch) {
-      if (event.changedTouches.length == 1) {
+      if (event.touches.length == 0 && event.changedTouches.length == 1) {
         const touch = event.changedTouches[0]
         event.pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
         event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)

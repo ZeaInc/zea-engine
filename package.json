@@ -26,7 +26,7 @@
     "generate": "plop",
     "release": "standard-version",
     "start": "es-dev-server",
-    "start:watch": "es-dev-server --watch",
+    "start:watch": "es-dev-server --app-index testing-e2e/index.html --open --watch",
     "testing-server": "node testing-server/index.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
