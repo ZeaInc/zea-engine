@@ -28,6 +28,7 @@
   * [Setting up multilingual Labels](tutorials/multilingual-labels.md)
   <!-- * [Loading custom points data](tutorials/custom-points.md) -->
   * [Launching a VR Session](tutorials/VR.md)
+  * [Customize the Camera Manipulation](tutorials/custom-camera-manipulator.md)
 
 - Technical Overview
 
