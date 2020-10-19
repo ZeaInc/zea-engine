@@ -570,8 +570,8 @@ class GLViewport extends GLBaseViewport {
       event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
       event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     } else if (event.pointerType === POINTER_TYPES.touch) {
-      if (event.touches.length == 1) {
-        const touch = event.touches[0]
+      if (event.changedTouches.length == 1) {
+        const touch = event.changedTouches[0]
         event.pointerPos = this.__getPointerPos(touch.rendererX, touch.rendererY)
         event.pointerRay = this.calcRayFromScreenPos(event.pointerPos)
         event.intersectionData = this.getGeomDataAtPos(event.pointerPos, event.pointerRay)

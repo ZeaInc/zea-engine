@@ -724,6 +724,8 @@ class GLBaseRenderer extends ParameterOwner {
 
         event.pointerType = POINTER_TYPES.touch
         this.getViewport().onPointerDown(event)
+        // This prevents the event propagation to `mousedown`
+        event.preventDefault()
       },
       false
     )
@@ -732,8 +734,8 @@ class GLBaseRenderer extends ParameterOwner {
       'touchend',
       (event) => {
         event.stopPropagation()
-        for (let i = 0; i < event.touches.length; i++) {
-          calcRendererCoords(event.touches[i])
+        for (let i = 0; i < event.changedTouches.length; i++) {
+          calcRendererCoords(event.changedTouches[i])
         }
 
         event.pointerType = POINTER_TYPES.touch
