@@ -411,9 +411,11 @@ class GLViewport extends GLBaseViewport {
         let passId
         const geomData = geomDatas.subarray(i * 4, (i + 1) * 4)
         if (gl.floatGeomBuffer) {
+          if (geomData[3] == 0) continue
           passId = Math.round(geomData[0])
         } else {
-          passId = 0
+          if (geomData[0] == 0 && geomData[1] == 0) continue
+          passId = Math.floor(geomData[1] / 64)
         }
 
         const geomItemAndDist = this.__renderer.getPass(passId).getGeomItemAndDist(geomData)
