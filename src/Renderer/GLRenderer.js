@@ -396,18 +396,7 @@ class GLRenderer extends GLBaseRenderer {
    * @return {any} - The return value.
    */
   raycast(xfo, ray, dist, area = 0.01, mask = ALL_PASSES) {
-    if (this.rayCastDist != dist || this.rayCastArea != area) {
-      this.__rayCastRenderTargetProjMatrix.setOrthographicMatrix(
-        area * -0.5,
-        area * 0.5,
-        area * -0.5,
-        area * 0.5,
-        0.0,
-        dist
-      )
-      this.rayCastDist = dist
-      this.rayCastArea = area
-    }
+    const gl = this.__gl
 
     if (!this.__rayCastRenderTarget) {
       this.__rayCastRenderTarget = new GLRenderTarget(gl, {
@@ -421,7 +410,18 @@ class GLRenderer extends GLBaseRenderer {
       this.__rayCastRenderTargetProjMatrix = new Mat4()
     }
 
-    const gl = this.__gl
+    if (this.rayCastDist != dist || this.rayCastArea != area) {
+      this.__rayCastRenderTargetProjMatrix.setOrthographicMatrix(
+        area * -0.5,
+        area * 0.5,
+        area * -0.5,
+        area * 0.5,
+        0.0,
+        dist
+      )
+      this.rayCastDist = dist
+      this.rayCastArea = area
+    }
 
     const region = [0, 0, 3, 3]
     const renderstate = {
@@ -491,18 +491,7 @@ class GLRenderer extends GLBaseRenderer {
    * @return {any} - The return value.
    */
   raycastCluster(xfo, ray, dist, area = 0.01, mask = ALL_PASSES) {
-    if (this.rayCastDist != dist || this.rayCastArea != area) {
-      this.__rayCastRenderTargetProjMatrix.setOrthographicMatrix(
-        area * -0.5,
-        area * 0.5,
-        area * -0.5,
-        area * 0.5,
-        0.0,
-        dist
-      )
-      this.rayCastDist = dist
-      this.rayCastArea = area
-    }
+    const gl = this.__gl
 
     if (!this.__rayCastRenderTarget) {
       this.__rayCastRenderTarget = new GLRenderTarget(gl, {
@@ -516,7 +505,18 @@ class GLRenderer extends GLBaseRenderer {
       this.__rayCastRenderTargetProjMatrix = new Mat4()
     }
 
-    const gl = this.__gl
+    if (this.rayCastDist != dist || this.rayCastArea != area) {
+      this.__rayCastRenderTargetProjMatrix.setOrthographicMatrix(
+        area * -0.5,
+        area * 0.5,
+        area * -0.5,
+        area * 0.5,
+        0.0,
+        dist
+      )
+      this.rayCastDist = dist
+      this.rayCastArea = area
+    }
 
     const region = [0, 0, 3, 3]
     const renderstate = {
@@ -555,25 +555,22 @@ class GLRenderer extends GLBaseRenderer {
     // Then top bottom (1, 7)
     const checkPixel = (id) => geomDatas[id * 4 + 3] != 0
     const result = []
-    for (let i=0; i<3; i++) {
-      for (let j=0; j<3; j++) {
-        if (checkPixel(pixelID)) {
-          geomData = geomDatas.subarray(pixelID * 4, pixelID * 4 + 4)
-          
-          // Mask the pass id to be only the first 6 bits of the integer.
-          const passId = Math.round(geomData[0]) & (64 - 1)
-          const geomItemAndDist = this.getPass(passId).getGeomItemAndDist(geomData)
+    for (let i = 0; i < 9; i++) {
+      if (checkPixel(i)) {
+        const geomData = geomDatas.subarray(i * 4, i * 4 + 4)
+        // Mask the pass id to be only the first 6 bits of the integer.
+        const passId = Math.round(geomData[0]) & (64 - 1)
+        const geomItemAndDist = this.getPass(passId).getGeomItemAndDist(geomData)
 
-          if (geomItemAndDist) {
-            const intersectionPos = ray.start.add(ray.dir.scale(geomItemAndDist.dist))
-            result.push({
-              ray,
-              intersectionPos,
-              geomItem: geomItemAndDist.geomItem,
-              dist: geomItemAndDist.dist,
-              geomData,
-            })
-          }
+        if (geomItemAndDist) {
+          const intersectionPos = ray.start.add(ray.dir.scale(geomItemAndDist.dist))
+          result.push({
+            ray,
+            intersectionPos,
+            geomItem: geomItemAndDist.geomItem,
+            dist: geomItemAndDist.dist,
+            geomData,
+          })
         }
       }
     }

@@ -98,7 +98,7 @@ class CameraManipulator extends ParameterOwner {
     this.__orbitRateParam = this.addParameter(new NumberParameter('OrbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
     this.__dollySpeedParam = this.addParameter(new NumberParameter('DollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('MouseWheelDollySpeed', 0.0005))
-    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('WalkSpeed', 6)) // Value is in meters/second
+    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('WalkSpeed', 5)) // Value is in meters/second
     
     this.addParameterDeprecationMapping('orbitRate', 'OrbitRate')
     this.addParameterDeprecationMapping('dollySpeed', 'DollySpeed')
@@ -126,15 +126,11 @@ class CameraManipulator extends ParameterOwner {
     const { viewport } = event
     const camera = viewport.getCamera()
 
-    const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
     if (this.__keyboardMovement) {
       const globalXfo = camera.getParameter('GlobalXfo').getValue()
-      this.__pointerDownCameraXfo = globalXfo.clone()
-      this.__pointerDownZaxis = globalXfo.ori.getZaxis()
-      const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-      this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
+      this.__pointerDownCameraXfo.tr = globalXfo.tr.clone()
     }
 
     const globalXfo = this.__pointerDownCameraXfo.clone()
@@ -172,13 +168,13 @@ class CameraManipulator extends ParameterOwner {
     const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
-    if (this.__keyboardMovement) {
-      const globalXfo = camera.getParameter('GlobalXfo').getValue()
-      this.__pointerDownCameraXfo = globalXfo.clone()
-      this.__pointerDownZaxis = globalXfo.ori.getZaxis()
-      const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-      this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
-    }
+    // if (this.__keyboardMovement) {
+    //   const globalXfo = camera.getParameter('GlobalXfo').getValue()
+    //   this.__pointerDownCameraXfo = globalXfo.clone()
+    //   this.__pointerDownZaxis = globalXfo.ori.getZaxis()
+    //   const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
+    //   this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
+    // }
 
     const globalXfo = this.__pointerDownCameraXfo.clone()
 
@@ -194,14 +190,15 @@ class CameraManipulator extends ParameterOwner {
 
     globalXfo.tr = this.__pointerDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
 
-    if (this.__keyboardMovement) {
-      // TODO: debug this potential regression. we now use the generic method which emits a signal.
-      // Avoid generating a signal because we have an animation frame occurring.
-      // see: onKeyPressed
-      camera.getParameter('GlobalXfo').setValue(globalXfo)
-    } else {
-      camera.getParameter('GlobalXfo').setValue(globalXfo)
-    }
+    camera.getParameter('GlobalXfo').setValue(globalXfo)
+    // if (this.__keyboardMovement) {
+    //   // TODO: debug this potential regression. we now use the generic method which emits a signal.
+    //   // Avoid generating a signal because we have an animation frame occurring.
+    //   // see: onKeyPressed
+    //   camera.getParameter('GlobalXfo').setValue(globalXfo)
+    // } else {
+    //   camera.getParameter('GlobalXfo').setValue(globalXfo)
+    // }
   }
 
   /**
@@ -373,7 +370,7 @@ class CameraManipulator extends ParameterOwner {
    * @private
    */
   __globalXfoChangedDuringDrag() {
-    if (!this.__calculatingDragAction) {
+    if (!this.__calculatingDragAction && !this.__keyboardMovement) {
       if (this.__dragging) {
         const camera = this.__pointerDownViewport.getCamera()
         camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
@@ -545,11 +542,11 @@ class CameraManipulator extends ParameterOwner {
     if (!this.__pointerDown) return
     const pointerPos = event.pointerPos
     this.__calculatingDragAction = true
-    if (this.__keyboardMovement) {
-      this.__pointerDragDelta = pointerPos
-    } else {
+    // if (this.__keyboardMovement) {
+    //   this.__pointerDragDelta = pointerPos
+    // } else {
       this.__pointerDragDelta = pointerPos.subtract(this.__pointerDownPos)
-    }
+    // }
     switch (this.__manipulationState) {
       case MANIPULATION_MODES.turntable:
         this.turntable(event, this.__pointerDragDelta)
@@ -561,6 +558,7 @@ class CameraManipulator extends ParameterOwner {
         this.trackball(event, this.__pointerDragDelta)
         break
       case MANIPULATION_MODES.look:
+      case MANIPULATION_MODES.walk:
         this.look(event, this.__pointerDragDelta)
         break
       case MANIPULATION_MODES.pan:
@@ -698,57 +696,58 @@ class CameraManipulator extends ParameterOwner {
   }
 
   /**
-   * The __integrateVelocityChange method.
+   * The integrateVelocityChange method.
    * @param {MouseEvent} event - The event value.
    * @private
    */
-  __integrateVelocityChange(event) {
+  integrateVelocityChange(event) {
     const { viewport } = event
     const camera = viewport.getCamera()
 
+    const time = performance.now()
     if (this.__prevVelocityIntegrationTime > 0) {
-      const time = performance.now()
       const timeDelta = (time - this.__prevVelocityIntegrationTime) / 1000
       const speed = this.getParameter('WalkSpeed').getValue()
-      const movement = new Xfo()
-      movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
+      // movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
 
-      const cameraXfo = camera.getParameter('GlobalXfo').getValue()
 
-      
       if (speed > 0.0) {
-        // As we move over a terrain, it can be helpfull to allow users to walk 
-        // over surfaces without falling through them. This allows users to look 
+        // As we move over a terrain, it can be helpful to allow users to walk
+        // over surfaces without falling through them. This allows users to look
         // down while walking forwards for example.
         // Calculate where we might be soon
-        movement.tr = this.__velocity.normalize().scale(speed * 0.2)
+        const movement = new Xfo()
+        movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
+        const cameraXfo = camera.getParameter('GlobalXfo').getValue()
+
         const newXfo = cameraXfo.multiply(movement)
-        const ray = new Ray(newXfo.tr, newXfo.ori.getZaxis())
-        ray.dir.negateInPlace()
 
         // Raycast from 1.5 meter up - 3 meters down.
-        newXfo.tr.z += 1.0
-        const dist = 3.0
+        const headHeight = 1.5
+        // newXfo.tr.z += headHeight
+        const dist = 1.5
         const area = 0.5
-        const results = viewport.getRenderer().raycastCluster(newXfo, ray, dist, area, PassType.OPAQUE);
+        const raycastXfo = new Xfo(newXfo.tr)
+        const ray = new Ray(newXfo.tr, new Vec3(0, 0, -1))
+        const results = viewport.getRenderer().raycastCluster(raycastXfo, ray, dist, area, PassType.OPAQUE);
 
         if (results.length > 0) {
-          const avgDist = 0
-          for (const result in results) {
+          let avgDist = 0
+          // eslint-disable-next-line guard-for-in
+          results.forEach((result) => {
             avgDist += result.dist
-          }
+          })
           avgDist /= results.length
 
           // Snap the movement vector to make the user rest on the ground.
-          movement.tr.z = avgDist - 1.0
+          // newXfo.tr.z = -(avgDist - headHeight)
+          const newpos = ray.start.add(ray.dir.scale(avgDist - headHeight))
+          newXfo.tr.z = newpos.z
+          this.__pointerDownCameraXfo.tr = newXfo.tr
         }
+        camera.getParameter('GlobalXfo').setValue(newXfo)
       }
-      
-      camera.getParameter('GlobalXfo').setValue(cameraXfo.multiply(movement))
     }
-
-
-
 
     this.__prevVelocityIntegrationTime = time
   }
@@ -757,50 +756,42 @@ class CameraManipulator extends ParameterOwner {
    * Causes an event to occurs when the user presses a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The keyboard event that occurs.
-   * @return {boolean} - The return value.
-   * @private
    */
   onKeyPressed(event) {
     // Note: onKeyPressed is called initially only once, and then we
     // get a series of calls. Here we ignore subsequent events.
     if (this.__defaultManipulationState == MANIPULATION_MODES.walk) {
-      const key = String.fromCharCode(event.key).toLowerCase()
+      const key = event.key.toLowerCase()
+      if (this.__keysPressed.includes(key)) return
       switch (key) {
         case 'w':
-          if (this.__keysPressed.includes(key))
-            return false;
-          this.__velocity.z -= 1.0;
-          break;
+          this.__velocity.z -= 1.0
+          break
         case 's':
-          if (this.__keysPressed.includes(key))
-            return false;
-          this.__velocity.z += 1.0;
-          break;
+          this.__velocity.z += 1.0
+          break
         case 'a':
-          if (this.__keysPressed.includes(key))
-            return false;
-          this.__velocity.x -= 1.0;
-          break;
+          this.__velocity.x -= 1.0
+          break
         case 'd':
-          if (this.__keysPressed.includes(key))
-            return false;
-          this.__velocity.x += 1.0;
-          break;
+          this.__velocity.x += 1.0
+          break
         default:
-          return false;
+          return
       }
-      this.__keysPressed.push(key);
+      this.__keysPressed.push(key)
       if (!this.__keyboardMovement) {
-        this.__keyboardMovement = true;
-        let animationFrame = ()=>{
-          this.__integrateVelocityChange(event)
-          if (this.__keyboardMovement)
-            window.requestAnimationFrame(animationFrame);
+        this.__keyboardMovement = true
+        this.__prevVelocityIntegrationTime = performance.now()
+        const animationFrame = () => {
+          this.integrateVelocityChange(event)
+          if (this.__keyboardMovement) {
+            window.requestAnimationFrame(animationFrame)
+          }
         }
-        window.requestAnimationFrame(animationFrame);
+        window.requestAnimationFrame(animationFrame)
       }
     }
-    return false // no keys handled
   }
 
   /**
@@ -815,30 +806,29 @@ class CameraManipulator extends ParameterOwner {
    * Causes an event to occur when the user releases a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The event that occurs.
-   * @private
    */
   onKeyUp(event) {
-    const key = String.fromCharCode(event.keyCode).toLowerCase()
+    const key = event.key.toLowerCase()
+    if (!this.__keysPressed.includes(key)) return
     switch (key) {
       case 'w':
-        this.__velocity.z += 1.0;
-        break;
+        this.__velocity.z += 1.0
+        break
       case 's':
-        this.__velocity.z -= 1.0;
-        break;
+        this.__velocity.z -= 1.0
+        break
       case 'a':
-        this.__velocity.x += 1.0;
-        break;
+        this.__velocity.x += 1.0
+        break
       case 'd':
-        this.__velocity.x -= 1.0;
-        break;
+        this.__velocity.x -= 1.0
+        break
       default:
-        return false;
+        return
     }
-    let keyIndex = this.__keysPressed.indexOf(key);
-    this.__keysPressed.splice(keyIndex, 1);
-    if (this.__keysPressed.length == 0)
-      this.__keyboardMovement = false;
+    const keyIndex = this.__keysPressed.indexOf(key)
+    this.__keysPressed.splice(keyIndex, 1)
+    if (this.__keysPressed.length == 0) this.__keyboardMovement = false
   }
 
   // ///////////////////////////////////
