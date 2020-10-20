@@ -98,7 +98,7 @@ class CameraManipulator extends ParameterOwner {
     this.__orbitRateParam = this.addParameter(new NumberParameter('OrbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
     this.__dollySpeedParam = this.addParameter(new NumberParameter('DollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('MouseWheelDollySpeed', 0.0005))
-    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('WalkSpeed', 5)) // Value is in meters/second
+    this.addParameter(new NumberParameter('WalkSpeed', 5)) // Value is in meters/second
     
     this.addParameterDeprecationMapping('orbitRate', 'OrbitRate')
     this.addParameterDeprecationMapping('dollySpeed', 'DollySpeed')
@@ -168,14 +168,6 @@ class CameraManipulator extends ParameterOwner {
     const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
-    // if (this.__keyboardMovement) {
-    //   const globalXfo = camera.getParameter('GlobalXfo').getValue()
-    //   this.__pointerDownCameraXfo = globalXfo.clone()
-    //   this.__pointerDownZaxis = globalXfo.ori.getZaxis()
-    //   const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-    //   this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
-    // }
-
     const globalXfo = this.__pointerDownCameraXfo.clone()
 
     // Orbit
@@ -191,14 +183,6 @@ class CameraManipulator extends ParameterOwner {
     globalXfo.tr = this.__pointerDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
 
     camera.getParameter('GlobalXfo').setValue(globalXfo)
-    // if (this.__keyboardMovement) {
-    //   // TODO: debug this potential regression. we now use the generic method which emits a signal.
-    //   // Avoid generating a signal because we have an animation frame occurring.
-    //   // see: onKeyPressed
-    //   camera.getParameter('GlobalXfo').setValue(globalXfo)
-    // } else {
-    //   camera.getParameter('GlobalXfo').setValue(globalXfo)
-    // }
   }
 
   /**
@@ -542,11 +526,8 @@ class CameraManipulator extends ParameterOwner {
     if (!this.__pointerDown) return
     const pointerPos = event.pointerPos
     this.__calculatingDragAction = true
-    // if (this.__keyboardMovement) {
-    //   this.__pointerDragDelta = pointerPos
-    // } else {
-      this.__pointerDragDelta = pointerPos.subtract(this.__pointerDownPos)
-    // }
+    this.__pointerDragDelta = pointerPos.subtract(this.__pointerDownPos)
+      
     switch (this.__manipulationState) {
       case MANIPULATION_MODES.turntable:
         this.turntable(event, this.__pointerDragDelta)
