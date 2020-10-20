@@ -550,9 +550,9 @@ class GLRenderer extends GLBaseRenderer {
     // We have a 3x3 grid of pixels, and we
     // scan them to find if any geom was in the
     // frustum.
-    // Starting with the center pixel (4),
-    // then left and right (3, 5)
-    // Then top bottom (1, 7)
+    // Note: we return every intersection, because even multiple intersections
+    // on the same geometry will be at different distances.
+    // This method is often used to get an average distance.
     const checkPixel = (id) => geomDatas[id * 4 + 3] != 0
     const result = []
     for (let i = 0; i < 9; i++) {
