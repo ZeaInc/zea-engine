@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>camera-manipulator-walkmode - Zea Engine</title>
+
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer,  CameraManipulator, Scene, Vec3, Xfo, Color, Material, GeomItem, Cone, Cuboid } = zeaEngine
+
+      const domElement = document.getElementById('app')
+
+      const scene = new Scene()
+      scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
+
+      const geomItem1 = new GeomItem('floor', new Cuboid(20, 20, 0.1), standardMaterial)
+      geomItem1.getParameter('LocalXfo').setValue(new Xfo(new Vec3(0, 0, -0.1)))
+      scene.getRoot().addChild(geomItem1, false)
+      
+      const geomItem2 = new GeomItem('Mountain1', new Cone(13.0, 4.0, 6), standardMaterial)
+      geomItem2.getParameter('LocalXfo').setValue(new Xfo(new Vec3(-15, -15, -0.1)))
+      scene.getRoot().addChild(geomItem2, false)
+
+      const geomItem3 = new GeomItem('Mountain2', new Cone(6.0, 3.0, 6), standardMaterial)
+      geomItem3.getParameter('LocalXfo').setValue(new Xfo(new Vec3(12, 8, -0.1)))
+      scene.getRoot().addChild(geomItem3, false)
+      
+      const geomItem4 = new GeomItem('Mountain3', new Cone(20.0, 6.0, 6), standardMaterial)
+      geomItem4.getParameter('LocalXfo').setValue(new Xfo(new Vec3(15, -15, -0.1)))
+      scene.getRoot().addChild(geomItem4, false)
+
+
+      renderer.getViewport().getManipulator().setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.walk)
+      renderer.getViewport().getManipulator().getParameter('OrbitRate').setValue(0.5)
+
+      // someEmitter.on('loaded', () => {
+      //   window.postMessage('done-loading')
+      // })
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>
