@@ -722,14 +722,13 @@ class CameraManipulator extends ParameterOwner {
 
         const newXfo = cameraXfo.multiply(movement)
 
-        // Raycast from 1.5 meter up - 3 meters down.
+        // Raycast from 1.5 meter up
         const headHeight = 1.5
-        // newXfo.tr.z += headHeight
         const dist = 1.5
         const area = 0.5
         const raycastXfo = new Xfo(newXfo.tr)
         const ray = new Ray(newXfo.tr, new Vec3(0, 0, -1))
-        const results = viewport.getRenderer().raycastCluster(raycastXfo, ray, dist, area, PassType.OPAQUE);
+        const results = viewport.getRenderer().raycastCluster(raycastXfo, ray, dist, area, PassType.OPAQUE)
 
         if (results.length > 0) {
           let avgDist = 0
@@ -740,9 +739,7 @@ class CameraManipulator extends ParameterOwner {
           avgDist /= results.length
 
           // Snap the movement vector to make the user rest on the ground.
-          // newXfo.tr.z = -(avgDist - headHeight)
-          const newpos = ray.start.add(ray.dir.scale(avgDist - headHeight))
-          newXfo.tr.z = newpos.z
+          newXfo.tr = ray.start.add(ray.dir.scale(avgDist - headHeight))
           this.__pointerDownCameraXfo.tr = newXfo.tr
         }
         camera.getParameter('GlobalXfo').setValue(newXfo)
