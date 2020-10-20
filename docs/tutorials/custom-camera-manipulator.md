@@ -67,3 +67,5 @@ Projects a `ball` towards onto the model and when the pointer is down, the posit
     style="height: 100%; width: 100%; border: 0;">
   </iframe>
 </div>
+
+!> If you want to understand more about this topic, please check [Matt Keeter](https://www.mattkeeter.com/projects/rotation/)'s explanation.
