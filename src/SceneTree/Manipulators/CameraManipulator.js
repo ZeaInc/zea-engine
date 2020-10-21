@@ -84,7 +84,7 @@ class CameraManipulator extends ParameterOwner {
     this.__defaultManipulationState = MANIPULATION_MODES.turntable
     this.__manipulationState = this.__defaultManipulationState
     this.__pointerDown = false
-    this.__dragging = false
+    this.__dragging = 0
     this.__pointerDragDelta = new Vec2()
     this.__keyboardMovement = false
     this.__keysPressed = []
@@ -330,24 +330,34 @@ class CameraManipulator extends ParameterOwner {
    * @param {PointerEvent} event - The event value.
    */
   initDrag(event) {
-    const { viewport } = event
+    const { viewport, pointerPos } = event
     const camera = viewport.getCamera()
     const focalDistance = camera.getFocalDistance()
 
     this.__pointerDown = true
     this.__calculatingDragAction = false
-    this.__pointerDownPos = event.pointerPos
+
+    if (this.__dragging == 0) {
+      this.__pointerDownPos = pointerPos
+    } else {
+      // IF the drag was interrupted, then we restart from the 
+      // previous mouse position so that this event will cause 
+      // a camera movement based on the delta.
+      this.__pointerDownPos = this.__prevPointerPos
+    }
+    this.__prevPointerPos = pointerPos
+
     this.__pointerDownViewport = viewport
     this.__pointerDragDelta.set(0, 0)
     this.__pointerDownCameraXfo = camera.getParameter('GlobalXfo').getValue().clone()
     this.__pointerDownZaxis = this.__pointerDownCameraXfo.ori.getZaxis()
     const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-    this.__pointerDownCameraTarget = camera.getParameter('GlobalXfo').getValue().tr.add(targetOffset)
+    this.__pointerDownCameraTarget = this.__pointerDownCameraXfo.tr.add(targetOffset)
     this.__pointerDownFocalDist = focalDistance
 
     camera.getParameter('GlobalXfo').on('valueChanged', this.__globalXfoChangedDuringDrag)
 
-    this.__dragging = true
+    this.__dragging = 1
   }
 
   /**
@@ -355,12 +365,14 @@ class CameraManipulator extends ParameterOwner {
    */
   __globalXfoChangedDuringDrag() {
     if (!this.__calculatingDragAction && !this.__keyboardMovement) {
-      if (this.__dragging) {
+      if (this.__dragging == 1) {
+        // Our mouse drag has been interrupted by another change being applied to the camera
+        // Xfo. We now need to re-initialize our drag the next time we receive a pointer event.
         const camera = this.__pointerDownViewport.getCamera()
         camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
-        this.__dragging = false
+        // Dragging needs to be re-initialized on the next update.
+        this.__dragging = 2
       }
-      this.initDrag({ viewport: this.__pointerDownViewport, pointerPos: this.__pointerDownPos })
     }
   }
 
@@ -371,12 +383,12 @@ class CameraManipulator extends ParameterOwner {
    * @param {MouseEvent} event - The event value.
    */
   endDrag(event) {
-    if (this.__dragging) {
+    if (this.__dragging == 1) {
       const { viewport } = event
       const camera = viewport.getCamera()
       camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
-      this.__dragging = false
     }
+    this.__dragging = 0
     this.__pointerDown = false
   }
 
@@ -385,21 +397,22 @@ class CameraManipulator extends ParameterOwner {
    *
    * @private
    * @param {MouseEvent} event - The event value.
-   * @param {Vec3} pos - The position value.
+   * @param {Vec3} target - The target to focus on.
+   * @param {Number} distance - The distance from the target to get to
+   * @param {Number} duration - The duration in milliseconds to aim the focus.
    */
-  aimFocus(event, pos) {
-    const { viewport } = event
-    const camera = viewport.getCamera()
+  aimFocus(camera, target, distance = -1, duration=400) {
 
     if (this.__focusIntervalId) clearInterval(this.__focusIntervalId)
 
-    const count = 20
+    const count = Math.round(duration / 20) // each step is 20ms
     let i = 0
     const applyMovement = () => {
       const initlalGlobalXfo = camera.getParameter('GlobalXfo').getValue()
       const initlalDist = camera.getFocalDistance()
-      const dir = pos.subtract(initlalGlobalXfo.tr)
-      const dist = dir.normalizeInPlace()
+      const dir = target.subtract(initlalGlobalXfo.tr)
+      const currDist = dir.normalizeInPlace()
+
 
       const orbit = new Quat()
       const pitch = new Quat()
@@ -436,8 +449,12 @@ class CameraManipulator extends ParameterOwner {
       const t = Math.pow(i / count, 2)
       const globalXfo = initlalGlobalXfo.clone()
       globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t)
+      if (distance > 0) {
+        const displacement = dir.scale(currDist - distance)
+        globalXfo.tr.addInPlace(displacement.scale(t))
+      }
 
-      camera.setFocalDistance(initlalDist + (dist - initlalDist) * t)
+      camera.setFocalDistance(initlalDist + (currDist - initlalDist) * t)
       camera.getParameter('GlobalXfo').setValue(globalXfo)
 
       i++
@@ -465,8 +482,8 @@ class CameraManipulator extends ParameterOwner {
       const { viewport } = event
       const camera = viewport.getCamera()
       const cameraGlobalXfo = camera.getParameter('GlobalXfo').getValue()
-      const pos = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
-      this.aimFocus(event, pos)
+      const target = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
+      this.aimFocus(camera, target)
     }
 
     event.preventDefault()
@@ -479,10 +496,8 @@ class CameraManipulator extends ParameterOwner {
    */
   onPointerDown(event) {
     if (event.pointerType === POINTER_TYPES.mouse) {
-      if (this.__dragging) {
-        const camera = this.__pointerDownViewport.getCamera()
-        camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
-        this.__dragging = false
+      if (this.__dragging == 1) {
+        this.endDrag(event)
       }
 
       this.initDrag(event)
@@ -524,10 +539,15 @@ class CameraManipulator extends ParameterOwner {
    */
   _onMouseMove(event) {
     if (!this.__pointerDown) return
+
+    if (this.__dragging == 2) {
+      this.initDrag(event)
+    }
+
     const pointerPos = event.pointerPos
     this.__calculatingDragAction = true
     this.__pointerDragDelta = pointerPos.subtract(this.__pointerDownPos)
-      
+
     switch (this.__manipulationState) {
       case MANIPULATION_MODES.turntable:
         this.turntable(event, this.__pointerDragDelta)
@@ -549,7 +569,7 @@ class CameraManipulator extends ParameterOwner {
         this.dolly(event, this.__pointerDragDelta)
         break
     }
-    this.__dragging = true
+    this.__prevPointerPos = pointerPos
     this.__calculatingDragAction = false
   }
 
@@ -619,22 +639,24 @@ class CameraManipulator extends ParameterOwner {
     event.stopPropagation()
     event.preventDefault()
 
-    if (event.pointerType === POINTER_TYPES.mouse) {
-      this.endDrag(event)
+    if (this.__dragging != 0) {
+      if (event.pointerType === POINTER_TYPES.mouse) {
+        this.endDrag(event)
 
-      if (!this.__pointerDragDelta.approxEqual(new Vec2(0, 0))) {
-        this.emit('movementFinished', {})
-        event.viewport.getCamera().emit('movementFinished', {})
+        if (!this.__pointerDragDelta.approxEqual(new Vec2(0, 0))) {
+          this.emit('movementFinished', {})
+          event.viewport.getCamera().emit('movementFinished', {})
+        }
+      } else if (event.pointerType === POINTER_TYPES.touch) {
+        event.preventDefault()
+        const touches = event.changedTouches
+
+        for (let i = 0; i < touches.length; i++) {
+          this.__endTouch(touches[i])
+        }
+
+        if (Object.keys(this.__ongoingTouches).length == 0) this.endDrag(event)
       }
-    } else if (event.pointerType === POINTER_TYPES.touch) {
-      event.preventDefault()
-      const touches = event.changedTouches
-
-      for (let i = 0; i < touches.length; i++) {
-        this.__endTouch(touches[i])
-      }
-
-      if (Object.keys(this.__ongoingTouches).length == 0) this.endDrag(event)
     }
   }
 
