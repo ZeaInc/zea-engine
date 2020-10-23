@@ -415,6 +415,8 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
       const glmaterialGeomItemSets = glshaderMaterials.getMaterialGeomItemSets()
       for (const glmaterialGeomItemSet of glmaterialGeomItemSets) {
         if (glmaterialGeomItemSet.drawCount == 0) continue
+        const material = glmaterialGeomItemSet.getGLMaterial().getMaterial()
+        if (!material.visibleInGeomDataBuffer) continue
         // Sometimes materials contain params required for rendering.
         // e.g. PointSize.
         // Note: avoid generating warnings for missing uniforms.
