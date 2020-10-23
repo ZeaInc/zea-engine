@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Libraries registry Registers a valid library 1`] = `
+Object {
+  "fake-lib": "0.0.1",
+}
+`;

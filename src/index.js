@@ -1,3 +1,10 @@
+import pkg from '../package.json'
+
+import { zeaDebug } from './helpers/zeaDebug'
+import { LibsRegistry } from './LibsRegistry'
+
+zeaDebug('Loaded Zea Engine version %s', pkg.version)
+
 export * from './SystemDesc'
 export * from './Registry'
 export * from './Math/index'
@@ -20,3 +27,5 @@ export const ZeaEngine = {
   ...SceneTree,
   ...Renderer,
 }
+
+export const libsRegistry = new LibsRegistry(pkg.version)
