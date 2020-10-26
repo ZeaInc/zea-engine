@@ -68,7 +68,8 @@ const MANIPULATION_MODES = {
  * ```
  *
  * **Events**
- * * **movementFinished:** Triggered when a camera movement is finished. E.g. when the user releases the mouse after a dolly, or after the focussing action has completed.
+ * * **movementFinished:** Emitted when a camera movement is finished. E.g. when the user releases the mouse after a dolly, or after the focussing action has completed.
+ * * **aimingFocus:** Emitted when a camera is being focussed on a target. E.g. when the user double clicks the mouse on a geometry in the view.
  *
  * @extends ParameterOwner
  */
@@ -99,7 +100,7 @@ class CameraManipulator extends ParameterOwner {
     this.__dollySpeedParam = this.addParameter(new NumberParameter('DollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('MouseWheelDollySpeed', 0.0005))
     this.addParameter(new NumberParameter('WalkSpeed', 5)) // Value is in meters/second
-    
+
     this.addParameterDeprecationMapping('orbitRate', 'OrbitRate')
     this.addParameterDeprecationMapping('dollySpeed', 'DollySpeed')
     this.addParameterDeprecationMapping('mouseWheelDollySpeed', 'MouseWheelDollySpeed')
@@ -340,8 +341,8 @@ class CameraManipulator extends ParameterOwner {
     if (this.__dragging == 0) {
       this.__pointerDownPos = pointerPos
     } else {
-      // IF the drag was interrupted, then we restart from the 
-      // previous mouse position so that this event will cause 
+      // IF the drag was interrupted, then we restart from the
+      // previous mouse position so that this event will cause
       // a camera movement based on the delta.
       this.__pointerDownPos = this.__prevPointerPos
     }
@@ -401,8 +402,7 @@ class CameraManipulator extends ParameterOwner {
    * @param {Number} distance - The distance from the target to get to
    * @param {Number} duration - The duration in milliseconds to aim the focus.
    */
-  aimFocus(camera, target, distance = -1, duration=400) {
-
+  aimFocus(camera, target, distance = -1, duration = 400) {
     if (this.__focusIntervalId) clearInterval(this.__focusIntervalId)
 
     const count = Math.round(duration / 20) // each step is 20ms
@@ -412,7 +412,6 @@ class CameraManipulator extends ParameterOwner {
       const initlalDist = camera.getFocalDistance()
       const dir = target.subtract(initlalGlobalXfo.tr)
       const currDist = dir.normalizeInPlace()
-
 
       const orbit = new Quat()
       const pitch = new Quat()
@@ -462,6 +461,7 @@ class CameraManipulator extends ParameterOwner {
         this.__focusIntervalId = setTimeout(applyMovement, 20)
       } else {
         this.__focusIntervalId = undefined
+
         this.emit('movementFinished', {})
         camera.emit('movementFinished', {})
       }
@@ -482,10 +482,17 @@ class CameraManipulator extends ParameterOwner {
       const { viewport } = event
       const camera = viewport.getCamera()
       const cameraGlobalXfo = camera.getParameter('GlobalXfo').getValue()
-      const target = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
-      this.aimFocus(camera, target)
+      const aimTarget = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
+      this.aimFocus(camera, aimTarget)
+
+      // Note: Collab can use these events to guide users attention.
+      event.aimTarget = aimTarget
+      event.aimDistance = event.intersectionData.dist
+      this.emit('aimingFocus', event)
+      camera.emit('aimingFocus', event)
     }
 
+    event.stopPropagation()
     event.preventDefault()
   }
 
@@ -712,7 +719,6 @@ class CameraManipulator extends ParameterOwner {
       const timeDelta = (time - this.__prevVelocityIntegrationTime) / 1000
       const speed = this.getParameter('WalkSpeed').getValue()
       // movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
-
 
       if (speed > 0.0) {
         // As we move over a terrain, it can be helpful to allow users to walk
