@@ -4,7 +4,7 @@ import { OperatorOutput } from './OperatorOutput'
 import { OperatorOutputMode } from '../Parameters/Parameter'
 import { OperatorInput } from './OperatorInput'
 
-/** An operator for aiming items at targets.
+/** An operator that calculates the delta transform of the group since items were bound to it.
  * @extends Operator
  *
  */
