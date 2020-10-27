@@ -1,19 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { Vec3, Color, Xfo } from '../Math/index'
+import { Vec3, Color, Xfo } from '../../Math/index'
+import { Registry } from '../../Registry'
 import {
   BooleanParameter,
   NumberParameter,
   Vec3Parameter,
   ColorParameter,
   XfoParameter,
-  ItemSetParameter,
   MultiChoiceParameter,
-} from './Parameters/index'
-import { MaterialParameter } from './Parameters/MaterialParameter.js'
-import { TreeItem } from './TreeItem'
-import { BaseGeomItem } from './BaseGeomItem'
-import { Registry } from '../Registry'
-import { GroupTransformXfoOperator, GroupMemberXfoOperator } from './Operators/GroupMemberXfoOperator.js'
+} from '../Parameters/index'
+import { BaseGroup } from './BaseGroup'
+import { MaterialParameter } from '../Parameters/MaterialParameter.js'
+import { TreeItem } from '../TreeItem'
+import { BaseGeomItem } from '../BaseGeomItem'
+import { GroupTransformXfoOperator, GroupMemberXfoOperator } from '../Operators/GroupMemberXfoOperator.js'
 
 const GROUP_XFO_MODES = {
   disabled: 0,
@@ -24,7 +24,7 @@ const GROUP_XFO_MODES = {
 }
 
 /**
- * Groups are a special type of `TreeItem` that allows you to gather/classify/organize/modify
+ * Groups are a special type of `BaseGroup` that allows you to gather/classify/organize/modify
  * multiple items contained within the group. Items can be added to the group directly, or using
  * its path.
  * All parameters set to the group are also set to the children; in other words, it's a faster way
@@ -40,9 +40,9 @@ const GROUP_XFO_MODES = {
  * * **CutPlaneNormal(`Vec3Parameter`):** _todo_
  * * **CutPlaneDist(`NumberParameter`):** _todo_
  *
- * @extends TreeItem
+ * @extends BaseGroup
  */
-class Group extends TreeItem {
+class Group extends BaseGroup {
   /**
    * Creates an instance of a group.
    *
@@ -52,24 +52,8 @@ class Group extends TreeItem {
     super(name)
 
     // Items which can be constructed by a user (not loaded in binary data.)
-    this.groupXfoDirty = false
     this.calculatingGroupXfo = false
-    this.dirty = false
-    this.searchRoot = null
-    this._bindXfoDirty = false
-
-    // this.invGroupXfo = undefined
     this.memberXfoOps = []
-    // this.__eventHandlers = []
-
-    const pid = 0
-    this.__itemsParam = this.addParameter(new ItemSetParameter('Items', (item) => item instanceof TreeItem))
-    this.__itemsParam.on('itemAdded', (event) => {
-      this.__bindItem(event.item, event.index)
-    })
-    this.__itemsParam.on('itemRemoved', (event) => {
-      this.__unbindItem(event.item, event.index)
-    })
 
     this.__initialXfoModeParam = this.addParameter(
       new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, ['manual', 'first', 'average', 'global'])
@@ -238,7 +222,6 @@ class Group extends TreeItem {
 
     this.memberXfoOps.forEach((op) => op.enable())
     this.calculatingGroupXfo = false
-    this.groupXfoDirty = false
   }
 
   // ////////////////////////////////////////
@@ -312,56 +295,6 @@ class Group extends TreeItem {
   // Items
 
   /**
-   *  sets the root item to be used as the search root.
-   * @param {TreeItem} treeItem
-   */
-
-  setSearchRoot(treeItem) {
-    this.searchRoot = treeItem
-  }
-
-  setOwner(owner) {
-    if (!this.searchRoot || this.searchRoot == this.getOwner()) this.searchRoot = owner
-    super.setOwner(owner)
-  }
-
-  /**
-   * This method is mostly used in our demos,
-   * and should be removed from the interface.
-   *
-   * @deprecated
-   * @param {array} paths - The paths value.
-   * @private
-   */
-  setPaths(paths) {
-    this.clearItems(false)
-
-    const searchRoot = this.getOwner()
-    if (this.searchRoot == undefined) {
-      console.warn('Group does not have an owner and so cannot resolve paths:', this.getName())
-      return
-    }
-    const items = []
-    paths.forEach((path) => {
-      const treeItem = this.searchRoot.resolvePath(path)
-      if (treeItem) items.push(treeItem)
-      else {
-        console.warn('Path does not resolve to an Item:', path, ' group:', this.getName())
-      }
-    })
-    this.setItems(items)
-  }
-
-  /**
-   * Uses the specified list of paths to look and get each `BaseItem` object and add it to Group's `Items` parameter.
-   *
-   * @param {array} paths - The paths value.
-   */
-  resolveItems(paths) {
-    this.setPaths(paths)
-  }
-
-  /**
    * The __bindItem method.
    * @param {BaseItem} item - The item value.
    * @param {number} index - The index value.
@@ -427,42 +360,13 @@ class Group extends TreeItem {
       item.propagateVisibility(-1)
     }
 
-    // const updateGlobalXfo = () => {
-    //   const initialXfoMode = this.__initialXfoModeParam.getValue()
-    //   if (initialXfoMode == GROUP_XFO_MODES.first && index == 0) {
-    //     this.calcGroupXfo()
-    //   } else if (
-    //     initialXfoMode == GROUP_XFO_MODES.average ||
-    //     initialXfoMode == GROUP_XFO_MODES.globalOri
-    //   ) {
-    //     this.calcGroupXfo()
-    //   }
-    // }
-
     if (item instanceof TreeItem) {
       const memberGlobalXfoParam = item.getParameter('GlobalXfo')
       const memberXfoOp = new GroupMemberXfoOperator(this.getParameter('GroupTransform'), memberGlobalXfoParam)
       this.memberXfoOps.splice(index, 0, memberXfoOp)
 
       item.getParameter('BoundingBox').on('valueChanged', this._setBoundingBoxDirty)
-      this._bindXfoDirty = true
     }
-
-    // this.memberXfoOps[index] = item.getParameter('GlobalXfo').getValue()
-    // eventHandlers.globalXfoChanged = (event) => {
-    //   // If the item's xfo changees, potentially through its own hierarchy
-    //   // then we need to re-bind here.
-    //   if (!this.propagatingXfoToItems) {
-    //     this.memberXfoOps[index] = item.getParameter('GlobalXfo').getValue()
-    //     this.groupXfoDirty = true
-    //     updateGlobalXfo()
-    //   }
-    // }
-    // item.on('globalXfoChanged', eventHandlers.globalXfoChanged)
-
-    item.on('boundingChanged', this._setBoundingBoxDirty)
-
-    // updateGlobalXfo()
   }
 
   /**
@@ -505,7 +409,6 @@ class Group extends TreeItem {
       this.memberXfoOps[index].detach()
       this.memberXfoOps.splice(index, 1)
       this._setBoundingBoxDirty()
-      this._bindXfoDirty = true
     }
 
     // const eventHandlers = this.__eventHandlers[index]
@@ -515,214 +418,20 @@ class Group extends TreeItem {
     // this.__eventHandlers.splice(index, 1)
   }
 
-  /**
-   * Adds an item to the group(See `Items` parameter).
-   *
-   * @param {BaseItem} item - The item value.
-   * @param {boolean} emit - The emit value.
-   */
-  addItem(item, emit = true) {
-    if (!item) {
-      console.warn('Error adding item to group. Item is null')
-      return
-    }
-    this.__itemsParam.addItem(item, emit)
-
-    if (emit) {
-      this.calcGroupXfo()
-    }
-  }
-
-  /**
-   * Removes an item from the group(See `Items` parameter).
-   *
-   * @param {BaseItem} item - The item value.
-   * @param {boolean} emit - The emit value.
-   */
-  removeItem(item, emit = true) {
-    this.__itemsParam.removeItem(item, emit)
-    if (emit) {
-      this.calcGroupXfo()
-    }
-  }
-
-  /**
-   * Removes all items from the group and kind of returns the object to the default state.
-   *
-   * @param {boolean} emit - `true` triggers `valueChanged` event.
-   */
-  clearItems(emit = true) {
-    // Note: Unbind reversed so that indices
-    // do not get changed during the unbind.
-    const items = Array.from(this.__itemsParam.getValue())
-    for (let i = items.length - 1; i >= 0; i--) {
-      this.__unbindItem(items[i], i)
-    }
-    // this.__eventHandlers = []
-    this.memberXfoOps = []
-    this.__itemsParam.clearItems(emit)
-    if (emit) {
-      this.calcGroupXfo()
-    }
-  }
-
-  /**
-   * Returns the list of `BaseItem` objects owned by the group.
-   *
-   * @return {array} - The return value.
-   */
-  getItems() {
-    return this.__itemsParam.getValue()
-  }
-
-  /**
-   * Removes old items in current group and adds new ones.
-   *
-   * @param {array} items - List of `BaseItem` you want to add to the group
-   */
-  setItems(items) {
-    this.clearItems(false)
-    this.__itemsParam.setItems(items)
-    this.calcGroupXfo()
-  }
-
-  /**
-   * The _cleanBoundingBox method.
-   * @param {Box3} bbox - The bounding box value.
-   * @return {Box3} - The return value.
-   * @private
-   */
-  _cleanBoundingBox(bbox) {
-    const result = super._cleanBoundingBox(bbox)
-    const items = Array.from(this.__itemsParam.getValue())
-    items.forEach((item) => {
-      if (item instanceof TreeItem) {
-        if (item.isVisible()) {
-          result.addBox3(item.getParameter('BoundingBox').getValue())
-        }
-      }
-    })
-    return result
-  }
-
-  // ///////////////////////
-  // Events
-
-  /**
-   * Occurs when a user presses a mouse button over an element.
-   * Note: these methods are useful for debugging mouse event propagation to groups
-   *
-   * @private
-   * @param {MouseEvent} event - The mouse event that occurs.
-   */
-  onPointerDown(event) {
-    super.onPointerDown(event)
-  }
-
-  /**
-   * Occurs when a user releases a mouse button over an element.
-   * Note: these methods are useful for debugging mouse event propagation to groups
-   *
-   * @private
-   * @param {MouseEvent} event - The mouse event that occurs.
-   */
-  onPointerUp(event) {
-    super.onPointerUp(event)
-  }
-
-  /**
-   * Occur when the mouse pointer is moving  while over an element.
-   * Note: these methods are useful for debugging mouse event propagation to groups
-   * @private
-   * @param {MouseEvent} event - The mouse event that occurs.
-   */
-  onPointerMove(event) {
-    super.onPointerMove(event)
-  }
-
   // ////////////////////////////////////////
-  // Persistence
-
-  /**
-   * The toJSON method encodes this type as a json object for persistence.
-   *
-   * @param {object} context - The context value.
-   * @return {object} - Returns the json object.
-   */
-  toJSON(context) {
-    const j = super.toJSON(context)
-    const items = Array.from(this.__itemsParam.getValue())
-    const treeItems = []
-    items.forEach((p) => {
-      const path = p.getPath()
-      treeItems.push(context ? context.makeRelative(path) : path)
-    })
-    j.treeItems = treeItems
-    return j
-  }
-
-  /**
-   * The fromJSON method decodes a json object for this type.
-   *
-   * @param {object} j - The json object this item must decode.
-   * @param {object} context - The context value.
-   */
-  fromJSON(j, context) {
-    super.fromJSON(j, context)
-
-    if (!j.treeItems) {
-      console.warn('Invalid Parameter JSON')
-      return
-    }
-    if (!context) {
-      throw new Error('Unable to load JSON on a Group without a load context')
-    }
-    let count = j.treeItems.length
-
-    const addItem = (path) => {
-      context.resolvePath(
-        path,
-        (treeItem) => {
-          this.addItem(treeItem)
-          count--
-          if (count == 0) {
-            this.calculatingGroupXfo = true
-            this.calcGroupXfo()
-            this.calculatingGroupXfo = false
-          }
-        },
-        (reason) => {
-          console.warn("Group: '" + this.getName() + "'. Unable to load item:" + path)
-        }
-      )
-    }
-    for (const path of j.treeItems) {
-      addItem(path)
-    }
-  }
-
-  // ////////////////////////////////////////
-  // Clone and Destroy
+  // Clone
 
   /**
    * The clone method constructs a new group,
    * copies its values and returns it.
    *
+   * @param {object} context - The context value.
    * @return {Group} - Returns a new cloned group.
    */
-  clone() {
+  clone(context) {
     const cloned = new Group()
-    cloned.copyFrom(this)
+    cloned.copyFrom(this, context)
     return cloned
-  }
-
-  /**
-   * Copies current Group with all owned items.
-   *
-   * @param {Group} src - The group to copy from.
-   */
-  copyFrom(src, context) {
-    super.copyFrom(src, context)
   }
 }
 

@@ -1,6 +1,6 @@
 import { Version } from './Version.js'
 import { TreeItem } from './TreeItem.js'
-import { Group } from './Group.js'
+import { SelectionSet } from './Groups/SelectionSet.js'
 import { GeomLibrary } from './GeomLibrary.js'
 import { MaterialLibrary } from './MaterialLibrary.js'
 import { Registry } from '../Registry'
@@ -94,8 +94,7 @@ class AssetItem extends TreeItem {
           layerRoot = new TreeItem('Layers')
           this.addChild(layerRoot, false)
         }
-        const group = new Group(layer)
-        group.propagateXfoToItems = false
+        const group = new SelectionSet(layer)
         layerRoot.addChild(group, false)
         layers[layer] = group
       }
