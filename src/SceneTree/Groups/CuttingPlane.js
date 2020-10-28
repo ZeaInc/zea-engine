@@ -1,9 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { Vec4 } from '../../Math/index'
+import { Vec4, Color, Box3, Xfo } from '../../Math/index'
 import { Registry } from '../../Registry'
-import { BooleanParameter } from '../Parameters/index'
+import { BooleanParameter, Vec4Parameter } from '../Parameters/index'
+import { Material } from '../Material'
+import { GeomItem } from '../GeomItem'
 import { BaseGroup } from './BaseGroup'
 import { TreeItem } from '../TreeItem'
+import { Plane } from '../Geometry/Shapes/Plane'
+import { Rect } from '../Geometry/Shapes/Rect'
 import { BaseGeomItem } from '../BaseGeomItem'
 import { CuttingPlaneOperator } from '../Operators/CuttingPlaneOperator.js'
 
@@ -34,6 +38,15 @@ class CuttingPlane extends BaseGroup {
     this.addParameter(new BooleanParameter('CutAwayEnabled', false)).on('valueChanged', this.__updateCutaway)
     this.addParameter(new Vec4Parameter('CutPlane', new Vec4(1, 0, 0))).on('valueChanged', this.__updateCutaway)
     this.cutPlaneOp = new CuttingPlaneOperator(this.getParameter('GlobalXfo'), this.getParameter('CutPlane'))
+
+    // Create the geometry to display the plane.
+    const material = new Material('surfaces', 'FlatSurfaceShader')
+    material.getParameter('BaseColor').setValue(new Color(1, 1, 1, 0.2))
+    this.addChild(new GeomItem(`PlaneGeom`, new Plane(1, 1), material))
+
+    const bordermaterial = new Material('surfaces', 'FlatSurfaceShader')
+    bordermaterial.getParameter('BaseColor').setValue(new Color(1, 0, 0, 1))
+    this.addChild(new GeomItem(`PlaneGeom`, new Rect(1, 1), bordermaterial))
   }
 
   // ////////////////////////////////////////
@@ -49,22 +62,21 @@ class CuttingPlane extends BaseGroup {
     // Note: propagating using an operator would be much better.
     new Promise((resolve) => {
       const cutEnabled = this.getParameter('CutAwayEnabled').getValue()
-      const cutAwayVector = this.getParameter('CutPlaneNormal').getValue()
-      const cutAwayDist = this.getParameter('CutPlaneDist').getValue()
+      const cutPlane = this.getParameter('CutPlane').getValue()
+      const cutAwayVector = cutPlane.xyz
+      const cutAwayDist = cutPlane.w
 
-      if (item) {
-        if (treeItem instanceof BaseGeomItem) {
-          treeItem.setCutawayEnabled(cutEnabled)
-          treeItem.setCutVector(cutAwayVector)
-          treeItem.setCutDist(cutAwayDist)
-        }
+      if (item instanceof BaseGeomItem) {
+        item.setCutawayEnabled(cutEnabled)
+        item.setCutVector(cutAwayVector)
+        item.setCutDist(cutAwayDist)
       } else {
         Array.from(this.__itemsParam.getValue()).forEach((item) => {
-          item.traverse((treeItem) => {
-            if (treeItem instanceof BaseGeomItem) {
-              treeItem.setCutawayEnabled(cutEnabled)
-              treeItem.setCutVector(cutAwayVector)
-              treeItem.setCutDist(cutAwayDist)
+          item.traverse((item) => {
+            if (item instanceof BaseGeomItem) {
+              item.setCutawayEnabled(cutEnabled)
+              item.setCutVector(cutAwayVector)
+              item.setCutDist(cutAwayDist)
             }
           }, true)
         })
@@ -90,6 +102,26 @@ class CuttingPlane extends BaseGroup {
     const cutEnabled = this.getParameter('CutAwayEnabled').getValue()
     if (cutEnabled) {
       this.__updateCutaway(item)
+    }
+
+    const bbox = new Box3()
+    const xfo = this.getParameter('GlobalXfo').getValue()
+    const invxfo = xfo.inverse()
+    Array.from(this.__itemsParam.getValue()).forEach((item) => {
+      if (item instanceof TreeItem) {
+        // const itemxfo = invxfo.multiply(item.getParameter('GlobalXfo').getValue())
+        // bbox.addBox3(item.getParameter('BoundingBox').getValue(), itemxfo.toMat4())
+        bbox.addBox3(item.getParameter('BoundingBox').getValue())
+      }
+    })
+    {
+      const sizex = bbox.p1.x - bbox.p0.x
+      const sizey = bbox.p1.y - bbox.p0.y
+      const xfo = new Xfo()
+      xfo.sc.set(sizex, sizey, 1)
+      this.getChild(0).getParameter('LocalXfo').setValue(xfo)
+      this.getChild(1).getParameter('LocalXfo').setValue(xfo)
+      // this.getParameter('GlobalXfo').setValue(xfo)
     }
   }
 

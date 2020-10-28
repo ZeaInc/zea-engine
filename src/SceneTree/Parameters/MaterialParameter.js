@@ -64,6 +64,22 @@ class MaterialParameter extends Parameter {
   // Persistence
 
   /**
+   * The loadValue is used to change the value of a parameter, without triggering a
+   * valueChanges, or setting the USER_EDITED state.
+   *
+   * @param {any} value - The context value.
+   */
+  loadValue(value) {
+    if (this.__value) {
+      this.__value.off('parameterValueChanged', this.__valueParameterValueChanged)
+    }
+    this.__value = value
+    if (this.__value) {
+      this.__value.on('parameterValueChanged', this.__valueParameterValueChanged)
+    }
+  }
+
+  /**
    * The toJSON method encodes this type as a json object for persistence.
    *
    * @param {object} context - The context value.

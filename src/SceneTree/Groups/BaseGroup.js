@@ -48,9 +48,9 @@ class BaseGroup extends TreeItem {
    *
    * @param {object} ownerItem - The new owner item.
    */
-  setOwner(owner) {
-    if (!this.searchRoot || this.searchRoot == this.getOwner()) this.searchRoot = owner
-    super.setOwner(owner)
+  setOwner(ownerItem) {
+    if (!this.searchRoot || this.searchRoot == this.getOwner()) this.searchRoot = ownerItem
+    super.setOwner(ownerItem)
   }
 
   /**
@@ -117,10 +117,6 @@ class BaseGroup extends TreeItem {
       return
     }
     this.__itemsParam.addItem(item, emit)
-
-    if (emit) {
-      this.calcGroupXfo()
-    }
   }
 
   /**
@@ -131,13 +127,10 @@ class BaseGroup extends TreeItem {
    */
   removeItem(item, emit = true) {
     this.__itemsParam.removeItem(item, emit)
-    if (emit) {
-      this.calcGroupXfo()
-    }
   }
 
   /**
-   * Removes all items from the group and kind of returns the object to the default state.
+   * Removes all items from the group.
    *
    * @param {boolean} emit - `true` triggers `valueChanged` event.
    */
@@ -148,12 +141,7 @@ class BaseGroup extends TreeItem {
     for (let i = items.length - 1; i >= 0; i--) {
       this.__unbindItem(items[i], i)
     }
-    // this.__eventHandlers = []
-    this.memberXfoOps = []
     this.__itemsParam.clearItems(emit)
-    if (emit) {
-      this.calcGroupXfo()
-    }
   }
 
   /**
@@ -166,14 +154,13 @@ class BaseGroup extends TreeItem {
   }
 
   /**
-   * Removes old items in current group and adds new ones.
+   * Sets an entire new array of items to the BaseGroup replacing any previous items.
    *
    * @param {array} items - List of `BaseItem` you want to add to the group
    */
   setItems(items) {
     this.clearItems(false)
     this.__itemsParam.setItems(items)
-    this.calcGroupXfo()
   }
 
   /**
@@ -276,9 +263,6 @@ class BaseGroup extends TreeItem {
           this.addItem(treeItem)
           count--
           if (count == 0) {
-            this.calculatingGroupXfo = true
-            this.calcGroupXfo()
-            this.calculatingGroupXfo = false
           }
         },
         (reason) => {

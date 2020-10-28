@@ -121,6 +121,24 @@ class Vec4 extends AttrValue {
   }
 
   /**
+   * Getter for `w` value.
+   *
+   * @param {number} val - The val param.
+   */
+  get w() {
+    return this.__data[3]
+  }
+
+  /**
+   * Setter for `w` value.
+   *
+   * @param {number} val - The val param.
+   */
+  set w(val) {
+    this.__data[3] = val
+  }
+
+  /**
    * Getter for `xy` swizzel.
    *
    * @return {number} - Returns the z value.
