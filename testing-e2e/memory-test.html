@@ -21,6 +21,7 @@
       const dim = Math.round(Math.cbrt(count))
       const cuboid = new Cuboid(0.3, 0.4, 0.5)
 
+      console.time('Total Time')
       console.time('Create scene')
 
       for (let i = 0; i < dim; i++) {
@@ -58,6 +59,7 @@
       console.timeEnd('Load GPU')
 
       console.log(`Done memory test. GeomItem count: ${dim * dim * dim}.`)
+      console.timeEnd('Total Time')
     </script>
   </body>
 </html>
