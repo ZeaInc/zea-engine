@@ -547,13 +547,14 @@ class GLViewport extends GLBaseViewport {
       this.__prevDownTime = downTime
       if (!event.propagating || this.capturedItem) return
 
+      this.emit('pointerDown', event)
+      if (!event.propagating) return
+
       if (this.manipulator) {
         this.manipulator.onPointerDown(event)
 
         if (!event.propagating) return
       }
-
-      this.emit('pointerDown', event)
     }
 
     return false
@@ -587,22 +588,15 @@ class GLViewport extends GLBaseViewport {
 
     if (event.intersectionData != undefined) {
       event.intersectionData.geomItem.onPointerUp(event)
-
-      if (!event.propagating) {
-        if (this.manipulator) this.manipulator.onPointerUp(event)
-
-        return
-      }
-
-      this.emit('pointerUp', event)
     }
+
+    this.emit('pointerUp', event)
+    if (!event.propagating) return
 
     if (this.manipulator) {
       this.manipulator.onPointerUp(event)
 
       if (!event.propagating) return
-
-      this.emit('pointerUp', event)
     }
   }
 
@@ -667,12 +661,13 @@ class GLViewport extends GLBaseViewport {
       this.emit('pointerLeaveGeom', event)
     }
 
+    this.emit('pointerMove', event)
+    if (!event.propagating) return
+
     if (this.manipulator) {
       this.manipulator.onPointerMove(event)
       if (!event.propagating) return
     }
-
-    this.emit('pointerMove', event)
   }
 
   /**
