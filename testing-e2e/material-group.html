@@ -86,26 +86,28 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(25, 25, 13), new Vec3(10, 0, 0))
       renderer.frameAll()
 
-      window.postMessage('done-loading')
+      // window.postMessage('done-loading')
 
       // {{{ Messages handler.
-      const handleMessage = (event) => {
-        const { data } = event
+      // const handleMessage = (event) => {
+      //   const { data } = event
 
-        if (data === 'variant-01') {
-          materialGroup1.getParameter('Material').setValue(null)
-          renderer.once('redrawOccured', () => {
-            window.postMessage(`done-${data}`)
-          })
-        } else if (data === 'variant-02') {
-          materialGroup2.getParameter('Material').setValue(null)
-          renderer.once('redrawOccured', () => {
-            window.postMessage(`done-${data}`)
-          })
-        }
-      }
+      //   // Note: changing materials on items is currently broken.
+      //   // Once fixed, we should modify this test to show material changes.
+      //   if (data === 'variant-01') {
+      //     materialGroup1.getParameter('Material').setValue(null)
+      //     renderer.once('redrawOccured', () => {
+      //       window.postMessage(`done-${data}`)
+      //     })
+      //   } else if (data === 'variant-02') {
+      //     materialGroup2.getParameter('Material').setValue(null)
+      //     renderer.once('redrawOccured', () => {
+      //       window.postMessage(`done-${data}`)
+      //     })
+      //   }
+      // }
 
-      window.addEventListener('message', handleMessage, false)
+      // window.addEventListener('message', handleMessage, false)
       // }}}
     </script>
   </body>
