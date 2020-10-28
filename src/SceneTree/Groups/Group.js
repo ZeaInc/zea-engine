@@ -356,13 +356,8 @@ class Group extends BaseGroup {
    * @private
    */
   __bindItem(item, index) {
+    super.__bindItem(item, index)
     if (!(item instanceof TreeItem)) return
-
-    item.on('pointerDown', this.onPointerDown)
-    item.on('pointerUp', this.onPointerUp)
-    item.on('pointerMove', this.onPointerMove)
-    item.on('pointerEnter', this.onPointerEnter)
-    item.on('pointerLeave', this.onPointerLeave)
 
     // ///////////////////////////////
     // Update the Material
@@ -432,6 +427,7 @@ class Group extends BaseGroup {
    * @private
    */
   __unbindItem(item, index) {
+    super.__unbindItem(item, index)
     if (!(item instanceof TreeItem)) return
 
     item.removeHighlight('branchselected' + this.getId(), true)
@@ -454,12 +450,6 @@ class Group extends BaseGroup {
         treeItem.setCutawayEnabled(false)
       }
     }, true)
-
-    item.off('pointerDown', this.onPointerDown)
-    item.off('pointerUp', this.onPointerUp)
-    item.off('pointerMove', this.onPointerMove)
-    item.off('pointerEnter', this.onPointerEnter)
-    item.off('pointerLeave', this.onPointerLeave)
 
     if (item instanceof TreeItem) {
       this.memberXfoOps[index].detach()
@@ -599,61 +589,13 @@ class Group extends BaseGroup {
   // Persistence
 
   /**
-   * The toJSON method encodes this type as a json object for persistence.
-   *
-   * @param {object} context - The context value.
-   * @return {object} - Returns the json object.
+   * called once loading is done.
+   * @private
    */
-  toJSON(context) {
-    const j = super.toJSON(context)
-    const items = Array.from(this.__itemsParam.getValue())
-    const treeItems = []
-    items.forEach((p) => {
-      const path = p.getPath()
-      treeItems.push(context ? context.makeRelative(path) : path)
-    })
-    j.treeItems = treeItems
-    return j
-  }
-
-  /**
-   * The fromJSON method decodes a json object for this type.
-   *
-   * @param {object} j - The json object this item must decode.
-   * @param {object} context - The context value.
-   */
-  fromJSON(j, context) {
-    super.fromJSON(j, context)
-
-    if (!j.treeItems) {
-      console.warn('Invalid Parameter JSON')
-      return
-    }
-    if (!context) {
-      throw new Error('Unable to load JSON on a Group without a load context')
-    }
-    let count = j.treeItems.length
-
-    const addItem = (path) => {
-      context.resolvePath(
-        path,
-        (treeItem) => {
-          this.addItem(treeItem)
-          count--
-          if (count == 0) {
-            this.calculatingGroupXfo = true
-            this.calcGroupXfo()
-            this.calculatingGroupXfo = false
-          }
-        },
-        (reason) => {
-          console.warn("Group: '" + this.getName() + "'. Unable to load item:" + path)
-        }
-      )
-    }
-    for (const path of j.treeItems) {
-      addItem(path)
-    }
+  __loadDone() {
+    this.calculatingGroupXfo = true
+    this.calcGroupXfo()
+    this.calculatingGroupXfo = false
   }
 
   // ////////////////////////////////////////
@@ -669,15 +611,6 @@ class Group extends BaseGroup {
     const cloned = new Group()
     cloned.copyFrom(this)
     return cloned
-  }
-
-  /**
-   * Copies current Group with all owned items.
-   *
-   * @param {Group} src - The group to copy from.
-   */
-  copyFrom(src, context) {
-    super.copyFrom(src, context)
   }
 }
 

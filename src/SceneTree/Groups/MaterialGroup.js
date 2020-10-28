@@ -114,13 +114,9 @@ class MaterialGroup extends BaseGroup {
    * @private
    */
   __bindItem(item, index) {
-    if (!(item instanceof TreeItem)) return
+    super.__bindItem(item, index)
 
-    item.on('pointerDown', this.onPointerDown)
-    item.on('pointerUp', this.onPointerUp)
-    item.on('pointerMove', this.onPointerMove)
-    item.on('pointerEnter', this.onPointerEnter)
-    item.on('pointerLeave', this.onPointerLeave)
+    if (!(item instanceof TreeItem)) return
 
     // ///////////////////////////////
     // Update the highlight
@@ -160,18 +156,13 @@ class MaterialGroup extends BaseGroup {
    * @private
    */
   __unbindItem(item, index) {
+    super.__unbindItem(item, index)
     if (!(item instanceof TreeItem)) return
 
     if (this.isSelected()) {
       const key = 'materialGroupItemHighlight' + this.getId()
       item.removeHighlight(key, true)
     }
-
-    item.off('pointerDown', this.onPointerDown)
-    item.off('pointerUp', this.onPointerUp)
-    item.off('pointerMove', this.onPointerMove)
-    item.off('pointerEnter', this.onPointerEnter)
-    item.off('pointerLeave', this.onPointerLeave)
   }
 
   // ////////////////////////////////////////

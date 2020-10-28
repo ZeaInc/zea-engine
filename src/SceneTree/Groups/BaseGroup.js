@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { Registry } from '../../Registry'
 import { ItemSetParameter } from '../Parameters/index'
 import { TreeItem } from '../TreeItem'
 
@@ -95,7 +96,14 @@ class BaseGroup extends TreeItem {
    * @param {number} index - The index value.
    * @private
    */
-  __bindItem(item, index) {}
+  __bindItem(item, index) {
+    if (!(item instanceof TreeItem)) return
+    item.on('pointerDown', this.onPointerDown)
+    item.on('pointerUp', this.onPointerUp)
+    item.on('pointerMove', this.onPointerMove)
+    item.on('pointerEnter', this.onPointerEnter)
+    item.on('pointerLeave', this.onPointerLeave)
+  }
 
   /**
    * The __unbindItem method.
@@ -103,7 +111,14 @@ class BaseGroup extends TreeItem {
    * @param {number} index - The index value.
    * @private
    */
-  __unbindItem(item, index) {}
+  __unbindItem(item, index) {
+    if (!(item instanceof TreeItem)) return
+    item.off('pointerDown', this.onPointerDown)
+    item.off('pointerUp', this.onPointerUp)
+    item.off('pointerMove', this.onPointerMove)
+    item.off('pointerEnter', this.onPointerEnter)
+    item.off('pointerLeave', this.onPointerLeave)
+  }
 
   /**
    * Adds an item to the group(See `Items` parameter).
@@ -161,25 +176,6 @@ class BaseGroup extends TreeItem {
   setItems(items) {
     this.clearItems(false)
     this.__itemsParam.setItems(items)
-  }
-
-  /**
-   * The _cleanBoundingBox method.
-   * @param {Box3} bbox - The bounding box value.
-   * @return {Box3} - The return value.
-   * @private
-   */
-  _cleanBoundingBox(bbox) {
-    const result = super._cleanBoundingBox(bbox)
-    const items = Array.from(this.__itemsParam.getValue())
-    items.forEach((item) => {
-      if (item instanceof TreeItem) {
-        if (item.isVisible()) {
-          result.addBox3(item.getParameter('BoundingBox').getValue())
-        }
-      }
-    })
-    return result
   }
 
   // ///////////////////////
@@ -246,7 +242,6 @@ class BaseGroup extends TreeItem {
    */
   fromJSON(j, context) {
     super.fromJSON(j, context)
-
     if (!j.treeItems) {
       console.warn('Invalid Parameter JSON')
       return
@@ -263,6 +258,7 @@ class BaseGroup extends TreeItem {
           this.addItem(treeItem)
           count--
           if (count == 0) {
+            this.__loadDone()
           }
         },
         (reason) => {
@@ -274,6 +270,12 @@ class BaseGroup extends TreeItem {
       addItem(path)
     }
   }
+
+  /**
+   * called once loading is done.
+   * @private
+   */
+  __loadDone() {}
 
   // ////////////////////////////////////////
   // Clone and Destroy
