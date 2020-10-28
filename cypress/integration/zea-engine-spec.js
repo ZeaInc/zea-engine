@@ -66,11 +66,6 @@ describe('Zea Engine', () => {
     cy.get('canvas').percySnapshot('Simple torus')
   })
 
-  it('Renders highlights', () => {
-    cy.visit('testing-e2e/highlights.html')
-    cy.get('canvas').percySnapshot('Highlights')
-  })
-
   it('Renders labels', () => {
     cy.visit('testing-e2e/labels.html', {
       onBeforeLoad(win) {
