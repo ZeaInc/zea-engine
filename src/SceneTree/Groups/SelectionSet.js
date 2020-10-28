@@ -102,13 +102,8 @@ class SelectionSet extends BaseGroup {
    * @private
    */
   __bindItem(item, index) {
+    super.__bindItem(item, index)
     if (!(item instanceof TreeItem)) return
-
-    item.on('pointerDown', this.onPointerDown)
-    item.on('pointerUp', this.onPointerUp)
-    item.on('pointerMove', this.onPointerMove)
-    item.on('pointerEnter', this.onPointerEnter)
-    item.on('pointerLeave', this.onPointerLeave)
 
     // ///////////////////////////////
     // Update the highlight
@@ -136,6 +131,7 @@ class SelectionSet extends BaseGroup {
    * @private
    */
   __unbindItem(item, index) {
+    super.__unbindItem(item, index)
     if (!(item instanceof TreeItem)) return
 
     item.removeHighlight('branchselected' + this.getId(), true)
@@ -159,23 +155,9 @@ class SelectionSet extends BaseGroup {
       }
     }, true)
 
-    item.off('pointerDown', this.onPointerDown)
-    item.off('pointerUp', this.onPointerUp)
-    item.off('pointerMove', this.onPointerMove)
-    item.off('pointerEnter', this.onPointerEnter)
-    item.off('pointerLeave', this.onPointerLeave)
-
     if (item instanceof TreeItem) {
-      this.memberXfoOps[index].detach()
-      this.memberXfoOps.splice(index, 1)
-      this._setBoundingBoxDirty()
+      item.getParameter('BoundingBox').off('valueChanged', this._setBoundingBoxDirty)
     }
-
-    // const eventHandlers = this.__eventHandlers[index]
-    // item.off('globalXfoChanged', eventHandlers.globalXfoChanged)
-    item.off('boundingChanged', this._setBoundingBoxDirty)
-
-    // this.__eventHandlers.splice(index, 1)
   }
 
   // ////////////////////////////////////////

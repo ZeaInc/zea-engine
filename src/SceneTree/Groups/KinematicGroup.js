@@ -181,12 +181,6 @@ class KinematicGroup extends BaseGroup {
   __bindItem(item, index) {
     if (!(item instanceof TreeItem)) return
 
-    item.on('pointerDown', this.onPointerDown)
-    item.on('pointerUp', this.onPointerUp)
-    item.on('pointerMove', this.onPointerMove)
-    item.on('pointerEnter', this.onPointerEnter)
-    item.on('pointerLeave', this.onPointerLeave)
-
     // ///////////////////////////////
     // Update the highlight
     if (this.isSelected()) {
@@ -212,18 +206,13 @@ class KinematicGroup extends BaseGroup {
    * @private
    */
   __unbindItem(item, index) {
+    super.__unbindItem(item, index)
     if (!(item instanceof TreeItem)) return
 
     if (this.isSelected()) {
       const key = 'kinematicGroupItemHighlight' + this.getId()
       item.removeHighlight(key, true)
     }
-
-    item.off('pointerDown', this.onPointerDown)
-    item.off('pointerUp', this.onPointerUp)
-    item.off('pointerMove', this.onPointerMove)
-    item.off('pointerEnter', this.onPointerEnter)
-    item.off('pointerLeave', this.onPointerLeave)
 
     {
       this.memberXfoOps[index].detach()
@@ -281,6 +270,19 @@ class KinematicGroup extends BaseGroup {
     if (emit) {
       this.calcGroupXfo()
     }
+  }
+
+  // ////////////////////////////////////////
+  // Persistence
+
+  /**
+   * called once loading is done.
+   * @private
+   */
+  __loadDone() {
+    this.calculatingGroupXfo = true
+    this.calcGroupXfo()
+    this.calculatingGroupXfo = false
   }
 
   // ////////////////////////////////////////
