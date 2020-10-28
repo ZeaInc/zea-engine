@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zea Engine</title>
+    <title>material-group - Zea Engine</title>
+
+    <meta charset="UTF-8" />
   </head>
   <body>
     <div id="app"></div>
@@ -24,25 +26,31 @@
         GeomItem,
         TreeItem,
         Material,
-        SelectionSet,
+        MaterialGroup,
       } = zeaEngine
 
-      const scene = new Scene()
       const domElement = document.getElementById('app')
-      const renderer = new GLRenderer(domElement, { hideSplash: true })
+
+      const scene = new Scene()
+      scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
       renderer.setScene(scene)
 
-      scene.setupGrid(60.0, 6)
       const tree1 = new TreeItem('tree1')
       scene.getRoot().addChild(tree1)
 
-      const selectionSet1 = new SelectionSet('selectionSet1')
-      selectionSet1.getParameter('HighlightColor').setValue(new Color('lemonchiffon'))
-      scene.getRoot().addChild(selectionSet1)
+      const materialGroup1 = new MaterialGroup('materialGroup1')
+      const material1 = new Material('surfaces', 'SimpleSurfaceShader')
+      material1.getParameter('BaseColor').setValue(new Color('lemonchiffon'))
+      materialGroup1.getParameter('Material').setValue(material1)
+      scene.getRoot().addChild(materialGroup1)
 
-      const selectionSet2 = new SelectionSet('selectionSet2')
-      selectionSet2.getParameter('HighlightColor').setValue(new Color('mediumblue'))
-      scene.getRoot().addChild(selectionSet2)
+      const materialGroup2 = new MaterialGroup('materialGroup2')
+      const material2 = new Material('surfaces', 'SimpleSurfaceShader')
+      material2.getParameter('BaseColor').setValue(new Color('lemonchiffon'))
+      materialGroup2.getParameter('Material').setValue(material2)
+      scene.getRoot().addChild(materialGroup2)
 
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
@@ -52,8 +60,8 @@
         geomItem.getParameter('LocalXfo').setValue(new Xfo(new Vec3(i * 3, row * 3, 0)))
         tree1.addChild(geomItem)
 
-        selectionSet1.addItem(geomItem)
-        if (i % 2 == 0) selectionSet2.addItem(geomItem)
+        materialGroup1.addItem(geomItem)
+        if (i % 2 == 0) materialGroup2.addItem(geomItem)
       }
       const addMeshShape = (shape, row, count) => {
         for (let i = 0; i < count; i++) {
@@ -68,9 +76,6 @@
       addMeshShape(new Cylinder(1.2, 4.0, 32, 2, true), -2, 8)
       addMeshShape(new Torus(0.4, 1.3), -3, 4)
 
-      selectionSet1.getParameter('Highlighted').setValue(true)
-      selectionSet2.getParameter('Highlighted').setValue(true)
-
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(25, 25, 13), new Vec3(10, 0, 0))
       renderer.frameAll()
 
@@ -81,14 +86,12 @@
         const { data } = event
 
         if (data === 'variant-01') {
-          selectionSet1.getParameter('Highlighted').setValue(true)
-          selectionSet2.getParameter('Highlighted').setValue(false)
+          materialGroup1.getParameter('Material').setValue(null)
           renderer.once('redrawOccured', () => {
             window.postMessage(`done-${data}`)
           })
         } else if (data === 'variant-02') {
-          selectionSet1.getParameter('Highlighted').setValue(false)
-          selectionSet2.getParameter('Highlighted').setValue(true)
+          materialGroup2.getParameter('Material').setValue(null)
           renderer.once('redrawOccured', () => {
             window.postMessage(`done-${data}`)
           })
@@ -96,6 +99,7 @@
       }
 
       window.addEventListener('message', handleMessage, false)
+      // }}}
     </script>
   </body>
 </html>

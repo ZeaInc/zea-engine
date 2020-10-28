@@ -1,19 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { Vec3, Color, Xfo } from '../../Math/index'
 import { Registry } from '../../Registry'
-import {
-  BooleanParameter,
-  NumberParameter,
-  Vec3Parameter,
-  ColorParameter,
-  XfoParameter,
-  MultiChoiceParameter,
-} from '../Parameters/index'
 import { BaseGroup } from './BaseGroup'
 import { MaterialParameter } from '../Parameters/MaterialParameter.js'
 import { TreeItem } from '../TreeItem'
-import { BaseGeomItem } from '../BaseGeomItem'
-import { GroupTransformXfoOperator, GroupMemberXfoOperator } from '../Operators/GroupMemberXfoOperator.js'
 
 /**
  *
@@ -103,10 +92,10 @@ class MaterialGroup extends BaseGroup {
               // but else we end up assigning surface materials to our edges.
               if (m != material && (!m || m.getShaderName() != 'LinesShader')) {
                 p.__backupMaterial = m
-                p.loadValue(material)
+                p.setValue(material)
               }
             } else if (p.__backupMaterial) {
-              p.loadValue(p.__backupMaterial)
+              p.setValue(p.__backupMaterial)
             }
           }
         }, false)
@@ -156,7 +145,7 @@ class MaterialGroup extends BaseGroup {
             // but else we end up assigning surface materials to our edges.
             if (m != material && (!m || m.getShaderName() != 'LinesShader')) {
               p.__backupMaterial = m
-              p.loadValue(material)
+              p.setValue(material)
             }
           }
         }

@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zea Engine</title>
+    <title>kinematic-group - Zea Engine</title>
 
-    <style>
-      body {
-        margin: 0;
-        height: 100vh;
-      }
-
-      #renderer {
-        width: 100%;
-        height: 100%;
-      }
-    </style>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div id="app"></div>
 
     <script src="../dist/index.umd.js"></script>
 
@@ -32,24 +25,22 @@
         GeomItem,
         TreeItem,
         Material,
-        CuttingPlane,
+        KinematicGroup,
       } = zeaEngine
 
+      const domElement = document.getElementById('app')
+
       const scene = new Scene()
-      const domElement = document.getElementById('renderer')
-      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
       renderer.setScene(scene)
 
-      scene.setupGrid(40.0, 10)
       const tree1 = new TreeItem('tree1')
       scene.getRoot().addChild(tree1)
 
-      const cuttingPlane = new CuttingPlane('CuttingPlane')
-      const cuttingPlaneXfo = new Xfo()
-      cuttingPlaneXfo.tr.set(6, 0, 0)
-      cuttingPlaneXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), -1)
-      cuttingPlane.getParameter('LocalXfo').setValue(cuttingPlaneXfo)
-      scene.getRoot().addChild(cuttingPlane)
+      const kinematicGroup = new KinematicGroup('CuttingPlane')
+      scene.getRoot().addChild(kinematicGroup)
 
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
@@ -61,7 +52,7 @@
         geomItem.getParameter('LocalXfo').setValue(new Xfo(new Vec3(i * 3, 0, 0)))
         tree1.addChild(geomItem)
 
-        cuttingPlane.addItem(geomItem)
+        kinematicGroup.addItem(geomItem)
 
         i += 1
       }
@@ -72,15 +63,14 @@
       addMeshShape(new Cone(1, 2), 4)
       addMeshShape(new Cylinder(1, 2, 20, 2, true))
 
-      cuttingPlane.getParameter('CutAwayEnabled').setValue(true)
-
-      // let angle = -1
-      // setInterval(() => {
-      //   angle += 0.1
-      //   cuttingPlaneXfo.tr.set(6, Math.cos(angle) * 2, 0)
-      //   cuttingPlaneXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
-      //   cuttingPlane.getParameter('LocalXfo').setValue(cuttingPlaneXfo)
-      // }, 50)
+      let angle = -1
+      setInterval(() => {
+        angle += 0.1
+        const xfo = new Xfo()
+        xfo.tr.set(6, Math.cos(angle) * 2, 0)
+        xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
+        kinematicGroup.getParameter('LocalXfo').setValue(xfo)
+      }, 50)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(25, 25, 13), new Vec3(10, 0, 0))
       renderer.frameAll()
@@ -96,14 +86,14 @@
           const xfo = new Xfo()
           xfo.tr.set(6, Math.cos(angle) * 2, 0)
           xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
-          cuttingPlane.getParameter('LocalXfo').setValue(xfo)
+          kinematicGroup.getParameter('LocalXfo').setValue(xfo)
           window.postMessage(`done-${data}`)
         } else if (data === 'variant-02') {
           const angle = 3
           const xfo = new Xfo()
           xfo.tr.set(6, Math.cos(angle) * 2, 0)
           xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
-          cuttingPlane.getParameter('LocalXfo').setValue(xfo)
+          kinematicGroup.getParameter('LocalXfo').setValue(xfo)
           renderer.frameAll()
           window.postMessage(`done-${data}`)
         }
@@ -112,8 +102,5 @@
       window.addEventListener('message', handleMessage, false)
       // }}}
     </script>
-  </head>
-  <body>
-    <canvas id="renderer" />
   </body>
 </html>

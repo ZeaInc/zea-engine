@@ -1,8 +1,8 @@
 import { Group } from './Group'
-import { TreeItem } from './TreeItem'
-import { Material } from './Material'
-import { GeomItem } from './GeomItem'
-import { Vec3, Xfo } from '../Math'
+import { TreeItem } from '../TreeItem'
+import { Material } from '../Material'
+import { GeomItem } from '../GeomItem'
+import { Vec3, Xfo } from '../../Math'
 
 describe('Group', () => {
   it('is visible by default.', () => {

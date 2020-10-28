@@ -29,7 +29,7 @@ class CuttingPlaneOperator extends Operator {
     const vec = groupGlobalXfo.ori.getZaxis()
     const dist = groupGlobalXfo.tr.dot(vec)
 
-    cuttingPlaneOutput.setClean(new Vec4(vec.x, vec.y, vec.z, dist))
+    cuttingPlaneOutput.setClean(new Vec4(vec.x, vec.y, vec.z, -dist))
   }
 }
 

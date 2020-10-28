@@ -234,6 +234,55 @@ class KinematicGroup extends BaseGroup {
     }
   }
 
+  /**
+   * Adds an item to the group(See `Items` parameter).
+   *
+   * @param {BaseItem} item - The item value.
+   * @param {boolean} emit - The emit value.
+   */
+  addItem(item, emit = true) {
+    super.addItem(item, emit)
+    if (emit) {
+      this.calcGroupXfo()
+    }
+  }
+
+  /**
+   * Removes an item from the group(See `Items` parameter).
+   *
+   * @param {BaseItem} item - The item value.
+   * @param {boolean} emit - The emit value.
+   */
+  removeItem(item, emit = true) {
+    super.removeItem(item, emit)
+    if (emit) {
+      this.calcGroupXfo()
+    }
+  }
+
+  /**
+   * Sets an entire new array of items to the BaseGroup replacing any previous items.
+   *
+   * @param {array} items - List of `BaseItem` you want to add to the group
+   */
+  setItems(items) {
+    super.setItems(emit)
+    this.calcGroupXfo()
+  }
+
+  /**
+   * Removes all items from the group.
+   *
+   * @param {boolean} emit - `true` triggers `valueChanged` event.
+   */
+  clearItems(emit = true) {
+    super.clearItems(emit)
+    this.memberXfoOps = []
+    if (emit) {
+      this.calcGroupXfo()
+    }
+  }
+
   // ////////////////////////////////////////
   // Clone
 
