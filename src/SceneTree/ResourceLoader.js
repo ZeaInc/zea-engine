@@ -12,7 +12,7 @@ import ResourceLoaderWorker from 'web-worker:./ResourceLoader/ResourceLoaderWork
 
 function checkStatus(response) {
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status} - ${response.statusText}`)
+    return false;
   }
   return response
 }
@@ -243,7 +243,7 @@ class ResourceLoader extends EventEmitter {
         fetch(url).then((response) => {
           this.addWorkDone(url, 1)
           if (checkStatus(response)) resolve(response.json())
-          else reject(response.status)
+          else reject(`loadJSON: ${response.status} - ${response.statusText}`)
         })
       },
       () => {}
@@ -269,7 +269,7 @@ class ResourceLoader extends EventEmitter {
         fetch(url).then((response) => {
           this.addWorkDone(url, 1)
           if (checkStatus(response)) resolve(response.text())
-          else reject(response.status)
+          else reject(`loadText: ${response.status} - ${response.statusText}`)
         })
       },
       () => {}
@@ -298,7 +298,7 @@ class ResourceLoader extends EventEmitter {
           .then((response) => {
             this.addWorkDone(url, 1)
             if (checkStatus(response)) return response.arrayBuffer()
-            else reject(response.status)
+            else reject(`loadArchive: ${response.status} - ${response.statusText}`)
           })
           .then((buffer) => {
             const resourceId = url

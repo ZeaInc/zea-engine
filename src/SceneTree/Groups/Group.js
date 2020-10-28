@@ -32,7 +32,7 @@ const GROUP_XFO_MODES = {
  * to apply common things to multiple items.
  *
  * **Parameters**
- * * **Items(`ItemSetParameter`):** _todo_
+ * * **Items(`ItemSetParameter`):** The items referenced in this group are stored in this parameter.
  * * **Highlighted(`BooleanParameter`):** _todo_
  * * **HighlightColor(`ColorParameter`):** _todo_
  * * **HighlightFill(`NumberParameter`):** _todo_
