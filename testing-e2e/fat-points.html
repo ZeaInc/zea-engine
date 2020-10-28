@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>fat-points - Zea Engine</title>
+
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Xfo, Vec3, Points, Color, GeomItem, Material } = zeaEngine
+
+      import { hammersley, sphereSample_uniform } from './Hammersley.js'
+
+      const domElement = document.getElementById('app')
+
+      const scene = new Scene()
+      scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      const points = new Points()
+      const count = 500
+      points.setNumVertices(count)
+      const positions = points.getVertexAttribute('positions')
+      for (let i = 0; i < count; i++) {
+        const v = positions.getValueRef(i)
+        const coords = hammersley(i, count)
+        sphereSample_uniform(coords[0], coords[1], v)
+      }
+
+      const material = new Material('points', 'FatPointsShader')
+      // material.getParameter("BaseColor").setValue(new Color(1,0,0));
+      material.getParameter('PointSize').setValue(0.05)
+      material.getParameter('Rounded').setValue(0.2)
+      material.getParameter('BaseColor').setValue(new Color(1, 0, 1))
+
+      const geomItem = new GeomItem('geomItem', points, material)
+      const xfo = new Xfo()
+      xfo.tr.set(0, 0, 1)
+      geomItem.getParameter('GlobalXfo').setValue(xfo)
+      scene.getRoot().addChild(geomItem)
+
+      // someEmitter.on('loaded', () => {
+      window.postMessage('done-loading')
+      // })
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>
