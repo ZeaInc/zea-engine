@@ -473,12 +473,6 @@ class GLBaseRenderer extends ParameterOwner {
    */
   __onResize() {
     if (!this.__xrViewportPresenting) {
-      // Oftern the canvas has zero size as the web components are still loading.
-      // So we must force the resize untill we get a proper size.
-      if (this.__glcanvas.clientWidth == 0 || this.__glcanvas.clientHeight == 0) {
-        setTimeout(this.__onResize.bind(this), 10)
-        return
-      }
       // Note: devicePixelRatio has already been factored into the clientWidth and clientHeight,
       // meaning we do not need to multiply client values by devicePixelRatio to get real values.
       // On some devices, this duplicate multiplication (when the meta tag was not present), caused
@@ -491,22 +485,18 @@ class GLBaseRenderer extends ParameterOwner {
       // This is a minor issue IMO, and so am disabling devicePixelRatio until its value is clear.
       // _Remove the meta name="viewport" from the HTML_
       const dpr = 1.0 // window.devicePixelRatio
-      const newWidth = this.__glcanvas.clientWidth * dpr
-      const newHeight = this.__glcanvas.clientHeight * dpr
-      if (newWidth != this.__glcanvas.width || newHeight != this.__glcanvas.height) {
-        this.__glcanvas.width = newWidth
-        this.__glcanvas.height = newHeight
+      this.__glcanvas.width = this.__glcanvas.clientWidth * dpr
+      this.__glcanvas.height = this.__glcanvas.clientHeight * dpr
 
-        for (const vp of this.__viewports) vp.resize(this.__glcanvas.width, this.__glcanvas.height)
+      for (const vp of this.__viewports) vp.resize(this.__glcanvas.width, this.__glcanvas.height)
 
-        this.resizeFbos(this.__glcanvas.width, this.__glcanvas.height)
+      this.resizeFbos(this.__glcanvas.width, this.__glcanvas.height)
 
-        this.emit('resized', {
-          width: this.__glcanvas.width,
-          height: this.__glcanvas.height,
-        })
-        this.requestRedraw()
-      }
+      this.emit('resized', {
+        width: this.__glcanvas.width,
+        height: this.__glcanvas.height,
+      })
+      this.requestRedraw()
     }
   }
 
@@ -516,10 +506,7 @@ class GLBaseRenderer extends ParameterOwner {
    * @return {HTMLElement} - The return value.
    */
   getDiv() {
-    const { tagName } = this.__$canvas
-    if (tagName == 'DIV') return this.__$canvas
-
-    return this.__$canvas.parentElement
+    return this.__glcanvas.parentElement
   }
 
   /**
@@ -1112,6 +1099,21 @@ class GLBaseRenderer extends ParameterOwner {
     window.requestAnimationFrame(onAnimationFrame)
     this.__redrawRequested = true
     return true
+  }
+
+  /**
+   * Forces a redraw of the viewports
+   */
+  forceRender() {
+    if (!this.__redrawRequested) {
+      console.warn('@GlBaseRenderer#forceRender - Scene is not dirty')
+      return
+    }
+
+    this.__redrawRequested = false
+    for (const vp of this.__viewports) {
+      vp.draw()
+    }
   }
 
   /**

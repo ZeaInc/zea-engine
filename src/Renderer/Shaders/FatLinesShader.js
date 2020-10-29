@@ -219,7 +219,7 @@ void main(void) {
       defaultValue: new Color(1.0, 1.0, 0.5),
     })
     paramDescs.push({ name: 'Opacity', defaultValue: 1.0 })
-    paramDescs.push({ name: 'LineThickness', defaultValue: 1.0 })
+    paramDescs.push({ name: 'LineThickness', defaultValue: 0.01 })
     paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
     return paramDescs
   }

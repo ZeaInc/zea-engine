@@ -34,6 +34,9 @@ class GLLines extends GLGeom {
 
   /**
    * The genBuffers method.
+   *
+   * @param {*} fatLines
+   * @memberof GLLines
    */
   genBuffersLazy(fatLines) {
     const gl = this.__gl
