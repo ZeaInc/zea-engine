@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+
     <title>Memory test - Zea Engine</title>
 
-    <meta charset="UTF-8" />
-  </head>
-  <body>
-    <div id="app"></div>
+    <link rel="stylesheet" href="styles/normalize.css" />
+    <link rel="stylesheet" href="styles/main.css" />
+
+    <style>
+      .Main {
+        display: grid;
+        grid-template-rows: 50px 1fr;
+        height: 100vh;
+      }
+    </style>
 
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
       const { Vec3, EulerAngles, Xfo, Color, Cuboid, Material, GeomItem, TreeItem, Scene, GLRenderer } = zeaEngine
 
-      const domElement = document.getElementById('app')
+      const $canvas = document.getElementById('renderer')
+      const $status = document.getElementById('status')
 
       const scene = new Scene()
 
@@ -21,7 +30,7 @@
       const dim = Math.round(Math.cbrt(count))
       const cuboid = new Cuboid(0.3, 0.4, 0.5)
 
-      console.time('Total Time')
+      console.time('Total time')
       console.time('Create scene')
 
       for (let i = 0; i < dim; i++) {
@@ -52,14 +61,27 @@
 
       console.time('Load GPU')
 
-      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
+      const renderer = new GLRenderer($canvas, { hideSplash: true, webglOptions: { antialias: false } })
       renderer.setScene(scene)
       renderer.frameAll()
 
       console.timeEnd('Load GPU')
 
       console.log(`Done memory test. GeomItem count: ${dim * dim * dim}.`)
-      console.timeEnd('Total Time')
+
+      console.timeEnd('Total time')
+
+      $status.innerText = 'Done'
     </script>
+  </head>
+  <body>
+    <div class="Main">
+      <div class="Top">
+        <p id="status">Processing...</p>
+      </div>
+      <div class="Bottom">
+        <canvas id="renderer" />
+      </div>
+    </div>
   </body>
 </html>
