@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="styles/main.css" />
 
     <style>
+      p {
+        display: inline;
+      }
+
       .Main {
         display: grid;
         grid-template-rows: 50px 1fr;
@@ -80,6 +84,8 @@
     <div class="Main">
       <div class="Top">
         <p id="status">Processing...</p>
+        <button>Front</button>
+        <button>Back</button>
       </div>
       <div class="Bottom">
         <canvas id="renderer" />
