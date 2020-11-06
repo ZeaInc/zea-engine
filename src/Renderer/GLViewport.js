@@ -588,6 +588,7 @@ class GLViewport extends GLBaseViewport {
 
     if (event.intersectionData != undefined) {
       event.intersectionData.geomItem.onPointerUp(event)
+      if (!event.propagating) return
     }
 
     this.emit('pointerUp', event)

@@ -33,7 +33,6 @@
         GLRenderer,
         Scene,
         TreeItem,
-        Group,
         GeomItem,
         Cuboid,
         Cylinder,
@@ -45,6 +44,7 @@
         Material,
         BillboardItem,
         Label,
+        SelectionSet,
       } = window.zeaEngine
 
       const domElement = document.getElementById('root')
@@ -102,16 +102,12 @@
 
         // Registering pointer event handlers directly to the geometry.
         selfEventItem.on('pointerEnter', (event) => {
-          event.stopPropagation()
-
           selfEventItemLabel.getParameter('Text').setValue(`<pointerEnter> event`)
           clearTimeout(goToDefaultTextTimeout)
           window.postMessage('done-enter-geometry')
         })
 
         selfEventItem.on('pointerLeave', (event) => {
-          event.stopPropagation()
-
           selfEventItemLabel.getParameter('Text').setValue(`<pointerLeave> event`)
           startBackToDefaultTextTimeout()
 
@@ -161,7 +157,7 @@
         scene.getRoot().addChild(groupItem1)
         scene.getRoot().addChild(groupItem2)
 
-        const group = new Group('MyGroup')
+        const group = new SelectionSet('MyGroup')
         group.addItem(groupItem1)
         group.addItem(groupItem2)
 
@@ -215,14 +211,6 @@
 
       /** Pointer Events on viewport Start*/
       {
-        const material4 = new Material('material4', 'SimpleSurfaceShader')
-        material4.getParameter('BaseColor').setValue(new Color('#004B8D'))
-
-        const vpEventItem = new GeomItem('vpEventItem', new Cone(0.5, 1), material4)
-        const vpEventItemXfo = new Xfo()
-        vpEventItemXfo.tr = new Vec3(-2, 0, 0.25)
-        vpEventItem.getParameter('GlobalXfo').setValue(vpEventItemXfo)
-
         const labelDefaultText = 'Viewport Event Handling'
         const vpEventItemLabel = addLabel(new Vec3(-2, 0, 1.5), new Color('#004B8D'), labelDefaultText)
 
@@ -255,7 +243,11 @@
           vpEventItemLabel.getParameter('Text').setValue(`<pointerUp> event`)
           startBackToDefaultTextTimeout()
         })
-        scene.getRoot().addChild(vpEventItem)
+
+        renderer.getViewport().on('pointerDown', (event) => {
+          vpEventItemLabel.getParameter('Text').setValue(`<pointerDown> event`)
+          startBackToDefaultTextTimeout()
+        })
       }
       /** Pointer Events on viewport End */
 
