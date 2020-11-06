@@ -19,7 +19,7 @@
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
 
-      const geomItem = new GeomItem('Torus', new Torus(1.5, 3.0, 6), standardMaterial)
+      const geomItem = new GeomItem('Torus', new Torus(1.5, 3.0, 6, Math.PI), standardMaterial)
       scene.getRoot().addChild(geomItem)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))

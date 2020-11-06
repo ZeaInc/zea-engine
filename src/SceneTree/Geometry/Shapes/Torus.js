@@ -20,9 +20,9 @@ class Torus extends ProceduralMesh {
    * @param {number} [innerRadius=0.5] - The inner radius of the torus.
    * @param {number} [outerRadius=3] - The outer radius of the torus.
    * @param {number} [detail=32] - The detail of the cone.
-   * @param {number} [loops=6] - The number of loops.
+   * @param {number} [arcAngle=Math.PI * 2.0] - The angle of the arc.
    */
-  constructor(innerRadius = 0.5, outerRadius = 3, detail = 32) {
+  constructor(innerRadius = 0.5, outerRadius = 3, detail = 32, arcAngle = Math.PI * 2.0) {
     super()
 
     if (isNaN(innerRadius) || isNaN(outerRadius) || isNaN(detail)) throw new Error('Invalid geom args')
@@ -30,10 +30,11 @@ class Torus extends ProceduralMesh {
     this.__innerRadiusParam = this.addParameter(new NumberParameter('InnerRadius', innerRadius))
     this.__outerRadiusParam = this.addParameter(new NumberParameter('OuterRadius', outerRadius))
     this.__detailParam = this.addParameter(new NumberParameter('Detail', detail >= 3 ? detail : 3, [3, 200], 1))
+    this.__arcAngleParam = this.addParameter(new NumberParameter('ArcAngle', arcAngle))
 
     this.addVertexAttribute('texCoords', Vec2)
     this.addVertexAttribute('normals', Vec3)
-    
+
     this.topologyParams.push('Detail')
   }
 
@@ -44,9 +45,11 @@ class Torus extends ProceduralMesh {
   rebuild() {
     const innerRadius = this.__innerRadiusParam.getValue()
     const outerRadius = this.__outerRadiusParam.getValue()
+    const arcAngle = this.__arcAngleParam.getValue()
+    const open = arcAngle < 2.0 * Math.PI
     const detail = this.__detailParam.getValue()
     const nbSlices = detail
-    const nbLoops = detail * 2
+    const nbLoops = detail * 2 + (open ? 1 : 0)
     const numVertices = nbSlices * nbLoops
 
     this.setNumVertices(numVertices)
@@ -59,7 +62,7 @@ class Torus extends ProceduralMesh {
     const normals = this.getVertexAttribute('normals')
     let vertex = 0
     for (let i = 0; i < nbLoops; i++) {
-      const theta = -((i / nbLoops) * 2.0 * Math.PI)
+      const theta = -((i / (open ? nbLoops - 1 : nbLoops)) * arcAngle)
       const ctheta = Math.cos(theta)
       const stheta = Math.sin(theta)
 
@@ -81,7 +84,7 @@ class Torus extends ProceduralMesh {
     // Build the topology and texCoords
     const texCoords = this.getVertexAttribute('texCoords')
     let faceIndex = 0
-    for (let i = 0; i < nbLoops; i++) {
+    for (let i = 0; i < (open ? nbLoops - 1 : nbLoops); i++) {
       for (let j = 0; j < nbSlices; j++) {
         const ip = (i + 1) % nbLoops
         const jp = (j + 1) % nbSlices
@@ -109,12 +112,12 @@ class Torus extends ProceduralMesh {
     const outerRadius = this.__outerRadiusParam.getValue()
     const detail = this.__detailParam.getValue()
     const nbSlices = detail
-    const nbLoops = detail * 2
+    const nbLoops = detail * 2 + (open ? 1 : 0)
 
     const positions = this.getVertexAttribute('positions')
     let vertex = 0
     for (let i = 0; i < nbLoops; i++) {
-      const theta = (i / nbLoops) * 2.0 * Math.PI
+      const theta = (i / nbLoops) * arcAngle
       const ctheta = Math.cos(theta)
       const stheta = Math.sin(theta)
 

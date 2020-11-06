@@ -3,6 +3,9 @@
 exports[`Torus saves to JSON (serialization). 1`] = `
 Object {
   "params": Object {
+    "ArcAngle": Object {
+      "value": 6.283185307179586,
+    },
     "Detail": Object {
       "range": Array [
         3,
