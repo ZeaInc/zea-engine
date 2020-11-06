@@ -28,6 +28,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     this.freeList = []
     this.visibleItems = []
     this.prevSortCameraPos = new Vec3(999, 999, 999)
+    this.sortCameraMovementDistance = 0.25 // meters
     this.resort = false
   }
 
@@ -128,10 +129,10 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       transparentItem.dist = mat4.translation.distanceTo(viewPos)
     }
     this.visibleItems.sort((a, b) => (a.dist > b.dist ? -1 : a.dist < b.dist ? 1 : 0))
-    this.prevSortCameraPos = viewPos
     this.resort = false
   }
 
+  // eslint-disable-next-line require-jsdoc
   _drawItem(renderstate, transparentItem, cache) {
     if (cache.currentglMaterial != transparentItem.glmaterial) {
       cache.currentglMaterial = transparentItem.glmaterial
@@ -201,12 +202,28 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     const gl = this.__gl
 
     const viewPos = renderstate.viewXfo.tr
-    // TODO: Avoid sorting if the camera did not movemore than 30cm
-    if (this.resort || viewPos.distanceTo(this.prevSortCameraPos) > 0.3) this.sortItems(viewPos)
+    // Avoid sorting if the camera did not move more than the specified tolerance.
+    if (this.resort || viewPos.distanceTo(this.prevSortCameraPos) > this.sortCameraMovementDistance) {
+      this.sortItems(viewPos)
+
+      this.prevSortCameraPos = viewPos
+      if (renderstate.viewport) {
+        // Adapt the sort tollerance to the focal distance.
+        // In a tiny scene, we want to sort more frequently.
+        const camera = renderstate.viewport.getCamera()
+        this.sortCameraMovementDistance = camera.getFocalDistance() * 0.1
+      }
+    }
 
     gl.enable(gl.DEPTH_TEST)
     gl.depthFunc(gl.LESS)
-    gl.depthMask(true)
+
+    // Disable depth testing.
+    // This means that if overlapping transparent geoms are rendered then faces in front will
+    // not occlude faces behind. This can occur for large faces on objects that are technically in front
+    // but have faces that are behind other faces of objects that are technically behind.
+    // e.g. 2 large transparent polygons that intersect or wrap around each other.
+    gl.depthMask(false)
 
     gl.enable(gl.BLEND)
     gl.blendEquation(gl.FUNC_ADD)
@@ -222,15 +239,16 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     // Then we can simply check if we have any multiply items here
     // before rendering all items.
 
-    renderstate.pass = 'MULTIPLY'
-    gl.blendFunc(gl.DST_COLOR, gl.ZERO) // For multiply, select this.
-    this._drawItems(renderstate)
+    // renderstate.pass = 'MULTIPLY'
+    // gl.blendFunc(gl.DST_COLOR, gl.ZERO) // For multiply, select this.
+    // this._drawItems(renderstate)
 
     renderstate.pass = 'ADD'
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA) // For add
     this._drawItems(renderstate)
 
     gl.disable(gl.BLEND)
+    gl.depthMask(true)
   }
 
   /**

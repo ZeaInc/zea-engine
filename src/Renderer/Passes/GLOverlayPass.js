@@ -82,7 +82,9 @@ class GLOverlayPass extends GLOpaqueGeomsPass {
     // Clear the depth buffer so handls are always drawn over the top.
     gl.clear(gl.DEPTH_BUFFER_BIT)
 
-    // gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE)
+    gl.cullFace(gl.BACK)
+
     gl.enable(gl.BLEND)
     gl.blendEquation(gl.FUNC_ADD)
 

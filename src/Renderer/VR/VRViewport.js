@@ -498,6 +498,7 @@ class VRViewport extends GLBaseViewport {
     const renderstate = {
       boundRendertarget: layer.framebuffer,
       region: this.__region,
+      vrviewport: this,
       viewports: [],
     }
     // renderstate.boundRendertarget.vrfbo = true;
