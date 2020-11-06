@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea Engine - transparent-geoms-sorting</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const {
+        GLRenderer,
+        Scene,
+        Vec3,
+        Xfo,
+        Color,
+        Sphere,
+        Plane,
+        Cuboid,
+        Cone,
+        Cylinder,
+        Torus,
+        GeomItem,
+        TreeItem,
+        Material,
+        SelectionSet,
+      } = zeaEngine
+
+      const scene = new Scene()
+      const domElement = document.getElementById('app')
+      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      renderer.setScene(scene)
+
+      scene.setupGrid(0.06, 6)
+      const tree1 = new TreeItem('tree1')
+      scene.getRoot().addChild(tree1)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      standardMaterial.getParameter('BaseColor').setValue(new Color(1, 1, 0, 1))
+
+      const transparentMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      transparentMaterial.getParameter('BaseColor').setValue(new Color(1, 0, 0, 0.5))
+
+      const addGeomItem = (shape, row, count, i) => {
+        const geomItem = new GeomItem('Item' + row + '-' + i, shape, transparentMaterial)
+        geomItem.getParameter('LocalXfo').setValue(new Xfo(new Vec3(i * 0.003, row * 0.003, 0)))
+        tree1.addChild(geomItem)
+      }
+      const addMeshShape = (shape, row, count) => {
+        for (let i = 0; i < count; i++) {
+          addGeomItem(shape, row, count, i)
+        }
+      }
+      addMeshShape(new Sphere(0.0014, 13), 3, 1)
+      addMeshShape(new Sphere(0.0014, 13), 2, 3)
+      addMeshShape(new Plane(0.002, 0.0015), 1.4, 4)
+      addMeshShape(new Cuboid(0.0015, 0.002, 0.001), 0.5, 6)
+      addMeshShape(new Cone(0.0012, 0.004), -1, 5)
+      addMeshShape(new Cylinder(0.0012, 0.004, 32, 2, true), -2, 8)
+      addMeshShape(new Torus(0.0004, 0.0013), -3, 4)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.025, 0.025, 0.013), new Vec3(0.01, 0, 0))
+      renderer.frameAll()
+
+      window.postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.01, -0.02, 0.005), new Vec3(0.01, 0, 0))
+          renderer.once('redrawOccured', () => {
+            window.postMessage(`done-${data}`)
+          })
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.035, 0.02, 0.005), new Vec3(0.01, 0, 0))
+          renderer.once('redrawOccured', () => {
+            window.postMessage(`done-${data}`)
+          })
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+    </script>
+  </body>
+</html>

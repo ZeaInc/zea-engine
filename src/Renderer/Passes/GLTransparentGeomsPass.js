@@ -239,9 +239,17 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     // Then we can simply check if we have any multiply items here
     // before rendering all items.
 
+    // for Multiply pass, we can use front and back surfaces to calculate depth and how much
+    // of the background layer to let through.
+    // gl.disable(gl.CULL_FACE)
+
     // renderstate.pass = 'MULTIPLY'
     // gl.blendFunc(gl.DST_COLOR, gl.ZERO) // For multiply, select this.
     // this._drawItems(renderstate)
+
+    // for the Add
+    gl.enable(gl.CULL_FACE)
+    gl.cullFace(gl.BACK)
 
     renderstate.pass = 'ADD'
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA) // For add
