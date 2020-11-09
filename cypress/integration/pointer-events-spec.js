@@ -2,17 +2,11 @@ import { createTouchEvents, cyFocusCanvas } from './utils'
 
 describe('pointer-events', () => {
   beforeEach(() => {
-    cy.visit('testing-e2e/pointer-events.html', {
-      onBeforeLoad(win) {
-        cy.spy(win, 'postMessage').as('postMessage')
-      },
-    })
+    cy.visit('testing-e2e/pointer-events.html')
   })
 
   it('Mouse Move - Camera Manipulator', () => {
     cy.get('canvas').trigger('mousedown', 600, 500).trigger('mousemove', 650, 500).trigger('mouseup', 650, 500)
-
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-moving-camera')
 
     cy.get('canvas').percySnapshot(`MouseMoveCameraManipulator`)
   })
@@ -21,7 +15,6 @@ describe('pointer-events', () => {
     cyFocusCanvas()
 
     cy.get('canvas').trigger('mousemove', 100, 230).trigger('mousemove', 250, 230)
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-enter-geometry')
 
     cy.get('canvas').percySnapshot(`MouseEnterGeometry`)
   })
@@ -30,7 +23,6 @@ describe('pointer-events', () => {
     cyFocusCanvas()
 
     cy.get('canvas').trigger('mousemove', 250, 230).trigger('mousemove', 100, 230)
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-leave-geometry')
 
     cy.get('canvas').percySnapshot(`MouseLeaveGeometry`)
   })
@@ -44,8 +36,6 @@ describe('pointer-events', () => {
       deltaZ: 0,
     })
 
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-moving-camera')
-
     cy.get('canvas').percySnapshot(`WheelZoomInCameraManipulator`)
   })
 
@@ -58,15 +48,11 @@ describe('pointer-events', () => {
       deltaZ: 0,
     })
 
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-moving-camera')
-
     cy.get('canvas').percySnapshot(`WheelZoomOutCameraManipulator`)
   })
 
-  it('Double Click - Geometry', () => {
+  it.only('Double Click - Geometry', () => {
     cy.get('canvas').dblclick(800, 300)
-
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-moving-camera')
 
     cy.get('canvas').percySnapshot(`DoubleClickGeometry`)
   })
@@ -89,8 +75,6 @@ describe('pointer-events', () => {
       .trigger('touchend', eTouch)
       .trigger('touchstart', eTouch)
       .trigger('touchend', eTouch)
-
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-moving-camera')
 
     cy.get('canvas').percySnapshot(`DoubleTapGeometry`)
   })

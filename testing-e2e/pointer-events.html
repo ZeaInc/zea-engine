@@ -1,33 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Zea Inc. Demo</title>
+    <title>pointer-events - Zea Engine</title>
 
-    <style>
-      html,
-      body,
-      #root {
-        height: 100%;
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        font-family: 'Roboto', sans-serif;
-      }
+    <link href="zea-logo.png" rel="shortcut icon" />
 
-      input,
-      button {
-        font-family: 'Roboto', sans-serif;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="root"></canvas>
+    <link rel="stylesheet" href="styles/tachyons.min.css" />
+    <link rel="stylesheet" href="styles/main.css" />
 
-    <script crossorigin src="../dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
     <script type="module">
       const {
         GLRenderer,
@@ -47,90 +32,65 @@
         SelectionSet,
       } = window.zeaEngine
 
-      const domElement = document.getElementById('root')
+      const selfEventsIndicator = document.querySelector('#selfEventsIndicator')
+      const groupEventsIndicator = document.querySelector('#groupEventsIndicator')
+      const viewportEventsIndicator = document.querySelector('#viewportEventsIndicator')
+
+      const canvas = document.querySelector('#renderer')
 
       const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
 
-      const renderer = new GLRenderer(domElement)
+      // {{{ Self Events.
+      const material1 = new Material('material1', 'SimpleSurfaceShader')
+      material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
 
-      /** Add Label Start */
-      let index = 0
-      const addLabel = (pos, color, name) => {
-        const label = new Label(name)
-        label.getParameter('FontSize').setValue(28)
-        label.getParameter('BackgroundColor').setValue(color)
+      const selfEventItem = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material1)
 
-        const billboard = new BillboardItem('billboard' + index, label)
-        billboard.getParameter('LocalXfo').setValue(new Xfo(pos))
-        billboard.getParameter('PixelsPerMeter').setValue(300)
-        billboard.getParameter('AlignedToCamera').setValue(true)
-        billboard.getParameter('DrawOnTop').setValue(true)
-        billboard.getParameter('Alpha').setValue(1)
+      const selfEventItemXfo = new Xfo()
+      selfEventItemXfo.tr = new Vec3(2, 0, 0.5)
+      selfEventItem.getParameter('GlobalXfo').setValue(selfEventItemXfo)
 
-        scene.getRoot().addChild(billboard)
+      scene.getRoot().addChild(selfEventItem)
 
-        index++
-        return label
+      let goToDefaultTextTimeout
+
+      const startBackToDefaultTextTimeout = () => {
+        goToDefaultTextTimeout = setTimeout(() => (selfEventsIndicator.textContent = INDICATORS_DEFAULT_TEXT), 2000)
       }
 
-      /** Add Label End */
+      const INDICATORS_DEFAULT_TEXT = '(None)'
 
-      /** Self Events Start */
-      {
-        const material1 = new Material('material1', 'SimpleSurfaceShader')
-        material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
+      // Register pointer event handlers directly to the geometry.
+      selfEventItem.on('pointerEnter', (event) => {
+        selfEventsIndicator.textContent = 'pointerEnter'
+        clearTimeout(goToDefaultTextTimeout)
+        window.postMessage('done-enter-geometry')
+      })
 
-        const selfEventItem = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material1)
+      selfEventItem.on('pointerLeave', (event) => {
+        selfEventsIndicator.textContent = 'pointerLeave'
+        startBackToDefaultTextTimeout()
 
-        const selfEventItemXfo = new Xfo()
-        selfEventItemXfo.tr = new Vec3(2, 0, 0.5)
-        selfEventItem.getParameter('GlobalXfo').setValue(selfEventItemXfo)
+        window.postMessage('done-leave-geometry')
+      })
 
-        const labelDefaultText = 'Self Event Handling'
-        const selfEventItemLabel = addLabel(new Vec3(2, 0, 1.5), new Color('#94C47D'), labelDefaultText)
+      selfEventItem.on('pointerDown', (event) => {
+        event.stopPropagation()
 
-        scene.getRoot().addChild(selfEventItem)
+        selfEventsIndicator.textContent = 'pointerDown'
+        clearTimeout(goToDefaultTextTimeout)
+      })
 
-        let goToDefaultTextTimeout
+      selfEventItem.on('pointerUp', (event) => {
+        event.stopPropagation()
+        selfEventsIndicator.textContent = 'pointerUp'
+        startBackToDefaultTextTimeout()
+      })
+      // }}}
 
-        const startBackToDefaultTextTimeout = () => {
-          goToDefaultTextTimeout = setTimeout(
-            () => selfEventItemLabel.getParameter('Text').setValue(labelDefaultText),
-            2000
-          )
-        }
-
-        // Registering pointer event handlers directly to the geometry.
-        selfEventItem.on('pointerEnter', (event) => {
-          selfEventItemLabel.getParameter('Text').setValue(`<pointerEnter> event`)
-          clearTimeout(goToDefaultTextTimeout)
-          window.postMessage('done-enter-geometry')
-        })
-
-        selfEventItem.on('pointerLeave', (event) => {
-          selfEventItemLabel.getParameter('Text').setValue(`<pointerLeave> event`)
-          startBackToDefaultTextTimeout()
-
-          window.postMessage('done-leave-geometry')
-        })
-
-        selfEventItem.on('pointerDown', (event) => {
-          event.stopPropagation()
-
-          selfEventItemLabel.getParameter('Text').setValue(`<pointerDown> event`)
-          clearTimeout(goToDefaultTextTimeout)
-        })
-
-        selfEventItem.on('pointerUp', (event) => {
-          event.stopPropagation()
-          selfEventItemLabel.getParameter('Text').setValue(`<pointerUp> event`)
-          startBackToDefaultTextTimeout()
-        })
-      }
-
-      /** Self Events End */
-
-      /** Group Events Start */
+      // {{{ Group Events.
       {
         const material2 = new Material('material2', 'SimpleSurfaceShader')
         material2.getParameter('BaseColor').setValue(new Color('#F6B26B'))
@@ -161,29 +121,23 @@
         group.addItem(groupItem1)
         group.addItem(groupItem2)
 
-        const labelDefaultText = 'Group Event Handling'
-        const groupEventItemLabel = addLabel(new Vec3(0, 0, 1.5), new Color('#F6B26B'), labelDefaultText)
-
         let goToDefaultTextTimeout
         const startBackToDefaultTextTimeout = () => {
-          goToDefaultTextTimeout = setTimeout(
-            () => groupEventItemLabel.getParameter('Text').setValue(labelDefaultText),
-            2000
-          )
+          goToDefaultTextTimeout = setTimeout(() => (groupEventsIndicator.textContent = INDICATORS_DEFAULT_TEXT), 2000)
         }
 
-        // Registering pointer event handlers directly to the geometry.
+        // Register pointer event handlers directly to the geometry.
         group.on('pointerEnter', (event) => {
           event.stopPropagation()
 
-          groupEventItemLabel.getParameter('Text').setValue(`<pointerEnter> event`)
+          groupEventsIndicator.textContent = 'pointerEnter'
           clearTimeout(goToDefaultTextTimeout)
         })
 
         group.on('pointerLeave', (event) => {
           event.stopPropagation()
 
-          groupEventItemLabel.getParameter('Text').setValue(`<pointerLeave> event`)
+          groupEventsIndicator.textContent = 'pointerLeave'
           startBackToDefaultTextTimeout()
         })
 
@@ -191,7 +145,7 @@
           event.stopPropagation()
 
           group.getParameter('Highlighted').setValue(true)
-          groupEventItemLabel.getParameter('Text').setValue(`<pointerDown> event`)
+          groupEventsIndicator.textContent = 'pointerDown'
           clearTimeout(goToDefaultTextTimeout)
           event.setCapture(group)
         })
@@ -200,61 +154,55 @@
           event.stopPropagation()
 
           group.getParameter('Highlighted').setValue(false)
-          groupEventItemLabel.getParameter('Text').setValue(`<pointerUp> event`)
+          groupEventsIndicator.textContent = 'pointerUp'
           startBackToDefaultTextTimeout()
           event.releaseCapture()
         })
 
         scene.getRoot().addChild(group)
       }
-      /** Group Events End */
+      // }}}
 
-      /** Pointer Events on viewport Start*/
+      // {{{ Pointer Events on viewport.
       {
-        const labelDefaultText = 'Viewport Event Handling'
-        const vpEventItemLabel = addLabel(new Vec3(-2, 0, 1.5), new Color('#004B8D'), labelDefaultText)
-
         let goToDefaultTextTimeout
         const startBackToDefaultTextTimeout = () => {
           goToDefaultTextTimeout = setTimeout(
-            () => vpEventItemLabel.getParameter('Text').setValue(labelDefaultText),
+            () => (viewportEventsIndicator.textContent = INDICATORS_DEFAULT_TEXT),
             2000
           )
         }
 
-        // Registering pointer event handlers directly to the geometry.
+        // Register pointer event handlers directly to the geometry.
 
         renderer.getViewport().on('pointerLeaveGeom', (event) => {
-          vpEventItemLabel.getParameter('Text').setValue(`<pointerLeaveGeom> event`)
+          viewportEventsIndicator.textContent = 'pointerLeaveGeom'
           startBackToDefaultTextTimeout()
         })
 
         renderer.getViewport().on('pointerOverGeom', (event) => {
-          vpEventItemLabel.getParameter('Text').setValue(`<pointerOverGeom> event`)
+          viewportEventsIndicator.textContent = 'pointerOverGeom'
           clearTimeout(goToDefaultTextTimeout)
         })
 
         renderer.getViewport().on('pointerDownOnGeom', (event) => {
-          vpEventItemLabel.getParameter('Text').setValue(`<pointerDownOnGeom> event`)
+          viewportEventsIndicator.textContent = 'pointerDownOnGeom'
           clearTimeout(goToDefaultTextTimeout)
         })
 
         renderer.getViewport().on('pointerUp', (event) => {
-          vpEventItemLabel.getParameter('Text').setValue(`<pointerUp> event`)
+          viewportEventsIndicator.textContent = 'pointerUp'
           startBackToDefaultTextTimeout()
         })
 
         renderer.getViewport().on('pointerDown', (event) => {
-          vpEventItemLabel.getParameter('Text').setValue(`<pointerDown> event`)
+          viewportEventsIndicator.textContent = 'pointerDown'
           startBackToDefaultTextTimeout()
         })
       }
-      /** Pointer Events on viewport End */
+      // }}}
 
-      renderer.setScene(scene)
-      renderer.resumeDrawing()
-
-      // Positioning the camera to a better perspective view
+      // Position the camera to a better perspective view.
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 5, 3), new Vec3(0, 0, 0))
 
       renderer
@@ -264,5 +212,25 @@
           window.postMessage('done-moving-camera')
         })
     </script>
+  </head>
+  <body class="flex flex-column">
+    <h1>Zea Engine Pointer Events Test</h1>
+
+    <dl>
+      <dt class="dib b">Self:</dt>
+      <dd>
+        <p id="selfEventsIndicator">(None)</p>
+      </dd>
+      <dt class="dib b">Group:</dt>
+      <dd>
+        <p id="groupEventsIndicator">(None)</p>
+      </dd>
+      <dt class="dib b">Viewport:</dt>
+      <dd>
+        <p id="viewportEventsIndicator">(None)</p>
+      </dd>
+    </dl>
+
+    <canvas class="flex-grow-1" id="renderer" />
   </body>
 </html>
