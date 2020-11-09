@@ -29,6 +29,18 @@ class VertexAttribute extends Attribute {
   }
 
   /**
+   * Resizes current data array to to a new size.
+   * In case the new size is bigger than current size, the new values are filled up with default ones.
+   *
+   * @param {number} size - The size value.
+   */
+  resize(size) {
+    super.resize(size)
+    this.__splits = {}
+    this.__splitValues = []
+  }
+
+  /**
    * The getFaceVertexValueRef method.
    * @param {number} face - The face value.
    * @param {number} facevertex - The face vertex value.

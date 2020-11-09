@@ -29,6 +29,15 @@ class Lines extends BaseGeom {
   }
 
   /**
+   * The clear method.
+   */
+  clear() {
+    this.setNumSegments(0)
+    this.setNumVertices(0)
+    this.emit('geomDataTopologyChanged')
+  }
+
+  /**
    * Returns the specified indices(Vertex connectors)
    *
    * @return {Uint32Array} - The indices index array.

@@ -77,6 +77,16 @@ class ProceduralPoints extends Points {
     return super.getBoundingBox()
   }
 
+  /**
+   * Returns the number of vertex attributes.
+   *
+   * @return {number} - The return value.
+   */
+  getNumVertices() {
+    this.update()
+    return super.getNumVertices()
+  }
+
   // ////////////////////////////////////////
   // Rendering
 

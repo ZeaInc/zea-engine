@@ -23,6 +23,14 @@ class Points extends BaseGeom {
   }
 
   /**
+   * The clear method.
+   */
+  clear() {
+    this.setNumVertices(0)
+    this.emit('geomDataTopologyChanged')
+  }
+
+  /**
    * Loads and populates `Points` object from a binary reader.
    *
    * @param {BinReader} reader - The reader value.

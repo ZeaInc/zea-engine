@@ -56,6 +56,15 @@ class Mesh extends BaseGeom {
   }
 
   /**
+   * The clear method.
+   */
+  clear() {
+    this.init()
+    this.setNumVertices(0)
+    this.emit('geomDataTopologyChanged')
+  }
+
+  /**
    * The getFaceCounts method.
    * @return {array} - The return value.
    */
@@ -69,13 +78,6 @@ class Mesh extends BaseGeom {
    */
   getNumFaces() {
     return this.__faceCounts.length == 0 ? 0 : this.__faceCounts.reduce((numFaces, fc) => (numFaces += fc))
-  }
-
-  /**
-   * The clear method.
-   */
-  clear() {
-    this.init()
   }
 
   /**

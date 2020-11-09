@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>clear-geoms - Zea Engine</title>
+
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Color, Material, GeomItem, Lines } = zeaEngine
+
+      const domElement = document.getElementById('app')
+
+      const scene = new Scene()
+      // scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
+
+      const lines = new Lines()
+      lines.setNumVertices(3)
+      lines.setNumSegments(2)
+      lines.setSegmentVertexIndices(0, 0, 1)
+      lines.setSegmentVertexIndices(1, 1, 2)
+      const positions = lines.getVertexAttribute('positions')
+      positions.setValue(0, new Vec3(1, 0, 0.5))
+      positions.setValue(1, new Vec3(1, 1, 0.5))
+      positions.setValue(2, new Vec3(0, 1, 0.5))
+      const geomItem = new GeomItem('Lines', lines, standardMaterial)
+      scene.getRoot().addChild(geomItem)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
+      window.postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          lines.clear()
+          renderer.once('redrawOccured', () => {
+            window.postMessage(`done-${data}`)
+          })
+        } else if (data === 'variant-02') {
+          lines.setNumVertices(4)
+          lines.setNumSegments(3)
+          lines.setSegmentVertexIndices(0, 0, 1)
+          lines.setSegmentVertexIndices(1, 1, 2)
+          lines.setSegmentVertexIndices(2, 2, 3)
+          const positions = lines.getVertexAttribute('positions')
+          positions.setValue(0, new Vec3(1, 0, 0.5))
+          positions.setValue(1, new Vec3(0, 1, 0.5))
+          positions.setValue(2, new Vec3(1, 1, 0.5))
+          positions.setValue(3, new Vec3(-1, -1, 0.5))
+
+          lines.emit('geomDataTopologyChanged', {
+            indicesChanged: true,
+          })
+          renderer.once('redrawOccured', () => {
+            window.postMessage(`done-${data}`)
+          })
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>

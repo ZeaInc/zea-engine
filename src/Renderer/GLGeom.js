@@ -14,7 +14,6 @@ class GLGeom extends RefCounted {
     super()
     this.__gl = gl
     this.__geom = geom
-    this.__glattrs = {}
 
     this.__glattrbuffers = {}
     this.__shaderBindings = {}
@@ -26,8 +25,8 @@ class GLGeom extends RefCounted {
     this.__geom.on('geomDataChanged', updateBuffers)
 
     const regenBuffers = () => {
-      this.clearShaderBindings()
-      this.updateBuffers({ topologyChanged: true })
+      this.clearBuffers()
+      this.genBuffers()
       this.emit('updated')
     }
     this.__geom.on('geomDataTopologyChanged', regenBuffers)
@@ -118,9 +117,19 @@ class GLGeom extends RefCounted {
   }
 
   /**
-   * The clearShaderBindings method.
+   * The clearBuffers method.
    */
-  clearShaderBindings() {
+  clearBuffers() {
+    const gl = this.__gl
+    // eslint-disable-next-line guard-for-in
+    for (const attrName in this.__glattrbuffers) {
+      const glbuffer = this.__glattrbuffers[attrName]
+      if (glbuffer.shared) continue /* This buffer is shared between geoms. do not destroy */
+      gl.deleteBuffer(glbuffer.buffer)
+    }
+    this.__glattrbuffers = {}
+
+    // eslint-disable-next-line guard-for-in
     for (const shaderkey in this.__shaderBindings) {
       const shaderBinding = this.__shaderBindings[shaderkey]
       shaderBinding.destroy()
@@ -135,18 +144,8 @@ class GLGeom extends RefCounted {
   destroy() {
     this.__geom.deleteMetadata('glgeom')
 
-    this.clearShaderBindings()
+    this.clearBuffers()
 
-    const gl = this.__gl
-    // eslint-disable-next-line guard-for-in
-    for (const attrName in this.__glattrbuffers) {
-      const glbuffer = this.__glattrbuffers[attrName]
-      if (glbuffer.shared) continue /* This buffer is shared between geoms. do not destroy */
-      gl.deleteBuffer(glbuffer.buffer)
-    }
-    this.__glattrs = {}
-
-    this.__shaderBindings = {}
     this.__destroyed = true
 
     //  Note: PoTree listens to this event. If moved up into RefCounted, make sure it is still emitted.

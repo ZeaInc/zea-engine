@@ -42,8 +42,13 @@ class GLMesh extends GLGeom {
     if (indices instanceof Uint16Array) this.__indexDataType = this.__gl.UNSIGNED_SHORT
     if (indices instanceof Uint32Array) this.__indexDataType = this.__gl.UNSIGNED_INT
 
+    this.__numVertices = this.__geom.getNumVertices()
     this.__numTriangles = indices.length / 3
     this.__numRenderVerts = geomBuffers.numRenderVerts
+
+    if (this.__indexBuffer) {
+      gl.deleteBuffer(this.__indexBuffer)
+    }
 
     this.__indexBuffer = gl.createBuffer()
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.__indexBuffer)
@@ -54,8 +59,14 @@ class GLMesh extends GLGeom {
     // let maxIndex;
     // if (debugAttrValues)
     //   maxIndex = Math.max(...indices);
+
+    // eslint-disable-next-line guard-for-in
     for (const attrName in geomBuffers.attrBuffers) {
       const attrData = geomBuffers.attrBuffers[attrName]
+
+      if (this.__glattrbuffers[attrName] && this.__glattrbuffers[attrName].buffer) {
+        gl.deleteBuffer(this.__glattrbuffers[attrName].buffer)
+      }
 
       const attrBuffer = gl.createBuffer()
       gl.bindBuffer(gl.ARRAY_BUFFER, attrBuffer)
@@ -78,7 +89,13 @@ class GLMesh extends GLGeom {
   updateBuffers(opts) {
     const gl = this.__gl
 
+    if (this.__numVertices != this.__geom.getNumVertices()) {
+      this.genBuffers()
+      return
+    }
+
     const geomBuffers = this.__geom.genBuffers({ includeIndices: false })
+    // eslint-disable-next-line guard-for-in
     for (const attrName in geomBuffers.attrBuffers) {
       const attrData = geomBuffers.attrBuffers[attrName]
       const glattr = this.__glattrbuffers[attrName]
@@ -88,19 +105,14 @@ class GLMesh extends GLGeom {
   }
 
   /**
-   * The getNumUnSplitVerts method.
-   * @return {any} - The return value.
+   * The clearBuffers method.
    */
-  getNumUnSplitVerts() {
-    return this.__geom.getNumVertices()
-  }
+  clearBuffers() {
+    const gl = this.__gl
+    gl.deleteBuffer(this.__indexBuffer)
+    this.__indexBuffer = null
 
-  /**
-   * The getNumSplitVerts method.
-   * @return {any} - The return value.
-   */
-  getNumSplitVerts() {
-    return this.__numRenderVerts
+    super.clearBuffers()
   }
 
   // ////////////////////////////////

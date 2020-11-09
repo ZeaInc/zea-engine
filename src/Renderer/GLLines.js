@@ -33,6 +33,25 @@ class GLLines extends GLGeom {
   }
 
   /**
+   * The updateBuffers method.
+   * @param {any} opts - The opts value.
+   */
+  updateBuffers(opts) {
+    this.__buffersNeedUpload = true
+  }
+
+  /**
+   * The clearBuffers method.
+   */
+  clearBuffers() {
+    const gl = this.__gl
+    gl.deleteBuffer(this.__indexBuffer)
+    this.__indexBuffer = null
+
+    super.clearBuffers()
+  }
+
+  /**
    * The genBuffers method.
    *
    * @param {*} fatLines
@@ -164,14 +183,6 @@ class GLLines extends GLGeom {
     if (indices instanceof Uint32Array) this.__indexDataType = this.__gl.UNSIGNED_INT
 
     this.__buffersNeedUpload = false
-  }
-
-  /**
-   * The updateBuffers method.
-   * @param {any} opts - The opts value.
-   */
-  updateBuffers(opts) {
-    this.genBuffers(opts)
   }
 
   /**
