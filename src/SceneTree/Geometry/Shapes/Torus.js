@@ -36,6 +36,7 @@ class Torus extends ProceduralMesh {
     this.addVertexAttribute('normals', Vec3)
 
     this.topologyParams.push('Detail')
+    this.topologyParams.push('ArcAngle')
   }
 
   /**
@@ -43,8 +44,6 @@ class Torus extends ProceduralMesh {
    * @private
    */
   rebuild() {
-    const innerRadius = this.__innerRadiusParam.getValue()
-    const outerRadius = this.__outerRadiusParam.getValue()
     const arcAngle = this.__arcAngleParam.getValue()
     const open = arcAngle < 2.0 * Math.PI
     const detail = this.__detailParam.getValue()
@@ -54,31 +53,6 @@ class Torus extends ProceduralMesh {
 
     this.setNumVertices(numVertices)
     this.setFaceCounts([0, nbSlices * nbLoops])
-
-    // ////////////////////////////
-    // Set Vertex Positions
-
-    const positions = this.getVertexAttribute('positions')
-    const normals = this.getVertexAttribute('normals')
-    let vertex = 0
-    for (let i = 0; i < nbLoops; i++) {
-      const theta = -((i / (open ? nbLoops - 1 : nbLoops)) * arcAngle)
-      const ctheta = Math.cos(theta)
-      const stheta = Math.sin(theta)
-
-      for (let j = 0; j < nbSlices; j++) {
-        const phi = (j / nbSlices) * 2.0 * Math.PI
-
-        const sphi = Math.sin(phi)
-        const cphi = Math.cos(phi)
-        const d = outerRadius + cphi * innerRadius
-
-        // Set positions and normals at the same time.
-        positions.getValueRef(vertex).set(ctheta * d, stheta * d, innerRadius * sphi)
-        normals.getValueRef(vertex).set(ctheta * cphi, stheta * cphi, sphi)
-        vertex++
-      }
-    }
 
     // ////////////////////////////
     // Build the topology and texCoords
@@ -101,6 +75,8 @@ class Torus extends ProceduralMesh {
         faceIndex++
       }
     }
+
+    this.resize()
   }
 
   /**
@@ -110,14 +86,18 @@ class Torus extends ProceduralMesh {
   resize() {
     const innerRadius = this.__innerRadiusParam.getValue()
     const outerRadius = this.__outerRadiusParam.getValue()
+    const arcAngle = this.__arcAngleParam.getValue()
     const detail = this.__detailParam.getValue()
+    const open = arcAngle < 2.0 * Math.PI
     const nbSlices = detail
     const nbLoops = detail * 2 + (open ? 1 : 0)
 
     const positions = this.getVertexAttribute('positions')
+    const normals = this.getVertexAttribute('normals')
     let vertex = 0
     for (let i = 0; i < nbLoops; i++) {
-      const theta = (i / nbLoops) * arcAngle
+      // const theta = (i / nbLoops) * arcAngle
+      const theta = -((i / (open ? nbLoops - 1 : nbLoops)) * arcAngle)
       const ctheta = Math.cos(theta)
       const stheta = Math.sin(theta)
 
@@ -130,6 +110,7 @@ class Torus extends ProceduralMesh {
 
         // Set positions and normals at the same time.
         positions.getValueRef(vertex).set(ctheta * d, stheta * d, innerRadius * sphi)
+        normals.getValueRef(vertex).set(ctheta * cphi, stheta * cphi, sphi)
         vertex++
       }
     }

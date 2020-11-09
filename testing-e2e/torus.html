@@ -19,11 +19,33 @@
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
 
-      const geomItem = new GeomItem('Torus', new Torus(1.5, 3.0, 6, Math.PI), standardMaterial)
+      const torus = new Torus(1.5, 3.0, 6)
+      const geomItem = new GeomItem('Torus', torus, standardMaterial)
       scene.getRoot().addChild(geomItem)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
       renderer.frameAll()
+
+      window.postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          torus.getParameter('ArcAngle').setValue(Math.PI * 1.5)
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          torus.getParameter('Detail').setValue(25)
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-03') {
+          torus.getParameter('InnerRadius').setValue(0.5)
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
     </script>
   </body>
 </html>
