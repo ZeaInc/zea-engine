@@ -5,9 +5,6 @@ import ArchiveUnpackerWorker from 'web-worker:./ArchiveUnpackerWorker.js'
 //     ResourceLoaderWorker_onmessage
 // } from './ArchiveUnpackerWorker.js';
 
-// TODO
-// log debug when registering
-
 function checkStatus(response) {
   if (!response.ok) {
     return false
