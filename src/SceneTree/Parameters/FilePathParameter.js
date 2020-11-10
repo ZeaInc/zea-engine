@@ -1,6 +1,6 @@
 import { Registry } from '../../Registry'
 import { Parameter } from './Parameter.js'
-import { resourceLoader } from '../ResourceLoader.js'
+import { resourceLoader } from '../resourceLoader.js'
 
 /**
  * Represents a specific type of parameter, that only stores file data values.

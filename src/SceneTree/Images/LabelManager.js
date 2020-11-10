@@ -1,5 +1,4 @@
 import { EventEmitter } from '../../Utilities/index'
-import { resourceLoader } from '../ResourceLoader.js'
 import { loadTextfile, loadBinfile } from '../Utils.js'
 
 // eslint-disable-next-line require-jsdoc

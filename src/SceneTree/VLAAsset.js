@@ -2,7 +2,7 @@ import { SystemDesc } from '../SystemDesc.js'
 import { FilePathParameter } from './Parameters/FilePathParameter'
 import { AssetItem } from './AssetItem.js'
 import { BinReader } from './BinReader.js'
-import { resourceLoader } from './ResourceLoader.js'
+import { resourceLoader } from './resourceLoader.js'
 import { Registry } from '../Registry'
 import { Version } from './Version.js'
 

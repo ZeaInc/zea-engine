@@ -4,7 +4,7 @@ import { Registry } from '../../Registry'
 import { BaseImage } from '../BaseImage.js'
 
 import { GIF } from '../../external/gifuct-js.js'
-import { resourceLoader } from '../ResourceLoader.js'
+import { resourceLoader } from '../resourceLoader.js'
 import { SystemDesc } from '../../SystemDesc.js'
 
 import { BooleanParameter, NumberParameter, Vec4Parameter } from '../Parameters/index'

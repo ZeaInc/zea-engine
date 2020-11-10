@@ -1,6 +1,6 @@
 import { Color } from '../Math/index'
 import { TreeItem } from './TreeItem.js'
-import { resourceLoader } from './ResourceLoader.js'
+import { resourceLoader } from './resourceLoader.js'
 import { DriveAdapter } from './ResourceLoader/DriveAdapter.js'
 import { SceneSettings } from './SceneSettings.js'
 import { VLAAsset } from './VLAAsset.js'

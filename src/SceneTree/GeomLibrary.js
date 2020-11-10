@@ -3,7 +3,7 @@ import { BinReader } from './BinReader.js'
 import { loadBinfile } from './Utils.js'
 import { PointsProxy, LinesProxy, MeshProxy } from './Geometry/GeomProxies.js'
 import { EventEmitter } from '../Utilities/index'
-import { resourceLoader } from './ResourceLoader.js'
+import { resourceLoader } from './resourceLoader.js'
 
 // The GeomLibrary parses geometry data using workers.
 // This can be difficult to debug, so you can disable this

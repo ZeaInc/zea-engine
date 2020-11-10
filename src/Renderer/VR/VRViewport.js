@@ -4,7 +4,7 @@ import { TreeItem } from '../../SceneTree/index'
 import { GLBaseViewport } from '../GLBaseViewport.js'
 import { VRHead } from './VRHead.js'
 import { VRController } from './VRController.js'
-import { resourceLoader } from '../../SceneTree/ResourceLoader.js'
+import { resourceLoader } from '../../SceneTree/resourceLoader.js'
 
 /** Class representing a VR viewport.
  * @extends GLBaseViewport

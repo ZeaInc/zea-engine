@@ -1,5 +1,5 @@
 import { Registry } from '../../Registry'
-import { resourceLoader } from '../ResourceLoader.js'
+import { resourceLoader } from '../resourceLoader.js'
 
 import { BooleanParameter, NumberParameter } from '../Parameters/index'
 
