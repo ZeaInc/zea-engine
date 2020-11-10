@@ -49,7 +49,7 @@ class EventEmitter {
    */
   on(eventName, listener) {
     if (!listener) {
-      throw new Error('Missing callback function (listener).')
+      throw new Error('Missing listener.')
     }
 
     if (!this.listeners[eventName]) {

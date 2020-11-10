@@ -41,18 +41,15 @@ export default [
     plugins,
   },
 
-  // CommonJS (for Node) and ES module (for bundlers) build.
-  // (We could have three entries in the configuration array
-  // instead of two, but it's quicker to generate multiple
-  // builds from a single configuration where possible, using
-  // an array for the `output` option, where we can specify
-  // `file` and `format` for each target)
+  // Zea Engine default plugins.
   {
-    input: 'src/index.js',
-    output: [
-      { file: pkg.main, format: 'cjs', sourcemap },
-      { file: pkg.module, format: 'es', sourcemap },
-    ],
+    input: 'src/index-plugins.js',
+    output: {
+      name: 'zeaEnginePlugins',
+      file: pkg.plugins,
+      format: 'umd',
+      sourcemap,
+    },
     plugins,
   },
 ]

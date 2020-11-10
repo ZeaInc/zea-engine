@@ -2,8 +2,10 @@ import pkg from '../package.json'
 
 import { zeaDebug } from './helpers/zeaDebug'
 import { LibsRegistry } from './LibsRegistry'
+import { Env } from './Utilities/index'
 
-zeaDebug('Loaded Zea Engine version %s', pkg.version)
+zeaDebug('Zea Engine version %s', pkg.version)
+zeaDebug('Zea Engine env %O', Env)
 
 export * from './SystemDesc'
 export * from './Registry'

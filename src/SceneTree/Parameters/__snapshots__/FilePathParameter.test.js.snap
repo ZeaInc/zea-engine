@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FilePathParameter Can be cloned. 1`] = `
+Object {
+  "value": "foo",
+}
+`;
+
+exports[`FilePathParameter Can be saved to JSON (serialization). 1`] = `"{\\"value\\":\\"foo\\"}"`;

@@ -121,11 +121,12 @@ class FilePathParameter extends Parameter {
    * @param {string} value - The value param.
    */
   setValue(value) {
-    if (value == undefined) {
+    if (!value) {
       throw new Error('Invalid value for setValue.')
     }
+
+    // Important here because file changes cause reloads.
     // Note: equality tests only work on simple types.
-    // Important here because file changes cause reloads..
     if (value == this.__value) {
       return
     }
@@ -144,11 +145,7 @@ class FilePathParameter extends Parameter {
    * @return {object} - Returns the json object.
    */
   toJSON(context) {
-    const j = {}
-    if (this.__file) {
-      j.value = this.__value
-    }
-    return j
+    return { value: this.__value }
   }
 
   /**
@@ -173,9 +170,9 @@ class FilePathParameter extends Parameter {
    * @return {FilePathParameter} - Returns a new cloned file path parameter.
    */
   clone() {
-    const clonedParam = new FilePathParameter(this.__name)
-    clonedParam.__file = this.__file
-    return clonedParam
+    const clone = new FilePathParameter(this.__name)
+    clone.setValue(this.getValue())
+    return clone
   }
 }
 

@@ -1,5 +1,4 @@
 import { ListParameter } from './ListParameter'
-import { List } from '../../Math'
 
 describe('ListParameter', () => {
   it('has an initial value.', () => {

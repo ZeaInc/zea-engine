@@ -37,7 +37,7 @@ class Parameter extends EventEmitter {
    * @param {string} dataType - The data type of the parameter.
    */
   constructor(name, value, dataType) {
-    super(name)
+    super()
 
     this.__name = name
     this.__value = value

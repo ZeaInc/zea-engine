@@ -9,6 +9,7 @@
     <div id="app"></div>
 
     <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
 
     <script type="module">
       const { GLRenderer, Scene, Vec3, Xfo, VLAAsset } = zeaEngine
@@ -22,7 +23,6 @@
       renderer.setScene(scene)
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.5, 0.5, 0.5), new Vec3(0, 0, 0))
 
-      
       const asset = new VLAAsset()
       asset.getParameter('FilePath').setValue('../public-resources/Vive.vla')
       asset.getGeometryLibrary().on('loaded', () => {
@@ -31,14 +31,12 @@
 
         const Controller = asset.getChildByName('Controller')
         Controller.getParameter('LocalXfo').setValue(new Xfo(new Vec3(-200, 0, 0)))
-        
+
         window.postMessage('done-loading')
       })
       scene.getRoot().addChild(asset)
 
-
-      renderer.getViewport().on('mouseDownOnGeom', (event)=>{
-
+      renderer.getViewport().on('mouseDownOnGeom', (event) => {
         console.log(event.intersectionData.geomItem.getName())
       })
 
