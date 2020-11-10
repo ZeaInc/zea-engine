@@ -7,7 +7,7 @@ const isJsDom = () => isBrowser() && window.navigator.userAgent.includes('jsdom'
 
 const isNodeJs = () => typeof module === 'object' && typeof module.exports === 'object'
 
-const DEFAULT_BASE_URL = 'https://cdn.jsdelivr.net/npm/@zeainc/zea-engine'
+const DEFAULT_BASE_URL = 'https://cdn.jsdelivr.net/npm/@zeainc/zea-engine/dist/'
 
 const getBaseUrl = () => {
   if (isBrowser() && !isJsDom()) {
@@ -42,7 +42,7 @@ const getBaseUrl = () => {
 
     const currentScriptSrc = document.currentScript.src
 
-    return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf('/dist'))
+    return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf('/') + 1)
 
     // TODO
     // move to pub to dist

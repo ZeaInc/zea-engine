@@ -12,7 +12,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "files": [
     "dist/*.js",
-    "public-resources/",
+    "dist/public-resources/",
     "buildApiDocs.js"
   ],
   "scripts": {
