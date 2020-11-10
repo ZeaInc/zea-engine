@@ -19,11 +19,31 @@
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       standardMaterial.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
 
-      const geomItem = new GeomItem('Sphere', new Sphere(1.5, 6), standardMaterial)
+      const sphere = new Sphere(1.5, 6)
+      const geomItem = new GeomItem('Sphere', sphere, standardMaterial)
       scene.getRoot().addChild(geomItem)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
       renderer.frameAll()
+
+      window.postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          sphere.getParameter('Radius').setValue(2.5)
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          sphere.getParameter('Loops').setValue(25)
+          sphere.getParameter('Sides').setValue(15)
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
     </script>
   </body>
 </html>

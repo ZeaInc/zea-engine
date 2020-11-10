@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zea Engine</title>
+    <title>cuboid - Zea Engine</title>
+
+    <meta charset="UTF-8" />
   </head>
   <body>
     <div id="app"></div>
@@ -9,29 +11,35 @@
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
-      const { GLRenderer, Scene, Vec3, Color, Cone, Material, GeomItem } = zeaEngine
+      const { GLRenderer, Scene, Vec3, Color, Cuboid, Material, GeomItem } = zeaEngine
+
+      const domElement = document.getElementById('app')
 
       const scene = new Scene()
-      const domElement = document.getElementById('app')
-      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      scene.setupGrid(10.0, 10)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
       renderer.setScene(scene)
 
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       standardMaterial.getParameter('BaseColor').setValue(new Color(200 / 255, 50 / 255, 50 / 255))
 
-      const geomItem = new GeomItem('Cone', new Cone(1.5, 4.0, 30), standardMaterial)
+      const cuboid = new Cuboid(1.5, 2.0, 0.1)
+      const geomItem = new GeomItem('Cuboid', cuboid, standardMaterial)
       scene.getRoot().addChild(geomItem)
+
+      window.postMessage('done-loading')
 
       // {{{ Messages handler.
       const handleMessage = (event) => {
         const { data } = event
 
-        if (event.data === 'top') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
           renderer.frameAll()
           window.postMessage(`done-${data}`)
-        } else if (event.data === 'below') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
           renderer.frameAll()
           window.postMessage(`done-${data}`)
         }
