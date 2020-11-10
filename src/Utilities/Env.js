@@ -43,6 +43,9 @@ const getBaseUrl = () => {
     const currentScriptSrc = document.currentScript.src
 
     return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf('/dist'))
+
+    // TODO
+    // move to pub to dist
   } else {
     // TODO
     // If loading in Node.js...
