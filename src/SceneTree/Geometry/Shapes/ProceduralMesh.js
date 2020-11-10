@@ -58,6 +58,8 @@ class ProceduralMesh extends Mesh {
    */
   update() {
     if (this.dirtyTopology) {
+      // Clear the topology so that vertex normals can be recomputed.
+      this.vertexEdges = undefined
       this.rebuild()
       this.dirtyTopology = false
       this.dirtyVertices = false
