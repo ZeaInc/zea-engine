@@ -32,6 +32,15 @@ class BaseProxy extends EventEmitter {
   }
 
   /**
+   * Returns the number of vertex attributes.
+   *
+   * @return {number} - The return value.
+   */
+  getNumVertices() {
+    return this.__buffers.numVertices
+  }
+
+  /**
    * Returns the bounding box for geometry.
    * @return {Vec3} - The return value.
    */
