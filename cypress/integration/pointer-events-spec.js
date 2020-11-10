@@ -6,7 +6,7 @@ describe('pointer-events', () => {
   })
 
   it('Mouse Move - Camera Manipulator', () => {
-    cy.get('canvas').trigger('mousedown', 600, 500).trigger('mousemove', 650, 500).trigger('mouseup', 650, 500)
+    cy.get('canvas').trigger('mousedown', 'left').trigger('mousemove', 'center').trigger('mouseup', 'center')
 
     cy.get('canvas').percySnapshot(`MouseMoveCameraManipulator`)
   })
@@ -51,7 +51,7 @@ describe('pointer-events', () => {
     cy.get('canvas').percySnapshot(`WheelZoomOutCameraManipulator`)
   })
 
-  it.only('Double Click - Geometry', () => {
+  it('Double Click - Geometry', () => {
     cy.get('canvas').dblclick(800, 300)
 
     cy.get('canvas').percySnapshot(`DoubleClickGeometry`)
