@@ -30,6 +30,7 @@
       renderer.setScene(scene)
 
       objAsset.on('loaded', () => {
+        renderer.frameAll()
         window.postMessage(`done-Loading`)
       })
 
