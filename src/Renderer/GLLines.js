@@ -19,7 +19,6 @@ class GLLines extends GLGeom {
     this.__numSegIndices = 0
     this.__numVertices = 0
     this.__buffersNeedUpload = true
-    this.genBuffers()
   }
 
   /**
@@ -27,9 +26,8 @@ class GLLines extends GLGeom {
    * @param {any} opts - The opts value.
    */
   genBuffers(opts) {
-    this.__buffersNeedUpload = true
     this.genBufferOpts = opts
-    super.genBuffers(opts)
+    this.__buffersNeedUpload = true
   }
 
   /**
@@ -37,6 +35,7 @@ class GLLines extends GLGeom {
    * @param {any} opts - The opts value.
    */
   updateBuffers(opts) {
+    this.genBufferOpts = opts
     this.__buffersNeedUpload = true
   }
 
@@ -47,6 +46,17 @@ class GLLines extends GLGeom {
     const gl = this.__gl
     gl.deleteBuffer(this.__indexBuffer)
     this.__indexBuffer = null
+
+    if (this.fatBuffers && this.fatBuffers.positionsTexture) {
+      if (this.fatBuffers.positionsTexture) {
+        this.fatBuffers.positionsTexture.destroy()
+        this.fatBuffers.positionsTexture = null
+      }
+      if (this.fatBuffers.glattrbuffers.segmentIndices.buffer) {
+        gl.deleteBuffer(this.fatBuffers.glattrbuffers.segmentIndices.buffer)
+        this.fatBuffers.glattrbuffers.segmentIndices = null
+      }
+    }
 
     super.clearBuffers()
   }
@@ -61,13 +71,16 @@ class GLLines extends GLGeom {
     const gl = this.__gl
     const geomBuffers = this.__geom.genBuffers()
     const indices = geomBuffers.indices
+    const numVertsChanged = geomBuffers.numVertices != this.__numVertices
 
     if (fatLines) {
       if (!gl.__quadVertexIdsBuffer) {
         gl.setupInstancedQuad()
       }
-      this.fatBuffers = { glattrbuffers: {} }
-      this.fatBuffers.glattrbuffers.vertexIDs = gl.__quadattrbuffers.vertexIDs
+      if (!this.fatBuffers) {
+        this.fatBuffers = { glattrbuffers: {} }
+        this.fatBuffers.glattrbuffers.vertexIDs = gl.__quadattrbuffers.vertexIDs
+      }
 
       this.fatBuffers.drawCount = indices.length / 2
 
@@ -85,6 +98,10 @@ class GLLines extends GLGeom {
         if (lineThicknessAttr) dataArray[i * 4 + 3] = lineThicknessAttr.getFloat32Value(i)
         else dataArray[i * 4 + 3] = 1.0
       }
+      if (numVertsChanged && this.fatBuffers.positionsTexture) {
+        this.fatBuffers.positionsTexture.destroy()
+        this.fatBuffers.positionsTexture = null
+      }
       if (!this.fatBuffers.positionsTexture) {
         this.fatBuffers.positionsTexture = new GLTexture2D(gl, {
           format: 'RGBA',
@@ -101,23 +118,26 @@ class GLLines extends GLGeom {
         this.fatBuffers.positionsTexture.bufferData(dataArray, positions.length, 1)
       }
 
-      const indexArray = new Float32Array(indices.length)
-      for (let i = 0; i < indices.length; i++) {
-        let seqentialIndex
-        if (i % 2 == 0) {
-          seqentialIndex = i > 0 ? indices[i] == indices[i - 1] : indices[i] == indices[indices.length - 1]
-        } else {
-          seqentialIndex = i < indices.length - 1 ? indices[i] == indices[i + 1] : indices[i] == indices[0]
+      const makeIndices = () => {
+        const indexArray = new Float32Array(indices.length)
+        for (let i = 0; i < indices.length; i++) {
+          let seqentialIndex
+          if (i % 2 == 0) {
+            seqentialIndex = i > 0 ? indices[i] == indices[i - 1] : indices[i] == indices[indices.length - 1]
+          } else {
+            seqentialIndex = i < indices.length - 1 ? indices[i] == indices[i + 1] : indices[i] == indices[0]
+          }
+          // encode the flag into the indices values.
+          // this flag is decoded in GLSL.
+          indexArray[i] = (seqentialIndex ? 1 : 0) + indices[i] * 2
         }
-        // encode the flag into the indices values.
-        // this flag is decoded in GLSL.
-        indexArray[i] = (seqentialIndex ? 1 : 0) + indices[i] * 2
+        return indexArray
       }
 
       if (!this.fatBuffers.glattrbuffers.segmentIndices) {
         const indexBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, indexArray, gl.STATIC_DRAW)
+        gl.bufferData(gl.ARRAY_BUFFER, makeIndices(), gl.STATIC_DRAW)
 
         this.fatBuffers.glattrbuffers.segmentIndices = {
           buffer: indexBuffer,
@@ -125,9 +145,12 @@ class GLLines extends GLGeom {
           dataType: Vec2,
         }
       } else {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.fatBuffers.glattrbuffers.segmentIndices.buffer)
-        gl.bufferData(gl.ARRAY_BUFFER, indexArray, gl.STATIC_DRAW)
+        if (!this.genBufferOpts || (this.genBufferOpts && this.genBufferOpts.topologyChanged)) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.fatBuffers.glattrbuffers.segmentIndices.buffer)
+          gl.bufferData(gl.ARRAY_BUFFER, makeIndices(), gl.STATIC_DRAW)
+        }
       }
+      this.__numSegIndices = indices.length
     } else {
       if (!this.__indexBuffer) {
         this.__indexBuffer = gl.createBuffer()
@@ -136,7 +159,7 @@ class GLLines extends GLGeom {
       } else {
         // Note: the topology can change without the number of vertices changing
         // and vice versa.
-        if (this.genBufferOpts && this.genBufferOpts.topologyChanged) {
+        if (!this.genBufferOpts || (this.genBufferOpts && this.genBufferOpts.topologyChanged)) {
           if (this.__numSegIndices != indices.length) {
             gl.deleteBuffer(this.__indexBuffer)
             this.__indexBuffer = gl.createBuffer()
@@ -146,8 +169,6 @@ class GLLines extends GLGeom {
           this.__numSegIndices = indices.length
         }
       }
-
-      const numVertsChanged = geomBuffers.numVertices != this.__numVertices
 
       // eslint-disable-next-line guard-for-in
       for (const attrName in geomBuffers.attrBuffers) {

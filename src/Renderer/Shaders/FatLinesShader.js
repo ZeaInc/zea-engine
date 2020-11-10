@@ -94,7 +94,7 @@ vec3 calcFatLinesViewPos(int vertexID, mat4 modelViewMatrix, inout vec3 viewNorm
 
     // Move the line towards the viewer by the line thickness.
     // this is to avoid depth issues when lines are rendered over meshes. 
-    viewPos.z -= (lineThickness_0 + lineThickness_1) * 0.25;
+    viewPos.z += (lineThickness_0 + lineThickness_1) * 0.5;
   }
 
   return viewPos;
