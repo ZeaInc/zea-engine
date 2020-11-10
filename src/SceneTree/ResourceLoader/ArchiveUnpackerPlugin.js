@@ -25,7 +25,7 @@ class ArchiveUnpackerPlugin {
 
   init(resourceLoader) {
     this.resourceLoader = resourceLoader
-    this.wasmUrl = this.resourceLoader.baseUrl + '/public-resources/unpack.wasm'
+    this.wasmUrl = this.resourceLoader.baseUrl + 'public-resources/unpack.wasm'
   }
 
   /**
