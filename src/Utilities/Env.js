@@ -1,31 +1,23 @@
 // Note: `globalThis` is not supported in some Safari versions.
 // See: https://caniuse.com/mdn-javascript_builtins_globalthis
 
-import pkg from '../../package.json'
-
 const isBrowser = () => typeof window !== 'undefined' && typeof window.document !== 'undefined'
 
 const isJsDom = () => isBrowser() && window.navigator.userAgent.includes('jsdom')
 
 const isNodeJs = () => typeof module === 'object' && typeof module.exports === 'object'
 
-const DEFAULT_BASE_URL = 'https://cdn.jsdelivr.net/npm/@zeainc/zea-engine/dist/'
-const PACKAGE_NAME = pkg.name
+const DIST_DIR_NAME = '/dist/'
+const DEFAULT_BASE_URL = `https://cdn.jsdelivr.net/npm/@zeainc/zea-engine${DIST_DIR_NAME}`
 
 const getBaseUrl = () => {
   if (isBrowser() && !isJsDom()) {
     const currentScriptSrc = document.currentScript.src
 
-    const isFromPackageManager = currentScriptSrc.includes(PACKAGE_NAME)
-
     console.debug('currentScriptSrc', currentScriptSrc)
     console.debug('isFromPackageManager', isFromPackageManager)
 
-    if (isFromPackageManager) {
-      return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf(PACKAGE_NAME) + 1)
-    }
-
-    return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf('/') + 1)
+    return `${currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf(DIST_DIR_NAME))}DIST_DIR_NAME`
     // const scripts = document.getElementsByTagName('script')
 
     // for (let i = 0; i < scripts.length; i += 1) {
