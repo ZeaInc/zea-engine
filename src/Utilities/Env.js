@@ -13,8 +13,7 @@ const isNodeJs = () => typeof module === 'object' && typeof module.exports === '
 const getBaseUrl = () => {
   if (isBrowser() && !isJsDom()) {
     const currentScriptSrc = document.currentScript.src
-
-    return `${currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf(DIST_DIR_NAME))}DIST_DIR_NAME`
+    return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf(DIST_DIR_NAME)) + DIST_DIR_NAME
   } else {
     // TODO
     // If loading in Node.js.
