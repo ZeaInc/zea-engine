@@ -1,14 +1,14 @@
 // Note: `globalThis` is not supported in some Safari versions.
 // See: https://caniuse.com/mdn-javascript_builtins_globalthis
 
+const DIST_DIR_NAME = '/dist/'
+const DEFAULT_BASE_URL = `https://cdn.jsdelivr.net/npm/@zeainc/zea-engine${DIST_DIR_NAME}`
+
 const isBrowser = () => typeof window !== 'undefined' && typeof window.document !== 'undefined'
 
 const isJsDom = () => isBrowser() && window.navigator.userAgent.includes('jsdom')
 
 const isNodeJs = () => typeof module === 'object' && typeof module.exports === 'object'
-
-const DIST_DIR_NAME = '/dist/'
-const DEFAULT_BASE_URL = `https://cdn.jsdelivr.net/npm/@zeainc/zea-engine${DIST_DIR_NAME}`
 
 const getBaseUrl = () => {
   if (isBrowser() && !isJsDom()) {
