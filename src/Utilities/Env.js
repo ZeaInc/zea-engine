@@ -13,6 +13,7 @@ const DEFAULT_BASE_URL = 'https://cdn.jsdelivr.net/npm/@zeainc/zea-engine/dist/'
 const PACKAGE_NAME = pkg.name
 
 const getBaseUrl = () => {
+  debugger
   if (isBrowser() && !isJsDom()) {
     const currentScriptSrc = document.currentScript.src
 
