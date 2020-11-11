@@ -21,6 +21,10 @@ const getBaseUrl = () => {
     console.debug('currentScriptSrc', currentScriptSrc)
     console.debug('isFromPackageManager', isFromPackageManager)
 
+    if (isFromPackageManager) {
+      return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf(PACKAGE_NAME) + 1)
+    }
+
     return currentScriptSrc.substring(0, currentScriptSrc.lastIndexOf('/') + 1)
     // const scripts = document.getElementsByTagName('script')
 
@@ -42,7 +46,7 @@ const getBaseUrl = () => {
 
     //     // Now unpack combined urls to get just the engine part.
     //     // e.g.
-    //     // cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine@umd,npm/@zeainc/zea-ux@umd,npm/@zeainc/zea-kinematics@umd"
+    //     // cdn.jsdelivr.net/combine/npm/@zeainc/zea-engine@umd,npm/@zeainc/zea-ux@umd,npm/@zeainc/zea-kinematics@umd
     //     if (parts[parts.length - 1].includes(',')) {
     //       parts[parts.length - 1] = parts[parts.length - 1].split(',')[0]
     //     }
