@@ -1,4 +1,3 @@
-// const asyncLoading = true;
 import ArchiveUnpackerWorker from 'web-worker:./ArchiveUnpackerWorker.js'
 // For synchronous loading, uncomment these lines.
 // import {
