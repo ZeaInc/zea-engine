@@ -26,5 +26,4 @@ export * from './ScreenSpaceShader.js'
 export * from './ToolIconShader.js'
 
 export * from './UnpackHDRShader.js'
-export * from './UnpackLDRAlphaImageShader.js'
 export * from './WireShader.js'
