@@ -674,12 +674,33 @@ class GLViewport extends GLBaseViewport {
   }
 
   /**
-   * Causes an event to occur when the mouse pointer is moved out of an element.
+   * Causes an event to occur when the mouse pointer is moved into this viewport
+   * @param {MouseEvent|TouchEvent} event - The event that occurs.
+   */
+  onPointerEnter(event) {
+    this.__preparePointerEvent(event)
+    this.emit('pointerEnter', event)
+    if (!event.propagating) return
+
+    if (this.manipulator && this.manipulator.onPointerEnter) {
+      this.manipulator.onPointerEnter(event)
+      if (!event.propagating) return
+    }
+  }
+
+  /**
+   * Causes an event to occur when the mouse pointer is moved out of this viewport
    * @param {MouseEvent|TouchEvent} event - The event that occurs.
    */
   onPointerLeave(event) {
     this.__preparePointerEvent(event)
     this.emit('pointerLeave', event)
+    if (!event.propagating) return
+
+    if (this.manipulator && this.manipulator.onPointerLeave) {
+      this.manipulator.onPointerLeave(event)
+      if (!event.propagating) return
+    }
   }
 
   /**
