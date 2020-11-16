@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import { Vec2, Vec3, Quat, Xfo } from '../../Math/index'
-import { ParameterOwner } from '../ParameterOwner.js'
+import { BaseTool } from './BaseTool.js'
 import { NumberParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
 import { POINTER_TYPES } from '../../Utilities/EnumUtils'
@@ -37,8 +37,8 @@ const MANIPULATION_MODES = {
  * To Assign a different default manipulation mode, retrieve the manipulator from the viewport
  * and set the default mode.
  * ```
- * const customManipulator = renderer.getViewport().getManipulator()
- * customManipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.trackball);
+ * const cameraManipulator = renderer.getViewport().getManipulator()
+ * cameraManipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.trackball);
  * ```
  *
  * This class is the default manipulator, and can be replaced with custom manipulators.
@@ -61,23 +61,24 @@ const MANIPULATION_MODES = {
  *
  * To set different default values for mobile or desktop set a different value based on the SystemDesc.isMobileDevice flag.
  * ```
- * const customManipulator = renderer.getViewport().getManipulator()
- * customManipulator.getParameter('orbitRate').setValue(SystemDesc.isMobileDevice ? 0.3 : 1)
+ * const cameraManipulator = renderer.getViewport().getManipulator()
+ * cameraManipulator.getParameter('orbitRate').setValue(SystemDesc.isMobileDevice ? 0.3 : 1)
  * ```
  *
  * **Events**
  * * **movementFinished:** Triggered when a camera movement is finished. E.g. when the user releases the mouse after a dolly, or after the focussing action has completed.
  *
- * @extends ParameterOwner
+ * @extends BaseTool
  */
-class CameraManipulator extends ParameterOwner {
+class CameraManipulator extends BaseTool {
   /**
    * Create a camera, mouse and keyboard
    * @param {string} name - The name value.
    */
-  constructor(name = undefined) {
-    if (name == undefined) name = 'Camera'
-    super(name)
+  constructor(appData) {
+    super()
+
+    this.appData = appData
 
     this.__defaultManipulationState = MANIPULATION_MODES.turntable
     this.__manipulationState = this.__defaultManipulationState
@@ -96,6 +97,27 @@ class CameraManipulator extends ParameterOwner {
     this.__orbitRateParam = this.addParameter(new NumberParameter('orbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
     this.__dollySpeedParam = this.addParameter(new NumberParameter('dollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('mouseWheelDollySpeed', 0.0005))
+  }
+
+  /**
+   * Enables tools usage.
+   */
+  activateTool() {
+    super.activateTool()
+    if (this.appData && this.appData.renderer) {
+      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
+      this.appData.renderer.getGLCanvas().style.cursor = 'cursor'
+    }
+  }
+
+  /**
+   * Disables tool usage.
+   */
+  deactivateTool() {
+    super.deactivateTool()
+    if (this.appData && this.appData.renderer) {
+      this.appData.renderer.getGLCanvas().style.cursor = this.appData.renderer.getGLCanvas().style.cursor
+    }
   }
 
   /**

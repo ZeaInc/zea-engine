@@ -5,6 +5,7 @@ import { GLBaseViewport } from './GLBaseViewport.js'
 import { GLFbo } from './GLFbo.js'
 import { GLTexture2D } from './GLTexture2D.js'
 import { POINTER_TYPES } from '../Utilities/EnumUtils'
+import { BaseTool } from '../SceneTree/index'
 import { CameraManipulator } from '../SceneTree/index'
 
 /**
@@ -127,8 +128,13 @@ class GLViewport extends GLBaseViewport {
    * @param {any} manipulator - The manipulator value.
    */
   setManipulator(manipulator) {
-    this.manipulator = manipulator
-    // this.manipulator.activate
+    if (this.manipulator != manipulator) {
+      if (manipulator.deactivateTool) manipulator.deactivateTool()
+
+      this.manipulator = manipulator
+
+      if (manipulator.activateTool) manipulator.activateTool()
+    }
   }
 
   // eslint-disable-next-line require-jsdoc
