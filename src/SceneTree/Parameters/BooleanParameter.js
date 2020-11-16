@@ -24,6 +24,19 @@ class BooleanParameter extends Parameter {
     super(name, value, 'Boolean')
   }
 
+  // ////////////////////////////////////////
+  // Persistence
+
+  /**
+   * Loads the boolean values from the binary buffer.
+   *
+   * @param {BinReader} reader - The reader value.
+   * @param {object} context - The context value.
+   */
+  readBinary(reader, context) {
+    this.__value = reader.loadUInt8() != 0
+  }
+
   /**
    * The clone method constructs a new boolean parameter,
    * copies its values from this parameter and returns it.
