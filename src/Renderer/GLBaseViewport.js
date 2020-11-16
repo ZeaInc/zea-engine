@@ -194,7 +194,7 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Handler of the `pointerenter` event fired when the pointer device is moved into the hit test boundaries of an element.
+   * Called when the mouse pointer is moved into this viewport.
    *
    * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
@@ -203,7 +203,7 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Handler of the `pointerleave` event fired when the pointer device is moved out of the hit test boundaries of an element.
+   * Called when the mouse pointer is moved out of this viewport.
    *
    * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */

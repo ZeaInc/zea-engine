@@ -483,10 +483,6 @@ class GLViewport extends GLBaseViewport {
    */
   __preparePointerEvent(event) {
     event.viewport = this
-    event.propagating = true
-    event.stopPropagation = () => {
-      event.propagating = false
-    }
 
     event.setCapture = (item) => {
       this.capturedItem = item

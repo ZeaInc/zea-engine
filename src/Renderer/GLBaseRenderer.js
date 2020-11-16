@@ -642,6 +642,12 @@ class GLBaseRenderer extends ParameterOwner {
       return this.__glcanvas.width > 0 && this.__glcanvas.height
     }
 
+    const prepareEvent = (event) => {
+      event.propagating = true
+      event.stopPropagation = () => {
+        event.propagating = false
+      }
+    }
     const calcRendererCoords = (event) => {
       const rect = this.__glcanvas.getBoundingClientRect()
       // Disabling devicePixelRatio for now. See: __onResize
@@ -658,6 +664,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     /** Mouse Events Start */
     this.__glcanvas.addEventListener('mousedown', (event) => {
+      prepareEvent(event)
       calcRendererCoords(event)
       pointerIsDown = true
       activeGLRenderer = this
@@ -675,6 +682,7 @@ class GLBaseRenderer extends ParameterOwner {
     document.addEventListener('mouseup', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
 
+      prepareEvent(event)
       calcRendererCoords(event)
       pointerIsDown = false
       const viewport = activeGLRenderer.getActiveViewport()
@@ -699,6 +707,7 @@ class GLBaseRenderer extends ParameterOwner {
     document.addEventListener('mousemove', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
 
+      prepareEvent(event)
       calcRendererCoords(event)
       if (!pointerIsDown) activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
 
@@ -715,9 +724,20 @@ class GLBaseRenderer extends ParameterOwner {
         activeGLRenderer = this
         event.pointerType = POINTER_TYPES.mouse
 
+        prepareEvent(event)
         calcRendererCoords(event)
         // TODO: Check mouse pos.
         activeGLRenderer.activateViewportAtPos(event.rendererX, event.rendererY)
+
+        if (!pointerIsDown) {
+          const viewport = activeGLRenderer.getActiveViewport()
+          if (viewport) {
+            event.pointerType = POINTER_TYPES.mouse
+            viewport.onPointerEnter(event)
+            event.preventDefault()
+          }
+        }
+
         pointerLeft = false
       }
     })
@@ -725,6 +745,7 @@ class GLBaseRenderer extends ParameterOwner {
     this.__glcanvas.addEventListener('mouseleave', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
 
+      prepareEvent(event)
       if (!pointerIsDown) {
         const viewport = activeGLRenderer.getActiveViewport()
         if (viewport) {
@@ -744,6 +765,8 @@ class GLBaseRenderer extends ParameterOwner {
       'touchstart',
       (event) => {
         event.stopPropagation()
+
+        prepareEvent(event)
         for (let i = 0; i < event.touches.length; i++) {
           calcRendererCoords(event.touches[i])
         }
@@ -760,6 +783,8 @@ class GLBaseRenderer extends ParameterOwner {
       'touchend',
       (event) => {
         event.stopPropagation()
+
+        prepareEvent(event)
         for (let i = 0; i < event.changedTouches.length; i++) {
           calcRendererCoords(event.changedTouches[i])
         }
@@ -774,6 +799,8 @@ class GLBaseRenderer extends ParameterOwner {
       'touchmove',
       (event) => {
         event.stopPropagation()
+
+        prepareEvent(event)
         for (let i = 0; i < event.touches.length; i++) {
           calcRendererCoords(event.touches[i])
         }
@@ -788,7 +815,7 @@ class GLBaseRenderer extends ParameterOwner {
     const onWheel = (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
       if (activeGLRenderer) {
-        event.undoRedoManager = this.undoRedoManager
+        prepareEvent(event)
         this.onWheel(event)
       }
       return false
@@ -807,6 +834,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     document.addEventListener('keypress', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
+      prepareEvent(event)
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
         vp.onKeyPressed(event)
@@ -815,6 +843,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     document.addEventListener('keydown', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
+      prepareEvent(event)
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
         vp.onKeyDown(event)
@@ -823,6 +852,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     document.addEventListener('keyup', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
+      prepareEvent(event)
       const vp = activeGLRenderer.getActiveViewport()
       if (vp) {
         vp.onKeyUp(event)
