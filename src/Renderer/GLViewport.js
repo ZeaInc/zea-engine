@@ -45,7 +45,7 @@ class GLViewport extends GLBaseViewport {
     // Each user has a separate camera, and so the default
     //  camera cannot be part of the scene.
     this.setCamera(new Camera('DefaultCamera'))
-    this.setManipulator(new CameraManipulator())
+    this.setManipulator(new CameraManipulator({ renderer }))
 
     this.resize(width, height)
   }
