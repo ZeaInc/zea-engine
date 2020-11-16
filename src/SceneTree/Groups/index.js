@@ -1,3 +1,4 @@
+export * from './BaseGroup.js'
 export * from './Group.js'
 export * from './SelectionSet.js'
 export * from './KinematicGroup.js'
