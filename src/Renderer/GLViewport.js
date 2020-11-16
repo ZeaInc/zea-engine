@@ -69,7 +69,10 @@ class GLViewport extends GLBaseViewport {
     if (this.__geomDataBufferFbo) {
       this.__geomDataBuffer.resize(this.__width, this.__height)
       this.__geomDataBufferFbo.resize()
+
+      this.renderGeomDataFbo()
     }
+
     this.emit('resized', { width, height })
   }
 

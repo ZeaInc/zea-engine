@@ -516,9 +516,9 @@ class GLBaseRenderer extends ParameterOwner {
         this.__glcanvas.width = newWidth
         this.__glcanvas.height = newHeight
 
-        for (const vp of this.__viewports) vp.resize(this.__glcanvas.width, this.__glcanvas.height)
-
         this.resizeFbos(this.__glcanvas.width, this.__glcanvas.height)
+
+        for (const vp of this.__viewports) vp.resize(this.__glcanvas.width, this.__glcanvas.height)
 
         this.emit('resized', {
           width: this.__glcanvas.width,
