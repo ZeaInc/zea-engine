@@ -40,13 +40,15 @@ class CuttingPlane extends BaseGroup {
     this.cutPlaneOp = new CuttingPlaneOperator(this.getParameter('GlobalXfo'), this.getParameter('CutPlane'))
 
     // Create the geometry to display the plane.
-    const material = new Material('surfaces', 'FlatSurfaceShader')
+    const material = new Material('plane', 'FlatSurfaceShader')
     material.getParameter('BaseColor').setValue(new Color(1, 1, 1, 0.2))
+    material.visibleInGeomDataBuffer = false
     this.addChild(new GeomItem(`PlaneGeom`, new Plane(1, 1), material))
 
-    const bordermaterial = new Material('surfaces', 'FlatSurfaceShader')
-    bordermaterial.getParameter('BaseColor').setValue(new Color(1, 0, 0, 1))
-    this.addChild(new GeomItem(`PlaneGeom`, new Rect(1, 1), bordermaterial))
+    const borderMaterial = new Material('border', 'LinesShader')
+    borderMaterial.getParameter('BaseColor').setValue(new Color(1, 0, 0, 1))
+    borderMaterial.visibleInGeomDataBuffer = false
+    this.addChild(new GeomItem(`BorderGeom`, new Rect(1, 1), borderMaterial))
   }
 
   // ////////////////////////////////////////
@@ -54,6 +56,7 @@ class CuttingPlane extends BaseGroup {
 
   /**
    * The __updateCutaway method.
+   * @param {TreeITem} item - The item in the group.
    * @private
    */
   __updateCutaway(item) {
