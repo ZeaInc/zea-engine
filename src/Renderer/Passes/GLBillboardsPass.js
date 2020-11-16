@@ -197,6 +197,7 @@ class GLBillboardsPass extends GLPass {
     let flags = 0
     if (billboard.getParameter('AlignedToCamera').getValue()) flags |= 1 << 2
     if (billboard.getParameter('DrawOnTop').getValue()) flags |= 1 << 3
+    if (billboard.getParameter('FixedSizeOnscreen').getValue()) flags |= 1 << 4
     const alpha = billboard.getParameter('Alpha').getValue()
     const color = billboard.getParameter('Color').getValue()
     const offset = index * pixelsPerItem * 4
@@ -307,6 +308,7 @@ class GLBillboardsPass extends GLPass {
           let flags = 0
           if (billboard.getParameter('AlignedToCamera').getValue()) flags |= 1 << 2
           if (billboard.getParameter('DrawOnTop').getValue()) flags |= 1 << 3
+          if (billboard.getParameter('FixedSizeOnscreen').getValue()) flags |= 1 << 4
           const alpha = billboard.getParameter('Alpha').getValue()
           const color = billboard.getParameter('Color').getValue()
 

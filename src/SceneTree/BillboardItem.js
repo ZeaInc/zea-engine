@@ -13,7 +13,8 @@ import { Registry } from '../Registry'
  * * **PixelsPerMeter(`NumberParameter`):** Quality and Size of the board. The bigger the number, the smaller the board.
  * * **Alpha(`NumberParameter`):** Transparency of the board, from 0 to 1.
  * * **AlignedToCamera(`BooleanParameter`):** Faces or not the board to the camera at all time(Moves with camera movement).
- * * **DrawOnTop(`BooleanParameter`):** _todo_
+ * * **DrawOnTop(`BooleanParameter`):** The billboards are rendered overlaid on the scene.
+ * * **FixedSizeOnscreen(`BooleanParameter`):** The billboards are rendered at a fixed size on screen, regardless of the distance to the billboard.
  *
  * @extends TreeItem
  */
@@ -33,6 +34,7 @@ class BillboardItem extends TreeItem {
     this.addParameter(new ColorParameter('Color', new Color(1.0, 1.0, 1.0)))
     this.addParameter(new BooleanParameter('AlignedToCamera', false))
     this.addParameter(new BooleanParameter('DrawOnTop', false))
+    this.addParameter(new BooleanParameter('FixedSizeOnscreen', false))
   }
 }
 

@@ -121,22 +121,30 @@ void main(void) {
   float height = layoutData.w * atlasBillboards_desc.y * scl;
   int flags = int(billboardData.y);
 
-  
   // Use cross platform bit flags methods
-  bool alignedToCamera = testFlag(flags, 4); // flag = (1<<2)
+  bool alignedToCamera = testFlag(flags, 4); // flag = 1<<2
+  bool drawOnTop = testFlag(flags, 8); // flag = 1 << 3
+  bool fixedSizeOnscreen = testFlag(flags, 16); // flag = 1 << 4
 
+  mat4 modelViewMatrix = viewMatrix * modelMatrix;
+  float sc = 1.0;
+  if(fixedSizeOnscreen) {
+    float dist = modelViewMatrix[3][2];
+    sc = abs(dist); // Note: items in front of the camera will have a negative value here.
+  }
+  
   mat4 modelViewProjectionMatrix;
   if(alignedToCamera){
     if (inVR == 0) {
-      gl_Position = (viewMatrix * modelMatrix) * vec4(0.0, 0.0, 0.0, 1.0);
-      gl_Position += vec4(quadVertex.x * width, (quadVertex.y + 0.5) * height, 0.0, 0.0);
+      gl_Position = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+      gl_Position += vec4(quadVertex.x * width * sc, (quadVertex.y + 0.5) * height * sc, 0.0, 0.0);
       gl_Position = projectionMatrix * gl_Position;
     } else {
       vec3 cameraPos = vec3(cameraMatrix[3][0], cameraMatrix[3][1], cameraMatrix[3][2]);
       vec3 billboardPos = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
       mat4 lookAt = calcLookAtMatrix(billboardPos, cameraPos, 0.0);
       mat4 modelViewProjectionMatrix = projectionMatrix * viewMatrix * lookAt;
-      gl_Position = modelViewProjectionMatrix * vec4(quadVertex.x * width, (quadVertex.y + 0.5) * height, 0.0, 1.0);
+      gl_Position = modelViewProjectionMatrix * vec4(quadVertex.x * width * sc, (quadVertex.y + 0.5) * height * sc, 0.0, 1.0);
     }
   }
   else{
@@ -145,7 +153,6 @@ void main(void) {
   }
 
   // Use cross platform bit flags methods
-  bool drawOnTop = testFlag(flags, 8); // flag = 1 << 3
   if(drawOnTop){
     gl_Position.z = mix(gl_Position.z, -1.0, 0.5);
   }
