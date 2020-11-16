@@ -151,7 +151,7 @@ void main(void) {
   gl_Position     = projectionMatrix * vec4(v_viewPos, 1.0);
   
   if(Overlay > 0.0){
-    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+    gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
   }
 }
 `

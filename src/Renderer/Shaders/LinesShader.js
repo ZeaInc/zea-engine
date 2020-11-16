@@ -40,7 +40,7 @@ void main(void) {
   gl_Position = modelViewProjectionMatrix * vec4(positions, 1.0);
     
   
-  gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+  gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
   
   vec4 pos = vec4(positions, 1.);
   v_worldPos      = (modelMatrix * pos).xyz;
