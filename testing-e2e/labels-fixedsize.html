@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea Engine</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Xfo, Color, TreeItem, BillboardItem, Label } = zeaEngine
+
+      const scene = new Scene()
+      const domElement = document.getElementById('app')
+      const renderer = new GLRenderer(domElement, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      // scene.setupGrid(4, 4)
+
+      const asset = new TreeItem('labels')
+      scene.getRoot().addChild(asset)
+
+      let index = 0
+      const addLabel = (lineEndPos, pos, color, name) => {
+        return new Promise((resolve, reject) => {
+          const label = new Label(name, 'Labels')
+          label.getParameter('FontSize').setValue(32)
+          label.getParameter('FontColor').setValue(color)
+          label.getParameter('BackgroundColor').setValue(new Color(0.3, 0.3, 0.3))
+
+          const billboard = new BillboardItem('billboard' + index, label)
+          const xfo = new Xfo(pos)
+          billboard.getParameter('LocalXfo').setValue(xfo)
+          billboard.getParameter('PixelsPerMeter').setValue(1000)
+          billboard.getParameter('AlignedToCamera').setValue(true)
+          billboard.getParameter('DrawOnTop').setValue(true)
+          billboard.getParameter('FixedSizeOnscreen').setValue(true)
+          billboard.getParameter('Alpha').setValue(1)
+          // billboard.getParameter('lineEnd').addElement(lineEndPos)
+          // billboard.getChildByName('line0').getMaterial().getParameter('Color').setValue(new Color(.7, .7, .7))
+          asset.addChild(billboard)
+
+          index++
+
+          label.on('labelRendered', resolve)
+        })
+      }
+
+      let promises = []
+
+      promises.push(addLabel(new Vec3(1, 0, 0), new Vec3(1, 1, 1), new Color(0, 1, 0), 'Front'))
+      promises.push(addLabel(new Vec3(-1, 0, 0), new Vec3(-1, -1, 1), new Color(1, 1, 0), 'Back'))
+      promises.push(addLabel(new Vec3(0, 0, 0), new Vec3(0, 0.05, 0.08), new Color(1, 1, 0), 'MyCustomLabel'))
+
+      Promise.all(promises).then(() => {
+        window.postMessage(`done-Loading`)
+      })
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'front') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        } else if (data === 'back') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>
