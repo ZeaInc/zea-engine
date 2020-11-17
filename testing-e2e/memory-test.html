@@ -125,14 +125,13 @@
         console.time('Create scene')
 
         let t1 = performance.now()
-        let total = 0
 
         const addRow = (i) => {
           const t2 = performance.now()
+
           const progress = `${Math.round((i / dim) * 100)}%, ${Math.round(t2 - t1)} ms`
           document.querySelector('#progressStatus').textContent = progress
 
-          total += t2 - t1
           t1 = t2
 
           const treeItemI = new TreeItem('TreeItem' + i)
