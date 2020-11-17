@@ -80,10 +80,10 @@
 
           for (let j = 0; j < dim; j++) {
             const material = new Material('mat', 'SimpleSurfaceShader')
+            material.getParameter('BaseColor').setValue(new Color(i / dim, j / dim, 1))
             const treeItemJ = new TreeItem('TreeItem' + j)
 
             for (let k = 0; k < dim; k++) {
-              material.getParameter('BaseColor').setValue(new Color(i / dim, j / dim, k / dim))
               const geomItem = new GeomItem('Geom' + k, cuboid, material)
 
               const xfo = new Xfo()
