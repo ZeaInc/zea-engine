@@ -75,26 +75,24 @@
         console.time('Create scene')
         for (let i = 0; i < dim; i++) {
           const treeItemI = new TreeItem('TreeItem' + i)
+          scene.getRoot().addChild(treeItemI)
 
           for (let j = 0; j < dim; j++) {
             const material = new Material('mat', 'SimpleSurfaceShader')
             material.getParameter('BaseColor').setValue(new Color(i / dim, j / dim, 1))
+
             const treeItemJ = new TreeItem('TreeItem' + j)
+            treeItemI.addChild(treeItemJ)
 
             for (let k = 0; k < dim; k++) {
               const geomItem = new GeomItem('Geom' + k, cuboid, material)
+              treeItemJ.addChild(geomItem)
 
               const xfo = new Xfo()
               xfo.tr.set(i, j, k)
               geomItem.getParameter('GlobalXfo').setValue(xfo)
-
-              treeItemJ.addChild(geomItem)
             }
-
-            treeItemI.addChild(treeItemJ)
           }
-
-          scene.getRoot().addChild(treeItemI)
         }
         console.timeEnd('Create scene')
 
@@ -138,26 +136,24 @@
           t1 = t2
 
           const treeItemI = new TreeItem('TreeItem' + i)
+          scene.getRoot().addChild(treeItemI)
 
           for (let j = 0; j < dim; j++) {
             const material = new Material('mat', 'SimpleSurfaceShader')
             material.getParameter('BaseColor').setValue(new Color(i / dim, j / dim, 1))
+
             const treeItemJ = new TreeItem('TreeItem' + j)
+            treeItemI.addChild(treeItemJ)
 
             for (let k = 0; k < dim; k++) {
               const geomItem = new GeomItem('Geom' + k, cuboid, material)
+              treeItemJ.addChild(geomItem)
 
               const xfo = new Xfo()
               xfo.tr.set(i, j, k)
               geomItem.getParameter('GlobalXfo').setValue(xfo)
-
-              treeItemJ.addChild(geomItem)
             }
-
-            treeItemI.addChild(treeItemJ)
           }
-
-          scene.getRoot().addChild(treeItemI)
         }
 
         const addRowAsync = (i) => {
