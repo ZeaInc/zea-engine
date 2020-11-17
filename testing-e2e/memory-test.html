@@ -11,8 +11,6 @@
     <link rel="stylesheet" href="styles/tachyons.min.css" />
     <link rel="stylesheet" href="styles/main.css" />
 
-    <script src="https://cdn.jsdelivr.net/npm/filesize@6.1.0/lib/filesize.min.js"></script>
-
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
@@ -66,7 +64,7 @@
         .getCamera()
         .setPositionAndTarget(new Vec3(dim * 2, dim * 2, dim), new Vec3(dim * 0.5, dim * 0.5, dim * 0.5))
 
-      const MEMORY_LIMIT = 1_620_000_000
+      const MEMORY_LIMIT = 1_720_000_000
       const TIME_LIMIT = 45_000
 
       const run = () => {
@@ -112,10 +110,10 @@
         const isGoodMemory = usedJSHeapSize <= MEMORY_LIMIT
         const isGoodTime = totalTime <= TIME_LIMIT
 
-        const memoryStatus = isGoodMemory ? 'Good' : `Bad: ${window.filesize(usedJSHeapSize)}`
+        const memoryStatus = isGoodMemory ? 'Good' : `Bad: ${usedJSHeapSize}`
         const timeStatus = isGoodTime ? 'Good' : `Bad: ${Math.round(totalTime / 1000)} sec`
 
-        console.log('Used Memory:', window.filesize(usedJSHeapSize))
+        console.log('Used Memory:', usedJSHeapSize)
 
         document.querySelector('#memoryStatus').textContent = memoryStatus
         document.querySelector('#timeStatus').textContent = timeStatus
@@ -191,10 +189,10 @@
           const isGoodMemory = usedJSHeapSize <= MEMORY_LIMIT
           const isGoodTime = totalTime <= TIME_LIMIT
 
-          const memoryStatus = isGoodMemory ? 'Good' : `Bad: ${window.filesize(usedJSHeapSize)}`
+          const memoryStatus = isGoodMemory ? 'Good' : `Bad: ${usedJSHeapSize}`
           const timeStatus = isGoodTime ? 'Good' : `Bad: ${Math.round(totalTime / 1000)} sec`
 
-          console.log('Used Memory:', window.filesize(usedJSHeapSize))
+          console.log('Used Memory:', usedJSHeapSize)
 
           document.querySelector('#memoryStatus').textContent = memoryStatus
           document.querySelector('#timeStatus').textContent = timeStatus
