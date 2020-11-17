@@ -11,7 +11,7 @@ describe('Group', () => {
     expect(group.isVisible()).toBe(true)
   })
 
-  test('Changing members visibility.', () => {
+  test('Checking that Group has items', () => {
     const group = new Group('Foo')
     const treeItem = new TreeItem('TreeItem')
 

@@ -16,10 +16,9 @@ describe('TreeItem', () => {
     expect(treeItem.isVisible()).toBe(false)
   })
 
-  test('Changing tree visibility.', () => {
+  it.only('Changing tree visibility.', () => {
     const parent = new TreeItem('Parent')
     const child = new TreeItem('Child')
-
     parent.addChild(child)
 
     parent.setVisible(false)

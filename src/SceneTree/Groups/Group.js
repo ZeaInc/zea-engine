@@ -114,7 +114,7 @@ class Group extends BaseGroup {
     if (super.__updateVisibility()) {
       const value = this.isVisible()
       Array.from(this.__itemsParam.getValue()).forEach((item) => {
-        if (item instanceof TreeItem) item.propagateVisibility(value ? 1 : -1)
+        if (item instanceof TreeItem) item.propagateVisibility(value ? true : false)
       })
       return true
     }
@@ -407,7 +407,7 @@ class Group extends BaseGroup {
     if (!this.isVisible()) {
       // Decrement the visibility counter which might cause
       // this item to become invisible. (or it might already be invisible.)
-      item.propagateVisibility(-1)
+      item.propagateVisibility(false)
     }
 
     if (item instanceof TreeItem) {
@@ -440,7 +440,7 @@ class Group extends BaseGroup {
       // this item to become visible.
       // It will stay invisible if its parent is invisible, or if
       // multiple groups connect to it and say it is invisible.
-      item.propagateVisibility(1)
+      item.propagateVisibility(true)
     }
 
     // ///////////////////////////////
@@ -548,6 +548,19 @@ class Group extends BaseGroup {
       }
     })
     return result
+  }
+
+  /**
+   * The __updateVisibility method.
+   * @private
+   */
+  __updateVisibility() {
+    const visible = this.isVisible()
+    for (const childItem of this.getItems()) {
+      if (childItem instanceof TreeItem) childItem.getParameter('Visible').setValue(visible)
+    }
+
+    this.emit('visibilityChanged', { visible })
   }
 
   // ///////////////////////

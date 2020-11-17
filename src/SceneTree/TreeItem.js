@@ -46,8 +46,6 @@ class TreeItem extends BaseItem {
   constructor(name) {
     super(name)
 
-    this.__visibleCounter = 1 // Visible by Default.
-    this.__visible = true
     this.__highlightMapping = {}
     this.__highlights = []
 
@@ -81,7 +79,6 @@ class TreeItem extends BaseItem {
     })
 
     this.__visibleParam.on('valueChanged', () => {
-      this.__visibleCounter += this.__visibleParam.getValue() ? 1 : -1
       this.__updateVisibility()
     })
 
@@ -144,7 +141,7 @@ class TreeItem extends BaseItem {
       // this.__ownerItem.off('globalXfoChanged', this._setGlobalXfoDirty)
 
       // The effect of the invisible owner is removed.
-      if (!this.__ownerItem.isVisible()) this.__visibleCounter++
+      if (!this.__ownerItem.isVisible()) this.__visibleParam.setValue(true)
       const index = this.__ownerItem.getChildIndex(this)
       if (index >= 0) this.__ownerItem.__unbindChild(index, this)
     }
@@ -156,7 +153,7 @@ class TreeItem extends BaseItem {
       this.setSelectable(this.__ownerItem.getSelectable(), true)
 
       // The effect of the invisible owner is added.
-      if (!this.__ownerItem.isVisible()) this.__visibleCounter--
+      if (!this.__ownerItem.isVisible()) this.__visibleParam.setValue(false)
 
       this.globalXfoOp.getInput('ParentGlobal').setParam(this.__ownerItem.getParameter('GlobalXfo'))
       // this.__ownerItem.on('globalXfoChanged', this._setGlobalXfoDirty)
@@ -262,8 +259,7 @@ class TreeItem extends BaseItem {
    * @return {boolean} - The visible param value.
    */
   isVisible() {
-    // Should never be more than 1, but can be less than 0.
-    return this.__visibleCounter > 0
+    return this.__visibleParam.getValue()
   }
 
   /**
@@ -278,29 +274,23 @@ class TreeItem extends BaseItem {
   /**
    * Updates current TreeItem visible state and propagates its value to children elements.
    *
-   * @param {number} val - The val param.
+   * @param {boolean} isVisible - The val param.
    */
-  propagateVisibility(val) {
-    this.__visibleCounter += val
-    this.__updateVisibility()
+  propagateVisibility(isVisible) {
+    if (isVisible != this.__visibleParam.getValue()) this.__updateVisibility()
   }
 
   /**
    * The __updateVisibility method.
-   * @return {boolean} - Returns a boolean.
    * @private
    */
   __updateVisibility() {
-    const visible = this.__visibleCounter > 0
-    if (visible != this.__visible) {
-      this.__visible = visible
-      for (const childItem of this.__childItems) {
-        if (childItem instanceof TreeItem) childItem.propagateVisibility(this.__visible ? 1 : -1)
-      }
-      this.emit('visibilityChanged', { visible })
-      return true
+    const visible = this.isVisible()
+    for (const childItem of this.__childItems) {
+      if (childItem instanceof TreeItem) childItem.getParameter('Visible').setValue(visible)
     }
-    return false
+
+    this.emit('visibilityChanged', { visible })
   }
 
   // ////////////////////////////////////////

@@ -38,18 +38,15 @@ class SelectionSet extends BaseGroup {
 
   /**
    * The __updateVisibility method.
-   * @return {boolean} - The return value.
    * @private
    */
   __updateVisibility() {
-    if (super.__updateVisibility()) {
-      const value = this.isVisible()
-      Array.from(this.__itemsParam.getValue()).forEach((item) => {
-        if (item instanceof TreeItem) item.propagateVisibility(value ? 1 : -1)
-      })
-      return true
+    const visible = this.isVisible()
+    for (const childItem of this.getItems()) {
+      if (childItem instanceof TreeItem) childItem.getParameter('Visible').setValue(visible)
     }
-    return false
+
+    this.emit('visibilityChanged', { visible })
   }
 
   // /////////////////////////////
@@ -116,7 +113,7 @@ class SelectionSet extends BaseGroup {
     if (!this.isVisible()) {
       // Decrement the visibility counter which might cause
       // this item to become invisible. (or it might already be invisible.)
-      item.propagateVisibility(-1)
+      item.propagateVisibility(false)
     }
 
     if (item instanceof TreeItem) {
@@ -144,7 +141,7 @@ class SelectionSet extends BaseGroup {
       // this item to become visible.
       // It will stay invisible if its parent is invisible, or if
       // multiple groups connect to it and say it is invisible.
-      item.propagateVisibility(1)
+      item.propagateVisibility(true)
     }
 
     // ///////////////////////////////
