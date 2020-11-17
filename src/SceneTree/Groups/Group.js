@@ -114,7 +114,7 @@ class Group extends BaseGroup {
     if (super.__updateVisibility()) {
       const value = this.isVisible()
       Array.from(this.__itemsParam.getValue()).forEach((item) => {
-        if (item instanceof TreeItem) item.propagateVisibility(value ? true : false)
+        if (item instanceof TreeItem) item.propagateVisibility(value)
       })
       return true
     }
