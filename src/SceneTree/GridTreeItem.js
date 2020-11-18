@@ -53,7 +53,6 @@ class GridTreeItem extends TreeItem {
     zAxisLineItem.setGeomOffsetXfo(geomOffset)
     this.addChild(zAxisLineItem, false)
 
-    this.setSelectable(false)
     const bBox = this._cleanBoundingBox(this.__boundingBoxParam.getValue())
     this.__boundingBoxParam.setValue(bBox)
   }

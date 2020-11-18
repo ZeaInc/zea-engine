@@ -39,7 +39,7 @@ class MaterialGroup extends BaseGroup {
     new Promise((resolve) => {
       let highlighted = false
       let color
-      if (this.isSelected()) {
+      if (this.isHighlighted()) {
         highlighted = true
         color = this.getHighlight()
         color.a = 0.2
@@ -54,16 +54,6 @@ class MaterialGroup extends BaseGroup {
       })
       resolve()
     })
-  }
-
-  /**
-   * Changes selection's state of the group with all items it owns.
-   *
-   * @param {boolean} sel - Boolean indicating the new selection state.
-   */
-  setSelected(sel) {
-    super.setSelected(sel)
-    this.__updateHighlight()
   }
 
   // ////////////////////////////////////////
@@ -120,7 +110,7 @@ class MaterialGroup extends BaseGroup {
 
     // ///////////////////////////////
     // Update the highlight
-    if (this.isSelected()) {
+    if (this.isHighlighted()) {
       const color = this.getHighlight()
       color.a = 0.2
       const key = 'materialGroupItemHighlight' + this.getId()
@@ -159,7 +149,7 @@ class MaterialGroup extends BaseGroup {
     super.__unbindItem(item, index)
     if (!(item instanceof TreeItem)) return
 
-    if (this.isSelected()) {
+    if (this.isHighlighted()) {
       const key = 'materialGroupItemHighlight' + this.getId()
       item.removeHighlight(key, true)
     }

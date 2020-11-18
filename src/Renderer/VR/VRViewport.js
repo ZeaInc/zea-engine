@@ -29,7 +29,6 @@ class VRViewport extends GLBaseViewport {
     // Tree
 
     this.__stageTreeItem = new TreeItem('VRStage')
-    this.__stageTreeItem.setSelectable(false)
     this.__stageTreeItem.setVisible(false)
     this.__renderer.addTreeItem(this.__stageTreeItem)
 

@@ -65,7 +65,7 @@ class SelectionSet extends BaseGroup {
     new Promise((resolve) => {
       let highlighted = false
       let color
-      if (this.getParameter('Highlighted').getValue() || this.isSelected()) {
+      if (this.getParameter('Highlighted').getValue()) {
         highlighted = true
         color = this.getParameter('HighlightColor').getValue()
         color.a = this.getParameter('HighlightFill').getValue()
@@ -80,16 +80,6 @@ class SelectionSet extends BaseGroup {
       })
       resolve()
     })
-  }
-
-  /**
-   * Changes selection's state of the group with all items it owns.
-   *
-   * @param {boolean} sel - Boolean indicating the new selection state.
-   */
-  setSelected(sel) {
-    super.setSelected(sel)
-    this.__updateHighlight()
   }
 
   // ////////////////////////////////////////

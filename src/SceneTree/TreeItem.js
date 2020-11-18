@@ -84,17 +84,6 @@ class TreeItem extends BaseItem {
       this.__visibleCounter += this.__visibleParam.getValue() ? 1 : -1
       this.__updateVisibility()
     })
-
-    // Note: one day we will remove the concept of 'selection' from the engine
-    // and keep it only in UX. to Select an item, we will add it to the selection
-    // in the selection manager. Then the selection group will apply a highlight.
-    this.on('selectedChanged', () => {
-      if (this.__selected) {
-        this.addHighlight('selected', selectionOutlineColor, true)
-      } else {
-        this.removeHighlight('selected', true)
-      }
-    })
   }
 
   /**
@@ -153,8 +142,6 @@ class TreeItem extends BaseItem {
 
     // this._setGlobalXfoDirty()
     if (this.__ownerItem) {
-      this.setSelectable(this.__ownerItem.getSelectable(), true)
-
       // The effect of the invisible owner is added.
       if (!this.__ownerItem.isVisible()) this.__visibleCounter--
 

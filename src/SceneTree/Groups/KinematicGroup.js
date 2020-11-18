@@ -75,7 +75,7 @@ class KinematicGroup extends BaseGroup {
     new Promise((resolve) => {
       let highlighted = false
       let color
-      if (this.isSelected()) {
+      if (this.isHighlighted()) {
         highlighted = true
         color = this.getHighlight()
         color.a = 0.2
@@ -90,16 +90,6 @@ class KinematicGroup extends BaseGroup {
       })
       resolve()
     })
-  }
-
-  /**
-   * Changes selection's state of the group with all items it owns.
-   *
-   * @param {boolean} sel - Boolean indicating the new selection state.
-   */
-  setSelected(sel) {
-    super.setSelected(sel)
-    this.__updateHighlight()
   }
 
   // ////////////////////////////////////////
@@ -183,7 +173,7 @@ class KinematicGroup extends BaseGroup {
 
     // ///////////////////////////////
     // Update the highlight
-    if (this.isSelected()) {
+    if (this.isHighlighted()) {
       const color = this.getHighlight()
       color.a = 0.2
       const key = 'kinematicGroupItemHighlight' + this.getId()
@@ -209,7 +199,7 @@ class KinematicGroup extends BaseGroup {
     super.__unbindItem(item, index)
     if (!(item instanceof TreeItem)) return
 
-    if (this.isSelected()) {
+    if (this.isHighlighted()) {
       const key = 'kinematicGroupItemHighlight' + this.getId()
       item.removeHighlight(key, true)
     }

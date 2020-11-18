@@ -10,7 +10,6 @@ let numBaseItems = 0
  *
  * **Events**
  * * **nameChanged:** Emitted every time the Item's name is change. mostly in `setName` method.
- * * **selectedChanged:** Emitted `selected` status changes, mostly in `setSelected` method.
  *
  * @extends {ParameterOwner}
  */
@@ -25,12 +24,6 @@ class BaseItem extends ParameterOwner {
     this.__name = name ? name : ''
     this.__path = [this.__name]
     this.__ownerItem = undefined // TODO: will create a circular ref. Figure out and use weak refs
-
-    // Note: one day we will remove the concept of 'selection' from the engine
-    // and keep it only in UX. to Select an item, we will add it to the selection
-    // in the selection manager. Then the selection group will apply a highlight.
-    this.__selectable = true
-    this.__selected = false
 
     this.__metaData = {}
 
@@ -155,63 +148,6 @@ class BaseItem extends ParameterOwner {
     }
   }
 
-  // ////////////////////////////////////////
-  // Selectability and Selection
-
-  /**
-   * Returns a boolean indicating if this item is selectable.
-   *
-   * @return {boolean} - Returns a boolean indicating if the item is selectable.
-   */
-  getSelectable() {
-    return this.__selectable
-  }
-
-  /**
-   * Modifies the selectability of this item.
-   *
-   * @param {boolean} val - A boolean indicating the selectability of the item.
-   * @return {boolean} - Returns true if value changed.
-   */
-  setSelectable(val) {
-    if (this.__selectable != val) {
-      this.__selectable = val
-      return true
-    }
-    return false
-  }
-
-  /**
-   * The isSelected method.
-   * @deprecated
-   * @see `getSelected` method
-   * @return {boolean} - The return value.
-   */
-  isSelected() {
-    return this.__selected
-  }
-
-  /**
-   * Returns `true` if this item has been selected.
-   *
-   * @return {boolean} - The current selection state.
-   */
-  getSelected() {
-    return this.__selected
-  }
-
-  /**
-   * Changes the current state of the selection of this item.
-   *
-   * @emits `selectedChanged` with selected state
-   * @param {boolean} sel - Boolean indicating the new selection state.
-   */
-  setSelected(sel) {
-    this.__selected = sel
-    this.emit('selectedChanged', { selected: this.__selected })
-  }
-
-  // ////////////////////////////////////////
   // Metadata
 
   /**
