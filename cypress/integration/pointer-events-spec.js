@@ -2,7 +2,11 @@ import { createTouchEvents, cyFocusCanvas } from './utils'
 
 describe('pointer-events', () => {
   beforeEach(() => {
-    cy.visit('testing-e2e/pointer-events.html')
+    cy.visit('testing-e2e/pointer-events.html', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
   })
 
   it('Mouse Move - Camera Manipulator', () => {
@@ -36,6 +40,7 @@ describe('pointer-events', () => {
       deltaZ: 0,
     })
 
+    cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-moving-camera`)
     cy.get('canvas').percySnapshot(`WheelZoomInCameraManipulator`)
   })
 
@@ -48,6 +53,7 @@ describe('pointer-events', () => {
       deltaZ: 0,
     })
 
+    cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-moving-camera`)
     cy.get('canvas').percySnapshot(`WheelZoomOutCameraManipulator`)
   })
 
