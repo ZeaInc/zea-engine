@@ -132,11 +132,15 @@ class GLViewport extends GLBaseViewport {
    */
   setManipulator(manipulator) {
     if (this.manipulator != manipulator) {
-      if (manipulator.deactivateTool) manipulator.deactivateTool()
+      if (this.manipulator && this.manipulator.deactivateTool) {
+        this.manipulator.deactivateTool()
+      }
 
       this.manipulator = manipulator
 
-      if (manipulator.activateTool) manipulator.activateTool()
+      if (manipulator.activateTool) {
+        manipulator.activateTool()
+      }
     }
   }
 
