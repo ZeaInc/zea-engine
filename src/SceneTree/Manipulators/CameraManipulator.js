@@ -1,9 +1,10 @@
 /* eslint-disable require-jsdoc */
-import { Vec2, Vec3, Quat, Xfo } from '../../Math/index'
+import { Vec2, Vec3, Quat, Xfo, Ray } from '../../Math/index'
 import { BaseTool } from './BaseTool.js'
 import { NumberParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
 import { POINTER_TYPES } from '../../Utilities/EnumUtils'
+import { PassType } from '../../Renderer/Passes/GLPass.js'
 
 const MANIPULATION_MODES = {
   pan: 0,
@@ -13,6 +14,7 @@ const MANIPULATION_MODES = {
   turntable: 4,
   tumbler: 5,
   trackball: 6,
+  walk: 7,
 }
 
 /**
@@ -66,7 +68,8 @@ const MANIPULATION_MODES = {
  * ```
  *
  * **Events**
- * * **movementFinished:** Triggered when a camera movement is finished. E.g. when the user releases the mouse after a dolly, or after the focussing action has completed.
+ * * **movementFinished:** Emitted when a camera movement is finished. E.g. when the user releases the mouse after a dolly, or after the focussing action has completed.
+ * * **aimingFocus:** Emitted when a camera is being focussed on a target. E.g. when the user double clicks the mouse on a geometry in the view.
  *
  * @extends BaseTool
  */
@@ -83,20 +86,25 @@ class CameraManipulator extends BaseTool {
     this.__defaultManipulationState = MANIPULATION_MODES.turntable
     this.__manipulationState = this.__defaultManipulationState
     this.__pointerDown = false
-    this.__dragging = false
+    this.__dragging = 0
     this.__pointerDragDelta = new Vec2()
     this.__keyboardMovement = false
     this.__keysPressed = []
-    this.__maxVel = 0.002
     this.__velocity = new Vec3()
+    this.__prevVelocityIntegrationTime = -1
 
     this.__ongoingTouches = {}
 
     this.__globalXfoChangedDuringDrag = this.__globalXfoChangedDuringDrag.bind(this)
 
-    this.__orbitRateParam = this.addParameter(new NumberParameter('orbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
-    this.__dollySpeedParam = this.addParameter(new NumberParameter('dollySpeed', 0.02))
-    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('mouseWheelDollySpeed', 0.0005))
+    this.__orbitRateParam = this.addParameter(new NumberParameter('OrbitRate', SystemDesc.isMobileDevice ? 0.3 : 1))
+    this.__dollySpeedParam = this.addParameter(new NumberParameter('DollySpeed', 0.02))
+    this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('MouseWheelDollySpeed', 0.0005))
+    this.addParameter(new NumberParameter('WalkSpeed', 5)) // Value is in meters/second
+
+    this.addParameterDeprecationMapping('orbitRate', 'OrbitRate')
+    this.addParameterDeprecationMapping('dollySpeed', 'DollySpeed')
+    this.addParameterDeprecationMapping('mouseWheelDollySpeed', 'MouseWheelDollySpeed')
   }
 
   /**
@@ -141,15 +149,11 @@ class CameraManipulator extends BaseTool {
     const { viewport } = event
     const camera = viewport.getCamera()
 
-    const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
     if (this.__keyboardMovement) {
       const globalXfo = camera.getParameter('GlobalXfo').getValue()
-      this.__pointerDownCameraXfo = globalXfo.clone()
-      this.__pointerDownZaxis = globalXfo.ori.getZaxis()
-      const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-      this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
+      this.__pointerDownCameraXfo.tr = globalXfo.tr.clone()
     }
 
     const globalXfo = this.__pointerDownCameraXfo.clone()
@@ -187,14 +191,6 @@ class CameraManipulator extends BaseTool {
     const focalDistance = camera.getFocalDistance()
     const orbitRate = this.__orbitRateParam.getValue()
 
-    if (this.__keyboardMovement) {
-      const globalXfo = camera.getParameter('GlobalXfo').getValue()
-      this.__pointerDownCameraXfo = globalXfo.clone()
-      this.__pointerDownZaxis = globalXfo.ori.getZaxis()
-      const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-      this.__pointerDownCameraTarget = globalXfo.tr.add(targetOffset)
-    }
-
     const globalXfo = this.__pointerDownCameraXfo.clone()
 
     // Orbit
@@ -209,14 +205,7 @@ class CameraManipulator extends BaseTool {
 
     globalXfo.tr = this.__pointerDownCameraTarget.add(globalXfo.ori.getZaxis().scale(focalDistance))
 
-    if (this.__keyboardMovement) {
-      // TODO: debug this potential regression. we now use the generic method which emits a signal.
-      // Avoid generating a signal because we have an animation frame occurring.
-      // see: onKeyPressed
-      camera.getParameter('GlobalXfo').setValue(globalXfo)
-    } else {
-      camera.getParameter('GlobalXfo').setValue(globalXfo)
-    }
+    camera.getParameter('GlobalXfo').setValue(globalXfo)
   }
 
   /**
@@ -364,37 +353,49 @@ class CameraManipulator extends BaseTool {
    * @param {PointerEvent} event - The event value.
    */
   initDrag(event) {
-    const { viewport } = event
+    const { viewport, pointerPos } = event
     const camera = viewport.getCamera()
     const focalDistance = camera.getFocalDistance()
 
     this.__pointerDown = true
     this.__calculatingDragAction = false
-    this.__pointerDownPos = event.pointerPos
+
+    if (this.__dragging == 0) {
+      this.__pointerDownPos = pointerPos
+    } else {
+      // IF the drag was interrupted, then we restart from the
+      // previous mouse position so that this event will cause
+      // a camera movement based on the delta.
+      this.__pointerDownPos = this.__prevPointerPos
+    }
+    this.__prevPointerPos = pointerPos
+
     this.__pointerDownViewport = viewport
     this.__pointerDragDelta.set(0, 0)
     this.__pointerDownCameraXfo = camera.getParameter('GlobalXfo').getValue().clone()
     this.__pointerDownZaxis = this.__pointerDownCameraXfo.ori.getZaxis()
     const targetOffset = this.__pointerDownZaxis.scale(-focalDistance)
-    this.__pointerDownCameraTarget = camera.getParameter('GlobalXfo').getValue().tr.add(targetOffset)
+    this.__pointerDownCameraTarget = this.__pointerDownCameraXfo.tr.add(targetOffset)
     this.__pointerDownFocalDist = focalDistance
 
     camera.getParameter('GlobalXfo').on('valueChanged', this.__globalXfoChangedDuringDrag)
 
-    this.__dragging = true
+    this.__dragging = 1
   }
 
   /**
    * @private
    */
   __globalXfoChangedDuringDrag() {
-    if (!this.__calculatingDragAction) {
-      if (this.__dragging) {
+    if (!this.__calculatingDragAction && !this.__keyboardMovement) {
+      if (this.__dragging == 1) {
+        // Our mouse drag has been interrupted by another change being applied to the camera
+        // Xfo. We now need to re-initialize our drag the next time we receive a pointer event.
         const camera = this.__pointerDownViewport.getCamera()
         camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
-        this.__dragging = false
+        // Dragging needs to be re-initialized on the next update.
+        this.__dragging = 2
       }
-      this.initDrag({ viewport: this.__pointerDownViewport, pointerPos: this.__pointerDownPos })
     }
   }
 
@@ -405,12 +406,12 @@ class CameraManipulator extends BaseTool {
    * @param {MouseEvent} event - The event value.
    */
   endDrag(event) {
-    if (this.__dragging) {
+    if (this.__dragging == 1) {
       const { viewport } = event
       const camera = viewport.getCamera()
       camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
-      this.__dragging = false
     }
+    this.__dragging = 0
     this.__pointerDown = false
   }
 
@@ -419,21 +420,20 @@ class CameraManipulator extends BaseTool {
    *
    * @private
    * @param {MouseEvent} event - The event value.
-   * @param {Vec3} pos - The position value.
+   * @param {Vec3} target - The target to focus on.
+   * @param {Number} distance - The distance from the target to get to
+   * @param {Number} duration - The duration in milliseconds to aim the focus.
    */
-  aimFocus(event, pos) {
-    const { viewport } = event
-    const camera = viewport.getCamera()
-
+  aimFocus(camera, target, distance = -1, duration = 400) {
     if (this.__focusIntervalId) clearInterval(this.__focusIntervalId)
 
-    const count = 20
+    const count = Math.round(duration / 20) // each step is 20ms
     let i = 0
     const applyMovement = () => {
       const initlalGlobalXfo = camera.getParameter('GlobalXfo').getValue()
       const initlalDist = camera.getFocalDistance()
-      const dir = pos.subtract(initlalGlobalXfo.tr)
-      const dist = dir.normalizeInPlace()
+      const dir = target.subtract(initlalGlobalXfo.tr)
+      const currDist = dir.normalizeInPlace()
 
       const orbit = new Quat()
       const pitch = new Quat()
@@ -470,8 +470,12 @@ class CameraManipulator extends BaseTool {
       const t = Math.pow(i / count, 2)
       const globalXfo = initlalGlobalXfo.clone()
       globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t)
+      if (distance > 0) {
+        const displacement = dir.scale(currDist - distance)
+        globalXfo.tr.addInPlace(displacement.scale(t))
+      }
 
-      camera.setFocalDistance(initlalDist + (dist - initlalDist) * t)
+      camera.setFocalDistance(initlalDist + (currDist - initlalDist) * t)
       camera.getParameter('GlobalXfo').setValue(globalXfo)
 
       i++
@@ -479,6 +483,7 @@ class CameraManipulator extends BaseTool {
         this.__focusIntervalId = setTimeout(applyMovement, 20)
       } else {
         this.__focusIntervalId = undefined
+
         this.emit('movementFinished', {})
         camera.emit('movementFinished', {})
       }
@@ -499,10 +504,17 @@ class CameraManipulator extends BaseTool {
       const { viewport } = event
       const camera = viewport.getCamera()
       const cameraGlobalXfo = camera.getParameter('GlobalXfo').getValue()
-      const pos = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
-      this.aimFocus(event, pos)
+      const aimTarget = cameraGlobalXfo.tr.add(event.pointerRay.dir.scale(event.intersectionData.dist))
+      this.aimFocus(camera, aimTarget)
+
+      // Note: Collab can use these events to guide users attention.
+      event.aimTarget = aimTarget
+      event.aimDistance = event.intersectionData.dist
+      this.emit('aimingFocus', event)
+      camera.emit('aimingFocus', event)
     }
 
+    event.stopPropagation()
     event.preventDefault()
   }
 
@@ -513,10 +525,8 @@ class CameraManipulator extends BaseTool {
    */
   onPointerDown(event) {
     if (event.pointerType === POINTER_TYPES.mouse) {
-      if (this.__dragging) {
-        const camera = this.__pointerDownViewport.getCamera()
-        camera.getParameter('GlobalXfo').off('valueChanged', this.__globalXfoChangedDuringDrag)
-        this.__dragging = false
+      if (this.__dragging == 1) {
+        this.endDrag(event)
       }
 
       this.initDrag(event)
@@ -558,13 +568,15 @@ class CameraManipulator extends BaseTool {
    */
   _onMouseMove(event) {
     if (!this.__pointerDown) return
+
+    if (this.__dragging == 2) {
+      this.initDrag(event)
+    }
+
     const pointerPos = event.pointerPos
     this.__calculatingDragAction = true
-    if (this.__keyboardMovement) {
-      this.__pointerDragDelta = pointerPos
-    } else {
-      this.__pointerDragDelta = pointerPos.subtract(this.__pointerDownPos)
-    }
+    this.__pointerDragDelta = pointerPos.subtract(this.__pointerDownPos)
+
     switch (this.__manipulationState) {
       case MANIPULATION_MODES.turntable:
         this.turntable(event, this.__pointerDragDelta)
@@ -576,6 +588,7 @@ class CameraManipulator extends BaseTool {
         this.trackball(event, this.__pointerDragDelta)
         break
       case MANIPULATION_MODES.look:
+      case MANIPULATION_MODES.walk:
         this.look(event, this.__pointerDragDelta)
         break
       case MANIPULATION_MODES.pan:
@@ -585,7 +598,7 @@ class CameraManipulator extends BaseTool {
         this.dolly(event, this.__pointerDragDelta)
         break
     }
-    this.__dragging = true
+    this.__prevPointerPos = pointerPos
     this.__calculatingDragAction = false
   }
 
@@ -655,22 +668,24 @@ class CameraManipulator extends BaseTool {
     event.stopPropagation()
     event.preventDefault()
 
-    if (event.pointerType === POINTER_TYPES.mouse) {
-      this.endDrag(event)
+    if (this.__dragging != 0) {
+      if (event.pointerType === POINTER_TYPES.mouse) {
+        this.endDrag(event)
 
-      if (!this.__pointerDragDelta.approxEqual(new Vec2(0, 0))) {
-        this.emit('movementFinished', {})
-        event.viewport.getCamera().emit('movementFinished', {})
+        if (!this.__pointerDragDelta.approxEqual(new Vec2(0, 0))) {
+          this.emit('movementFinished', {})
+          event.viewport.getCamera().emit('movementFinished', {})
+        }
+      } else if (event.pointerType === POINTER_TYPES.touch) {
+        event.preventDefault()
+        const touches = event.changedTouches
+
+        for (let i = 0; i < touches.length; i++) {
+          this.__endTouch(touches[i])
+        }
+
+        if (Object.keys(this.__ongoingTouches).length == 0) this.endDrag(event)
       }
-    } else if (event.pointerType === POINTER_TYPES.touch) {
-      event.preventDefault()
-      const touches = event.changedTouches
-
-      for (let i = 0; i < touches.length; i++) {
-        this.__endTouch(touches[i])
-      }
-
-      if (Object.keys(this.__ongoingTouches).length == 0) this.endDrag(event)
     }
   }
 
@@ -713,67 +728,98 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * The __integrateVelocityChange method.
+   * The integrateVelocityChange method.
    * @param {MouseEvent} event - The event value.
    * @private
    */
-  __integrateVelocityChange(event) {
+  integrateVelocityChange(event) {
     const { viewport } = event
     const camera = viewport.getCamera()
-    const delta = new Xfo()
-    delta.tr = this.__velocity.normalize().scale(this.__maxVel)
-    camera.getParameter('GlobalXfo').setValue(camera.getParameter('GlobalXfo').getValue().multiply(delta))
+
+    const time = performance.now()
+    if (this.__prevVelocityIntegrationTime > 0) {
+      const timeDelta = (time - this.__prevVelocityIntegrationTime) / 1000
+      const speed = this.getParameter('WalkSpeed').getValue()
+      // movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
+
+      if (speed > 0.0) {
+        // As we move over a terrain, it can be helpful to allow users to walk
+        // over surfaces without falling through them. This allows users to look
+        // down while walking forwards for example.
+        // Calculate where we might be soon
+        const movement = new Xfo()
+        movement.tr = this.__velocity.normalize().scale(speed * timeDelta)
+        const cameraXfo = camera.getParameter('GlobalXfo').getValue()
+
+        const newXfo = cameraXfo.multiply(movement)
+
+        // Raycast from 1.5 meter up
+        const headHeight = 1.5
+        const dist = 1.5
+        const area = 0.5
+        const raycastXfo = new Xfo(newXfo.tr)
+        const ray = new Ray(newXfo.tr, new Vec3(0, 0, -1))
+        const results = viewport.getRenderer().raycastCluster(raycastXfo, ray, dist, area, PassType.OPAQUE)
+
+        if (results.length > 0) {
+          let avgDist = 0
+          // eslint-disable-next-line guard-for-in
+          results.forEach((result) => {
+            avgDist += result.dist
+          })
+          avgDist /= results.length
+
+          // Snap the movement vector to make the user rest on the ground.
+          newXfo.tr = ray.start.add(ray.dir.scale(avgDist - headHeight))
+          this.__pointerDownCameraXfo.tr = newXfo.tr
+        }
+        camera.getParameter('GlobalXfo').setValue(newXfo)
+      }
+    }
+
+    this.__prevVelocityIntegrationTime = time
   }
 
   /**
    * Causes an event to occurs when the user presses a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The keyboard event that occurs.
-   * @return {boolean} - The return value.
-   * @private
    */
   onKeyPressed(event) {
     // Note: onKeyPressed is called initially only once, and then we
     // get a series of calls. Here we ignore subsequent events.
-    // (TODO: move this logic to a special controller)
-    /*
-    const key = String.fromCharCode(event.keyCode).toLowerCase()
-    switch (key) {
-      case 'w':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.z -= 1.0;
-        break;
-      case 's':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.z += 1.0;
-        break;
-      case 'a':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.x -= 1.0;
-        break;
-      case 'd':
-        if (this.__keysPressed.includes(key))
-          return false;
-        this.__velocity.x += 1.0;
-        break;
-      default:
-        return false;
-    }
-    this.__keysPressed.push(key);
-    if (!this.__keyboardMovement) {
-      this.__keyboardMovement = true;
-      let animationFrame = ()=>{
-        this.__integrateVelocityChange(event)
-        if (this.__keyboardMovement)
-          window.requestAnimationFrame(animationFrame);
+    if (this.__defaultManipulationState == MANIPULATION_MODES.walk) {
+      const key = event.key.toLowerCase()
+      if (this.__keysPressed.includes(key)) return
+      switch (key) {
+        case 'w':
+          this.__velocity.z -= 1.0
+          break
+        case 's':
+          this.__velocity.z += 1.0
+          break
+        case 'a':
+          this.__velocity.x -= 1.0
+          break
+        case 'd':
+          this.__velocity.x += 1.0
+          break
+        default:
+          return
       }
-      window.requestAnimationFrame(animationFrame);
+      this.__keysPressed.push(key)
+      if (!this.__keyboardMovement) {
+        this.__keyboardMovement = true
+        this.__prevVelocityIntegrationTime = performance.now()
+        const animationFrame = () => {
+          this.integrateVelocityChange(event)
+          if (this.__keyboardMovement) {
+            window.requestAnimationFrame(animationFrame)
+          }
+        }
+        window.requestAnimationFrame(animationFrame)
+      }
     }
-    */
-    return false // no keys handled
   }
 
   /**
@@ -788,33 +834,29 @@ class CameraManipulator extends BaseTool {
    * Causes an event to occur when the user releases a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The event that occurs.
-   * @private
    */
   onKeyUp(event) {
-    // (TODO: move this logic to a special controller)
-    /*
-    const key = String.fromCharCode(event.keyCode).toLowerCase()
+    const key = event.key.toLowerCase()
+    if (!this.__keysPressed.includes(key)) return
     switch (key) {
       case 'w':
-        this.__velocity.z += 1.0;
-        break;
+        this.__velocity.z += 1.0
+        break
       case 's':
-        this.__velocity.z -= 1.0;
-        break;
+        this.__velocity.z -= 1.0
+        break
       case 'a':
-        this.__velocity.x += 1.0;
-        break;
+        this.__velocity.x += 1.0
+        break
       case 'd':
-        this.__velocity.x -= 1.0;
-        break;
+        this.__velocity.x -= 1.0
+        break
       default:
-        return false;
+        return
     }
-    let keyIndex = this.__keysPressed.indexOf(key);
-    this.__keysPressed.splice(keyIndex, 1);
-    if (this.__keysPressed.length == 0)
-      this.__keyboardMovement = false;
-    */
+    const keyIndex = this.__keysPressed.indexOf(key)
+    this.__keysPressed.splice(keyIndex, 1)
+    if (this.__keysPressed.length == 0) this.__keyboardMovement = false
   }
 
   // ///////////////////////////////////
