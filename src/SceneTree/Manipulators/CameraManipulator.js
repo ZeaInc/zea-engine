@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import { Vec2, Vec3, Quat, Xfo, Ray } from '../../Math/index'
 import { BaseTool } from './BaseTool.js'
-import { NumberParameter } from '../Parameters/index'
+import { NumberParameter, BooleanParameter } from '../Parameters/index'
 import { SystemDesc } from '../../SystemDesc.js'
 import { POINTER_TYPES } from '../../Utilities/EnumUtils'
 import { PassType } from '../../Renderer/Passes/GLPass.js'
@@ -76,7 +76,7 @@ const MANIPULATION_MODES = {
 class CameraManipulator extends BaseTool {
   /**
    * Create a camera, mouse and keyboard
-   * @param {string} name - The name value.
+   * @param {object} appData - The object containing the scene and the renderer.
    */
   constructor(appData) {
     super()
@@ -101,6 +101,7 @@ class CameraManipulator extends BaseTool {
     this.__dollySpeedParam = this.addParameter(new NumberParameter('DollySpeed', 0.02))
     this.__mouseWheelDollySpeedParam = this.addParameter(new NumberParameter('MouseWheelDollySpeed', 0.0005))
     this.addParameter(new NumberParameter('WalkSpeed', 5)) // Value is in meters/second
+    this.addParameter(new BooleanParameter('WalkModeCollisionDetection', false))
 
     this.addParameterDeprecationMapping('orbitRate', 'OrbitRate')
     this.addParameterDeprecationMapping('dollySpeed', 'DollySpeed')
@@ -419,9 +420,9 @@ class CameraManipulator extends BaseTool {
    * The aimFocus method.
    *
    * @private
-   * @param {MouseEvent} event - The event value.
+   * @param {Camera} camera - The camera that we are aiming
    * @param {Vec3} target - The target to focus on.
-   * @param {Number} distance - The distance from the target to get to
+   * @param {Number} distance - The distance from the target to get to.
    * @param {Number} duration - The duration in milliseconds to aim the focus.
    */
   aimFocus(camera, target, distance = -1, duration = 400) {
@@ -431,7 +432,7 @@ class CameraManipulator extends BaseTool {
     let i = 0
     const applyMovement = () => {
       const initlalGlobalXfo = camera.getParameter('GlobalXfo').getValue()
-      const initlalDist = camera.getFocalDistance()
+      const initialDist = camera.getFocalDistance()
       const dir = target.subtract(initlalGlobalXfo.tr)
       const currDist = dir.normalizeInPlace()
 
@@ -475,8 +476,57 @@ class CameraManipulator extends BaseTool {
         globalXfo.tr.addInPlace(displacement.scale(t))
       }
 
-      camera.setFocalDistance(initlalDist + (currDist - initlalDist) * t)
+      camera.setFocalDistance(initialDist + (currDist - initialDist) * t)
       camera.getParameter('GlobalXfo').setValue(globalXfo)
+
+      i++
+      if (i <= count) {
+        this.__focusIntervalId = setTimeout(applyMovement, 20)
+      } else {
+        this.__focusIntervalId = undefined
+
+        this.emit('movementFinished', {})
+        camera.emit('movementFinished', {})
+      }
+    }
+    applyMovement()
+
+    this.__manipulationState = 'focussing'
+  }
+
+  /**
+   * The orientPointOfView method.
+   *
+   * @private
+   * @param {Camera} camera - The camera that we are orienting
+   * @param {Vec3} position - The target to focus on.
+   * @param {Vec3} target - The target to focus on.
+   * @param {Number} distance - The distance to the specified we want the user to be moved to
+   * @param {Number} duration - The duration in milliseconds to aim the focus.
+   */
+  orientPointOfView(camera, position, target, distance = 0, duration = 400) {
+    if (this.__focusIntervalId) clearInterval(this.__focusIntervalId)
+
+    const count = Math.round(duration / 20) // each step is 20ms
+    let i = 0
+    const applyMovement = () => {
+      const initlalGlobalXfo = camera.getParameter('GlobalXfo').getValue()
+      const initialTarget = camera.getTargetPosition()
+
+      // With each iteration we get closer to our goal
+      // and on the final iteration we should aim perfectly at
+      // the target.
+      const t = Math.pow(i / count, 2)
+
+      // Sometimes we want to pull users to within some threshold of the specified position.
+      const dirToPosition = position.subtract(initlalGlobalXfo.tr)
+      const currDistToPosition = dirToPosition.normalizeInPlace()
+      const displacement = dirToPosition.scale(currDistToPosition - distance)
+      const pos = initlalGlobalXfo.tr.add(displacement.scale(t))
+
+      const targetPos = initialTarget.lerp(target, t)
+
+      camera.setPositionAndTarget(pos, targetPos)
 
       i++
       if (i <= count) {
@@ -753,26 +803,29 @@ class CameraManipulator extends BaseTool {
 
         const newXfo = cameraXfo.multiply(movement)
 
-        // Raycast from 1.5 meter up
-        const headHeight = 1.5
-        const dist = 1.5
-        const area = 0.5
-        const raycastXfo = new Xfo(newXfo.tr)
-        const ray = new Ray(newXfo.tr, new Vec3(0, 0, -1))
-        const results = viewport.getRenderer().raycastCluster(raycastXfo, ray, dist, area, PassType.OPAQUE)
+        const collisionDetection = this.getParameter('WalkModeCollisionDetection').getValue()
+        if (collisionDetection) {
+          // Raycast from 1.5 meter up
+          const headHeight = 1.5
+          const dist = 1.5
+          const area = 0.5
+          const raycastXfo = new Xfo(newXfo.tr)
+          const ray = new Ray(newXfo.tr, new Vec3(0, 0, -1))
+          const results = viewport.getRenderer().raycastCluster(raycastXfo, ray, dist, area, PassType.OPAQUE)
 
-        if (results.length > 0) {
-          let avgDist = 0
-          // eslint-disable-next-line guard-for-in
-          results.forEach((result) => {
-            avgDist += result.dist
-          })
-          avgDist /= results.length
+          if (results.length > 0) {
+            let avgDist = 0
+            // eslint-disable-next-line guard-for-in
+            results.forEach((result) => {
+              avgDist += result.dist
+            })
+            avgDist /= results.length
 
-          // Snap the movement vector to make the user rest on the ground.
-          newXfo.tr = ray.start.add(ray.dir.scale(avgDist - headHeight))
-          this.__pointerDownCameraXfo.tr = newXfo.tr
+            // Snap the movement vector to make the user rest on the ground.
+            newXfo.tr = ray.start.add(ray.dir.scale(avgDist - headHeight))
+          }
         }
+        this.__pointerDownCameraXfo.tr = newXfo.tr
         camera.getParameter('GlobalXfo').setValue(newXfo)
       }
     }
