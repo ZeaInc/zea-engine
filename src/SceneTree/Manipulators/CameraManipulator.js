@@ -370,48 +370,69 @@ class CameraManipulator extends BaseTool {
     if (this.__focusIntervalId) clearInterval(this.__focusIntervalId)
 
     const count = Math.round(duration / 20) // each step is 20ms
+    const initalMode = this.__manipulationState
     let i = 0
     const applyMovement = () => {
-      const initlalGlobalXfo = camera.getParameter('GlobalXfo').getValue()
+      const prevGlobalXfo = camera.getParameter('GlobalXfo').getValue()
       const initialDist = camera.getFocalDistance()
-      const dir = target.subtract(initlalGlobalXfo.tr)
+      const dir = target.subtract(prevGlobalXfo.tr)
       const currDist = dir.normalizeInPlace()
 
-      const orbit = new Quat()
-      const pitch = new Quat()
+      const targetGlobalXfo = prevGlobalXfo.clone()
+      if (initalMode == MANIPULATION_MODES.turntable || initalMode == MANIPULATION_MODES.look) {
+        // Orbit
+        {
+          const currDir = prevGlobalXfo.ori.getZaxis().clone()
+          currDir.z = 0
+          const newDir = dir.negate()
+          newDir.z = 0
 
-      // Orbit
-      {
-        const currDir = initlalGlobalXfo.ori.getZaxis().clone()
-        currDir.z = 0
+          const orbit = new Quat()
+          orbit.setFrom2Vectors(currDir, newDir)
+          targetGlobalXfo.ori = orbit.multiply(targetGlobalXfo.ori)
+        }
+
+        // Pitch
+        {
+          const xAxis = prevGlobalXfo.ori.getXaxis().clone()
+          const currDir = prevGlobalXfo.ori.getZaxis().clone()
+          const newDir = dir.negate()
+
+          newDir.subtractInPlace(xAxis.scale(newDir.dot(xAxis)))
+          newDir.normalizeInPlace()
+
+          const pitch = new Quat()
+          if (currDir.cross(newDir).dot(xAxis) > 0.0) pitch.rotateX(currDir.angleTo(newDir))
+          else pitch.rotateX(-currDir.angleTo(newDir))
+          targetGlobalXfo.ori = targetGlobalXfo.ori.multiply(pitch)
+        }
+
+        // Fix Roll
+        {
+          const currDir = targetGlobalXfo.ori.getXaxis().clone()
+          const newDir = currDir.clone()
+          newDir.z = 0
+          newDir.normalizeInPlace()
+
+          const roll = new Quat()
+          roll.setFrom2Vectors(currDir, newDir)
+          targetGlobalXfo.ori = roll.multiply(targetGlobalXfo.ori)
+        }
+      } else {
+        const currDir = prevGlobalXfo.ori.getZaxis().clone()
         const newDir = dir.negate()
-        newDir.z = 0
 
+        const orbit = new Quat()
         orbit.setFrom2Vectors(currDir, newDir)
+        targetGlobalXfo.ori = orbit.multiply(targetGlobalXfo.ori)
       }
-
-      // Pitch
-      {
-        const currDir = initlalGlobalXfo.ori.getZaxis().clone()
-        const newDir = dir.negate()
-        currDir.x = newDir.x
-        currDir.y = newDir.y
-        currDir.normalizeInPlace()
-
-        if (currDir.cross(newDir).dot(initlalGlobalXfo.ori.getXaxis()) > 0.0) pitch.rotateX(currDir.angleTo(newDir))
-        else pitch.rotateX(-currDir.angleTo(newDir))
-      }
-
-      const targetGlobalXfo = initlalGlobalXfo.clone()
-      targetGlobalXfo.ori = orbit.multiply(targetGlobalXfo.ori)
-      targetGlobalXfo.ori.multiplyInPlace(pitch)
 
       // With each iteration we get closer to our goal
       // and on the final iteration we should aim perfectly at
       // the target.
       const t = Math.pow(i / count, 2)
-      const globalXfo = initlalGlobalXfo.clone()
-      globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t)
+      const globalXfo = prevGlobalXfo.clone()
+      globalXfo.ori = prevGlobalXfo.ori.lerp(targetGlobalXfo.ori, t)
       if (distance > 0) {
         const displacement = dir.scale(currDist - distance)
         globalXfo.tr.addInPlace(displacement.scale(t))
