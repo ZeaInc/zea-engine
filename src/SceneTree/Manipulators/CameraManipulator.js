@@ -842,7 +842,6 @@ class CameraManipulator extends BaseTool {
    */
   onKeyUp(event) {
     const key = event.key.toLowerCase()
-    console.log('onKeyUp:', key)
     if (!this.__keysPressed.includes(key)) return
     switch (key) {
       case 'w':
