@@ -506,7 +506,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when a user double presses a pointer over an element.
+   * Invoked when a user double presses a pointer over an element.
    *
    * @param {MouseEvent|TouchEvent} event - The pointer event that occurs
    * @memberof CameraManipulator
@@ -531,7 +531,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when the user starts to drag an element.
+   * Invoked when the user starts to drag an element.
    *
    * @param {PointerEvent} event - The mouse event that occurs.
    */
@@ -561,7 +561,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when an element is being dragged.
+   * Invoked when an element is being dragged.
    *
    * @param {MouseEvent} event - The mouse event that occurs.
    */
@@ -675,7 +675,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when the user has finished dragging an element.
+   * Invoked when the user has finished dragging an element.
    *
    * @param {MouseEvent} event - The mouse event that occurs.
    */
@@ -703,7 +703,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when the mouse wheel is rolled up or down over an element.
+   * Invoked when the mouse wheel is rolled up or down over an element.
    *
    * @param {WheelEvent} event - The wheel event that occurs.
    */
@@ -799,58 +799,57 @@ class CameraManipulator extends BaseTool {
    *
    * @param {KeyboardEvent} event - The keyboard event that occurs.
    */
-  onKeyPressed(event) {
-    {
-      const key = event.key.toLowerCase()
-      // Note: onKeyPressed is called initially only once, and then we
-      // get a series of calls. Here we ignore subsequent events.
-      if (this.__keysPressed.includes(key)) return
-      switch (key) {
-        case 'w':
-          this.__velocity.z -= 1.0
-          break
-        case 's':
-          this.__velocity.z += 1.0
-          break
-        case 'a':
-          this.__velocity.x -= 1.0
-          break
-        case 'd':
-          this.__velocity.x += 1.0
-          break
-        default:
-          return
-      }
-      this.__keysPressed.push(key)
-      if (!this.__keyboardMovement) {
-        this.__keyboardMovement = true
-        this.__prevVelocityIntegrationTime = performance.now()
-        const animationFrame = () => {
-          this.integrateVelocityChange(event)
-          if (this.__keyboardMovement) {
-            window.requestAnimationFrame(animationFrame)
-          }
-        }
-        window.requestAnimationFrame(animationFrame)
-      }
-    }
-  }
+  onKeyPressed(event) {}
 
   /**
-   * Causes an event to occur when the user is pressing a key on the keyboard.
+   * Invoked when the user is pressing a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The keyboard event that occurs.
    * @private
    */
-  onKeyDown(event) {}
+  onKeyDown(event) {
+    const key = event.key.toLowerCase()
+    // Note: onKeyPressed is called initially only once, and then we
+    // get a series of calls. Here we ignore subsequent events.
+    if (this.__keysPressed.includes(key)) return
+    switch (key) {
+      case 'w':
+        this.__velocity.z -= 1.0
+        break
+      case 's':
+        this.__velocity.z += 1.0
+        break
+      case 'a':
+        this.__velocity.x -= 1.0
+        break
+      case 'd':
+        this.__velocity.x += 1.0
+        break
+      default:
+        return
+    }
+    this.__keysPressed.push(key)
+    if (!this.__keyboardMovement) {
+      this.__keyboardMovement = true
+      this.__prevVelocityIntegrationTime = performance.now()
+      const animationFrame = () => {
+        this.integrateVelocityChange(event)
+        if (this.__keyboardMovement) {
+          window.requestAnimationFrame(animationFrame)
+        }
+      }
+      window.requestAnimationFrame(animationFrame)
+    }
+  }
 
   /**
-   * Causes an event to occur when the user releases a key on the keyboard.
+   * Invoked when the user releases a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The event that occurs.
    */
   onKeyUp(event) {
     const key = event.key.toLowerCase()
+    console.log('onKeyUp:', key)
     if (!this.__keysPressed.includes(key)) return
     switch (key) {
       case 'w':
@@ -902,7 +901,7 @@ class CameraManipulator extends BaseTool {
   // Touch events
 
   /**
-   * Causes an event to occur when the user touches an element on a touch screen.
+   * Invoked when the user touches an element on a touch screen.
    *
    * @param {TouchEvent} event - The touch event that occurs.
    */
@@ -918,7 +917,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when the user removes his/her finger from an element.
+   * Invoked when the user removes his/her finger from the touch pad.
    *
    * @param {TouchEvent} event - The touch event that occurs.
    */
@@ -934,7 +933,7 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occur when the touch event gets interrupted.
+   * Invoked when the touch event gets interrupted.
    *
    * @param {TouchEvent} event - The touch event that occurs.
    */
