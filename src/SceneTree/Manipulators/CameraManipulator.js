@@ -795,13 +795,6 @@ class CameraManipulator extends BaseTool {
   }
 
   /**
-   * Causes an event to occurs when the user presses a key on the keyboard.
-   *
-   * @param {KeyboardEvent} event - The keyboard event that occurs.
-   */
-  onKeyPressed(event) {}
-
-  /**
    * Invoked when the user is pressing a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The keyboard event that occurs.

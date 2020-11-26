@@ -105,15 +105,6 @@ class BaseTool extends ParameterOwner {
   // Keyboard events
 
   /**
-   * Event fired when the user presses a key on the keyboard.
-   *
-   * @param {KeyboardEvent} event - The event param.
-   */
-  onKeyPressed(event) {
-    // console.warn('Implement me')
-  }
-
-  /**
    * Event fired when the user presses down a key on the keyboard.
    *
    * @param {KeyboardEvent} event - The event param.

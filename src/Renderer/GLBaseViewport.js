@@ -194,7 +194,7 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Called when the mouse pointer is moved into this viewport.
+   * Invoked when the mouse pointer is moved into this viewport.
    *
    * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
@@ -203,7 +203,7 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Called when the mouse pointer is moved out of this viewport.
+   * Invoked when the mouse pointer is moved out of this viewport.
    *
    * @param {MouseEvent|TouchEvent} event - The DOM event produced by a pointer
    */
@@ -212,7 +212,7 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Causes an event to occur when the mouse pointer is moved out of an element.
+   * Invoked when the mouse pointer is moved out of an element.
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.
    */
@@ -221,17 +221,7 @@ class GLBaseViewport extends ParameterOwner {
   }
 
   /**
-   * Causes an event to occurs when the user presses a key on the keyboard.
-   * @param {any} key - The key the user presses.
-   * @param {any} event - The event that occurs.
-   * @return {boolean} - The return value.
-   */
-  onKeyPressed(event) {
-    return false
-  }
-
-  /**
-   * Causes an event to occur when the user is pressing a key on the keyboard.
+   * Invoked when the user is pressing a key on the keyboard.
    * @param {any} key - The key the user is pressing.
    * @param {any} event - The event that occurs.
    * @return {boolean} - The return value.

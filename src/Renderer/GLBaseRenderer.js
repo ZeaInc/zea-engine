@@ -832,15 +832,6 @@ class GLBaseRenderer extends ParameterOwner {
       return false
     }
 
-    document.addEventListener('keypress', (event) => {
-      if (activeGLRenderer != this || !isValidCanvas()) return
-      prepareEvent(event)
-      const vp = activeGLRenderer.getActiveViewport()
-      if (vp) {
-        vp.onKeyPressed(event)
-      }
-    })
-
     document.addEventListener('keydown', (event) => {
       if (activeGLRenderer != this || !isValidCanvas()) return
       prepareEvent(event)

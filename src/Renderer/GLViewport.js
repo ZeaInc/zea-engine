@@ -711,18 +711,6 @@ class GLViewport extends GLBaseViewport {
   }
 
   /**
-   * Causes an event to occurs when the user presses a key on the keyboard.
-   * @param {KeyboardEvent} event - The event that occurs.
-   */
-  onKeyPressed(event) {
-    this.__preparePointerEvent(event)
-    if (this.manipulator) {
-      if (this.manipulator.onKeyPressed(event)) return
-    }
-    this.emit('keyPressed', event)
-  }
-
-  /**
    * Causes an event to occur when the user is pressing a key on the keyboard.
    * @param {KeyboardEvent} event - The event that occurs.
    */
