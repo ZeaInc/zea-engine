@@ -150,6 +150,7 @@ class Sphere extends ProceduralMesh {
     // ////////////////////////////
     // Set Vertex Positions
     const positions = this.getVertexAttribute('positions')
+    const normals = this.getVertexAttribute('normals')
     let vertex = 0
     const normal = new Vec3(0.0, 0.0, 1.0)
     positions.getValueRef(vertex).set(0.0, 0.0, radius)
@@ -163,6 +164,7 @@ class Sphere extends ProceduralMesh {
 
         // Set positions and normals at the same time.
         positions.getValueRef(vertex).setFromOther(normal.scale(radius))
+        normals.getValueRef(vertex).setFromOther(normal)
         vertex++
       }
     }

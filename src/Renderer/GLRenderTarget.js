@@ -41,6 +41,7 @@ class GLRenderTarget extends EventEmitter {
       gl.deleteFramebuffer(this.frameBuffer)
     }
 
+    this.params = p
     this.type = p.type
     this.format = p.format
     this.internalFormat = p.internalFormat
@@ -89,8 +90,8 @@ class GLRenderTarget extends EventEmitter {
 
     // -- Initialize frame buffer
     this.frameBuffer = gl.createFramebuffer()
-    if (gl.name == 'webgl2') gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.frameBuffer)
-    else gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
+
+    this.bindForWriting()
 
     if (this.textureTargets.length > 0) {
       if (this.textureTargets.length > 1) {
@@ -119,6 +120,16 @@ class GLRenderTarget extends EventEmitter {
       gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0)
     }
 
+    this.checkFramebuffer()
+  }
+
+  /**
+   * The checkFramebuffer method.
+   */
+  checkFramebuffer() {
+    this.bindForWriting()
+
+    const gl = this.__gl
     const status = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER)
     if (status != gl.FRAMEBUFFER_COMPLETE) {
       switch (status) {
@@ -141,7 +152,7 @@ class GLRenderTarget extends EventEmitter {
       }
       return
     }
-    this.unbind()
+    this.unbindForWriting()
   }
 
   /**
@@ -239,8 +250,7 @@ class GLRenderTarget extends EventEmitter {
    * The unbind method.
    */
   unbind() {
-    const gl = this.__gl
-    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null)
+    this.unbindForWriting()
   }
 
   /**
@@ -250,64 +260,134 @@ class GLRenderTarget extends EventEmitter {
    * @param {boolean} preserveData - The preserveData value.
    */
   resize(width, height, preserveData = false) {
-    /*
-    const gl = this.__gl;
-    const sizeChanged = this.width != width || this.height != height;
+    const gl = this.__gl
+    const sizeChanged = this.width != width || this.height != height
     if (sizeChanged) {
       const maxSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
       if (width < 0 || width > maxSize || height < 0 || height > maxSize) {
-          throw new Error("gl-texture2d: Invalid texture size. width:" + width + " height:" + height + " maxSize:" + maxSize);
+        throw new Error(`GLRenderTarget: Invalid texture size. width: ${width} height: ${height} maxSize: ${maxSize}`)
       }
-      const gltex = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, gltex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, width, height, 0, this.__channels, this.__format, null);
-
       if (preserveData) {
-        const fbo = gl.createFramebuffer();
-        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.__gltex, 0);
-
-        gl.bindTexture(gl.TEXTURE_2D, gltex); // Do we need this line?
-        gl.copyTexImage2D(gl.TEXTURE_2D, 0, this.__internalFormat, 0, 0, this.width, this.height, 0);
-
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-        gl.deleteFramebuffer(fbo)
+        this.bindForReading()
       }
 
-      this.width = width;
-      this.height = height;
+      const p = this.params
 
-      this.__gl.deleteTexture(this.__gltex);
-      this.__gltex = gltex;
-      this.__updateGLTexParams();
-      if (emit) {
-        this.emit('resized' { width, height });
+      for (let i = 0; i < this.textureTargets.length; i++) {
+        const colorTexture = gl.createTexture()
+        gl.bindTexture(gl.TEXTURE_2D, colorTexture)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, p.wrapS)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, p.wrapT)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, p.minFilter)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, p.magFilter)
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, this.internalFormat, width, height, 0, this.format, this.type, null)
+
+        if (preserveData) {
+          // see: http://jsfiddle.net/greggman/rs21sr46
+          gl.copyTexImage2D(
+            gl.TEXTURE_2D,
+            0,
+            this.internalFormat,
+            0,
+            0,
+            Math.min(width, this.width),
+            Math.min(height, this.height),
+            0
+          )
+        }
+
+        gl.deleteTexture(this.textureTargets[i])
+        this.textureTargets[i] = colorTexture
       }
-    }
 
-    if (gl.name == 'webgl2')
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.frameBuffer);
-    else
-      gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+      if (p.depthFormat) {
+        if (gl.name == 'webgl' && !gl.__ext_WEBGL_depth_texture)
+          throw new Error('Depth textures not support on this device')
 
-    // The color texture is destoryed and re-created when it is resized,
-    // so we must re-bind it here..
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.__colorTexture.glTex, 0);
-    if (this.depthChannel) {
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.__depthTexture);
-      if (gl.name == 'webgl2'){
+        // -- Initialize depth texture
+        gl.activeTexture(gl.TEXTURE0)
+        const depthTexture = gl.createTexture()
+        gl.bindTexture(gl.TEXTURE_2D, depthTexture)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, p.wrapS)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, p.wrapT)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, p.minFilter)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, p.magFilter)
+
         // the proper texture format combination can be found here
         // https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glTexImage2D.xhtml
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT24, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+        gl.texImage2D(gl.TEXTURE_2D, 0, p.depthInternalFormat, width, height, 0, p.depthFormat, p.depthType, null)
+
+        if (preserveData) {
+          // see: http://jsfiddle.net/greggman/rs21sr46
+          gl.copyTexImage2D(
+            gl.TEXTURE_2D,
+            0,
+            this.internalFormat,
+            0,
+            0,
+            Math.min(width, this.width),
+            Math.min(height, this.height),
+            0
+          )
+        }
+
+        gl.deleteTexture(this.depthTexture)
+        this.depthTexture = depthTexture
       }
-      else
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+
+      if (preserveData) {
+        this.unbindForReading()
+      }
+
+      this.width = width
+      this.height = height
+
+      // -- Initialize frame buffer
+      if (this.frameBuffer) {
+        // Note: avoid re-using the framebuffer.
+        // see here: https://gamedev.stackexchange.com/questions/91991/resizing-a-framebuffer-object-ie-its-attachments-on-screen-resize
+        gl.deleteFramebuffer(this.frameBuffer)
+      }
+      this.frameBuffer = gl.createFramebuffer()
+
+      this.bindForWriting()
+
+      if (this.textureTargets.length > 0) {
+        if (this.textureTargets.length > 1) {
+          if (gl.name == 'webgl' && !gl.drawBuffers) {
+            gl.__ext_draw_buffers = gl.getExtension('WEBGL_draw_buffers')
+            gl.drawBuffers = gl.__ext_draw_buffers.drawBuffersWEBGL.bind(gl.__ext_draw_buffers)
+            for (let i = 1; i < 14; i++) {
+              gl['COLOR_ATTACHMENT' + i] = gl.__ext_draw_buffers['COLOR_ATTACHMENT' + i + '_WEBGL']
+            }
+            gl.MAX_COLOR_ATTACHMENTS = gl.__ext_draw_buffers.MAX_COLOR_ATTACHMENTS_WEBGL
+            gl.MAX_DRAW_BUFFERS = gl.__ext_draw_buffers.MAX_DRAW_BUFFERS_WEBGL
+          }
+        }
+
+        const bufferIds = []
+        for (let i = 0; i < this.textureTargets.length; i++) {
+          gl.framebufferTexture2D(
+            gl.DRAW_FRAMEBUFFER,
+            gl.COLOR_ATTACHMENT0 + i,
+            gl.TEXTURE_2D,
+            this.textureTargets[i],
+            0
+          )
+          bufferIds.push(gl.COLOR_ATTACHMENT0 + i)
+        }
+        if (this.textureTargets.length > 1) {
+          gl.drawBuffers(bufferIds)
+        }
+      }
+
+      if (this.depthTexture) {
+        gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0)
+      }
+
+      this.checkFramebuffer()
     }
-    this.__checkFramebuffer();
-    //gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    */
   }
 
   /**
