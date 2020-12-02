@@ -4,6 +4,8 @@ shaderLibrary.setShaderModule(
   'PBRSurfaceRadiance.glsl',
   `
 
+const int ENVMAP_FLAG_HEADLIGHT =  1; // 1<<0;
+  
 struct MaterialParams {
     vec3 baseColor;
     float metallic;

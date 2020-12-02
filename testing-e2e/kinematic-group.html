@@ -63,15 +63,6 @@
       addMeshShape(new Cone(1, 2), 4)
       addMeshShape(new Cylinder(1, 2, 20, 2, true))
 
-      let angle = -1
-      setInterval(() => {
-        angle += 0.1
-        const xfo = new Xfo()
-        xfo.tr.set(6, Math.cos(angle) * 2, 0)
-        xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
-        kinematicGroup.getParameter('LocalXfo').setValue(xfo)
-      }, 50)
-
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(25, 25, 13), new Vec3(10, 0, 0))
       renderer.frameAll()
 
@@ -85,17 +76,21 @@
           const angle = 2
           const xfo = new Xfo()
           xfo.tr.set(6, Math.cos(angle) * 2, 0)
-          xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
+          xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
           kinematicGroup.getParameter('LocalXfo').setValue(xfo)
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         } else if (data === 'variant-02') {
           const angle = 3
           const xfo = new Xfo()
-          xfo.tr.set(6, Math.cos(angle) * 2, 0)
-          xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
+          xfo.tr.set(-6, Math.cos(angle) * 2, 0)
+          xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
           kinematicGroup.getParameter('LocalXfo').setValue(xfo)
           renderer.frameAll()
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         }
       }
 

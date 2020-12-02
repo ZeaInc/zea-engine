@@ -59,6 +59,7 @@ void main(void) {
 precision highp float;
 
 <%include file="drawItemTexture.glsl"/>
+<%include file="math/constants.glsl"/>
 <%include file="cutaways.glsl"/>
 <%include file="GLSLBits.glsl"/>
 

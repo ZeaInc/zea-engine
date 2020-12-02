@@ -59,6 +59,7 @@ uniform float Opacity;
 
 
 <%include file="drawItemTexture.glsl"/>
+<%include file="math/constants.glsl"/>
 <%include file="cutaways.glsl"/>
 
 #ifdef ENABLE_FLOAT_TEXTURES

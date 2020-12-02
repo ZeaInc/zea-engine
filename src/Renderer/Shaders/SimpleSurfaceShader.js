@@ -73,6 +73,7 @@ void main(void) {
       `
 precision highp float;
 
+<%include file="math/constants.glsl"/>
 <%include file="drawItemTexture.glsl"/>
 <%include file="cutaways.glsl"/>
 <%include file="stack-gl/gamma.glsl"/>
@@ -212,7 +213,7 @@ void main(void) {
   static getSelectedShaderName() {
     return 'StandardSurfaceSelectedGeomsShader'
   }
-  
+
   bind(renderstate, key) {
     if (renderstate.pass == 'MULTIPLY') return false
     return super.bind(renderstate, key)

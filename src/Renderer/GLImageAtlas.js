@@ -364,6 +364,11 @@ class GLImageAtlas extends GLRenderTarget {
       }
     }
 
+    this.textureDesc[0] = this.width
+    this.textureDesc[1] = this.height
+    this.textureDesc[2] = this.__atlasLayoutTexture.width
+    // this.textureDesc[3] // flags
+
     this.__layoutNeedsRegeneration = false
   }
 
@@ -446,8 +451,9 @@ class GLImageAtlas extends GLRenderTarget {
       if (atlasLayoutUnif) this.__atlasLayoutTexture.bindToUniform(renderstate, atlasLayoutUnif)
 
       const atlasDescUnif = unifs[unif.name + '_desc']
-      if (atlasDescUnif)
-        this.__gl.uniform4f(atlasDescUnif.location, this.width, this.height, this.__atlasLayoutTexture.width, 0.0)
+      if (atlasDescUnif) {
+        this.__gl.uniform4fv(atlasDescUnif.location, this.textureDesc)
+      }
     } else {
       const atlasDescUnif = unifs[unif.name + '_desc']
       if (atlasDescUnif) this.__gl.uniform4f(atlasDescUnif.location, this.width, this.height, 0.0, 0.0)

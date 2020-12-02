@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geomitem-material-opacity-changes - Zea Engine</title>
+
+    <link href="zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tachyons.min.css" />
+    <link rel="stylesheet" href="styles/main.css" />
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Color, Sphere, Material, GeomItem } = zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      scene.setupGrid(10.0, 10)
+
+      const material = new Material('surfaces', 'SimpleSurfaceShader')
+      material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 1))
+
+      const geomItem = new GeomItem('Sphere', new Sphere(1.5, 46), material)
+      scene.getRoot().addChild(geomItem)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(5, 5, 2.7), new Vec3(0, 0, 0.4))
+
+      window.postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          const material = geomItem.getParameter('Material').getValue()
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.5))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.55))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.6))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.65))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.7))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.75))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.8))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.85))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.9))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.95))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 1))
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 1))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.95))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.9))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.85))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.8))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.75))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.7))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.65))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.6))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.55))
+          material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 0.5))
+
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </head>
+  <body>
+    <canvas class="full-size" id="renderer" />
+  </body>
+</html>

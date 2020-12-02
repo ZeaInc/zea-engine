@@ -236,31 +236,50 @@ void main(void) {
     vec4 fragColor;
 #endif
 
+#ifdef ENABLE_PBR
+    int envMapFlags = int(envMapPyramid_desc.w);
+    bool headLightMode = testFlag(envMapFlags, ENVMAP_FLAG_HEADLIGHT);
+#endif
+
     float opacity = Opacity * BaseColor.a;
     if (opacity < 1.0) {
+        vec3 radiance;
 #ifdef ENABLE_PBR
-        vec4 specularReflectance = pbrSpecularReflectance(material, normal, viewVector);
-        fragColor = vec4(specularReflectance.rgb, mix(opacity, 1.0, specularReflectance.a));
-#else
-        vec3 irradiance = vec3(dot(normal, viewVector));
-        vec3 radiance = material.baseColor * irradiance;
-        fragColor = vec4(radiance + (emission * material.baseColor), opacity);
+        if (envMapPyramid_desc.x > 0.0) {
+            // Note: not sure how to make specular reflections work in headlight mode.
+            vec4 specularReflectance = pbrSpecularReflectance(material, normal, viewVector);
+            fragColor = vec4(specularReflectance.rgb, mix(opacity, 1.0, specularReflectance.a));
+        } else {
+#endif
+            // Simple diffuse lighting.
+            vec3 irradiance = vec3(dot(normal, viewVector));
+            radiance = irradiance * material.baseColor;
+            fragColor = vec4(radiance + (emission * material.baseColor), opacity);
+#ifdef ENABLE_PBR
+        }
 #endif
     }
     else {
-
+        vec3 radiance;
 #ifdef ENABLE_PBR
-        vec3 irradiance = sampleEnvMap(normal, 1.0);
-        vec3 radiance = pbrSurfaceRadiance(material, irradiance, normal, viewVector);
-#else
-        vec3 irradiance = vec3(dot(normal, viewVector));
-        vec3 radiance = material.baseColor * irradiance;
+        if (envMapPyramid_desc.x > 0.0) {
+            vec3 irradiance;
+            if (headLightMode) {
+                irradiance = sampleEnvMap(viewNormal, 1.0);
+            } else {
+                irradiance = sampleEnvMap(normal, 1.0);
+            }
+            radiance = pbrSurfaceRadiance(material, irradiance, normal, viewVector);
+        } else {
 #endif
-
+            vec3 irradiance = vec3(dot(normal, viewVector));
+            radiance = material.baseColor * irradiance;
+#ifdef ENABLE_PBR
+        }
+#endif
         // fragColor = vec4(material.baseColor, 1.0);
         // fragColor = vec4(material.baseColor * irradiance, 1.0);
         fragColor = vec4(radiance + (emission * material.baseColor), 1.0);
-
     }
 
 #ifdef ENABLE_INLINE_GAMMACORRECTION

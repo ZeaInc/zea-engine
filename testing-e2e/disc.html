@@ -34,14 +34,16 @@
         if (data === 'variant-01') {
           disc.getParameter('Radius').setValue(2.5)
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(5, 5, -2.7), new Vec3(0, 0, 0.4))
-          // renderer.frameAll()
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         } else if (data === 'variant-02') {
           disc.getParameter('Radius').setValue(2.5)
           disc.getParameter('Sides').setValue(35)
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-5, -5, 2.7), new Vec3(0, 0, 0.4))
-          // renderer.frameAll()
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         }
       }
 

@@ -71,12 +71,12 @@
 
         if (data === 'variant-01') {
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.01, -0.02, 0.005), new Vec3(0.01, 0, 0))
-          renderer.once('redrawOccured', () => {
+          renderer.once('redrawOccurred', () => {
             window.postMessage(`done-${data}`)
           })
         } else if (data === 'variant-02') {
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.035, 0.02, 0.005), new Vec3(0.01, 0, 0))
-          renderer.once('redrawOccured', () => {
+          renderer.once('redrawOccurred', () => {
             window.postMessage(`done-${data}`)
           })
         }

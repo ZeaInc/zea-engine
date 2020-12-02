@@ -45,7 +45,7 @@
 
         if (data === 'variant-01') {
           lines.clear()
-          renderer.once('redrawOccured', () => {
+          renderer.once('redrawOccurred', () => {
             window.postMessage(`done-${data}`)
           })
         } else if (data === 'variant-02') {
@@ -63,7 +63,7 @@
           lines.emit('geomDataTopologyChanged', {
             indicesChanged: true,
           })
-          renderer.once('redrawOccured', () => {
+          renderer.once('redrawOccurred', () => {
             window.postMessage(`done-${data}`)
           })
         }

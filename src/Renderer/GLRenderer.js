@@ -735,7 +735,7 @@ class GLRenderer extends GLBaseRenderer {
     //     gl.bindTexture(gl.TEXTURE_2D, null);
     // }
 
-    this.emit('redrawOccured', {})
+    this.emit('redrawOccurred', {})
   }
 }
 

@@ -4,8 +4,8 @@ shaderLibrary.setShaderModule(
   'cutaways.glsl',
   `
 
-
 const int GEOMITEM_FLAG_CUTAWAY =  1; // 1<<0;
+
 
 #define RAY_EPS 0.0000001
 struct Ray {

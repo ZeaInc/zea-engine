@@ -83,13 +83,13 @@
         if (data === 'variant-01') {
           selectionSet1.getParameter('Highlighted').setValue(true)
           selectionSet2.getParameter('Highlighted').setValue(false)
-          renderer.once('redrawOccured', () => {
+          renderer.once('redrawOccurred', () => {
             window.postMessage(`done-${data}`)
           })
         } else if (data === 'variant-02') {
           selectionSet1.getParameter('Highlighted').setValue(false)
           selectionSet2.getParameter('Highlighted').setValue(true)
-          renderer.once('redrawOccured', () => {
+          renderer.once('redrawOccurred', () => {
             window.postMessage(`done-${data}`)
           })
         }

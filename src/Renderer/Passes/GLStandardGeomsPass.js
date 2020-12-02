@@ -98,7 +98,7 @@ class GLStandardGeomsPass extends GLPass {
    * @return {Boolean} - The return value.
    */
   itemRemovedFromScene(treeItem, rargs) {
-    if (treeItem instanceof GeomItem && treeItem.getMetadata('glgeomItem')) {
+    if (treeItem instanceof GeomItem && treeItem.getMetadata('glgeomItem') && geomItem.getMetadata('glpass') == this) {
       return this.removeGeomItem(treeItem)
     }
     return false
@@ -297,7 +297,7 @@ class GLStandardGeomsPass extends GLPass {
     // this.emit('renderTreeUpdated', {});
     this.__renderer.requestRedraw()
 
-    geomItem.getMetadata('glpass')
+    geomItem.deleteMetadata('glpass')
     geomItem.deleteMetadata('glgeomItem')
 
     return glgeomItem

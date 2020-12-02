@@ -130,7 +130,7 @@ class GLGeomItemSet extends EventEmitter {
     }
     this.drawIdsBufferDirty = true
     // console.log("removeGeomItem:", glgeomItem.getGeomItem().getName(), this.glgeomItems.length)
-    if (this.glgeomItems.length == 0) {
+    if (this.glgeomItems.length == this.glgeomItems_freeIndices.length) {
       this.destroy()
     }
   }
@@ -299,7 +299,17 @@ class GLGeomItemSet extends EventEmitter {
    * Users should never need to call this method directly.
    */
   destroy() {
-    this.emit('destructing', {})
+    if (this.drawIdsBuffer) {
+      this.gl.deleteBuffer(this.drawIdsBuffer)
+      this.drawIdsBuffer = null
+    }
+
+    if (this.highlightedIdsBuffer) {
+      gl.deleteBuffer(this.highlightedIdsBuffer)
+      this.highlightedIdsBuffer = null
+    }
+
+    this.emit('destructing')
   }
 }
 

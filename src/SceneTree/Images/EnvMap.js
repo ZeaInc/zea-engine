@@ -6,6 +6,7 @@ import util from 'util'
 import { Vec2, Vec3 } from '../../Math/index'
 import { Registry } from '../../Registry'
 import { VLHImage } from './VLHImage.js'
+import { BooleanParameter } from '../Parameters/BooleanParameter.js'
 
 const EnvMapMapping = {
   LATLONG: 1,
@@ -101,7 +102,13 @@ function sphOctUvToDir(uv) {
 }
 
 /**
- * Class representing an environment map.
+ * An EnvMap can load High Dynamic Range environment map images, necessary for high quality PBR lighting.
+ * <br>
+ * <br>
+ * **Parameters**
+ * * **HeadLightMode(`BooleanParameter`):** Enables Headlight mode so that the environment lighting is aligned with the camera.
+ * With Headlight mode on, the top of the env map is aligned with the direction of the camera, so a the view is generally well lit.
+ *
  * @extends VLHImage
  */
 class EnvMap extends VLHImage {
@@ -112,6 +119,8 @@ class EnvMap extends VLHImage {
    */
   constructor(name, params = {}) {
     super(name, params)
+
+    this.addParameter(new BooleanParameter('HeadLightMode', false))
 
     this.mapping = EnvMapMapping.OCTAHEDRAL
     this.utf8decoder = util.TextDecoder ? new util.TextDecoder() : new TextDecoder()

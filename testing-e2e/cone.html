@@ -40,13 +40,17 @@
 
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
           renderer.frameAll()
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         } else if (data === 'variant-02') {
           cone.getParameter('Detail').setValue(25)
           cone.getParameter('Height').setValue(2.5)
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
           renderer.frameAll()
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         }
       }
 

@@ -14,6 +14,7 @@ class GLRenderTarget extends EventEmitter {
     this.__gl = gl
     this.textureTargets = []
     this.depthTexture = null
+    this.textureDesc = [0, 0, 0, 0]
 
     if (params) {
       this.configure(params)
@@ -54,7 +55,8 @@ class GLRenderTarget extends EventEmitter {
     this.colorMask = [true, true, true, true]
 
     this.textureType = 1 // Default 2d 8 bit texture image texture.
-    this.textureDesc = [this.width, this.height, 0, 0]
+    this.textureDesc[0] = this.width
+    this.textureDesc[1] = this.height
 
     // -- Initialize texture targets
     const numColorChannels =

@@ -97,7 +97,9 @@
           xfo.tr.set(6, Math.cos(angle) * 2, 0)
           xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
           cuttingPlane.getParameter('LocalXfo').setValue(xfo)
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         } else if (data === 'variant-02') {
           const angle = 3
           const xfo = new Xfo()
@@ -105,7 +107,9 @@
           xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), angle)
           cuttingPlane.getParameter('LocalXfo').setValue(xfo)
           renderer.frameAll()
-          window.postMessage(`done-${data}`)
+          renderer.once('redrawOccurred', () => {
+            window.postMessage(`done-${data}`)
+          })
         }
       }
 

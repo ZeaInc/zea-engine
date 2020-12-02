@@ -35,14 +35,14 @@ describe('Labels and Billboards', () => {
       const variant = 'front'
       win.postMessage(variant)
       cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
-      cy.get('canvas').percySnapshot(`Labels ${variant}`)
+      cy.get('canvas').percySnapshot(`Labels - Fixedsize ${variant}`)
     })
 
     cy.window().then((win) => {
       const variant = 'back'
       win.postMessage(variant)
       cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
-      cy.get('canvas').percySnapshot(`Labels ${variant}`)
+      cy.get('canvas').percySnapshot(`Labels - Fixedsize ${variant}`)
     })
   })
 })
