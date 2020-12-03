@@ -497,7 +497,7 @@ class CameraManipulator extends BaseTool {
         this.__focusIntervalId = undefined
 
         this.emit('movementFinished', {})
-        camera.emit('movementFinished', {})
+        camera.emit('movementFinished', { event: 'aimFocus' })
       }
     }
     applyMovement()
@@ -730,7 +730,7 @@ class CameraManipulator extends BaseTool {
       } else {
         this.__mouseWheelZoomIntervalId = undefined
         this.emit('movementFinished', {})
-        camera.emit('movementFinished', {})
+        camera.emit('movementFinished', { event: 'onWheel' })
       }
     }
     applyMovement()
