@@ -209,7 +209,9 @@
         .getViewport()
         .getCamera()
         .on('movementFinished', () => {
-          window.postMessage('done-moving-camera')
+          renderer.once('redrawOccurred', () => {
+            window.postMessage('done-moving-camera')
+          })
         })
     </script>
   </head>
