@@ -57,7 +57,7 @@ describe('pointer-events', () => {
     cy.get('canvas').percySnapshot(`WheelZoomOutCameraManipulator`)
   })
 
-  it.only('Double Click - Geometry', () => {
+  it('Double Click - Geometry', () => {
     cy.get('canvas').dblclick(800, 300)
 
     cy.get('canvas').percySnapshot(`DoubleClickGeometry`)
