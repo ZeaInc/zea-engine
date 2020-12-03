@@ -25,7 +25,6 @@ class Lines extends BaseGeom {
   constructor() {
     super()
     this.__indices = new Uint32Array()
-    this.lineThickness = 0.0
   }
 
   /**
