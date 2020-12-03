@@ -108,6 +108,7 @@ class GLLines extends GLGeom {
         if (lineThicknessAttr) dataArray[i * 4 + 3] = lineThicknessAttr.getFloat32Value(i)
         else dataArray[i * 4 + 3] = 1.0
       }
+
       if (numVertsChanged && this.fatBuffers.positionsTexture) {
         this.fatBuffers.positionsTexture.destroy()
         this.fatBuffers.positionsTexture = null
@@ -161,6 +162,7 @@ class GLLines extends GLGeom {
         }
       }
       this.__numSegIndices = indices.length
+      this.__numVertices = geomBuffers.numVertices
     } else {
       if (!this.__indexBuffer) {
         this.__indexBuffer = gl.createBuffer()
