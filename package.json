@@ -2,7 +2,7 @@
   "name": "@zeainc/zea-engine",
   "fileName": "index",
   "libraryName": "ZeaEngine",
-  "version": "2.2.2-resource-loader.5",
+  "version": "3.0.0",
   "description": "Zea Engine",
   "browser": "dist/index.umd.js",
   "plugins": "dist/plugins.umd.js",
