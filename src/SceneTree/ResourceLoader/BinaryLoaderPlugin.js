@@ -7,7 +7,7 @@ function checkStatus(response) {
 }
 
 /**
- * JSON loader plugin.
+ * Binary loader plugin.
  */
 class BinaryLoaderPlugin {
   init(resourceLoader) {

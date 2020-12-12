@@ -22,29 +22,29 @@ function checkStatus(response) {
  *  <script crossorigin src="libs/zea-engine/dist/plugins.umd.js"></script>
  * ```
  *
- * To load an 'text' file.
- * ``` javascript
+ * To load a 'text' file.
+ * ```javascript
  *   resourceLoader.loadFile('text', url).then((txt) =>{
  *      console.log(txt)
  *   })
  * ```
  *
- * To load an 'JSON' file.
- * ``` javascript
+ * To load a 'JSON' file.
+ * ```javascript
  *   resourceLoader.loadFile('json', url).then((txt) =>{
  *      console.log(json)
  *   })
  * ```
  *
- * To load an 'binary' file.
- * ``` javascript
+ * To load a 'binary' file.
+ * ```javascript
  *   resourceLoader.loadFile('binary', url).then((arrayBuffer) =>{
  *      console.log(arrayBuffer.length)
  *   })
  * ```
  *
  * To load an 'archive' file that is a compressed archive containing multiple sub-files.
- * ``` javascript
+ * ```javascript
  *   resourceLoader.loadFile('archive', url).then((entries) =>{
  *      console.log(entries)
  *   })
