@@ -111,6 +111,10 @@ class VLAAsset extends AssetItem {
       versions: {},
     }
 
+    // preload in case we don't have embedded geoms.
+    // completed by geomLibrary.on('loaded' ..
+    resourceLoader.addWork(fileId, 1)
+
     resourceLoader.loadFile('archive', url).then((entries) => {
       // Load the tree file. This file contains
       // the scene tree of the asset, and also
@@ -125,13 +129,11 @@ class VLAAsset extends AssetItem {
         context.versions['zea-engine'] = new Version()
       }
 
-      // Necessary for the smart lok
       numGeomsFiles = this.readBinary(treeReader, context)
 
       onDone()
 
       if (numGeomsFiles == 0 && entries.geoms) {
-        resourceLoader.addWork(fileId, 1) // (load + parse + extra)
         this.__geomLibrary.readBinaryBuffer(fileId, entries.geoms.buffer, context)
         onGeomsDone()
       } else {
@@ -164,10 +166,10 @@ class VLAAsset extends AssetItem {
 
     // To ensure that the resource loader knows when
     // parsing is done, we listen to the GeomLibrary streamFileLoaded
-    // signal. This is fired every time a file in the stream is finshed parsing.
-    this.__geomLibrary.on('streamFileParsed', (event) => {
+    // signal. This is fired once the entire stream is parsed.
+    this.__geomLibrary.on('loaded', () => {
       // A chunk of geoms are now parsed, so update the resource loader.
-      resourceLoader.addWorkDone(fileId, event.fraction)
+      resourceLoader.addWorkDone(fileId, 1)
     })
   }
 
