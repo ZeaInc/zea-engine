@@ -67,13 +67,8 @@
     "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-web-worker-loader": "^1.3.0",
-    "standard-version": "^9.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test"
-    }
+    "standard-version": "^9.0.0",
+    "typescript": "^4.1.3"
   },
   "standard-version": {
     "skip": {

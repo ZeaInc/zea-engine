@@ -1,0 +1,193 @@
+/* eslint-disable no-unused-vars */
+import { Registry } from '../../Registry'
+import { BaseGroup } from './BaseGroup'
+import { MaterialParameter } from '../Parameters/MaterialParameter.js'
+import { TreeItem } from '../TreeItem'
+
+/**
+ *
+ * **Parameters**
+ * * **Material(`MaterialParameter`):** _todo_
+ *
+ * @extends BaseGroup
+ */
+class MaterialGroup extends BaseGroup {
+  __materialParam: any;
+  /**
+   * Creates an instance of a group.
+   *
+   * @param {string} name - The name of the group.
+   */
+  constructor(name: any) {
+    super(name)
+
+    // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+    this.__materialParam = this.addParameter(new MaterialParameter('Material'))
+    this.__materialParam.on('valueChanged', () => {
+      this.__updateMaterial()
+    })
+  }
+
+  // /////////////////////////////
+
+  /**
+   * The __updateHighlight method.
+   * @private
+   */
+  __updateHighlight() {
+    // Make this function async so that we don't pull on the
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+    new Promise((resolve) => {
+      let highlighted = false
+      let color: any
+      if (this.isSelected()) {
+        highlighted = true
+        color = this.getHighlight()
+        color.a = 0.2
+      }
+
+      const key = 'kinematicGroupItemHighlight' + this.getId()
+      Array.from(this.__itemsParam.getValue()).forEach((item) => {
+        if (item instanceof TreeItem) {
+          if (highlighted) item.addHighlight(key, color, true)
+          else item.removeHighlight(key, true)
+        }
+      })
+      // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
+      resolve()
+    })
+  }
+
+  /**
+   * Changes selection's state of the group with all items it owns.
+   *
+   * @param {boolean} sel - Boolean indicating the new selection state.
+   */
+  setSelected(sel: any) {
+    super.setSelected(sel)
+    this.__updateHighlight()
+  }
+
+  // ////////////////////////////////////////
+  // Materials
+
+  /**
+   * The __updateMaterial method.
+   * @private
+   */
+  __updateMaterial() {
+    // Make this function async so that we don't pull on the
+    // graph immediately when we receive a notification.
+    // Note: propagating using an operator would be much better.
+    new Promise((resolve) => {
+      const material = this.getParameter('Material').getValue()
+
+      // TODO: Bind an operator
+      Array.from(this.__itemsParam.getValue()).forEach((item) => {
+        // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
+        item.traverse((treeItem: any) => {
+          if (treeItem instanceof TreeItem && treeItem.hasParameter('Material')) {
+            const p = treeItem.getParameter('Material')
+            if (material) {
+              const m = p.getValue()
+
+              // TODO: How do we filter material assignments? this is a nasty hack.
+              // but else we end up assigning surface materials to our edges.
+              if (m != material && (!m || m.getShaderName() != 'LinesShader')) {
+                p.__backupMaterial = m
+                p.setValue(material)
+              }
+            } else if (p.__backupMaterial) {
+              p.setValue(p.__backupMaterial)
+            }
+          }
+        }, false)
+      })
+      // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
+      resolve()
+    })
+  }
+
+  // ////////////////////////////////////////
+  // Items
+
+  /**
+   * The __bindItem method.
+   * @param {BaseItem} item - The item value.
+   * @param {number} index - The index value.
+   * @private
+   */
+  __bindItem(item: any, index: any) {
+    super.__bindItem(item, index)
+
+    if (!(item instanceof TreeItem)) return
+
+    // ///////////////////////////////
+    // Update the highlight
+    if (this.isSelected()) {
+      const color = this.getHighlight()
+      color.a = 0.2
+      const key = 'materialGroupItemHighlight' + this.getId()
+      item.addHighlight(key, color, true)
+    }
+
+    // ///////////////////////////////
+    // Update the Material
+    const material = this.getParameter('Material').getValue()
+    if (material) {
+      // TODO: Bind an operator instead
+      item.traverse((treeItem: any) => {
+        if (treeItem instanceof TreeItem && treeItem.hasParameter('Material')) {
+          const p = treeItem.getParameter('Material')
+          if (material) {
+            const m = p.getValue()
+            // TODO: How do we filter material assignments? this is a nasty hack.
+            // but else we end up assigning surface materials to our edges.
+            if (m != material && (!m || m.getShaderName() != 'LinesShader')) {
+              p.__backupMaterial = m
+              p.setValue(material)
+            }
+          }
+        }
+      }, true)
+    }
+  }
+
+  /**
+   * The __unbindItem method.
+   * @param {BaseItem} item - The item value.
+   * @param {number} index - The index value.
+   * @private
+   */
+  __unbindItem(item: any, index: any) {
+    super.__unbindItem(item, index)
+    if (!(item instanceof TreeItem)) return
+
+    if (this.isSelected()) {
+      const key = 'materialGroupItemHighlight' + this.getId()
+      item.removeHighlight(key, true)
+    }
+  }
+
+  // ////////////////////////////////////////
+  // Clone
+
+  /**
+   * The clone method constructs a new group,
+   * copies its values and returns it.
+   *
+   * @param {object} context - The context value.
+   * @return {MaterialGroup} - Returns a new cloned group.
+   */
+  clone(context: any) {
+    // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
+    const cloned = new MaterialGroup()
+    cloned.copyFrom(this, context)
+    return cloned
+  }
+}
+
+Registry.register('MaterialGroup', MaterialGroup)
+
+export { MaterialGroup }
