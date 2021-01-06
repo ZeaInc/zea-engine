@@ -37,7 +37,7 @@ class PointGrid extends ProceduralPoints {
     this.__yDivisions = this.addParameter(new NumberParameter('YDivisions', yDivisions))
 
     if (addTextureCoords) this.addVertexAttribute('texCoords', Vec2)
-    
+
     this.topologyParams.push('XDivisions')
     this.topologyParams.push('YDivisions')
   }
@@ -47,15 +47,17 @@ class PointGrid extends ProceduralPoints {
    * @private
    */
   rebuild() {
-    this.setNumVertices(this.__xDivisions * this.__yDivisions)
+    const xCount = this.__xDivisions.getValue()
+    const yCount = this.__yDivisions.getValue()
+    this.setNumVertices(xCount * yCount)
 
     const texCoords = this.getVertexAttribute('texCoords')
     if (texCoords) {
-      for (let i = 0; i < this.__yDivisions; i++) {
-        const y = i / (this.__yDivisions - 1)
-        for (let j = 0; j < this.__xDivisions; j++) {
-          const x = j / (this.__xDivisions - 1)
-          texCoords.getValueRef(i * this.__xDivisions + j).set(x, y)
+      for (let i = 0; i < yCount; i++) {
+        const y = i / (yCount - 1)
+        for (let j = 0; j < xCount; j++) {
+          const x = j / (xCount - 1)
+          texCoords.getValueRef(i * xCount + j).set(x, y)
         }
       }
     }
@@ -67,12 +69,16 @@ class PointGrid extends ProceduralPoints {
    * @private
    */
   resize() {
+    const xSize = this.__x.getValue()
+    const ySize = this.__y.getValue()
+    const xCount = this.__xDivisions.getValue()
+    const yCount = this.__yDivisions.getValue()
     const positions = this.getVertexAttribute('positions')
-    for (let i = 0; i < this.__yDivisions; i++) {
-      const y = (i / (this.__yDivisions - 1) - 0.5) * this.__y
-      for (let j = 0; j < this.__xDivisions; j++) {
-        const x = (j / (this.__xDivisions - 1) - 0.5) * this.__x
-        positions.getValueRef(i * this.__xDivisions + j).set(x, y, 0.0)
+    for (let i = 0; i < yCount; i++) {
+      const y = (i / (yCount - 1) - 0.5) * ySize
+      for (let j = 0; j < xCount; j++) {
+        const x = (j / (xCount - 1) - 0.5) * xSize
+        positions.getValueRef(i * xCount + j).set(x, y, 0.0)
       }
     }
   }
