@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="styles/main.css" />
 
     <style>
+      .h-full {
+        height: 100%;
+      }
+
       .main-wrapper {
         display: grid;
         grid-template-areas:
@@ -29,6 +33,10 @@
         justify-content: center;
       }
 
+      .relative {
+        position: relative;
+      }
+
       .top {
         border: 1px solid blue;
         grid-area: top;
@@ -38,6 +46,10 @@
         border: 1px solid green;
         grid-area: bottom;
       }
+
+      .w-full {
+        width: 100%;
+      }
     </style>
 
     <script src="../dist/index.umd.js"></script>
@@ -46,8 +58,8 @@
       const { GLRenderer, Scene, Vec3 } = window.zeaEngine
 
       const scene = new Scene()
-      const $renderer = document.getElementById('renderer')
-      const renderer = new GLRenderer($renderer, { hideSplash: true, antialias: false })
+      const canvasEl = document.getElementById('renderer')
+      const renderer = new GLRenderer(canvasEl, { hideSplash: true, antialias: false })
       renderer.setScene(scene)
 
       scene.setupGrid(3.0, 20)
@@ -57,11 +69,13 @@
   </head>
   <body>
     <div class="main-wrapper">
-      <div class="top pane">top</div>
-      <div class="pane">left</div>
-      <canvas class="full-size" id="renderer"></canvas>
+      <header class="top pane">header</header>
+      <nav class="pane">nav</nav>
+      <div class="relative">
+        <canvas class="absolute h-full w-full" id="renderer"></canvas>
+      </div>
       <div class="pane">right</div>
-      <div class="bottom pane">bottom</div>
+      <footer class="bottom pane">footer</footer>
     </div>
   </body>
 </html>
