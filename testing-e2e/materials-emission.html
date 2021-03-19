@@ -109,7 +109,7 @@
             material.getParameter('BaseColor').setValue(baseColor)
             material.getParameter('Metallic').setValue(metallic)
             material.getParameter('Reflectance').setValue(reflectance)
-            
+
             material.getParameter('Roughness').setValue(0.2)
             material.getParameter('Opacity').setValue(i / 10)
             material.getParameter('EmissiveStrength').setValue(j / 9)
@@ -127,7 +127,7 @@
 
       // https://google.github.io/filament/images/material_chart.jpg
 
-      // Note: 
+      // Note:
       addRow('Glass', new Color(0.8, 0, 0), 0.0, 0.9)
 
       renderer.exposure = 1.6
@@ -135,7 +135,7 @@
       document.getElementById('exposureControl').addEventListener('input', (event) => {
         renderer.exposure = event.target.value / 100
       })
-      
+
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(35, -35, 25), new Vec3(0, 0, 0))
 
@@ -161,7 +161,7 @@
     </script>
   </head>
   <body>
-    <canvas class="full-size" id="renderer"></canvas></canvas>
+    <canvas class="absolute full-size" id="renderer"></canvas></canvas>
     <div class="slidecontainer">
       <input type="range" min="0" max="400" value="100" class="slider" id="exposureControl" />
     </div>

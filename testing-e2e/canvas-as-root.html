@@ -12,10 +12,6 @@
     <link rel="stylesheet" href="styles/main.css" />
 
     <style>
-      .h-full {
-        height: 100%;
-      }
-
       .main-wrapper {
         display: grid;
         grid-template-areas:
@@ -46,10 +42,6 @@
         border: 1px solid green;
         grid-area: bottom;
       }
-
-      .w-full {
-        width: 100%;
-      }
     </style>
 
     <script src="../dist/index.umd.js"></script>
@@ -72,7 +64,7 @@
       <header class="top pane">header</header>
       <nav class="pane">nav</nav>
       <div class="relative">
-        <canvas class="absolute h-full w-full" id="renderer"></canvas>
+        <canvas class="absolute full-size" id="renderer"></canvas>
       </div>
       <div class="pane">right</div>
       <footer class="bottom pane">footer</footer>

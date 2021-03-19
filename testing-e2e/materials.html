@@ -151,7 +151,7 @@
       addRow('Brick', new Color('#947D75'), 0.02, 0.5)
       addRow('Sand', new Color('#B1A984'), 0.02, 0.5)
       addRow('Concrete', new Color('#C0BFBB'), 0.02, 0.5)
-      
+
       addRow('Silver', new Color('#faf9f5'), 0.98, 0.75)
       addRow('Aluminum', new Color('#faf5f5'), 0.98, 0.75)
       addRow('Platinum', new Color('#d6d1c8'), 0.98, 0.75)
@@ -167,7 +167,7 @@
       slider.addEventListener('input', (event) => {
         renderer.exposure = event.target.value / 100
       })
-      
+
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(35, -35, 20), new Vec3(0, 0, -10))
 
@@ -196,7 +196,7 @@
     </script>
   </head>
   <body>
-    <canvas class="full-size" id="renderer"></canvas></canvas>
+    <canvas class="absolute full-size" id="renderer"></canvas></canvas>
     <div class="slidecontainer">
       <input type="range" min="0" max="400" value="100" class="slider" id="exposureControl" />
     </div>
