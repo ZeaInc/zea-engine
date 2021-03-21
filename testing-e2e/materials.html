@@ -8,20 +8,13 @@
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
     <style>
-      .slidecontainer {
-        position: 'relative';
-        /* bottom: 0; */
-        width: 100%; /* Width of the outside container */
-      }
 
       /* The slider itself */
       .slider {
         position: absolute;
         bottom: 20px;
-        right: 0;
         -webkit-appearance: none;
         width: 100%;
         height: 15px;
@@ -195,10 +188,11 @@
       // }}}
     </script>
   </head>
-  <body>
-    <canvas class="full-size" id="renderer"></canvas></canvas>
-    <div class="slidecontainer">
-      <input type="range" min="0" max="400" value="100" class="slider" id="exposureControl" />
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas></canvas>
     </div>
+
+    <input type="range" min="0" max="400" value="100" class="slider" id="exposureControl" />
   </body>
 </html>

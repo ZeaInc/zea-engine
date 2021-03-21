@@ -21,11 +21,9 @@
         height: 100%;
       }
     </style>
-  </head>
-  <body>
-    <canvas id="canvas"></canvas>
 
     <script crossorigin src="../dist/index.umd.js"></script>
+
     <script>
       const { GLRenderer, Scene, Vec3, Color, Cuboid, Material, GeomItem, Xfo } = zeaEngine
 
@@ -83,5 +81,10 @@
       scene.getRoot().addChild(geomItem3)
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 3, 2.7), new Vec3(0, 0, 0))
     </script>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="canvas"></canvas>
+    </div>
   </body>
 </html>

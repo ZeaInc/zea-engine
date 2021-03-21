@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zea Engine</title>
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
-  </head>
-  <body>
-    <canvas class="full-size" id="app"></canvas>
+    <title>plane - Zea Engine</title>
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../dist/index.umd.js"></script>
 
@@ -25,6 +22,15 @@
       scene.getRoot().addChild(geomItem)
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
       renderer.frameAll()
+
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
     </script>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="app"></canvas>
+    </div>
   </body>
 </html>

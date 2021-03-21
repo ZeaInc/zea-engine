@@ -1,9 +1,4 @@
 describe('sphere', () => {
-  it('Captures a snapshot', () => {
-    cy.visit('testing-e2e/sphere.html')
-    cy.get('canvas').percySnapshot('sphere')
-  })
-
   it('Captures snapshots of variants', () => {
     cy.visit('testing-e2e/sphere.html', {
       onBeforeLoad(win) {
@@ -12,6 +7,7 @@ describe('sphere', () => {
     })
 
     cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-loading')
+    cy.get('canvas').percySnapshot('sphere')
 
     cy.window().then((win) => {
       const variant = 'variant-01'

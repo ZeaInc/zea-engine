@@ -8,8 +8,7 @@
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../dist/index.umd.js"></script>
     <script src="../dist/plugins.umd.js"></script>
@@ -66,7 +65,9 @@
       // }}}
     </script>
   </head>
-  <body>
-    <canvas class="full-size" id="renderer"></canvas>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas>
+    </div>
   </body>
 </html>

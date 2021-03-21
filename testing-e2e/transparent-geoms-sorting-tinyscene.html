@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zea Engine - transparent-geoms-sorting</title>
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
-  </head>
-  <body>
-    <canvas class="full-size" id="app"></canvas>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>transparent-geoms-sorting-tinyscene - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../dist/index.umd.js"></script>
 
@@ -31,7 +33,10 @@
 
       const scene = new Scene()
       const domElement = document.getElementById('app')
-      const renderer = new GLRenderer(domElement, { hideSplash: true, antialias: false })
+      const renderer = new GLRenderer(domElement, {
+        hideSplash: true,
+        antialias: false,
+      })
       renderer.setScene(scene)
 
       scene.setupGrid(0.06, 6)
@@ -62,25 +67,38 @@
       addMeshShape(new Cylinder(0.0012, 0.004, 32, 2, true), -2, 8)
       addMeshShape(new Torus(0.0004, 0.0013), -3, 4)
 
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.025, 0.025, 0.013), new Vec3(0.01, 0, 0))
-      renderer.frameAll()
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
 
-      window.postMessage('done-loading')
+      document.querySelector('#back').addEventListener('click', () => {
+        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.01, -0.02, 0.005), new Vec3(0.01, 0, 0))
+      })
 
-      // {{{ Messages handler.
-      const handleMessage = (event) => {
-        const { data } = event
-
-        if (data === 'variant-01') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.01, -0.02, 0.005), new Vec3(0.01, 0, 0))
-          window.postMessage(`done-${data}`)
-        } else if (data === 'variant-02') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.035, 0.02, 0.005), new Vec3(0.01, 0, 0))
-          window.postMessage(`done-${data}`)
-        }
-      }
-
-      window.addEventListener('message', handleMessage, false)
+      document.querySelector('#front').addEventListener('click', () => {
+        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.035, 0.02, 0.005), new Vec3(0.01, 0, 0))
+      })
     </script>
+  </head>
+  <body class="bg-blue-100" class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="app"></canvas>
+    </div>
+
+    <div class="fixed flex justify-center p-1 w-full top-0">
+      <button
+        class="bg-yellow-300 rounded px-2 px-2 py-1 border border-yellow-400 shadow mr-1 hover:bg-yellow-200 cursor-default"
+        id="front"
+      >
+        Front
+      </button>
+
+      <button
+        class="bg-yellow-300 rounded px-2 px-2 py-1 border border-yellow-400 shadow mr-1 hover:bg-yellow-200 cursor-default"
+        id="back"
+      >
+        Back
+      </button>
+    </div>
   </body>
 </html>

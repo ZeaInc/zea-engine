@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>clear-geoms - Zea Engine</title>
 
-    <meta charset="UTF-8" />
-  </head>
-  <body>
-    <canvas class="full-size" id="webglcanvas" />
+    <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
@@ -31,7 +31,10 @@
       scene.getRoot().addChild(geomItem)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
-      window.postMessage('done-loading')
+
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
 
       // {{{ Messages handler.
       const handleMessage = (event) => {
@@ -75,5 +78,10 @@
       window.addEventListener('message', handleMessage, false)
       // }}}
     </script>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="webglcanvas" />
+    </div>
   </body>
 </html>

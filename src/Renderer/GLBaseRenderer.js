@@ -1,7 +1,6 @@
 /* eslint-disable guard-for-in */
 import { TreeItem, GeomItem, ParameterOwner } from '../SceneTree/index'
 import { SystemDesc } from '../SystemDesc'
-import { onResize } from '../external/onResize'
 import { create3DContext } from './GLContext'
 import { GLScreenQuad } from './GLScreenQuad'
 import { GLViewport } from './GLViewport'
@@ -25,7 +24,7 @@ const registeredPasses = {}
 class GLBaseRenderer extends ParameterOwner {
   /**
    * Create a GL base renderer.
-   * @param {HTMLElement|HTMLCanvasElement} $canvas - The canvasDiv value.
+   * @param {HTMLElement|HTMLCanvasElement} $canvas - The canvas element.
    * @param {object} options - The options value.
    */
   constructor($canvas, options = {}) {
@@ -493,46 +492,49 @@ class GLBaseRenderer extends ParameterOwner {
   resizeFbos(width, height) {}
 
   /**
-   * The __onResize method.
+   * Handle the canvas's parent resizing.
+   *
+   * @param {number} width - The new width of the canvas.
+   * @param {number} height - The new height of the canvas.
+   *
    * @private
    */
-  __onResize() {
-    if (!this.__xrViewportPresenting) {
-      // Oftern the canvas has zero size as the web components are still loading.
-      // So we must force the resize untill we get a proper size.
-      if (this.__glcanvas.clientWidth == 0 || this.__glcanvas.clientHeight == 0) {
-        setTimeout(this.__onResize.bind(this), 10)
-        return
-      }
-      // Note: devicePixelRatio has already been factored into the clientWidth and clientHeight,
-      // meaning we do not need to multiply client values by devicePixelRatio to get real values.
-      // On some devices, this duplicate multiplication (when the meta tag was not present), caused
-      // very large offscreen buffers to be created, which crashed devices.
-      // (PT 15/10/2019 - Zahner project)
-      // In some cases I have seen this is disabled using a viewport meta tag in the DOM, which then
-      // requires that we multiply by devicePixelRatio to get the screen pixels size.
-      // By removing that tag, it seems like manual zooming now on desktop systems does _NOT_
-      // effect the clientWidth/clientHeight which causes blurry rendering(when zoomed).
-      // This is a minor issue IMO, and so am disabling devicePixelRatio until its value is clear.
-      // _Remove the meta name="viewport" from the HTML_
-      const dpr = 1.0 // window.devicePixelRatio
-      const newWidth = this.__glcanvas.clientWidth * dpr
-      const newHeight = this.__glcanvas.clientHeight * dpr
-      if (newWidth != this.__glcanvas.width || newHeight != this.__glcanvas.height) {
-        this.__glcanvas.width = newWidth
-        this.__glcanvas.height = newHeight
-
-        this.resizeFbos(this.__glcanvas.width, this.__glcanvas.height)
-
-        for (const vp of this.__viewports) vp.resize(this.__glcanvas.width, this.__glcanvas.height)
-
-        this.emit('resized', {
-          width: this.__glcanvas.width,
-          height: this.__glcanvas.height,
-        })
-        this.requestRedraw()
-      }
+  __handleResize(width, height) {
+    if (this.__xrViewportPresenting) {
+      return
     }
+
+    // Note: devicePixelRatio has already been factored into the clientWidth and clientHeight,
+    // meaning we do not need to multiply client values by devicePixelRatio to get real values.
+    // On some devices, this duplicate multiplication (when the meta tag was not present), caused
+    // very large offscreen buffers to be created, which crashed devices.
+    // (PT 15/10/2019 - Zahner project)
+    // In some cases I have seen this is disabled using a viewport meta tag in the DOM, which then
+    // requires that we multiply by devicePixelRatio to get the screen pixels size.
+    // By removing that tag, it seems like manual zooming now on desktop systems does _NOT_
+    // effect the clientWidth/clientHeight which causes blurry rendering(when zoomed).
+    // This is a minor issue IMO, and so am disabling devicePixelRatio until its value is clear.
+    // _Remove the meta name="viewport" from the HTML_
+    const DPR = 1.0 // window.devicePixelRatio
+
+    const newWidth = width * DPR
+    const newHeight = height * DPR
+
+    this.__glcanvas.width = newWidth
+    this.__glcanvas.height = newHeight
+
+    this.resizeFbos(this.getWidth(), this.getHeight())
+
+    for (const vp of this.__viewports) {
+      vp.resize(this.getWidth(), this.getHeight())
+    }
+
+    this.emit('resized', {
+      width: this.getWidth(),
+      height: this.getHeight(),
+    })
+
+    this.requestRedraw()
   }
 
   /**
@@ -547,25 +549,28 @@ class GLBaseRenderer extends ParameterOwner {
   /**
    * Setups the WebGL configuration for the renderer, specifying the canvas element where our
    *
-   * @param {HTMLCanvasElement|HTMLElement} $canvas - The $canvas value.
+   * @param {HTMLCanvasElement|HTMLElement} $canvas - The $canvas element.
    * @param {object} webglOptions - The webglOptions value.
    */
   setupWebGL($canvas, webglOptions) {
     const { tagName } = $canvas
 
     if (!['DIV', 'CANVAS'].includes(tagName)) {
-      throw new Error('Only `canvas` and `div` are valid root elements.')
+      throw new Error('Only CANVAS and DIV are valid root elements.')
     }
 
     const rootIsDiv = tagName === 'DIV'
+    this.__glcanvas = $canvas
 
     if (rootIsDiv) {
       console.warn(
-        '@GLBaseRenderer#setupWebGL. Using a `div` as root element is deprecated. Use a `canvas` instead. See: https://docs.zea.live/zea-engine/#/getting-started/get-started-with-engine?id=basic-setup'
+        '@GLBaseRenderer#setupWebGL.',
+        'Using a DIV as root element is deprecated.',
+        'Use a CANVAS instead.',
+        'See: https://docs.zea.live/zea-engine/#/getting-started/get-started-with-engine?id=basic-setup'
       )
 
       this.__glcanvas = document.createElement('canvas')
-      this.__glcanvas.style.position = webglOptions.canvasPosition ? webglOptions.canvasPosition : 'absolute'
       this.__glcanvas.style.left = '0px'
       this.__glcanvas.style.top = '0px'
       this.__glcanvas.style.width = '100%'
@@ -577,15 +582,29 @@ class GLBaseRenderer extends ParameterOwner {
       this.__glcanvas = $canvas
     }
 
-    onResize(this.__glcanvas, () => {
-      this.__onResize()
+    const canvasIsStatic = window.getComputedStyle(this.__glcanvas).position === 'static'
+
+    if (canvasIsStatic) {
+      console.warn(
+        '@GLBaseRenderer#setupWebGL.',
+        "The CANVAS element's position must be other than `static`.",
+        'See: https://docs.zea.live/zea-engine/#/getting-started/get-started-with-engine?id=basic-setup'
+      )
+
+      this.__glcanvas.style.position = webglOptions.canvasPosition ? webglOptions.canvasPosition : 'absolute'
+    }
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.contentRect) {
+          return
+        }
+
+        this.__handleResize(entry.contentRect.width, entry.contentRect.height)
+      }
     })
 
-    this.__onResize()
-
-    window.addEventListener('orientationchange', (event) => {
-      this.__onResize()
-    })
+    this.resizeObserver.observe(this.__glcanvas.parentElement)
 
     webglOptions.preserveDrawingBuffer = true
     webglOptions.antialias = webglOptions.antialias != undefined ? webglOptions.antialias : true
@@ -635,9 +654,7 @@ class GLBaseRenderer extends ParameterOwner {
   bindEventHandlers() {
     // ////////////////////////////////
     // Setup event handlers
-    const isValidCanvas = () => {
-      return this.__glcanvas.width > 0 && this.__glcanvas.height
-    }
+    const isValidCanvas = () => this.getWidth() > 0 && this.getHeight()
 
     const prepareEvent = (event) => {
       event.propagating = true
@@ -650,15 +667,15 @@ class GLBaseRenderer extends ParameterOwner {
     const calcRendererCoords = (event) => {
       const rect = this.__glcanvas.getBoundingClientRect()
       // Disabling devicePixelRatio for now. See: __onResize
-      const dpr = 1.0 // window.devicePixelRatio
+      const DPR = 1.0 // window.devicePixelRatio
       // Note: the rendererX/Y values are relative to the viewport,
       // but are available outside the viewport. So when a mouse
       // drag occurs, and drags outside the viewport, these values
       // provide consistent coords.
       // offsetX/Y are only valid inside the viewport and so cause
       // jumps when the mouse leaves the viewport.
-      event.rendererX = (event.clientX - rect.left) * dpr
-      event.rendererY = (event.clientY - rect.top) * dpr
+      event.rendererX = (event.clientX - rect.left) * DPR
+      event.rendererY = (event.clientY - rect.top) * DPR
     }
 
     /** Mouse Events Start */
@@ -1028,7 +1045,7 @@ class GLBaseRenderer extends ParameterOwner {
         }
         this.emit('viewChanged', event)
 
-        this.resizeFbos(this.__glcanvas.width, this.__glcanvas.height)
+        this.resizeFbos(this.getWidth(), this.getHeight())
         this.requestRedraw()
       }
     })
@@ -1289,6 +1306,16 @@ class GLBaseRenderer extends ParameterOwner {
   static registerPass(cls, passType) {
     if (!registeredPasses[passType]) registeredPasses[passType] = []
     registeredPasses[passType].push(cls)
+  }
+
+  /**
+   * The destroy is called by the system to cause explicit resources cleanup.
+   * Users should never need to call this method directly.
+   */
+  destroy() {
+    super.destroy()
+
+    this.resizeObserver.unobserve()
   }
 }
 

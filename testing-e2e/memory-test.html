@@ -8,8 +8,7 @@
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../dist/index.umd.js"></script>
 
@@ -193,31 +192,51 @@
       document.querySelector('#run').addEventListener('click', run)
     </script>
   </head>
-  <body class="flex flex-column">
-    <h1>Zea Engine Memory Test</h1>
+  <body class="bg-blue-100">
+    <div class="flex flex-col h-screen">
+      <h1>Zea Engine Memory Test</h1>
 
-    <h2>Memory Limit: <span id="memoryLimit"></span></h2>
+      <h2>Memory Limit: <span id="memoryLimit"></span></h2>
 
-    <p>Click the <button id="run">Run</button> or the <button id="runAsync">Run Async</button> button to begin.</p>
+      <p>
+        Click the
+        <button
+          class="bg-yellow-300 rounded px-2 px-2 py-1 border border-yellow-400 shadow mr-1 hover:bg-yellow-200 cursor-default"
+          id="run"
+        >
+          Run
+        </button>
+        or the
+        <button
+          class="bg-yellow-300 rounded px-2 px-2 py-1 border border-yellow-400 shadow mr-1 hover:bg-yellow-200 cursor-default"
+          id="runAsync"
+        >
+          Run Async
+        </button>
+        button to begin.
+      </p>
 
-    <div class="flex flex-column flex-grow-1 hidden" id="wrapper">
-      <dl>
-        <dt>Memory:</dt>
-        <dd>
-          <p id="memoryStatus"></p>
-          <p id="usedJSHeapSize"></p>
-        </dd>
-        <dt>Time:</dt>
-        <dd>
-          <p id="timeStatus"></p>
-        </dd>
-        <dt>Progress:</dt>
-        <dd>
-          <p id="progressStatus"></p>
-        </dd>
-      </dl>
+      <div class="flex flex-col flex-1 hidden" id="wrapper">
+        <dl>
+          <dt>Memory:</dt>
+          <dd>
+            <p id="memoryStatus"></p>
+            <p id="usedJSHeapSize"></p>
+          </dd>
+          <dt>Time:</dt>
+          <dd>
+            <p id="timeStatus"></p>
+          </dd>
+          <dt>Progress:</dt>
+          <dd>
+            <p id="progressStatus"></p>
+          </dd>
+        </dl>
 
-      <canvas class="flex-grow-1" id="renderer" />
+        <div class="flex-1">
+          <canvas class="absolute" id="renderer" />
+        </div>
+      </div>
     </div>
   </body>
 </html>

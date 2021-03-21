@@ -3,11 +3,12 @@
   <head>
     <title>Zea Engine</title>
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
   </head>
-  <body>
-    <canvas class="full-size" id="app"></canvas>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="app"></canvas>
+    </div>
 
     <script src="../dist/index.umd.js"></script>
 
@@ -29,7 +30,9 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
       renderer.frameAll()
 
-      window.postMessage('done-loading')
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
 
       // {{{ Messages handler.
       const handleMessage = (event) => {

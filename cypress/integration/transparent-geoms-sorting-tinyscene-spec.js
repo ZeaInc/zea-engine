@@ -1,26 +1,15 @@
 describe('transparent-geoms-sorting-tinyscene', () => {
-  it('Captures snapshots of variants', () => {
-    cy.visit('testing-e2e/transparent-geoms-sorting-tinyscene.html', {
-      onBeforeLoad(win) {
-        cy.spy(win, 'postMessage').as('postMessage')
-      },
-    })
+  it('Renders as expected', () => {
+    cy.visit('testing-e2e/transparent-geoms-sorting-tinyscene.html')
 
-    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-loading')
-    cy.get('canvas').percySnapshot('transparent-geoms-sorting-tinyscene')
+    cy.get('#front').click()
 
-    cy.window().then((win) => {
-      const variant = 'variant-01'
-      win.postMessage(variant)
-      cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
-      cy.get('canvas').percySnapshot(`transparent-geoms-sorting-tinyscene - ${variant}`)
-    })
+    cy.get('canvas').percySnapshot(
+      `transparent-geoms-sorting-tinyscene - front`
+    )
 
-    cy.window().then((win) => {
-      const variant = 'variant-02'
-      win.postMessage(variant)
-      cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
-      cy.get('canvas').percySnapshot(`transparent-geoms-sorting-tinyscene - ${variant}`)
-    })
+    cy.get('#back').click()
+
+    cy.get('canvas').percySnapshot(`transparent-geoms-sorting-tinyscene - back`)
   })
 })

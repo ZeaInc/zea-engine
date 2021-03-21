@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zea Engine</title>
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>grid - Zea Engine</title>
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
   </head>
-  <body>
-    <canvas class="full-size" id="app"></canvas>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="app"></canvas>
+    </div>
 
     <script src="../dist/index.umd.js"></script>
 
@@ -21,6 +25,10 @@
       scene.setupGrid(5.0, 50)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1.7), new Vec3(0, 0, 0.4))
+
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
     </script>
   </body>
 </html>

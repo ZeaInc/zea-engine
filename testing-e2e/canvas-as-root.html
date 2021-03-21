@@ -8,35 +8,24 @@
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <style>
       .main-wrapper {
-        display: grid;
         grid-template-areas:
-          'top top top'
-          'left main right'
-          'bottom bottom bottom';
+          'header header header'
+          'nav main right'
+          'footer footer footer';
         grid-template-columns: 20% 1fr 20%;
         grid-template-rows: 50px 1fr 50px;
-        height: 100%;
       }
 
-      .pane {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      header {
+        grid-area: header;
       }
 
-      .top {
-        border: 1px solid blue;
-        grid-area: top;
-      }
-
-      .bottom {
-        border: 1px solid green;
-        grid-area: bottom;
+      footer {
+        grid-area: footer;
       }
     </style>
 
@@ -46,22 +35,28 @@
       const { GLRenderer, Scene, Vec3 } = window.zeaEngine
 
       const scene = new Scene()
-      const $renderer = document.getElementById('renderer')
-      const renderer = new GLRenderer($renderer, { hideSplash: true, antialias: false })
+      const canvasEl = document.getElementById('renderer')
+      const renderer = new GLRenderer(canvasEl, { hideSplash: true, antialias: false })
       renderer.setScene(scene)
 
       scene.setupGrid(3.0, 20)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 9.7), new Vec3(0, 0, 0.4))
+
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
     </script>
   </head>
-  <body>
-    <div class="main-wrapper">
-      <div class="top pane">top</div>
-      <div class="pane">left</div>
-      <canvas class="full-size" id="renderer"></canvas>
-      <div class="pane">right</div>
-      <div class="bottom pane">bottom</div>
+  <body class="bg-blue-100">
+    <div class="main-wrapper grid h-screen">
+      <header class="border border-blue-400 flex justify-center items-center">header</header>
+      <nav class="border border-blue-400 flex justify-center items-center">nav</nav>
+      <main>
+        <canvas class="absolute" id="renderer"></canvas>
+      </main>
+      <aside class="border border-blue-400 flex justify-center items-center">aside</aside>
+      <footer class="border border-blue-400 flex justify-center items-center">footer</footer>
     </div>
   </body>
 </html>

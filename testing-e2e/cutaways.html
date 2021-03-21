@@ -3,17 +3,14 @@
   <head>
     <title>Zea Engine</title>
 
-    <style>
-      body {
-        margin: 0;
-        height: 100vh;
-      }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      #renderer {
-        width: 100%;
-        height: 100%;
-      }
-    </style>
+    <title>cutaways - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../dist/index.umd.js"></script>
 
@@ -85,7 +82,9 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(25, 25, 13), new Vec3(10, 0, 0))
       renderer.frameAll()
 
-      window.postMessage('done-loading')
+      renderer.once('resized', () => {
+        window.postMessage('done-loading')
+      })
 
       // {{{ Messages handler.
       const handleMessage = (event) => {
@@ -113,7 +112,9 @@
       // }}}
     </script>
   </head>
-  <body>
-    <canvas id="renderer" />
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas>
+    </div>
   </body>
 </html>

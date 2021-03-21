@@ -8,11 +8,20 @@
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <style>
+      a {
+        color: blue;
+      }
+
+      a:visited {
+        color: purple;
+      }
+    </style>
   </head>
   <body>
-    <h1>E2E Testing - Zea Engine</h1>
+    <h1 class="font-bold text-2xl mb-4">E2E Testing - Zea Engine</h1>
 
     <ul>
       <li><a href="canvas-as-root.html">canvas-as-root</a></li>

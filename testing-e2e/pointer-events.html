@@ -8,8 +8,7 @@
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
-    <link rel="stylesheet" href="styles/tachyons.min.css" />
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../dist/index.umd.js"></script>
 
@@ -209,32 +208,38 @@
         .getViewport()
         .getCamera()
         .on('movementFinished', (e) => {
-          if (e.event) {
-            renderer.once('redrawOccurred', () => {
-              window.postMessage('done-moving-camera')
-            })
+          if (!e.event) {
+            return
           }
+
+          renderer.once('redrawOccurred', () => {
+            window.postMessage('done-moving-camera')
+          })
         })
     </script>
   </head>
-  <body class="flex flex-column">
-    <h1>Zea Engine Pointer Events Test</h1>
+  <body class="bg-blue-100">
+    <div class="flex flex-col h-screen">
+      <h1>Zea Engine Pointer Events Test</h1>
 
-    <dl>
-      <dt class="dib b">Self:</dt>
-      <dd>
-        <p id="selfEventsIndicator">(None)</p>
-      </dd>
-      <dt class="dib b">Group:</dt>
-      <dd>
-        <p id="groupEventsIndicator">(None)</p>
-      </dd>
-      <dt class="dib b">Viewport:</dt>
-      <dd>
-        <p id="viewportEventsIndicator">(None)</p>
-      </dd>
-    </dl>
+      <dl>
+        <dt class="dib b">Self:</dt>
+        <dd>
+          <p id="selfEventsIndicator">(None)</p>
+        </dd>
+        <dt class="dib b">Group:</dt>
+        <dd>
+          <p id="groupEventsIndicator">(None)</p>
+        </dd>
+        <dt class="dib b">Viewport:</dt>
+        <dd>
+          <p id="viewportEventsIndicator">(None)</p>
+        </dd>
+      </dl>
 
-    <canvas class="flex-grow-1" id="renderer" />
+      <div class="flex-1">
+        <canvas class="absolute" id="renderer"></canvas>
+      </div>
+    </div>
   </body>
 </html>
