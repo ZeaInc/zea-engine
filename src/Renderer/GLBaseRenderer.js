@@ -611,7 +611,14 @@ class GLBaseRenderer extends ParameterOwner {
     webglOptions.depth = webglOptions.depth != undefined ? webglOptions.depth : true
     webglOptions.stencil = webglOptions.stencil ? webglOptions.stencil : false
     webglOptions.alpha = webglOptions.alpha ? webglOptions.alpha : false
+    // Note: Due to a change in Chrome (version 88-89), providing true here caused a pause when creating
+    // an WebGL context, if the XR device was unplugged. We also call 'makeXRCompatible' when setting
+    // up the XRViewport, so we to get an XR Compatible context anyway.
     webglOptions.xrCompatible = webglOptions.xrCompatible != undefined ? webglOptions.xrCompatible : false
+
+    // Most applications of our engine will prefer the high-performance context by default.
+    webglOptions.powerPreference = webglOptions.powerPreference || 'high-performance'
+
     this.__gl = create3DContext(this.__glcanvas, webglOptions)
     if (!this.__gl) alert('Unable to create WebGL context. WebGL not supported.')
     this.__gl.renderer = this
