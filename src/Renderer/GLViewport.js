@@ -797,7 +797,9 @@ class GLViewport extends GLBaseViewport {
     gl.viewport(...this.region)
 
     gl.clearColor(...this.__backgroundColor.asArray())
-    gl.colorMask(true, true, true, true)
+    // Note: in Chrome's macOS the alpha channel causes strange
+    // coposing issues.
+    gl.colorMask(true, true, true, false)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     const renderstate = {}
