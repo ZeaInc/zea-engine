@@ -358,12 +358,15 @@ class GLViewport extends GLBaseViewport {
 
         if (!pointerRay) pointerRay = this.calcRayFromScreenPos(screenPos)
         const intersectionPos = pointerRay.start.add(pointerRay.dir.scale(geomItemAndDist.dist))
-        this.__intersectionData = Object.assign({
-          screenPos,
-          pointerRay,
-          intersectionPos,
-          geomData,
-        }, geomItemAndDist)
+        this.__intersectionData = Object.assign(
+          {
+            screenPos,
+            pointerRay,
+            intersectionPos,
+            geomData,
+          },
+          geomItemAndDist
+        )
       }
 
       return this.__intersectionData
@@ -798,7 +801,11 @@ class GLViewport extends GLBaseViewport {
 
     gl.clearColor(...this.__backgroundColor.asArray())
     // Note: in Chrome's macOS the alpha channel causes strange
-    // coposing issues.
+    // compositing issues. Here where we disable the alpha channel
+    // in the color mask which addresses the issues on MacOS.
+    // To see the artifacts, pass 'true' as the 4th parameter, and
+    // open a simple testing scene containing a grid. Moving the
+    // camera causes a ghosting effect to be left behind.
     gl.colorMask(true, true, true, false)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
