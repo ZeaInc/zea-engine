@@ -601,6 +601,11 @@ class TreeItem extends BaseItem {
     if (childItem instanceof TreeItem) {
       if (maintainXfo) childItem.getParameter('LocalXfo').setValue(newLocalXfo)
       this._setBoundingBoxDirty()
+
+      this.__highlights.forEach((name) => {
+        const color = this.__highlightMapping[name]
+        childItem.addHighlight(name, color, true)
+      })
     }
 
     this.emit('childAdded', { childItem, index })

@@ -1,5 +1,5 @@
-import { Color } from '../Math/index'
-import { BooleanParameter, NumberParameter, ColorParameter, ImageParameter } from './Parameters/index'
+import { Color, Vec2 } from '../Math/index'
+import { BooleanParameter, NumberParameter, ColorParameter, ImageParameter, Vec2Parameter } from './Parameters/index'
 import { TreeItem } from './TreeItem.js'
 import { Registry } from '../Registry'
 
@@ -35,6 +35,7 @@ class BillboardItem extends TreeItem {
     this.addParameter(new BooleanParameter('AlignedToCamera', false))
     this.addParameter(new BooleanParameter('DrawOnTop', false))
     this.addParameter(new BooleanParameter('FixedSizeOnscreen', false))
+    this.addParameter(new Vec2Parameter('Pivot', new Vec2(0.5, 0.0)))
   }
 }
 

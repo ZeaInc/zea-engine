@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea Engine</title>
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="app"></canvas>
+    </div>
+
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec2, Vec3, Xfo, Color, TreeItem, BillboardItem, FileImage } = zeaEngine
+
+      const scene = new Scene()
+      const domElement = document.getElementById('app')
+      const renderer = new GLRenderer(domElement, { hideSplash: true, antialias: false })
+      renderer.setScene(scene)
+
+      scene.setupGrid(4, 4)
+
+      const asset = new TreeItem('labels')
+      scene.getRoot().addChild(asset)
+
+      let index = 0
+      const addBillboard = (name, pos, color, alignToCamera, url) => {
+        return new Promise((resolve, reject) => {
+          const image = new FileImage()
+          image.getParameter('FilePath').setUrl(url)
+          image.getParameter('Invert').setValue(true)
+          image.getParameter('AlphaFromLuminance').setValue(true)
+          const billboard = new BillboardItem(name, image)
+          const xfo = new Xfo()
+          xfo.tr = pos
+          xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+          billboard.getParameter('LocalXfo').setValue(xfo)
+          billboard.getParameter('PixelsPerMeter').setValue(300)
+          billboard.getParameter('AlignedToCamera').setValue(alignToCamera)
+          billboard.getParameter('Color').setValue(color)
+          scene.getRoot().addChild(billboard)
+          index++
+
+          image.on('loaded', resolve)
+        })
+      }
+
+      let promises = []
+
+      promises.push(
+        addBillboard(
+          'SolorFloorPerformer',
+          new Vec3(0, 0, 0),
+          new Color(1.0, 0.53, 0.53),
+          true,
+          'data/SolorFloorPerformer.png'
+        )
+      )
+      promises.push(
+        addBillboard(
+          'SolorFloorPerformer',
+          new Vec3(1, -1, 0),
+          new Color(0.53, 0.53, 1.0),
+          false,
+          'data/VerticalDoubleMaleTrapeze2.png'
+        )
+      )
+      promises.push(
+        addBillboard(
+          'SolorFloorPerformer',
+          new Vec3(-2, 1, 0),
+          new Color(0.53, 1.0, 0.53),
+          false,
+          'data/VerticalDoubleMaleTrapeze2.png'
+        )
+      )
+
+      Promise.all(promises).then(() => {
+        window.postMessage(`done-Loading`)
+      })
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, 3, 0.7), new Vec3(0, 0, 0.8))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, -3, 0.7), new Vec3(0, 0, 0.8))
+          renderer.frameAll()
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>

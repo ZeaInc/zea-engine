@@ -17,7 +17,6 @@ class BillboardShader extends GLShader {
       `
 precision highp float;
 
-
 <%include file="utils/quadVertexFromID.glsl"/>
 
 uniform mat4 viewMatrix;
@@ -28,6 +27,7 @@ uniform mat4 cameraMatrix;
 
 #ifdef ENABLE_FLOAT_TEXTURES
 
+// A sorted attribute of instance Ids so we draw from back to front.
 instancedattribute float instanceIds;
 
 <%include file="stack-gl/transpose.glsl"/>
@@ -40,7 +40,7 @@ uniform sampler2D instancesTexture;
 uniform int instancesTextureSize;
 
 
-const int cols_per_instance = 5;
+const int cols_per_instance = 6;
 
 mat4 getMatrix(sampler2D texture, int textureSize, int index) {
   // Unpack 3 x 4 matix columns into a 4 x 4 matrix.
@@ -58,8 +58,12 @@ mat4 getModelMatrix(int id) {
 vec4 getInstanceData(int id) {
   return fetchTexel(instancesTexture, instancesTextureSize, (id * cols_per_instance) + 3);
 }
-vec4 getTintColor(int id) {
+vec4 getPivot(int id) {
   return fetchTexel(instancesTexture, instancesTextureSize, (id * cols_per_instance) + 4);
+}
+
+vec4 getTintColor(int id) {
+  return fetchTexel(instancesTexture, instancesTextureSize, (id * cols_per_instance) + 5);
 }
 
 
@@ -68,6 +72,7 @@ vec4 getTintColor(int id) {
 uniform vec4 atlasBillboards_desc;
 
 uniform mat4 modelMatrix;
+uniform vec2 pivot;
 uniform vec4 billboardData;
 uniform vec4 tintColor;
 uniform vec4 layoutData;
@@ -102,6 +107,7 @@ void main(void) {
   int instanceID = int(instanceIds);
 
   mat4 modelMatrix = getModelMatrix(instanceID);
+  vec2 pivot = getPivot(instanceID).xy;
   vec4 billboardData = getInstanceData(instanceID);
   vec4 layoutData = fetchTexel(atlasBillboards_layout, int(atlasBillboards_desc.z), int(billboardData.z));
   v_tint = getTintColor(instanceID);
@@ -113,8 +119,8 @@ void main(void) {
 #endif
 
   vec2 quadVertex = getQuadVertexPositionFromID();
-
-
+  
+  vec2 pos = quadVertex + vec2(0.5, 0.0) - pivot;
   v_texCoord = vec2(quadVertex.x, -quadVertex.y) + 0.5;
   v_alpha = billboardData.w;
   v_texCoord *= layoutData.zw;
@@ -141,19 +147,19 @@ void main(void) {
   if(alignedToCamera){
     if (inVR == 0) {
       gl_Position = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
-      gl_Position += vec4(quadVertex.x * width * sc, (quadVertex.y + 0.5) * height * sc, 0.0, 0.0);
+      gl_Position += vec4(pos.x * width * sc, (pos.y + 0.5) * height * sc, 0.0, 0.0);
       gl_Position = projectionMatrix * gl_Position;
     } else {
       vec3 cameraPos = vec3(cameraMatrix[3][0], cameraMatrix[3][1], cameraMatrix[3][2]);
       vec3 billboardPos = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
       mat4 lookAt = calcLookAtMatrix(billboardPos, cameraPos, 0.0);
       mat4 modelViewProjectionMatrix = projectionMatrix * viewMatrix * lookAt;
-      gl_Position = modelViewProjectionMatrix * vec4(quadVertex.x * width * sc, (quadVertex.y + 0.5) * height * sc, 0.0, 1.0);
+      gl_Position = modelViewProjectionMatrix * vec4(pos.x * width * sc, (pos.y + 0.5) * height * sc, 0.0, 1.0);
     }
   }
   else{
     modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
-    gl_Position = modelViewProjectionMatrix * vec4(quadVertex.x * width, (quadVertex.y + 0.5) * height, 0.0, 1.0);
+    gl_Position = modelViewProjectionMatrix * vec4(pos.x * width, (pos.y + 0.5) * height, 0.0, 1.0);
   }
 
   // Use cross platform bit flags methods
