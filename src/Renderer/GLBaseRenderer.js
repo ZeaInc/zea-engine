@@ -353,9 +353,8 @@ class GLBaseRenderer extends ParameterOwner {
         // we will add this geomItem once it receives its geom.
         const geomAssigned = () => {
           this.assignTreeItemToGLPass(treeItem)
-          geomParam.off('valueChanged', geomAssigned)
         }
-        geomParam.on('valueChanged', geomAssigned)
+        geomParam.once('valueChanged', geomAssigned)
       } else {
         this.assignTreeItemToGLPass(treeItem)
       }
@@ -382,12 +381,6 @@ class GLBaseRenderer extends ParameterOwner {
   assignTreeItemToGLPass(treeItem) {
     if (treeItem instanceof GeomItem) {
       const geomItem = treeItem
-      // const material = geomItem.getParameter('Material').getValue()
-      // this.glMaterialLibrary.addMaterial(material)
-
-      // const geom = geomItem.getParameter('Geometry').getValue()
-      // this.glGeomLibrary.addGeom(geom)
-
       this.glGeomItemLibrary.addGeomItem(geomItem)
     }
 
@@ -459,6 +452,12 @@ class GLBaseRenderer extends ParameterOwner {
     for (const childItem of treeItem.getChildren()) {
       if (childItem) this.removeTreeItem(childItem)
     }
+
+    if (treeItem instanceof GeomItem) {
+      const geomItem = treeItem
+      this.glGeomItemLibrary.removeGeomItem(geomItem)
+    }
+
     this.renderGeomDataFbos()
   }
 
@@ -607,6 +606,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     this.handleResize(this.__glcanvas.parentElement.clientWidth, this.__glcanvas.parentElement.clientHeight)
     this.resizeObserver.observe(this.__glcanvas.parentElement)
+    this.__handleResize(this.__glcanvas.clientWidth, this.__glcanvas.clientHeight)
 
     webglOptions.preserveDrawingBuffer = true
     webglOptions.antialias = webglOptions.antialias != undefined ? webglOptions.antialias : true

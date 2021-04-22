@@ -26,13 +26,19 @@
       const material = new Material('surfaces', 'SimpleSurfaceShader')
       material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 1))
 
-      const geomItem0 = new GeomItem('Sphere', new Sphere(1.5, 46), material, new Xfo(new Vec3(2, 0, 0)))
+      const sphere0 = new Sphere(1.5, 46)
+      const sphere1 = new Sphere(1.5, 46)
+
+      const geomItem0 = new GeomItem('Sphere', sphere0, material, new Xfo(new Vec3(4, 0, 0)))
       scene.getRoot().addChild(geomItem0)
 
-      const geomItem1 = new GeomItem('Sphere', new Sphere(1.5, 46), material, new Xfo(new Vec3(-2, 0, 0)))
+      const geomItem1 = new GeomItem('Sphere', sphere1, material, new Xfo(new Vec3(0, 0, 0)))
       scene.getRoot().addChild(geomItem1)
 
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(5, 5, 2.7), new Vec3(0, 0, 0.4))
+      const geomItem2 = new GeomItem('Sphere', sphere1, material, new Xfo(new Vec3(-4, 0, 0)))
+      scene.getRoot().addChild(geomItem2)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(10, 10, 2.7), new Vec3(0, 0, 0.4))
 
       window.postMessage('done-loading')
 
