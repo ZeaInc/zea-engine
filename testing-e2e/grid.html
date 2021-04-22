@@ -26,9 +26,7 @@
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1.7), new Vec3(0, 0, 0.4))
 
-      renderer.once('resized', () => {
-        window.postMessage('done-loading')
-      })
+      window.postMessage('done-loading')
     </script>
   </body>
 </html>

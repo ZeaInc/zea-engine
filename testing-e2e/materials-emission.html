@@ -133,7 +133,6 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(35, -35, 25), new Vec3(0, 0, 0))
 
       Promise.all([
-        new Promise((resolve) => renderer.once('resized', resolve)),
         new Promise((resolve) => envMap.once('loaded', resolve)),
       ]).then(() => {
         console.trace()

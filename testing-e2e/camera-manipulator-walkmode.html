@@ -52,9 +52,7 @@
       cameraManipulator.enabledWASDWalkMode = true
       cameraManipulator.getParameter('OrbitRate').setValue(0.5)
 
-      renderer.once('resized', () => {
-        window.postMessage('done-loading')
-      })
+      window.postMessage('done-loading')
 
       // {{{ Messages handler.
       const handleMessage = (event) => {

@@ -28,9 +28,7 @@
         console.log(msg)
         window.postMessage(msg)
       }
-      renderer.once('resized', () => {
-        postMessage('done-loading')
-      })
+      postMessage('done-loading')
 
       // {{openCommentBlock}} Messages handler.
       const handleMessage = (event) => {

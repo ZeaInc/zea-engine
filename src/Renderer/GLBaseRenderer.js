@@ -496,7 +496,7 @@ class GLBaseRenderer extends ParameterOwner {
    *
    * @private
    */
-  __handleResize(width, height) {
+  handleResize(width, height) {
     if (this.__xrViewportPresenting) {
       return
     }
@@ -601,10 +601,11 @@ class GLBaseRenderer extends ParameterOwner {
           return
         }
 
-        this.__handleResize(entry.contentRect.width, entry.contentRect.height)
+        this.handleResize(entry.contentRect.width, entry.contentRect.height)
       }
     })
 
+    this.handleResize(this.__glcanvas.parentElement.clientWidth, this.__glcanvas.parentElement.clientHeight)
     this.resizeObserver.observe(this.__glcanvas.parentElement)
 
     webglOptions.preserveDrawingBuffer = true
