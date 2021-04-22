@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>switching-geoms - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Cuboid, Sphere, GeomItem, Material, Color } = window.zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      // scene.setupGrid(10.0, 10)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+
+      const cuboid = new Cuboid(1.5, 2.0, 1.0)
+      const geomItem = new GeomItem('Cuboid', cuboid, standardMaterial)
+      scene.getRoot().addChild(geomItem)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-5, -5, 3), new Vec3(0, 0, 0))
+
+      const postMessage = (msg) => {
+        console.log(msg)
+        window.postMessage(msg)
+      }
+      renderer.once('resized', () => {
+        postMessage('done-loading')
+      })
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          const sphere = new Sphere(1.5, 8, 5)
+          geomItem.getParameter('Geometry').setValue(sphere)
+          postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          geomItem.getParameter('Geometry').setValue(cuboid)
+          postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas>
+    </div>
+  </body>
+</html>

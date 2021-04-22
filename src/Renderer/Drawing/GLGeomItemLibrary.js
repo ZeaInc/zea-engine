@@ -134,7 +134,10 @@ class GLGeomItemLibrary extends EventEmitter {
       return this.glGeomItems[index]
     }
 
-    const material = geomItem.getParameter('Material').getValue()
+    // ///////////////////////////////////////////
+    // Material
+    const materialParam = geomItem.getParameter('Material')
+    let material = materialParam.getValue()
 
     // Add the material here so that when we populate the GeomItem texture.
     // the material already has an Id.
@@ -142,10 +145,31 @@ class GLGeomItemLibrary extends EventEmitter {
     if (material.getShaderClass().getPackedMaterialData) {
       matIndex = this.renderer.glMaterialLibrary.addMaterial(material)
     }
+    const materialChanged = (event) => {
+      // TODO: Ref count the materials in the material library.
+      // this.renderer.glMaterialLibrary.removeMaterial(material)
+      material = materialParam.getValue()
+      glGeomItem.materialId = this.renderer.glMaterialLibrary.addMaterial(material)
+      geomItemChanged()
+    }
+    materialParam.on('valueChanged', materialChanged)
 
-    const geom = geomItem.getParameter('Geometry').getValue()
+    // ///////////////////////////////////////////
+    // Geometry
+    const geomParm = geomItem.getParameter('Geometry')
+    let geom = geomParm.getValue()
     const geomIndex = this.renderer.glGeomLibrary.addGeom(geom)
 
+    const geomChanged = (event) => {
+      this.renderer.glGeomLibrary.removeGeom(geom)
+      geom = geomParm.getValue()
+      glGeomItem.geomId = this.renderer.glGeomLibrary.addGeom(geom)
+      geomItemChanged()
+    }
+    geomParm.on('valueChanged', geomChanged)
+
+    // ///////////////////////////////////////////
+    // GeomItem
     // Use recycled indices if there are any available...
     if (this.glGeomItemsIndexFreeList.length > 0) {
       index = this.glGeomItemsIndexFreeList.pop()
@@ -164,13 +188,16 @@ class GLGeomItemLibrary extends EventEmitter {
       this.dirtyItemIndices.push(index)
       this.renderer.drawItemChanged()
     }
-    geomItem.getParameter('Material').on('valueChanged', geomItemChanged)
     geomItem.getParameter('GeomMat').on('valueChanged', geomItemChanged)
     geomItem.on('cutAwayChanged', geomItemChanged)
     geomItem.on('highlightChanged', geomItemChanged)
 
     this.glGeomItems[index] = glGeomItem
-    this.glGeomItemEventHandlers[index] = geomItemChanged
+    this.glGeomItemEventHandlers[index] = {
+      geomItemChanged,
+      materialChanged,
+      geomChanged,
+    }
     this.glGeomItemsMap[geomItem.getId()] = index
 
     // Note: before the renderer is disabled, this is a  no-op.
@@ -204,11 +231,15 @@ class GLGeomItemLibrary extends EventEmitter {
     const index = this.glGeomItemsMap[geomItem.getId()]
     const glGeomItem = this.glGeomItems[index]
 
-    const geomItemChanged = this.glGeomItemEventHandlers[index]
-    geomItem.getParameter('Material').off('valueChanged', geomItemChanged)
-    geomItem.getParameter('GeomMat').off('valueChanged', geomItemChanged)
-    geomItem.off('cutAwayChanged', geomItemChanged)
-    geomItem.off('highlightChanged', geomItemChanged)
+    const geom = geomItem.getParameter('Geometry').getValue()
+    this.renderer.glGeomLibrary.removeGeom(geom)
+
+    const handlers = this.glGeomItemEventHandlers[index]
+    geomItem.getParameter('Material').off('valueChanged', handlers.materialChanged)
+    geomItem.getParameter('Geometry').off('valueChanged', handlers.geomChanged)
+    geomItem.getParameter('GeomMat').off('valueChanged', handlers.geomItemChanged)
+    geomItem.off('cutAwayChanged', handlers.geomItemChanged)
+    geomItem.off('highlightChanged', handlers.geomItemChanged)
 
     this.glGeomItems[index] = null
     this.glGeomItemsIndexFreeList.push(index)
