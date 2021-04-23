@@ -35,6 +35,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     this.prevSortCameraPos = new Vec3(999, 999, 999)
     this.sortCameraMovementDistance = 0.25 // meters
     this.reSort = false
+    this.resortNeeded = this.resortNeeded.bind(this)
   }
 
   /**
@@ -56,6 +57,13 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       return false
     const material = geomItem.getParameter('Material').getValue()
     return material.isTransparent()
+  }
+
+  /**
+   * When an item visibility changes, we trigger this method, as new items become visible
+   */
+  resortNeeded() {
+    this.reSort = true
   }
 
   /**
@@ -83,6 +91,8 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
         }
         const glGeomItem = this.renderer.glGeomItemLibrary.getGLGeomItem(geomItem)
         glShaderGeomSets.addGLGeomItem(glGeomItem)
+
+        glGeomItem.on('visibilityChanged', this.resortNeeded)
         this.emit('updated')
 
         // force a reSort.
@@ -126,8 +136,9 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
         const index = this.visibleItems.indexOf(item)
         this.visibleItems.splice(index, 1)
       }
+      this.reSort = true
     }
-    geomItem.on('visibilityChanged', visibilityChanged)
+    glGeomItem.on('visibilityChanged', visibilityChanged)
 
     // ////////////////////////////////////
     // Tracking GeomMat changes.
@@ -176,6 +187,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       // for them to be destroyed.
       geomItemSet.removeGLGeomItem(glGeomItem)
       geomItem.deleteMetadata('geomItemSet')
+      glGeomItem.off('visibilityChanged', this.resortNeeded)
     } else {
       const itemindex = geomItem.getMetadata('itemIndex')
       const item = this.transparentItems[itemindex]
