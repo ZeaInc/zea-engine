@@ -139,7 +139,7 @@ void main(void) {
       defaultValue: new Color(1.0, 1.0, 0.5),
     })
     paramDescs.push({ name: 'PointSize', defaultValue: 2.0 })
-    paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
+    paramDescs.push({ name: 'Overlay', defaultValue: 0.00002 })
     return paramDescs
   }
 

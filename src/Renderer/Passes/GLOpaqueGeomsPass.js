@@ -243,7 +243,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
     }
 
     gl.enable(gl.DEPTH_TEST)
-    gl.depthFunc(gl.LESS)
+    gl.depthFunc(gl.LEQUAL)
     gl.depthMask(true)
 
     this.__traverseTreeAndDraw(renderstate)
@@ -288,7 +288,7 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
     gl.disable(gl.BLEND)
     gl.disable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
-    gl.depthFunc(gl.LESS)
+    gl.depthFunc(gl.LEQUAL)
     gl.depthMask(true)
 
     // eslint-disable-next-line guard-for-in
