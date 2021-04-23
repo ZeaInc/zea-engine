@@ -31,9 +31,7 @@
       const geomItem = new GeomItem('Cone', cone, standardMaterial)
       scene.getRoot().addChild(geomItem)
 
-      renderer.once('resized', () => {
-        window.postMessage('done-loading')
-      })
+      window.postMessage('done-loading')
 
       // {{{ Messages handler.
       const handleMessage = (event) => {

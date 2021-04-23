@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{{name}} - Zea Engine</title>
+    <title>switching-geoms - Zea Engine</title>
 
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
@@ -14,7 +14,7 @@
     <script src="../dist/plugins.umd.js"></script>
 
     <script type="module">
-      const { GLRenderer, Scene, Vec3 } = window.zeaEngine
+      const { GLRenderer, Scene, Vec3, Cuboid, Sphere, GeomItem, Material, Color } = window.zeaEngine
 
       const canvas = document.querySelector('#renderer')
 
@@ -22,25 +22,34 @@
       const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
       renderer.setScene(scene)
 
-      scene.setupGrid(10.0, 10)
+      // scene.setupGrid(10.0, 10)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+
+      const cuboid = new Cuboid(1.5, 2.0, 1.0)
+      const geomItem = new GeomItem('Cuboid', cuboid, standardMaterial)
+      scene.getRoot().addChild(geomItem)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-5, -5, 3), new Vec3(0, 0, 0))
 
       const postMessage = (msg) => {
         console.log(msg)
         window.postMessage(msg)
       }
-      postMessage('done-loading')
+      renderer.once('resized', () => {
+        postMessage('done-loading')
+      })
 
-      // {{openCommentBlock}} Messages handler.
+      // {{{ Messages handler.
       const handleMessage = (event) => {
         const { data } = event
 
         if (data === 'variant-01') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
-          renderer.frameAll()
+          const sphere = new Sphere(1.5, 8, 5)
+          geomItem.getParameter('Geometry').setValue(sphere)
           postMessage(`done-${data}`)
         } else if (data === 'variant-02') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
-          renderer.frameAll()
+          geomItem.getParameter('Geometry').setValue(cuboid)
           postMessage(`done-${data}`)
         }
       }

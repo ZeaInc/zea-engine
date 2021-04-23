@@ -63,7 +63,6 @@
 
       // scene.setupGrid(10.0, 10)
       const promises = []
-      promises.push(new Promise((resolve) => renderer.once('resized', resolve)))
 
       const envMap = new EnvMap()
       envMap.getParameter('FilePath').setValue('data/pisa-webp.zenv')

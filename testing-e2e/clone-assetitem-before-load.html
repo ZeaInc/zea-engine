@@ -44,10 +44,7 @@
       asset2.getParameter('LocalXfo').setValue(new Xfo(new Vec3(-0.5, 0, 0)))
       scene.getRoot().addChild(asset2)
 
-      Promise.all([
-        new Promise((resolve) => renderer.once('resized', resolve)),
-        new Promise((resolve) => asset2.getGeometryLibrary().on('loaded', resolve)),
-      ]).then(() => {
+      Promise.all([new Promise((resolve) => asset2.getGeometryLibrary().on('loaded', resolve))]).then(() => {
         window.postMessage('done-loading')
       })
     </script>

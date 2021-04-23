@@ -40,7 +40,6 @@
       objAsset.getParameter('GlobalXfo').setValue(xfo)
 
       const promises = []
-      promises.push(new Promise((resolve) => renderer.once('resized', resolve)))
       promises.push(new Promise((resolve) => envMap.once('loaded', resolve)))
       promises.push(new Promise((resolve) => objAsset.once('loaded', resolve)))
       Promise.all(promises).then(() => {

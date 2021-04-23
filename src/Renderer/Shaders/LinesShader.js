@@ -146,7 +146,7 @@ void main(void) {
   vec2 materialCoords = v_geomItemData.zw;
   vec4 baseColor = getMaterialValue(materialCoords, 0);
   vec4 matValue1 = getMaterialValue(materialCoords, 1);
-  float opacity       = baseColor.a * matValue1.r;
+  float opacity  = matValue1.r;
 
 #else // ENABLE_MULTI_DRAW
 

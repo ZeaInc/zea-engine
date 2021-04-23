@@ -117,10 +117,7 @@
         material.getParameter('Reflectance').setValue(event.target.value / 100)
       })
 
-      Promise.all([
-        new Promise((resolve) => renderer.once('resized', resolve)),
-        new Promise((resolve) => envMap.once('loaded', resolve)),
-      ]).then(() => {
+      Promise.all([new Promise((resolve) => envMap.once('loaded', resolve))]).then(() => {
         window.postMessage('done-loading')
       })
 
