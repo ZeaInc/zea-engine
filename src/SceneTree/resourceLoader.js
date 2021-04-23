@@ -66,7 +66,6 @@ class ResourceLoader extends EventEmitter {
     this.__adapter = undefined
     this.__totalWork = 0
     this.__doneWork = 0
-    this.promiseCache = {}
     this.baseUrl = Env.baseUrl
 
     this.plugins = {}
@@ -213,12 +212,9 @@ class ResourceLoader extends EventEmitter {
       )
     }
 
-    if (this.promiseCache[url]) return this.promiseCache[url]
-
     this.incrementWorkload()
 
     const promise = plugin.loadFile(url)
-    this.promiseCache[url] = promise
 
     promise.then(
       () => {

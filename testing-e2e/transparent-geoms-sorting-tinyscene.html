@@ -67,9 +67,7 @@
       addMeshShape(new Cylinder(0.0012, 0.004, 32, 2, true), -2, 8)
       addMeshShape(new Torus(0.0004, 0.0013), -3, 4)
 
-      renderer.once('resized', () => {
-        window.postMessage('done-loading')
-      })
+      window.postMessage('done-loading')
 
       document.querySelector('#back').addEventListener('click', () => {
         renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.01, -0.02, 0.005), new Vec3(0.01, 0, 0))

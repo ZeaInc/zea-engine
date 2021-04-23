@@ -331,7 +331,7 @@ class GLGeomItemSet extends EventEmitter {
     }
 
     if (this.highlightedIdsBuffer) {
-      gl.deleteBuffer(this.highlightedIdsBuffer)
+      this.gl.deleteBuffer(this.highlightedIdsBuffer)
       this.highlightedIdsBuffer = null
     }
 

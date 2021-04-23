@@ -23,7 +23,7 @@ For more information on the templates and plugins see the page on [Templates and
 > [Templates and Plugins](plugins-and-tools.md)
 
 # Licensing
-The Zea Engine is distributed via NPM under a proprietary closed source license which gives developers the rights to evaluate Zea Engine and build non-commercial applications. By downloading the Zea Engine, your agree to be bound by the terms and conditions of this license available on the Zea Website: [_zea.live_](https://www.zea.live/en/licensing)
+The Zea Engine is open-source. By downloading the Zea Engine, you agree to be bound by the [terms and conditions](https://www.zea.live/en/terms-of-service) of this license.
 </br>
 To evaluate the engine with your proprietary content, you will need to access our server-side libraries and a restricted non-commercial evaluation license.
 

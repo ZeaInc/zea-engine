@@ -27,6 +27,7 @@ class GLGeomLibrary extends EventEmitter {
     this.shaderAttrSpec = {}
     this.freeGeomIndices = []
     this.geoms = []
+    this.geomRefCounts = []
     this.geomsDict = {}
     this.glGeomsDict = {}
     this.geomBuffersTmp = [] // for each geom, these are the buffer
@@ -113,12 +114,14 @@ class GLGeomLibrary extends EventEmitter {
     let index = this.geomsDict[geom.getId()]
     if (index != undefined) {
       // Increment the ref count for the GLGeom
+      this.geomRefCounts[index]++
       return index
     }
     if (this.freeGeomIndices.length) {
       index = this.freeGeomIndices.pop()
     } else {
       index = this.geoms.length
+      this.geomRefCounts[index] = 0
 
       this.geomVertexCounts = resizeIntArray(this.geomVertexCounts, index + 1)
       this.geomVertexOffsets = resizeIntArray(this.geomVertexOffsets, index + 1)
@@ -126,8 +129,6 @@ class GLGeomLibrary extends EventEmitter {
 
     this.geomVertexCounts[index] = 0
     this.geomVertexOffsets[index] = 0
-
-    // geom.setMetadata(this.glgeomset_indexKey, index)
 
     const geomDataChanged = () => {
       this.dirtyGeomIndices.add(index)
@@ -141,6 +142,7 @@ class GLGeomLibrary extends EventEmitter {
     geom.on('geomDataTopologyChanged', geomDataTopologyChanged)
 
     this.geoms[index] = geom
+    this.geomRefCounts[index]++
     this.geomsDict[geom.getId()] = index
     this.dirtyGeomIndices.add(index)
 
@@ -163,9 +165,20 @@ class GLGeomLibrary extends EventEmitter {
   removeGeom(geom) {
     const index = this.geomsDict[geom.getId()]
 
+    this.geomRefCounts[index]--
+
+    // If there are still refs to this geom. (GeomItems that use it)
+    // then we keep it in the renderer.
+    if (this.geomRefCounts[index] > 0) {
+      return
+    }
+
     // If the geom was never drawn, and we are already removing it, there may be no allocation.
     if (this.attributesAllocator.getAllocation(index)) {
       this.attributesAllocator.deallocate(index)
+    }
+    if (this.indicesAllocator.getAllocation(index)) {
+      this.indicesAllocator.deallocate(index)
     }
     if (this.dirtyGeomIndices.has(index)) {
       this.dirtyGeomIndices.delete(index)
@@ -178,13 +191,8 @@ class GLGeomLibrary extends EventEmitter {
     this.geoms[index] = null
     this.freeGeomIndices.push(index)
     delete this.geomsDict[geom.getId()]
+    delete this.geomBuffersTmp[index]
 
-    // //////////////////////////////////////
-    // Indices
-    // If the geom was never drawn, and we are already removing it, there may be no allocation.
-    if (this.drawIdsAllocator.getAllocation(index)) {
-      this.drawIdsAllocator.deallocate(index)
-    }
     this.indicesCounts[index] = 0
     this.indicesOffsets[index] = 0
   }
@@ -216,7 +224,8 @@ class GLGeomLibrary extends EventEmitter {
    * @param {object} opts - The opts value.
    */
   allocateBuffers(index) {
-    const geom = this.getGeom(index)
+    const geom = this.geoms[index]
+    if (!geom) return
     const geomBuffers = geom.genBuffers()
 
     const numVerts = geomBuffers.numRenderVerts ? geomBuffers.numRenderVerts : geomBuffers.numVertices
@@ -342,7 +351,8 @@ class GLGeomLibrary extends EventEmitter {
     // means we need to re-upload geoms that were not changed.
     let geomBuffers = this.geomBuffersTmp[index]
     if (!geomBuffers) {
-      const geom = this.getGeom(index)
+      const geom = this.geoms[index]
+      if (!geom) return
       geomBuffers = geom.genBuffers()
       this.geomBuffersTmp[index] = geomBuffers
     }
