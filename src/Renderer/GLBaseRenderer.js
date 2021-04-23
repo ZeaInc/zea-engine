@@ -606,7 +606,7 @@ class GLBaseRenderer extends ParameterOwner {
 
     this.handleResize(this.__glcanvas.parentElement.clientWidth, this.__glcanvas.parentElement.clientHeight)
     this.resizeObserver.observe(this.__glcanvas.parentElement)
-    this.__handleResize(this.__glcanvas.clientWidth, this.__glcanvas.clientHeight)
+    this.handleResize(this.__glcanvas.clientWidth, this.__glcanvas.clientHeight)
 
     webglOptions.preserveDrawingBuffer = true
     webglOptions.antialias = webglOptions.antialias != undefined ? webglOptions.antialias : true
