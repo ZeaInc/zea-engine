@@ -61,10 +61,13 @@ precision highp float;
 #ifdef ENABLE_MULTI_DRAW
 <%include file="math/constants.glsl"/>
 <%include file="drawItemTexture.glsl"/>
-#endif
+#endif // ENABLE_MULTI_DRAW
 
 <%include file="stack-gl/gamma.glsl"/>
 <%include file="materialparams.glsl"/>
+
+
+#if defined(DRAW_COLOR)
 
 #ifndef ENABLE_MULTI_DRAW
 
@@ -76,6 +79,7 @@ uniform int BaseColorTexType;
 #endif
 
 #endif // ENABLE_MULTI_DRAW
+#endif // DRAW_COLOR
 
 
 /* VS Outputs */
@@ -87,10 +91,14 @@ varying vec2 v_textureCoord;
 
 
 #ifdef ENABLE_ES3
-    out vec4 fragColor;
+out vec4 fragColor;
 #endif
+
 void main(void) {
   
+#ifndef ENABLE_ES3
+  vec4 fragColor;
+#endif
 
   //////////////////////////////////////////////
   // Color
@@ -98,41 +106,40 @@ void main(void) {
 
 #ifdef ENABLE_MULTI_DRAW
 
-vec2 materialCoords = v_geomItemData.zw;
-vec4 baseColor = getMaterialValue(materialCoords, 0);
+  vec2 materialCoords = v_geomItemData.zw;
+  vec4 baseColor = getMaterialValue(materialCoords, 0);
 
 #else // ENABLE_MULTI_DRAW
 
 #ifndef ENABLE_TEXTURES
-    vec4 baseColor = BaseColor;
+  vec4 baseColor = BaseColor;
 #else
-    vec4 baseColor      = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, v_textureCoord);
+  vec4 baseColor      = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, v_textureCoord);
 #endif
 
 #endif // ENABLE_MULTI_DRAW
 
-#ifndef ENABLE_ES3
-    vec4 fragColor;
-#endif
-    fragColor = baseColor;
+  fragColor = baseColor;
 
 #ifdef ENABLE_INLINE_GAMMACORRECTION
-    fragColor.rgb = toGamma(fragColor.rgb);
+  fragColor.rgb = toGamma(fragColor.rgb);
 #endif
-
 
   //////////////////////////////////////////////
   // GeomData
 #elif defined(DRAW_GEOMDATA)
 
-  // No selection of screenspace geoms.
-  discard;
-  return;
+  if(true) {
+    discard;
+    return;
+  }
+
+  fragColor = vec4(-1, -1, -1, 0);
 
 #endif // DRAW_GEOMDATA
 
 #ifndef ENABLE_ES3
-    gl_FragColor = fragColor;
+  gl_FragColor = fragColor;
 #endif
 }
 `

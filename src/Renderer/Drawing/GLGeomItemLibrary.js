@@ -384,9 +384,12 @@ class GLGeomItemLibrary extends EventEmitter {
     // Some items can't be culled, if they calculate the size in the GPU.
     // Handles with a fixed size on screen, or points with a fixed size on
     // screen simply cannot be culled, as they
-    let cullable = true
+    let cullable = geomItem.cullable != false
     const fixedSizeParam = material.getParameter('MaintainScreenSize')
     if (fixedSizeParam && fixedSizeParam.getValue()) {
+      cullable = false
+    }
+    if (material.getShaderName().startsWith('ScreenSpace')) {
       cullable = false
     }
     if (material.hasParameter('PointSize')) {
