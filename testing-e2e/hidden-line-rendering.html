@@ -20,7 +20,6 @@
       const scene = new Scene()
       const domElement = document.getElementById('renderer')
       const renderer = new GLRenderer(domElement, {
-        hideSplash: true,
         webglContextType: urlParams.has('webgl') ? urlParams.get('webgl') : undefined,
       })
       renderer.setScene(scene)
