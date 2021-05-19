@@ -40,7 +40,7 @@ class GLBaseViewport extends ParameterOwner {
 
     // //////////////////////////////////
     // Setup Offscreen Render Targets
-    if (!SystemDesc.isIOSDevice && false) {
+    if (!SystemDesc.isIOSDevice) {
       this.offscreenBuffer = new GLTexture2D(gl, {
         type: 'UNSIGNED_BYTE',
         format: 'RGBA',
@@ -264,6 +264,7 @@ class GLBaseViewport extends ParameterOwner {
 
   /**
    * The draw method.
+   * @param {object} renderstate - The object tracking the current state of the renderer
    */
   draw(renderstate = {}) {
     const gl = this.__renderer.gl
@@ -354,7 +355,7 @@ class GLBaseViewport extends ParameterOwner {
    * @private
    */
   drawSilhouettes(renderstate) {
-    if (SystemDesc.isIOSDevice || true) {
+    if (SystemDesc.isIOSDevice) {
       return
     }
     const gl = this.__renderer.gl
