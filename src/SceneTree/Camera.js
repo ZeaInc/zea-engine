@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Vec3, Box3, Xfo, Mat4 } from '../Math/index'
+import { Vec3, Box3, Xfo, Mat4, Vec2 } from '../Math/index'
 import { TreeItem } from './TreeItem.js'
 import { NumberParameter } from './Parameters/index'
 import { MathFunctions, SInt16 } from '../Utilities/MathFunctions'
@@ -301,35 +301,102 @@ class Camera extends TreeItem {
    * @param {array} treeItems - The treeItems value.
    */
   frameView(viewport, treeItems) {
-    const boundingBox = new Box3()
-    for (const treeItem of treeItems) {
-      boundingBox.addBox3(treeItem.getParameter('BoundingBox').getValue())
-    }
-
-    if (!boundingBox.isValid()) {
-      console.warn('Bounding box not valid.')
-      return
-    }
     const focalDistance = this.__focalDistanceParam.getValue()
     const fovY = this.__fovParam.getValue()
 
     const globalXfo = this.getParameter('GlobalXfo').getValue().clone()
-    const cameraViewVec = globalXfo.ori.getZaxis()
-    const targetOffset = cameraViewVec.scale(-focalDistance)
-    const currTarget = globalXfo.tr.add(targetOffset)
-    const newTarget = boundingBox.center()
+    const aspectRatio = viewport.getWidth() / viewport.getHeight()
+    const fovX = Math.acos(Math.cos(fovY) * aspectRatio)
 
-    const pan = newTarget.subtract(currTarget)
-    globalXfo.tr.addInPlace(pan)
+    let newFocalDistance
 
-    // Compute the distance the camera should be to fit the entire bounding sphere
-    const newFocalDistance = boundingBox.size() / Math.tan(fovY)
+    const box3 = new Box3()
+    for (const treeItem of treeItems) {
+      box3.addBox3(treeItem.getParameter('BoundingBox').getValue())
+    }
 
-    // TODO: If this doesn't work in all cases, we may need to implement this more thorough solution described here:
-    // https://stackoverflow.com/a/66113254/5546902
+    if (!box3.isValid()) {
+      console.warn('Bounding box not valid.')
+      return
+    }
+    if (true) {
+      const cameraViewVec = globalXfo.ori.getZaxis()
+      const targetOffset = cameraViewVec.scale(-focalDistance)
+      const currTarget = globalXfo.tr.add(targetOffset)
+      const newTarget = box3.center()
 
-    const dollyDist = newFocalDistance - focalDistance
-    globalXfo.tr.addInPlace(cameraViewVec.scale(dollyDist))
+      const pan = newTarget.subtract(currTarget)
+      globalXfo.tr.addInPlace(pan)
+
+      // Compute the distance the camera should be to fit the entire bounding sphere
+      newFocalDistance = box3.size() / Math.tan(fovY)
+
+      // const dollyDist = newFocalDistance - focalDistance
+      // globalXfo.tr.addInPlace(cameraViewVec.scale(dollyDist))
+    } else {
+      // Based on the solution described here:
+      // https://stackoverflow.com/a/66113254/5546902
+
+      const boundaryPoints = []
+      boundaryPoints.push(box3.p0)
+      boundaryPoints.push(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z))
+      boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z))
+      boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z))
+      boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z))
+      boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z))
+      boundaryPoints.push(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z))
+      boundaryPoints.push(box3.p1)
+
+      const frustumXPosPlane = globalXfo.ori.rotateVec3(new Vec3(1, 0, 0))
+      const frustumXNegPlane = globalXfo.ori.rotateVec3(new Vec3(-1, 0, 0))
+      const frustumYPosPlane = globalXfo.ori.rotateVec3(new Vec3(0, 1, 0))
+      const frustumYNegPlane = globalXfo.ori.rotateVec3(new Vec3(0, -1, 0))
+      const frustumXPosBoundary = Number.NEGATIVE_INFINITY
+      const frustumXNegBoundary = Number.NEGATIVE_INFINITY
+      const frustumYPosBoundary = Number.NEGATIVE_INFINITY
+      const frustumYNegBoundary = Number.NEGATIVE_INFINITY
+      boundaryPoints.forEach((point) => {
+        const delta = point.subtract(globalXfo.tr)
+        const xPos = delta.dot(frustumXPosPlane)
+        const xNeg = delta.dot(frustumXNegPlane)
+        const yPos = delta.dot(frustumYPosPlane)
+        const yNeg = delta.dot(frustumYNegPlane)
+        if (xPos > frustumXPosBoundary) frustumXPosBoundary = xPos
+        if (xNeg > frustumXNegBoundary) frustumXNegBoundary = xNeg
+        if (yPos > frustumYPosBoundary) frustumYPosBoundary = yPos
+        if (yNeg > frustumYNegBoundary) frustumYNegBoundary = yNeg
+      })
+
+      if (this.isOrthographic()) {
+        const pan = new Vec3(0, 0, 0)
+        pan.addInPlace(frustumXPosPlane.scale(frustumXPosBoundary))
+        pan.addInPlace(frustumXNegPlane.scale(frustumXNegBoundary))
+        pan.addInPlace(frustumYPosPlane.scale(frustumYPosBoundary))
+        pan.addInPlace(frustumYNegPlane.scale(frustumYNegBoundary))
+        globalXfo.tr.addInPlace(pan)
+        const newFocalDistanceX = ((frustumXPosBoundary + frustumXNegBoundary) * 0.5) / Math.tan(fovX)
+        const newFocalDistanceY = ((frustumYPosBoundary + frustumYNegBoundary) * 0.5) / Math.tan(fovY)
+        newFocalDistance = Math.max(newFocalDistanceX, newFocalDistanceY)
+      } else {
+        const xP0 = new Vec3(Math.cos(fovX) * frustumXPosBoundary, 0, Math.sin(fovX) * frustumXPosBoundary)
+        const xD0 = new Vec3(Math.sin(fovX), 0, -Math.cos(fovX))
+        const xP1 = new Vec3(Math.cos(fovX) * -frustumXNegBoundary, 0, Math.sin(fovX) * frustumXNegBoundary)
+        const xD1 = new Vec3(Math.sin(fovX), 0, -Math.cos(fovX))
+        const xRes = Vec2.closestPointBetweenLines(xP0, xD0, xP1, xD1)
+        const xP = xP0.add(xD0.scale(xRes[0]))
+
+        const yP0 = new Vec3(0, Math.cos(fovY) * frustumXPosBoundary, Math.sin(fovY) * frustumXPosBoundary)
+        const yD0 = new Vec3(0, Math.sin(fovY), -Math.cos(fovY))
+        const yP1 = new Vec3(0, Math.cos(fovY) * -frustumXNegBoundary, Math.sin(fovY) * frustumXNegBoundary)
+        const yD1 = new Vec3(0, Math.sin(fovY), -Math.cos(fovX))
+        const yRes = Vec2.closestPointBetweenLines(yP0, yD0, yP1, yD1)
+        const yP = yP0.add(yD0.scale(yRes[0]))
+
+        const pan = new Vec3(xP.x, yP.x, Math.max(xP.y, yP.y))
+        globalXfo.tr.addInPlace(pan)
+        newFocalDistance = focalDistance + Math.max(xP.y, yP.y)
+      }
+    }
 
     this.setFocalDistance(newFocalDistance)
     this.getParameter('GlobalXfo').setValue(globalXfo)
