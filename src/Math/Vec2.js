@@ -563,6 +563,19 @@ class Vec2 extends AttrValue {
     this.x = reader.loadFloat32()
     this.y = reader.loadFloat32()
   }
+
+  /**
+   * Calculate the intersection point of 2 2d lines, returning the parameters values for each line.
+   *
+   * @param {Vec2} p0 - The point of the first line
+   * @param {Vec2} d0 - The direction of the first line
+   * @param {Vec2} p1 - The point of the second line
+   * @param {Vec2} d1 - The direction of the second line
+   * @return {array} - Returns an array containing 2 parameter values for the 2 lines.
+   */
+  static intersectionOfLines(p0, d0, p1, d1) {
+    return [0, 0]
+  }
 }
 
 Registry.register('Vec2', Vec2)

@@ -52,4 +52,32 @@ describe('Vec2', () => {
 
     expect(vec2).toEqual(new Vec2(8, 5))
   })
+
+  // it('intersectionOfLines-1', () => {
+  //   const p0 = new Vec2(-1, 0)
+  //   const d0 = new Vec2(0, 1)
+  //   const p1 = new Vec2(1, 1)
+  //   const d1 = new Vec2(-1, 0)
+  //   const res = Vec2.intersectionOfLines(p0, d0, p1, d1)
+
+  //   expect(res).toEqual([1, 1])
+  // })
+  // it('intersectionOfLines-2', () => {
+  //   const p0 = new Vec2(-2, 0)
+  //   const d0 = new Vec2(0, -1)
+  //   const p1 = new Vec2(1, 1)
+  //   const d1 = new Vec2(-1, 0)
+  //   const res = Vec2.intersectionOfLines(p0, d0, p1, d1)
+
+  //   expect(res).toEqual([-2, 1])
+  // })
+  // it('intersectionOfLines-parallel', () => {
+  //   const p0 = new Vec2(-2, 0)
+  //   const d0 = new Vec2(0, 1)
+  //   const p1 = new Vec2(1, 0)
+  //   const d1 = new Vec2(0, 1)
+  //   const res = Vec2.intersectionOfLines(p0, d0, p1, d1)
+
+  //   expect(res).toEqual([Number.NaN, Number.NaN])
+  // })
 })
