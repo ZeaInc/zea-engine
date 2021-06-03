@@ -1,9 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { Vec3, Box3, Xfo, Mat4, Vec2 } from '../Math/index'
+import { Vec3, Box3, Xfo, Mat4, Vec2, Color } from '../Math/index'
+import { Lines } from '../SceneTree/Geometry/Lines'
+import { Material } from './Material.js'
+import { GeomItem } from './GeomItem.js'
 import { TreeItem } from './TreeItem.js'
 import { NumberParameter } from './Parameters/index'
 import { MathFunctions, SInt16 } from '../Utilities/MathFunctions'
 import { Registry } from '../Registry'
+import { Points } from './Geometry'
 
 /**
  * The Camera class is used to provide a point of view of the scene. The viewport is assigned
@@ -79,6 +83,7 @@ class Camera extends TreeItem {
     this.nearDistFactor = 0.01
     // The factor by which the far plane is adjusted based on the focal distance.
     this.farDistFactor = 10000
+    this.frameOnBoundingSphere = false
   }
 
   // ////////////////////////////////////////////
@@ -306,9 +311,9 @@ class Camera extends TreeItem {
 
     const globalXfo = this.getParameter('GlobalXfo').getValue().clone()
     const aspectRatio = viewport.getWidth() / viewport.getHeight()
-    const fovX = Math.acos(Math.cos(fovY) * aspectRatio)
+    const fovX = Math.atan(Math.tan(fovY * 0.5) * aspectRatio) * 2.0
 
-    let newFocalDistance
+    let newFocalDistance = focalDistance
 
     const box3 = new Box3()
     for (const treeItem of treeItems) {
@@ -319,7 +324,7 @@ class Camera extends TreeItem {
       console.warn('Bounding box not valid.')
       return
     }
-    if (true) {
+    if (this.frameOnBoundingSphere) {
       const cameraViewVec = globalXfo.ori.getZaxis()
       const targetOffset = cameraViewVec.scale(-focalDistance)
       const currTarget = globalXfo.tr.add(targetOffset)
@@ -347,54 +352,105 @@ class Camera extends TreeItem {
       boundaryPoints.push(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z))
       boundaryPoints.push(box3.p1)
 
-      const frustumXPosPlane = globalXfo.ori.rotateVec3(new Vec3(1, 0, 0))
-      const frustumXNegPlane = globalXfo.ori.rotateVec3(new Vec3(-1, 0, 0))
-      const frustumYPosPlane = globalXfo.ori.rotateVec3(new Vec3(0, 1, 0))
-      const frustumYNegPlane = globalXfo.ori.rotateVec3(new Vec3(0, -1, 0))
-      const frustumXPosBoundary = Number.NEGATIVE_INFINITY
-      const frustumXNegBoundary = Number.NEGATIVE_INFINITY
-      const frustumYPosBoundary = Number.NEGATIVE_INFINITY
-      const frustumYNegBoundary = Number.NEGATIVE_INFINITY
+      const drawPoint = (p, color) => {
+        const points = new Points()
+        points.setNumVertices(1)
+        points.getVertexAttribute('positions').getValueRef(0).setFromOther(p)
+
+        const material = new Material('points', 'FatPointsShader')
+        material.getParameter('PointSize').setValue(0.05)
+        material.getParameter('Rounded').setValue(0.2)
+        material.getParameter('BaseColor').setValue(color)
+        const geomItem = new GeomItem('points', points, material, globalXfo)
+        geomItem.disableBoundingBox = true
+        treeItems[0].addChild(geomItem)
+      }
+      const drawLines = (p0, p1, color) => {
+        const line = new Lines()
+        line.setNumVertices(2)
+        line.setNumSegments(1)
+        line.setSegmentVertexIndices(0, 0, 1)
+        const positions = line.getVertexAttribute('positions')
+        positions.getValueRef(0).setFromOther(p0)
+        positions.getValueRef(1).setFromOther(p1)
+
+        const material = new Material('thinlines', 'LinesShader')
+        material.getParameter('BaseColor').setValue(color)
+        const geomItem = new GeomItem('lines', line, material, globalXfo)
+        geomItem.disableBoundingBox = true
+        treeItems[0].addChild(geomItem)
+
+        drawPoint(p0, color)
+      }
+
+      // const fovX = 0
+      // const fovY = 0
+      const angleX = fovX / 2
+      const angleY = fovY / 2
+      const frustumPlaneNormals = {}
+      frustumPlaneNormals.XPos = new Vec3(Math.cos(angleX), 0, Math.sin(angleX))
+      frustumPlaneNormals.XNeg = new Vec3(-Math.cos(angleX), 0, Math.sin(angleX))
+      frustumPlaneNormals.YPos = new Vec3(0, Math.cos(angleY), Math.sin(angleY))
+      frustumPlaneNormals.YNeg = new Vec3(0, -Math.cos(angleY), Math.sin(angleY))
+      const frustumPlaneNormalsWs = {}
+      const frustumPlaneOffsets = {}
+      // eslint-disable-next-line guard-for-in
+      for (const key in frustumPlaneNormals) {
+        frustumPlaneNormalsWs[key] = globalXfo.ori.rotateVec3(frustumPlaneNormals[key])
+        frustumPlaneOffsets[key] = Number.NEGATIVE_INFINITY
+      }
       boundaryPoints.forEach((point) => {
         const delta = point.subtract(globalXfo.tr)
-        const xPos = delta.dot(frustumXPosPlane)
-        const xNeg = delta.dot(frustumXNegPlane)
-        const yPos = delta.dot(frustumYPosPlane)
-        const yNeg = delta.dot(frustumYNegPlane)
-        if (xPos > frustumXPosBoundary) frustumXPosBoundary = xPos
-        if (xNeg > frustumXNegBoundary) frustumXNegBoundary = xNeg
-        if (yPos > frustumYPosBoundary) frustumYPosBoundary = yPos
-        if (yNeg > frustumYNegBoundary) frustumYNegBoundary = yNeg
+        // eslint-disable-next-line guard-for-in
+        for (const key in frustumPlaneNormals) {
+          const planeOffset = delta.dot(frustumPlaneNormalsWs[key])
+          if (planeOffset > frustumPlaneOffsets[key]) frustumPlaneOffsets[key] = planeOffset
+        }
       })
+      // eslint-disable-next-line guard-for-in
+      for (const key in frustumPlaneNormals) {
+        drawLines(new Vec3(), frustumPlaneNormals[key].scale(frustumPlaneOffsets[key]), new Color(0.5, 0.5, 0))
+      }
+      drawPoint(new Vec3(), new Color(1, 1, 1))
 
       if (this.isOrthographic()) {
         const pan = new Vec3(0, 0, 0)
-        pan.addInPlace(frustumXPosPlane.scale(frustumXPosBoundary))
-        pan.addInPlace(frustumXNegPlane.scale(frustumXNegBoundary))
-        pan.addInPlace(frustumYPosPlane.scale(frustumYPosBoundary))
-        pan.addInPlace(frustumYNegPlane.scale(frustumYNegBoundary))
+        // eslint-disable-next-line guard-for-in
+        for (const key in frustumPlaneNormalsWs) {
+          pan.addInPlace(frustumPlaneNormalsWs[key].scale(frustumPlaneOffsets[key]))
+        }
         globalXfo.tr.addInPlace(pan)
-        const newFocalDistanceX = ((frustumXPosBoundary + frustumXNegBoundary) * 0.5) / Math.tan(fovX)
-        const newFocalDistanceY = ((frustumYPosBoundary + frustumYNegBoundary) * 0.5) / Math.tan(fovY)
+        const newFocalDistanceX = ((frustumPlaneOffsets.XPos + frustumPlaneOffsets.XNeg) * 0.5) / Math.tan(angleX)
+        const newFocalDistanceY = ((frustumPlaneOffsets.YPos + frustumPlaneOffsets.YNeg) * 0.5) / Math.tan(angleY)
         newFocalDistance = Math.max(newFocalDistanceX, newFocalDistanceY)
       } else {
-        const xP0 = new Vec3(Math.cos(fovX) * frustumXPosBoundary, 0, Math.sin(fovX) * frustumXPosBoundary)
-        const xD0 = new Vec3(Math.sin(fovX), 0, -Math.cos(fovX))
-        const xP1 = new Vec3(Math.cos(fovX) * -frustumXNegBoundary, 0, Math.sin(fovX) * frustumXNegBoundary)
-        const xD1 = new Vec3(Math.sin(fovX), 0, -Math.cos(fovX))
-        const xRes = Vec2.closestPointBetweenLines(xP0, xD0, xP1, xD1)
-        const xP = xP0.add(xD0.scale(xRes[0]))
+        // Calculate a 2d point on the line for each plane, and a direction.
+        const xP0 = new Vec2(Math.cos(angleX) * frustumPlaneOffsets.XPos, Math.sin(angleX) * frustumPlaneOffsets.XPos)
+        const xP1 = xP0.add(new Vec2(Math.sin(angleX), -Math.cos(angleX)))
+        const xP2 = new Vec2(-Math.cos(angleX) * frustumPlaneOffsets.XNeg, Math.sin(angleX) * frustumPlaneOffsets.XNeg)
+        const xP3 = xP2.add(new Vec2(-Math.sin(angleX), -Math.cos(angleX)))
 
-        const yP0 = new Vec3(0, Math.cos(fovY) * frustumXPosBoundary, Math.sin(fovY) * frustumXPosBoundary)
-        const yD0 = new Vec3(0, Math.sin(fovY), -Math.cos(fovY))
-        const yP1 = new Vec3(0, Math.cos(fovY) * -frustumXNegBoundary, Math.sin(fovY) * frustumXNegBoundary)
-        const yD1 = new Vec3(0, Math.sin(fovY), -Math.cos(fovX))
-        const yRes = Vec2.closestPointBetweenLines(yP0, yD0, yP1, yD1)
-        const yP = yP0.add(yD0.scale(yRes[0]))
+        drawLines(new Vec3(xP0.x, 0, xP0.y), new Vec3(xP1.x, 0, xP1.y), new Color(1, 0, 0))
+        drawLines(new Vec3(xP2.x, 0, xP2.y), new Vec3(xP3.x, 0, xP3.y), new Color(0, 1, 0))
 
-        const pan = new Vec3(xP.x, yP.x, Math.max(xP.y, yP.y))
-        globalXfo.tr.addInPlace(pan)
-        newFocalDistance = focalDistance + Math.max(xP.y, yP.y)
+        const xP = Vec2.intersectionOfLines(xP0, xP1, xP2, xP3)
+        drawPoint(new Vec3(xP.x, 0, xP.y), new Color(1, 0, 1))
+
+        const yP0 = new Vec2(Math.cos(angleY) * frustumPlaneOffsets.YPos, Math.sin(angleY) * frustumPlaneOffsets.YPos)
+        const yP1 = yP0.add(new Vec2(Math.sin(angleY), -Math.cos(angleY)))
+        const yP2 = new Vec2(-Math.cos(angleY) * frustumPlaneOffsets.YNeg, Math.sin(angleY) * frustumPlaneOffsets.YNeg)
+        const yP3 = yP2.add(new Vec2(-Math.sin(angleY), -Math.cos(angleY)))
+        const yP = Vec2.intersectionOfLines(yP0, yP1, yP2, yP3)
+
+        drawLines(new Vec3(0, yP0.x, yP0.y), new Vec3(0, yP1.x, yP1.y), new Color(1, 0, 0))
+        drawLines(new Vec3(0, yP2.x, yP2.y), new Vec3(0, yP3.x, yP3.y), new Color(0, 1, 0))
+
+        drawPoint(new Vec3(0, yP.x, yP.y), new Color(1, 0, 1))
+
+        const dolly = Math.max(xP.y, yP.y)
+        const pan = new Vec3(xP.x, yP.x, dolly)
+        globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(pan))
+        newFocalDistance = focalDistance + dolly
       }
     }
 
