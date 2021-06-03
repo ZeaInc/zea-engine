@@ -573,8 +573,32 @@ class Vec2 extends AttrValue {
    * @param {Vec2} d1 - The direction of the second line
    * @return {array} - Returns an array containing 2 parameter values for the 2 lines.
    */
-  static intersectionOfLines(p0, d0, p1, d1) {
-    return [0, 0]
+  static intersectionOfLines(p1, p2, p3, p4) {
+    // https://dirask.com/posts/JavaScript-how-to-calculate-intersection-point-of-two-lines-for-given-4-points-VjvnAj
+    // down part of intersection point formula
+    const d1 = (p1.x - p2.x) * (p3.y - p4.y) // (x1 - x2) * (y3 - y4)
+    const d2 = (p1.y - p2.y) * (p3.x - p4.x) // (y1 - y2) * (x3 - x4)
+    const d = d1 - d2
+
+    if (d == 0) {
+      return null
+    }
+
+    // upper part of intersection point formula
+    const u1 = p1.x * p2.y - p1.y * p2.x // (x1 * y2 - y1 * x2)
+    const u4 = p3.x * p4.y - p3.y * p4.x // (x3 * y4 - y3 * x4)
+
+    const u2x = p3.x - p4.x // (x3 - x4)
+    const u3x = p1.x - p2.x // (x1 - x2)
+    const u2y = p3.y - p4.y // (y3 - y4)
+    const u3y = p1.y - p2.y // (y1 - y2)
+
+    // intersection point formula
+
+    const px = (u1 * u2x - u3x * u4) / d
+    const py = (u1 * u2y - u3y * u4) / d
+
+    return new Vec2(px, py)
   }
 }
 
