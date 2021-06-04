@@ -459,6 +459,7 @@ class Camera extends TreeItem {
         frustumPlaneNormalsWs[key] = globalXfo.ori.rotateVec3(frustumPlaneNormals[key])
         frustumPlaneOffsets[key] = Number.NEGATIVE_INFINITY
       }
+      const centroid = new Vec3()
       boundaryPoints.forEach((point) => {
         const delta = point.subtract(globalXfo.tr)
         // eslint-disable-next-line guard-for-in
@@ -466,7 +467,9 @@ class Camera extends TreeItem {
           const planeOffset = delta.dot(frustumPlaneNormalsWs[key])
           if (planeOffset > frustumPlaneOffsets[key]) frustumPlaneOffsets[key] = planeOffset
         }
+        centroid.addInPlace(point)
       })
+      centroid.scaleInPlace(1 / boundaryPoints.length)
       // eslint-disable-next-line guard-for-in
       for (const key in frustumPlaneNormals) {
         drawLines(new Vec3(), frustumPlaneNormals[key].scale(frustumPlaneOffsets[key]), new Color(0.5, 0.5, 0))
@@ -489,12 +492,11 @@ class Camera extends TreeItem {
         const xP1 = xP0.add(new Vec2(Math.sin(angleX), -Math.cos(angleX)))
         const xP2 = new Vec2(-Math.cos(angleX) * frustumPlaneOffsets.XNeg, Math.sin(angleX) * frustumPlaneOffsets.XNeg)
         const xP3 = xP2.add(new Vec2(-Math.sin(angleX), -Math.cos(angleX)))
-
-        drawLines(new Vec3(xP0.x, 0, xP0.y), new Vec3(xP1.x, 0, xP1.y), new Color(1, 0, 0), globalXfo)
-        drawLines(new Vec3(xP2.x, 0, xP2.y), new Vec3(xP3.x, 0, xP3.y), new Color(0, 1, 0), globalXfo)
-
         const xP = Vec2.intersectionOfLines(xP0, xP1, xP2, xP3)
-        drawPoint(new Vec3(xP.x, 0, xP.y), new Color(1, 0, 1), globalXfo)
+
+        // drawLines(new Vec3(xP0.x, 0, xP0.y), new Vec3(xP1.x, 0, xP1.y), new Color(1, 0, 0), globalXfo)
+        // drawLines(new Vec3(xP2.x, 0, xP2.y), new Vec3(xP3.x, 0, xP3.y), new Color(0, 1, 0), globalXfo)
+        // drawPoint(new Vec3(xP.x, 0, xP.y), new Color(1, 0, 1), globalXfo)
 
         const yP0 = new Vec2(Math.cos(angleY) * frustumPlaneOffsets.YPos, Math.sin(angleY) * frustumPlaneOffsets.YPos)
         const yP1 = yP0.add(new Vec2(Math.sin(angleY), -Math.cos(angleY)))
@@ -502,15 +504,18 @@ class Camera extends TreeItem {
         const yP3 = yP2.add(new Vec2(-Math.sin(angleY), -Math.cos(angleY)))
         const yP = Vec2.intersectionOfLines(yP0, yP1, yP2, yP3)
 
-        drawLines(new Vec3(0, yP0.x, yP0.y), new Vec3(0, yP1.x, yP1.y), new Color(1, 0, 0), globalXfo)
-        drawLines(new Vec3(0, yP2.x, yP2.y), new Vec3(0, yP3.x, yP3.y), new Color(0, 1, 0), globalXfo)
-
-        drawPoint(new Vec3(0, yP.x, yP.y), new Color(1, 0, 1), globalXfo)
+        // drawLines(new Vec3(0, yP0.x, yP0.y), new Vec3(0, yP1.x, yP1.y), new Color(1, 0, 0), globalXfo)
+        // drawLines(new Vec3(0, yP2.x, yP2.y), new Vec3(0, yP3.x, yP3.y), new Color(0, 1, 0), globalXfo)
+        // drawPoint(new Vec3(0, yP.x, yP.y), new Color(1, 0, 1), globalXfo)
 
         const dolly = Math.max(xP.y, yP.y)
         const pan = new Vec3(xP.x, yP.x, dolly)
         globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(pan))
-        newFocalDistance = focalDistance + dolly
+
+        newFocalDistance = centroid.distanceTo(globalXfo.tr)
+
+        const frameBorder = 0.1
+        globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(new Vec3(0, 0, newFocalDistance * frameBorder)))
       }
     }
 
