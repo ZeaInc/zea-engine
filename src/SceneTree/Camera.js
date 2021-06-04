@@ -244,6 +244,11 @@ class Camera extends TreeItem {
    */
   setIsOrthographic(value, duration = 0) {
     if (this.__orthoIntervalId) clearInterval(this.__orthoIntervalId)
+    if (value > 0.5) {
+      const fov = this.__fovParam.getValue()
+      const focalDistance = this.__focalDistanceParam.getValue()
+      this.viewHeight = Math.sin(fov * 0.5) * focalDistance * 2
+    }
     if (duration == 0) {
       this.__isOrthographicParam.setValue(value)
     } else {
@@ -398,13 +403,15 @@ class Camera extends TreeItem {
       }
       if (boundaryPoints.length == 0) return
 
-      const angleX = fovX / 2
-      const angleY = fovY / 2
+      const angleX = this.isOrthographic() ? 0 : fovX / 2
+      const angleY = this.isOrthographic() ? 0 : fovY / 2
       const frustumPlaneNormals = {}
       frustumPlaneNormals.XPos = new Vec3(Math.cos(angleX), 0, Math.sin(angleX))
       frustumPlaneNormals.XNeg = new Vec3(-Math.cos(angleX), 0, Math.sin(angleX))
       frustumPlaneNormals.YPos = new Vec3(0, Math.cos(angleY), Math.sin(angleY))
       frustumPlaneNormals.YNeg = new Vec3(0, -Math.cos(angleY), Math.sin(angleY))
+      frustumPlaneNormals.ZPos = new Vec3(0, 0, 1)
+      frustumPlaneNormals.ZNeg = new Vec3(0, 0, -1)
       const frustumPlaneNormalsWs = {}
       const frustumPlaneOffsets = {}
       // eslint-disable-next-line guard-for-in
@@ -425,16 +432,24 @@ class Camera extends TreeItem {
       centroid.scaleInPlace(1 / boundaryPoints.length)
 
       if (this.isOrthographic()) {
-        const pan = new Vec3(0, 0, 0)
-        // eslint-disable-next-line guard-for-in
-        for (const key in frustumPlaneNormalsWs) {
-          pan.addInPlace(frustumPlaneNormalsWs[key].scale(frustumPlaneOffsets[key]))
-        }
-        globalXfo.tr.addInPlace(pan)
-        const newFocalDistanceX = ((frustumPlaneOffsets.XPos + frustumPlaneOffsets.XNeg) * 0.5) / Math.tan(angleX)
-        const newFocalDistanceY = ((frustumPlaneOffsets.YPos + frustumPlaneOffsets.YNeg) * 0.5) / Math.tan(angleY)
-        newFocalDistance = Math.max(newFocalDistanceX, newFocalDistanceY)
+        const pan = new Vec3(
+          (-frustumPlaneOffsets.XNeg + frustumPlaneOffsets.XPos) * 0.5,
+          (-frustumPlaneOffsets.YNeg + frustumPlaneOffsets.YPos) * 0.5,
+          (-frustumPlaneOffsets.ZNeg + frustumPlaneOffsets.ZPos) * 0.5
+        )
+        const zrange = frustumPlaneOffsets.ZNeg + frustumPlaneOffsets.ZPos
+        pan.z += zrange * 2
+        globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(pan))
+        newFocalDistance = zrange * 2
+
+        const viewWidth = frustumPlaneOffsets.XPos + frustumPlaneOffsets.XNeg
+        const viewHeight = frustumPlaneOffsets.YPos + frustumPlaneOffsets.YNeg
+        this.viewHeight = Math.max(viewHeight, viewWidth / aspectRatio)
+        const frameBorder = 0.1
+        this.viewHeight += this.viewHeight * frameBorder
       } else {
+        const angleX = fovX / 2
+        const angleY = fovY / 2
         // Now we solve the problem in 2D. For each camera plane (XZ and YZ), we calculate the lines in 2d that
         // represent the frustum planes for the top and bottom, adjusted so they touch the boundary points. We
         // then find the intersection of these 2 2d lines to calculate the adjustment in that axis for the camera.
@@ -482,8 +497,10 @@ class Camera extends TreeItem {
 
     const orthoMat = new Mat4()
     if (isOrthographic > 0.0) {
-      const focalDistance = this.__focalDistanceParam.getValue()
-      const halfHeight = Math.sin(fov * 0.5) * focalDistance
+      // const focalDistance = this.__focalDistanceParam.getValue()
+      // const halfHeight = Math.sin(fov * 0.5) * focalDistance
+      const halfHeight = this.viewHeight * 0.5
+
       const bottom = -halfHeight
       const top = halfHeight
       const left = halfHeight * -aspect
