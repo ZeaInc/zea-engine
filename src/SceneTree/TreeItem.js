@@ -46,6 +46,10 @@ class TreeItem extends BaseItem {
   constructor(name) {
     super(name)
 
+    // Controls if this TreeItem or its children contribute to the bounding boxes
+    // in the scene. If set to false, Camera framing will ignore this item,
+    this.disableBoundingBox = false
+
     this.__visibleCounter = 1 // Visible by Default.
     this.__visible = true
     this.__highlightMapping = {}

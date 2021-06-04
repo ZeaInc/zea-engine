@@ -169,6 +169,7 @@ class GeomItem extends BaseGeomItem {
    * @private
    */
   _cleanBoundingBox(bbox) {
+    if (this.disableBoundingBox) return bbox
     bbox = super._cleanBoundingBox(bbox)
     const geom = this.__geomParam.getValue()
     if (geom) {
