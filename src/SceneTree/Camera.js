@@ -398,53 +398,6 @@ class Camera extends TreeItem {
       }
       if (boundaryPoints.length == 0) return
 
-      const drawPoint = (p, color, globalXfo) => {
-        const points = new Points()
-        points.setNumVertices(1)
-        points.getVertexAttribute('positions').getValueRef(0).setFromOther(p)
-
-        const material = new Material('points', 'FatPointsShader')
-        material.getParameter('PointSize').setValue(0.05)
-        material.getParameter('Rounded').setValue(0.2)
-        material.getParameter('BaseColor').setValue(color)
-        const geomItem = new GeomItem('points', points, material, globalXfo)
-        geomItem.disableBoundingBox = true
-        treeItems[0].addChild(geomItem)
-      }
-      const drawLines = (p0, p1, color, globalXfo) => {
-        const line = new Lines()
-        line.setNumVertices(2)
-        line.setNumSegments(1)
-        line.setSegmentVertexIndices(0, 0, 1)
-        const positions = line.getVertexAttribute('positions')
-        positions.getValueRef(0).setFromOther(p0)
-        positions.getValueRef(1).setFromOther(p1)
-
-        const material = new Material('thinlines', 'LinesShader')
-        material.getParameter('BaseColor').setValue(color)
-        const geomItem = new GeomItem('lines', line, material, globalXfo)
-        geomItem.disableBoundingBox = true
-        treeItems[0].addChild(geomItem)
-
-        drawPoint(p0, color, globalXfo)
-      }
-
-      const pointsGeom = new Points()
-      pointsGeom.setNumVertices(boundaryPoints.length)
-      const positions = pointsGeom.getVertexAttribute('positions')
-      boundaryPoints.forEach((point, index) => {
-        positions.getValueRef(index).setFromOther(point)
-      })
-      const material = new Material('points', 'FatPointsShader')
-      material.getParameter('PointSize').setValue(0.05)
-      material.getParameter('Rounded').setValue(0.2)
-      material.getParameter('BaseColor').setValue(new Color())
-      const geomItem = new GeomItem('points', pointsGeom, material)
-      geomItem.disableBoundingBox = true
-      treeItems[0].addChild(geomItem)
-
-      // const fovX = 0
-      // const fovY = 0
       const angleX = fovX / 2
       const angleY = fovY / 2
       const frustumPlaneNormals = {}
@@ -470,11 +423,6 @@ class Camera extends TreeItem {
         centroid.addInPlace(point)
       })
       centroid.scaleInPlace(1 / boundaryPoints.length)
-      // eslint-disable-next-line guard-for-in
-      for (const key in frustumPlaneNormals) {
-        drawLines(new Vec3(), frustumPlaneNormals[key].scale(frustumPlaneOffsets[key]), new Color(0.5, 0.5, 0))
-      }
-      drawPoint(new Vec3(), new Color(1, 1, 1), globalXfo)
 
       if (this.isOrthographic()) {
         const pan = new Vec3(0, 0, 0)
@@ -494,19 +442,11 @@ class Camera extends TreeItem {
         const xP3 = xP2.add(new Vec2(-Math.sin(angleX), -Math.cos(angleX)))
         const xP = Vec2.intersectionOfLines(xP0, xP1, xP2, xP3)
 
-        // drawLines(new Vec3(xP0.x, 0, xP0.y), new Vec3(xP1.x, 0, xP1.y), new Color(1, 0, 0), globalXfo)
-        // drawLines(new Vec3(xP2.x, 0, xP2.y), new Vec3(xP3.x, 0, xP3.y), new Color(0, 1, 0), globalXfo)
-        // drawPoint(new Vec3(xP.x, 0, xP.y), new Color(1, 0, 1), globalXfo)
-
         const yP0 = new Vec2(Math.cos(angleY) * frustumPlaneOffsets.YPos, Math.sin(angleY) * frustumPlaneOffsets.YPos)
         const yP1 = yP0.add(new Vec2(Math.sin(angleY), -Math.cos(angleY)))
         const yP2 = new Vec2(-Math.cos(angleY) * frustumPlaneOffsets.YNeg, Math.sin(angleY) * frustumPlaneOffsets.YNeg)
         const yP3 = yP2.add(new Vec2(-Math.sin(angleY), -Math.cos(angleY)))
         const yP = Vec2.intersectionOfLines(yP0, yP1, yP2, yP3)
-
-        // drawLines(new Vec3(0, yP0.x, yP0.y), new Vec3(0, yP1.x, yP1.y), new Color(1, 0, 0), globalXfo)
-        // drawLines(new Vec3(0, yP2.x, yP2.y), new Vec3(0, yP3.x, yP3.y), new Color(0, 1, 0), globalXfo)
-        // drawPoint(new Vec3(0, yP.x, yP.y), new Color(1, 0, 1), globalXfo)
 
         const dolly = Math.max(xP.y, yP.y)
         const pan = new Vec3(xP.x, yP.x, dolly)
