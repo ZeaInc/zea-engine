@@ -315,16 +315,16 @@ class Camera extends TreeItem {
 
     let newFocalDistance = focalDistance
 
-    const box3 = new Box3()
-    for (const treeItem of treeItems) {
-      box3.addBox3(treeItem.getParameter('BoundingBox').getValue())
-    }
-
-    if (!box3.isValid()) {
-      console.warn('Bounding box not valid.')
-      return
-    }
     if (this.frameOnBoundingSphere) {
+      const box3 = new Box3()
+      for (const treeItem of treeItems) {
+        box3.addBox3(treeItem.getParameter('BoundingBox').getValue())
+      }
+
+      if (!box3.isValid()) {
+        console.warn('Bounding box not valid.')
+        return
+      }
       const cameraViewVec = globalXfo.ori.getZaxis()
       const targetOffset = cameraViewVec.scale(-focalDistance)
       const currTarget = globalXfo.tr.add(targetOffset)
@@ -343,16 +343,62 @@ class Camera extends TreeItem {
       // https://stackoverflow.com/a/66113254/5546902
 
       const boundaryPoints = []
-      boundaryPoints.push(box3.p0)
-      boundaryPoints.push(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z))
-      boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z))
-      boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z))
-      boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z))
-      boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z))
-      boundaryPoints.push(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z))
-      boundaryPoints.push(box3.p1)
+      if (false) {
+        const box3 = new Box3()
+        for (const treeItem of treeItems) {
+          box3.addBox3(treeItem.getParameter('BoundingBox').getValue())
+        }
 
-      const drawPoint = (p, color) => {
+        if (!box3.isValid()) {
+          console.warn('Bounding box not valid.')
+          return
+        }
+        boundaryPoints.push(box3.p0)
+        boundaryPoints.push(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z))
+        boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z))
+        boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z))
+        boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z))
+        boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z))
+        boundaryPoints.push(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z))
+        boundaryPoints.push(box3.p1)
+      } else {
+        treeItems.forEach((treeItem) => {
+          treeItem.traverse((childItem) => {
+            if (!(childItem instanceof TreeItem)) return false
+            if (childItem.disableBoundingBox) return false
+            if (childItem instanceof GeomItem) {
+              const geom = childItem.getParameter('Geometry').getValue()
+              if (geom) {
+                const mat4 = childItem.getGeomMat4()
+                const box3 = geom.getBoundingBox()
+                boundaryPoints.push(mat4.transformVec3(box3.p0))
+                boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z)))
+                boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z)))
+                boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z)))
+                boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z)))
+                boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z)))
+                boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z)))
+                boundaryPoints.push(mat4.transformVec3(box3.p1))
+              }
+            } else if (childItem.getNumChildren() == 0) {
+              const box3 = childItem.getParameter('BoundingBox').getValue()
+              if (!box3.isValid()) return
+              boundaryPoints.push(box3.p0)
+              boundaryPoints.push(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z))
+              boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z))
+              boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p0.z))
+              boundaryPoints.push(new Vec3(box3.p0.x, box3.p1.y, box3.p1.z))
+              boundaryPoints.push(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z))
+              boundaryPoints.push(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z))
+              boundaryPoints.push(box3.p1)
+              return false
+            }
+          })
+        })
+      }
+      if (boundaryPoints.length == 0) return
+
+      const drawPoint = (p, color, globalXfo) => {
         const points = new Points()
         points.setNumVertices(1)
         points.getVertexAttribute('positions').getValueRef(0).setFromOther(p)
@@ -365,7 +411,7 @@ class Camera extends TreeItem {
         geomItem.disableBoundingBox = true
         treeItems[0].addChild(geomItem)
       }
-      const drawLines = (p0, p1, color) => {
+      const drawLines = (p0, p1, color, globalXfo) => {
         const line = new Lines()
         line.setNumVertices(2)
         line.setNumSegments(1)
@@ -380,8 +426,22 @@ class Camera extends TreeItem {
         geomItem.disableBoundingBox = true
         treeItems[0].addChild(geomItem)
 
-        drawPoint(p0, color)
+        drawPoint(p0, color, globalXfo)
       }
+
+      const pointsGeom = new Points()
+      pointsGeom.setNumVertices(boundaryPoints.length)
+      const positions = pointsGeom.getVertexAttribute('positions')
+      boundaryPoints.forEach((point, index) => {
+        positions.getValueRef(index).setFromOther(point)
+      })
+      const material = new Material('points', 'FatPointsShader')
+      material.getParameter('PointSize').setValue(0.05)
+      material.getParameter('Rounded').setValue(0.2)
+      material.getParameter('BaseColor').setValue(new Color())
+      const geomItem = new GeomItem('points', pointsGeom, material)
+      geomItem.disableBoundingBox = true
+      treeItems[0].addChild(geomItem)
 
       // const fovX = 0
       // const fovY = 0
@@ -411,7 +471,7 @@ class Camera extends TreeItem {
       for (const key in frustumPlaneNormals) {
         drawLines(new Vec3(), frustumPlaneNormals[key].scale(frustumPlaneOffsets[key]), new Color(0.5, 0.5, 0))
       }
-      drawPoint(new Vec3(), new Color(1, 1, 1))
+      drawPoint(new Vec3(), new Color(1, 1, 1), globalXfo)
 
       if (this.isOrthographic()) {
         const pan = new Vec3(0, 0, 0)
@@ -430,11 +490,11 @@ class Camera extends TreeItem {
         const xP2 = new Vec2(-Math.cos(angleX) * frustumPlaneOffsets.XNeg, Math.sin(angleX) * frustumPlaneOffsets.XNeg)
         const xP3 = xP2.add(new Vec2(-Math.sin(angleX), -Math.cos(angleX)))
 
-        drawLines(new Vec3(xP0.x, 0, xP0.y), new Vec3(xP1.x, 0, xP1.y), new Color(1, 0, 0))
-        drawLines(new Vec3(xP2.x, 0, xP2.y), new Vec3(xP3.x, 0, xP3.y), new Color(0, 1, 0))
+        drawLines(new Vec3(xP0.x, 0, xP0.y), new Vec3(xP1.x, 0, xP1.y), new Color(1, 0, 0), globalXfo)
+        drawLines(new Vec3(xP2.x, 0, xP2.y), new Vec3(xP3.x, 0, xP3.y), new Color(0, 1, 0), globalXfo)
 
         const xP = Vec2.intersectionOfLines(xP0, xP1, xP2, xP3)
-        drawPoint(new Vec3(xP.x, 0, xP.y), new Color(1, 0, 1))
+        drawPoint(new Vec3(xP.x, 0, xP.y), new Color(1, 0, 1), globalXfo)
 
         const yP0 = new Vec2(Math.cos(angleY) * frustumPlaneOffsets.YPos, Math.sin(angleY) * frustumPlaneOffsets.YPos)
         const yP1 = yP0.add(new Vec2(Math.sin(angleY), -Math.cos(angleY)))
@@ -442,10 +502,10 @@ class Camera extends TreeItem {
         const yP3 = yP2.add(new Vec2(-Math.sin(angleY), -Math.cos(angleY)))
         const yP = Vec2.intersectionOfLines(yP0, yP1, yP2, yP3)
 
-        drawLines(new Vec3(0, yP0.x, yP0.y), new Vec3(0, yP1.x, yP1.y), new Color(1, 0, 0))
-        drawLines(new Vec3(0, yP2.x, yP2.y), new Vec3(0, yP3.x, yP3.y), new Color(0, 1, 0))
+        drawLines(new Vec3(0, yP0.x, yP0.y), new Vec3(0, yP1.x, yP1.y), new Color(1, 0, 0), globalXfo)
+        drawLines(new Vec3(0, yP2.x, yP2.y), new Vec3(0, yP3.x, yP3.y), new Color(0, 1, 0), globalXfo)
 
-        drawPoint(new Vec3(0, yP.x, yP.y), new Color(1, 0, 1))
+        drawPoint(new Vec3(0, yP.x, yP.y), new Color(1, 0, 1), globalXfo)
 
         const dolly = Math.max(xP.y, yP.y)
         const pan = new Vec3(xP.x, yP.x, dolly)
