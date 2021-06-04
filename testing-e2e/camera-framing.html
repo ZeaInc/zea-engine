@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>camera-framing - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Xfo, Color, Cuboid, Material, GeomItem, GLBoundingBoxPass } = zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      scene.setupGrid(10.0, 10)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      standardMaterial.getParameter('BaseColor').setValue(new Color(200 / 255, 50 / 255, 50 / 255))
+
+      const cuboid = new Cuboid(1.5, 5.0, 1.1)
+      const geomItem = new GeomItem('Cuboid', cuboid, standardMaterial)
+
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), 1)
+      geomItem.getParameter('GlobalXfo').setValue(xfo)
+
+      scene.getRoot().addChild(geomItem)
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0.1))
+
+      renderer.getViewport().on('keyDown', (event) => {
+        if (event.key == 'f') {
+          renderer.frameAll()
+        }
+      })
+
+      const boundingBoxPass = new GLBoundingBoxPass()
+      renderer.addPass(boundingBoxPass)
+      boundingBoxPass.addTreeItem(geomItem, true)
+
+      renderer.frameAll()
+
+      const postMessage = (msg) => {
+        console.log(msg)
+        window.postMessage(msg)
+      }
+      postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 0), new Vec3(0, 0, 0))
+          renderer.frameAll()
+          postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-6, 6, 0), new Vec3(0, 0, 0))
+          renderer.frameAll()
+          postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas>
+    </div>
+  </body>
+</html>

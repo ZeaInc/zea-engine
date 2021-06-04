@@ -435,6 +435,10 @@ class Camera extends TreeItem {
         const newFocalDistanceY = ((frustumPlaneOffsets.YPos + frustumPlaneOffsets.YNeg) * 0.5) / Math.tan(angleY)
         newFocalDistance = Math.max(newFocalDistanceX, newFocalDistanceY)
       } else {
+        // Now we solve the problem in 2D. For each camera plane (XZ and YZ), we calculate the lines in 2d that
+        // represent the frustum planes for the top and bottom, adjusted so they touch the boundary points. We
+        // then find the intersection of these 2 2d lines to calculate the adjustment in that axis for the camera.
+        // We need to dolly back to fix the plane which needs the most adjustment.
         // Calculate a 2d point on the line for each plane, and a direction.
         const xP0 = new Vec2(Math.cos(angleX) * frustumPlaneOffsets.XPos, Math.sin(angleX) * frustumPlaneOffsets.XPos)
         const xP1 = xP0.add(new Vec2(Math.sin(angleX), -Math.cos(angleX)))

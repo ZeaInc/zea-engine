@@ -63,6 +63,12 @@
         .getCamera()
         .setPositionAndTarget(new Vec3(dim * 2, dim * 2, dim), new Vec3(dim * 0.5, dim * 0.5, dim * 0.5))
 
+      renderer.getViewport().on('keyDown', (event) => {
+        if (event.key == 'f') {
+          renderer.frameAll()
+        }
+      })
+
       const MEMORY_LIMIT = 1_720_000_000
       const TIME_LIMIT = 45_000
 
