@@ -78,9 +78,9 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
     const material = materialParam.getValue()
     const shaderName = material.getShaderName()
 
-    if (this.__gl.multiDrawElementsInstanced) {
+    if (!material.isTextured()) {
       const shader = Registry.getBlueprint(shaderName)
-      if (!material.isTextured() && shader.supportsInstancing() && shader.getPackedMaterialData) {
+      if (shader.supportsInstancing() && shader.getPackedMaterialData) {
         let glShaderGeomSets = this.__glShaderGeomSets[shaderName]
         if (!glShaderGeomSets) {
           const shaders = this.constructShaders(shaderName)

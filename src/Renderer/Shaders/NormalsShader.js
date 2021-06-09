@@ -34,7 +34,7 @@ uniform float normalLength;
 varying float v_weight;
 
 void main(void) {
-  mat4 modelMatrix = getModelMatrix(transformIndex);
+  mat4 modelMatrix = getModelMatrix(drawItemId);
   mat4 modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
   if(vertexIDs.x == 0.0){
     gl_Position = modelViewProjectionMatrix * vec4(positions, 1.0);

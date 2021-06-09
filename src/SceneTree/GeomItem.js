@@ -96,6 +96,18 @@ class GeomItem extends BaseGeomItem {
     if (xfo) this.getParameter('LocalXfo').setValue(xfo)
   }
 
+  /**
+   * Modifies the selectability of this item.
+   *
+   * @param {boolean} val - A boolean indicating the selectability of the item.
+   * @return {boolean} - Returns true if value changed.
+   */
+  setSelectable(val) {
+    const res = super.setSelectable(val)
+    this.visibleInGeomDataBuffer = !res
+    return res
+  }
+
   // ////////////////////////////////////////
   // Geometry
 

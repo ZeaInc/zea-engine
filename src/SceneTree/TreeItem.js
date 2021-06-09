@@ -1,14 +1,9 @@
-import { Color, Xfo, Box3 } from '../Math/index'
+import { Xfo, Box3 } from '../Math/index'
 import { Registry } from '../Registry'
 import { BooleanParameter, XfoParameter } from './Parameters/index'
 import { BaseItem } from './BaseItem.js'
 import { CalcGlobalXfoOperator } from './Operators/CalcGlobalXfoOperator.js'
 import { BoundingBoxParameter } from './Parameters/BoundingBoxParameter.js'
-
-let selectionOutlineColor = new Color('#03E3AC')
-selectionOutlineColor.a = 0.1
-let branchSelectionOutlineColor = selectionOutlineColor.lerp(new Color('white'), 0.5)
-branchSelectionOutlineColor.a = 0.1
 
 /**
  * Class representing an Item in the scene tree with hierarchy capabilities (has children).
@@ -88,56 +83,7 @@ class TreeItem extends BaseItem {
       this.__visibleCounter += this.__visibleParam.getValue() ? 1 : -1
       this.__updateVisibility()
     })
-
-    // Note: one day we will remove the concept of 'selection' from the engine
-    // and keep it only in UX. to Select an item, we will add it to the selection
-    // in the selection manager. Then the selection group will apply a highlight.
-    this.on('selectedChanged', () => {
-      if (this.__selected) {
-        this.addHighlight('selected', selectionOutlineColor, true)
-      } else {
-        this.removeHighlight('selected', true)
-      }
-    })
   }
-
-  /**
-   * Returns the selection outline color.
-   *
-   * @return {Color} - Returns a color.
-   */
-  static getSelectionOutlineColor() {
-    return selectionOutlineColor
-  }
-
-  /**
-   * Sets the selection outline color.
-   *
-   * @param {Color} color - The color value.
-   */
-  static setSelectionOutlineColor(color) {
-    selectionOutlineColor = color
-  }
-
-  /**
-   * Returns the branch selection outline color.
-   *
-   * @return {Color} - Returns a color.
-   */
-  static getBranchSelectionOutlineColor() {
-    return branchSelectionOutlineColor
-  }
-
-  /**
-   * Sets the branch selection outline color.
-   *
-   * @param {Color} color - The color value.
-   */
-  static setBranchSelectionOutlineColor(color) {
-    branchSelectionOutlineColor = color
-  }
-
-  // Parent Item
 
   /**
    * Sets the owner (another TreeItem) of the current TreeItem.

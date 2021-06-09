@@ -156,7 +156,7 @@ class GLGeomItem extends EventEmitter {
       }
     }
 
-    const unif = unifs.transformIndex
+    const unif = unifs.drawItemId
     if (unif) {
       gl.uniform1i(unif.location, this.drawItemId)
     }

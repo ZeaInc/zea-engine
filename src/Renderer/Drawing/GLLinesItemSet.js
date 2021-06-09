@@ -37,18 +37,40 @@ class GLLinesItemSet extends GLGeomItemSetMultiDraw {
    */
   multiDraw(renderstate, counts, offsets) {
     const gl = this.gl
-    const { occluded } = renderstate.unifs
-    if (occluded) {
-      gl.uniform1i(occluded.location, 0)
-    }
+    if (gl.multiDrawArrays) {
+      const { occluded } = renderstate.unifs
+      if (occluded) {
+        gl.uniform1i(occluded.location, 0)
+      }
 
-    gl.multiDrawElements(gl.LINES, counts, 0, gl.UNSIGNED_INT, offsets, 0, counts.length)
-
-    if (occluded) {
-      gl.uniform1i(occluded.location, 1)
-      gl.depthFunc(gl.GREATER)
       gl.multiDrawElements(gl.LINES, counts, 0, gl.UNSIGNED_INT, offsets, 0, counts.length)
-      gl.depthFunc(gl.LEQUAL)
+
+      if (occluded) {
+        gl.uniform1i(occluded.location, 1)
+        gl.depthFunc(gl.GREATER)
+        gl.multiDrawElements(gl.LINES, counts, 0, gl.UNSIGNED_INT, offsets, 0, counts.length)
+        gl.depthFunc(gl.LEQUAL)
+      }
+    } else {
+      const { drawId, occluded } = renderstate.unifs
+      if (occluded) {
+        gl.uniform1i(occluded.location, 0)
+      }
+
+      for (let i = 0; i < counts.length; i++) {
+        gl.uniform1i(drawId.location, i)
+        gl.drawElements(gl.LINES, counts[i], gl.UNSIGNED_INT, offsets[i])
+      }
+
+      if (occluded) {
+        gl.uniform1i(occluded.location, 1)
+        gl.depthFunc(gl.GREATER)
+        for (let i = 0; i < counts.length; i++) {
+          gl.uniform1i(drawId.location, i)
+          gl.drawElements(gl.LINES, counts[i], gl.UNSIGNED_INT, offsets[i])
+        }
+        gl.depthFunc(gl.LEQUAL)
+      }
     }
   }
 }

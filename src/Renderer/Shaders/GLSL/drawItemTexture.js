@@ -11,17 +11,26 @@ shaderLibrary.setShaderModule(
 
 uniform sampler2D drawIdsTexture;
 
-uniform int instancedDraw;
+#ifdef EMULATE_MULTI_DRAW
 
+uniform int drawId;
+int getDrawItemId() {
+  ivec2 drawIdsTextureSize = textureSize(drawIdsTexture, 0);
+  ivec2 drawIdsArrayCoords = ivec2(drawId % drawIdsTextureSize.x, drawId / drawIdsTextureSize.x);
+  return int(texelFetch(drawIdsTexture, drawIdsArrayCoords, 0).r + 0.5);
+}
+
+#else // EMULATE_MULTI_DRAW
 int getDrawItemId() {
   ivec2 drawIdsTextureSize = textureSize(drawIdsTexture, 0);
   ivec2 drawIdsArrayCoords = ivec2(gl_DrawID % drawIdsTextureSize.x, gl_DrawID / drawIdsTextureSize.x);
   return int(texelFetch(drawIdsTexture, drawIdsArrayCoords, 0).r + 0.5);
 }
+#endif // EMULATE_MULTI_DRAW
 
 #else // ENABLE_MULTI_DRAW
 
-uniform int transformIndex;
+uniform int drawItemId;
 
 #ifdef ENABLE_FLOAT_TEXTURES
 
@@ -30,7 +39,7 @@ uniform int instancedDraw;
 
 int getDrawItemId() {
   if(instancedDraw == 0){
-    return transformIndex;
+    return drawItemId;
   }
   else{
     return int(instancedIds);
@@ -41,7 +50,7 @@ int getDrawItemId() {
 #else
 
 int getDrawItemId() {
-  return transformIndex;
+  return drawItemId;
 }
 
 #endif // ENABLE_FLOAT_TEXTURES

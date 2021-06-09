@@ -15,14 +15,6 @@ class GLMesh extends GLGeom {
     super(gl, mesh)
   }
 
-  /**
-   * The getNumTriangles method.
-   * @return {any} - The return value.
-   */
-  getNumTriangles() {
-    return this.__numTriangles
-  }
-
   // /////////////////////////////////////
   // Buffers
 

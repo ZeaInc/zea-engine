@@ -148,6 +148,10 @@ This command automatically calculates the next stable version and a release cand
 yarn version --prerelease --preid rc
 ```
 
+```bash
+yarn publish --tag preid
+```
+
 Adds an identifier specified by <pre-identifier> to be used to prefix premajor, preminor, prepatch or prerelease version increments.
 ```bash
 yarn version --prerelease --preid <pre-identifier>

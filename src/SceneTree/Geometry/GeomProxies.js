@@ -2,7 +2,8 @@ import { Box3 } from '../../Math/index'
 import { EventEmitter } from '../../Utilities/EventEmitter.js'
 import { Registry } from '../../Registry'
 
-/** Class representing a base geometry proxy.
+/** ProxyGeometries are pupulated from data unpacked using a webworker while loading zcad files.
+ * These geometries represent readonly geometries with very basic topologies.
  * @extends EventEmitter
  * @private
  */
@@ -122,6 +123,15 @@ class LinesProxy extends BaseProxy {
   constructor(data) {
     super(data)
   }
+
+  /**
+   * Returns the number line segments in this lines proxy geometry
+   *
+   * @return {number} - The return value.
+   */
+  getNumLineSegments() {
+    return this.__buffers.indices.length / 2
+  }
 }
 
 /** Class representing a mesh proxy.
@@ -135,6 +145,15 @@ class MeshProxy extends BaseProxy {
    */
   constructor(data) {
     super(data)
+  }
+
+  /**
+   * Returns the number of triangles in this mesh proxy geometry.
+   *
+   * @return {number} - The return value.
+   */
+  getNumTriangles() {
+    return this.__buffers.indices.length / 3
   }
 }
 
