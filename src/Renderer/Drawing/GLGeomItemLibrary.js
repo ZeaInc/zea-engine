@@ -484,7 +484,7 @@ class GLGeomItemLibrary extends EventEmitter {
         indexEnd++
       }
 
-      // TODO: for contiguous blcoks, we create larger arrays and populate
+      // TODO: for contiguous blocks, we create larger arrays and populate
       // and upload them in one step.
       const uploadCount = indexEnd - indexStart
       const xoffset = (indexStart * pixelsPerItem) % size

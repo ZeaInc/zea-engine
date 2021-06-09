@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>frustum-culling-animated-geoms - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, Vec3, Xfo, Color, Sphere, Material, TreeItem, GeomItem, GLBoundingBoxPass } = zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      scene.setupGrid(10.0, 10)
+
+      const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
+      const sphere = new Sphere(0.4, 20, 10)
+
+      const buildSubTree = (xfo) => {
+        const treeItem = new TreeItem()
+        treeItem.addChild(new GeomItem('Sphere1', sphere, standardMaterial, new Xfo(new Vec3(1, 0, 0))))
+        treeItem.addChild(new GeomItem('Sphere2', sphere, standardMaterial, new Xfo(new Vec3(1, 1, 0))))
+        treeItem.addChild(new GeomItem('Sphere3', sphere, standardMaterial, new Xfo(new Vec3(0, 1, 0))))
+        treeItem.addChild(new GeomItem('Sphere4', sphere, standardMaterial, new Xfo(new Vec3(0, 0, 1))))
+        treeItem.getParameter('GlobalXfo').setValue(xfo)
+        return treeItem
+      }
+      const tree1 = buildSubTree(new Xfo(new Vec3(0, -1, 1)))
+      const tree2 = buildSubTree(new Xfo(new Vec3(0, 1, 1)))
+
+      const xfo1 = tree1.getParameter('GlobalXfo').getValue()
+      const xfo2 = tree2.getParameter('GlobalXfo').getValue()
+      const updateTreePositions = (t) => {
+        xfo1.tr.x = Math.sin(t) * 5
+        xfo2.tr.y = Math.sin(t) * 5
+        tree1.getParameter('GlobalXfo').setValue(xfo1)
+        tree2.getParameter('GlobalXfo').setValue(xfo2)
+      }
+      // let t = 0
+      // setInterval(() => {
+      //   updateTreePositions(t)
+      //   t += 0.05
+      //   console.log(t)
+      // }, 50)
+
+      scene.getRoot().addChild(tree1)
+      scene.getRoot().addChild(tree2)
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(4, 4, 2.7), new Vec3(0, 0, 1))
+
+      const postMessage = (msg) => {
+        console.log(msg)
+        window.postMessage(msg)
+      }
+      postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          updateTreePositions(2)
+          postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          updateTreePositions(0)
+          postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas>
+    </div>
+  </body>
+</html>

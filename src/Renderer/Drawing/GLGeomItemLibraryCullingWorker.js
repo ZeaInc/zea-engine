@@ -166,6 +166,7 @@ const onViewChanged = (data, postMessage) => {
 }
 
 const onDone = (postMessage) => {
+  // console.log('onDone newlyCulled:', newlyCulled.length, 'newlyUnCulled:', newlyUnCulled.length)
   if (newlyCulled.length > 0 || newlyUnCulled.length > 0) {
     // console.log('CullResults culled:', culledCount, 'visible:', geomItemsData.length - 1 - culledCount)
     postMessage({ type: 'CullResults', newlyCulled, newlyUnCulled })
@@ -186,8 +187,9 @@ const handleMessage = (data, postMessage) => {
       geomItemsData[id] = null
     })
     data.geomItems.forEach((geomItem) => {
+      // New geoms default to being un-culled
+      if (!geomItemsData[geomItem.id]) frustumCulled[geomItem.id] = false
       geomItemsData[geomItem.id] = geomItem
-      frustumCulled[geomItem.id] = false
       checkGeomItem(geomItemsData[geomItem.id])
     })
     onDone(postMessage)
