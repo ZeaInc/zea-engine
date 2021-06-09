@@ -49,6 +49,7 @@
 
       const canvas = document.getElementById('renderer')
       const renderer = new GLRenderer(canvas, { hideSplash: true, antialias: false })
+      renderer.solidAngleLimit = 0.0
 
       const scene = new Scene()
 
@@ -109,7 +110,6 @@
 
         console.time('Load GPU')
         renderer.setScene(scene)
-        renderer.frameAll()
         console.timeEnd('Load GPU')
 
         const totalTime = performance.now() - startTime
