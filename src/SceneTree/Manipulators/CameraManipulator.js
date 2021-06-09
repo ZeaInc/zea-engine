@@ -323,12 +323,27 @@ class CameraManipulator extends BaseTool {
   dolly(event, dragVec) {
     const { viewport } = event
     const camera = viewport.getCamera()
+    const focalDistance = camera.getFocalDistance()
 
-    const dollyDist = dragVec.x * this.__dollySpeedParam.getValue()
-    const delta = new Xfo()
-    delta.tr.set(0, 0, dollyDist)
-    const globalXfo = camera.getParameter('GlobalXfo').getValue()
-    camera.getParameter('GlobalXfo').setValue(globalXfo.multiply(delta))
+    const applyMovement = () => {
+      const dollyDist = dragVec.y * this.__dollySpeedParam.getValue() * focalDistance
+      const delta = new Xfo()
+      delta.tr.set(0, 0, dollyDist)
+      const globalXfo = camera.getParameter('GlobalXfo').getValue()
+      camera.getParameter('GlobalXfo').setValue(globalXfo.multiply(delta))
+    }
+    const applyViewScale = () => {
+      const dollyDist = dragVec.y * this.__dollySpeedParam.getValue()
+      const viewHeight = camera.getFrustumHeight()
+      const zoomDist = viewHeight * dollyDist
+      camera.setFrustumHeight(viewHeight + zoomDist)
+    }
+
+    if (camera.isOrthographic()) {
+      applyViewScale()
+    } else {
+      applyMovement()
+    }
   }
 
   /**
@@ -838,12 +853,26 @@ class CameraManipulator extends BaseTool {
       const zoomDist = focalDistance * this.__mouseWheelMovementDist
       xfo.tr.addInPlace(dir.scale(zoomDist))
 
-      camera.setFocalDistance(camera.getFocalDistance() + zoomDist)
+      camera.setFocalDistance(focalDistance + zoomDist)
       camera.getParameter('GlobalXfo').setValue(xfo)
 
       this.__mouseWheelZoomCount++
       if (this.__mouseWheelZoomCount < steps) {
         this.__mouseWheelZoomId = setTimeout(applyMovement, 10)
+      } else {
+        this.__mouseWheelZoomId = undefined
+        this.emit('movementFinished', {})
+        camera.emit('movementFinished', { event: 'onWheel' })
+      }
+    }
+    const applyViewScale = () => {
+      const viewHeight = camera.getFrustumHeight()
+      const zoomDist = viewHeight * this.__mouseWheelMovementDist
+      camera.setFrustumHeight(viewHeight + zoomDist)
+
+      this.__mouseWheelZoomCount++
+      if (this.__mouseWheelZoomCount < steps) {
+        this.__mouseWheelZoomId = setTimeout(applyViewScale, 10)
       } else {
         this.__mouseWheelZoomId = undefined
         this.emit('movementFinished', {})
@@ -859,7 +888,11 @@ class CameraManipulator extends BaseTool {
     } else {
       this.__mouseWheelMovementDist = (direction * mouseWheelDollySpeed * modulator) / steps
       this.__mouseWheelZoomCount = 0
-      applyMovement()
+      if (camera.isOrthographic()) {
+        applyViewScale()
+      } else {
+        applyMovement()
+      }
     }
 
     event.preventDefault()

@@ -127,7 +127,8 @@ class Camera extends TreeItem {
 
   /**
    * Getter for the camera field of view (FOV).
-   * The FOV is how much of the scene the camera can see at once.
+   * The FOV defines the vertical angle of the view frustum
+   * The horizontal angle is calculated from the FOV and the Viewport aspect ratio.
    *
    * @return {number} - Returns the FOV value.
    */
@@ -137,18 +138,43 @@ class Camera extends TreeItem {
 
   /**
    * Setter for the camera field of view (FOV).
-   * The FOV is how much of the scene the camera can see at once.
+   * The FOV defines the vertical angle of the view frustum
+   * The horizontal angle is calculated from the FOV and the Viewport aspect ratio.
+   * > Note: The Fov can also be set by calling #setLensFocalLength
    *
-   * @param {number} value - The FOV value.
+   * @param {number} value - The new FOV value.
    */
   setFov(value) {
     this.__fovParam.setValue(value)
   }
 
   /**
-   * Setter for the camera lens focal length. Updates `fov` parameter value after a small math procedure.
+   * Getter for the camera frustum height value.
+   * The frustum hight value is used to compute the orthographic projection of the scene.
    *
-   * **Focal Length accepted values:** 10mm, 11mm, 12mm, 14mm, 15mm, 17mm, 18mm,
+   * @return {number} - Returns the Frustum Height value.
+   */
+  getFrustumHeight() {
+    return this.viewHeight
+  }
+
+  /**
+   * Setter for the camera frustum height in orthographic mode.
+   * > Note: in perspective mode, the frustum height is calculated based on the FOV value and focal distance.
+   *
+   * @param {number} value - The new Frustum Height value.
+   */
+  setFrustumHeight(value) {
+    this.viewHeight = value
+    this.emit('projectionParamChanged', event)
+  }
+
+  /**
+   * Setter for the camera lens focal length. This method calculates a new vertical Field of View value
+   * from the provided camera lense focal length.
+   * > Note: conversion from Lense Focal length to Fov is based on the table found here: https://www.nikonians.org/reviews/fov-tables
+   *
+   * **Focal Length accepted values as string values:** 10mm, 11mm, 12mm, 14mm, 15mm, 17mm, 18mm,
    * 19mm, 20mm, 24mm, 28mm, 30mm, 35mm, 45mm, 50mm, 55mm, 60mm, 70mm, 75mm, 80mm,
    * 85mm, 90mm, 100mm, 105mm, 120mm, 125mm, 135mm, 150mm, 170mm, 180mm, 210mm, 300mm,
    * 400mm, 500mm, 600mm, 800mm
@@ -497,10 +523,7 @@ class Camera extends TreeItem {
 
     const orthoMat = new Mat4()
     if (isOrthographic > 0.0) {
-      // const focalDistance = this.__focalDistanceParam.getValue()
-      // const halfHeight = Math.sin(fov * 0.5) * focalDistance
       const halfHeight = this.viewHeight * 0.5
-
       const bottom = -halfHeight
       const top = halfHeight
       const left = halfHeight * -aspect
