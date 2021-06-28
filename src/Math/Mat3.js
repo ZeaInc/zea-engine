@@ -4,7 +4,7 @@ import { Vec3 } from './Vec3.js'
 import { Registry } from '../Registry'
 
 /**
- * A class representing a 3x3 matrix.
+ * A class representing a 3x3 matrix. just another test comment
  * This matrix class is based on GLM, and is column major.
  *
  * @extends AttrValue

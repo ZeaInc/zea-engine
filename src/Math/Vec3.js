@@ -3,7 +3,7 @@ import { Registry } from '../Registry'
 import { Vec2 } from './Vec2.js'
 
 /**
- * Represents a three dimensional coordinate, such as 3D scene values, or mesh vertex positions.
+ * Represents a three dimensional coordinate, such as 3D scene values, or mesh vertex positions. Another test comment
  *
  * Math types internally store values in {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array|Float32Array} and
  * expose getters and setters for the component values.

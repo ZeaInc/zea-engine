@@ -7,7 +7,7 @@ import { EulerAngles } from './EulerAngles.js'
 import { Registry } from '../Registry'
 
 /**
- * Class representing a quaternion. Quaternions are used to represent 3 dimensional rotations.
+ * Class representing a quaternion. Quaternions are used to represent 3 dimensional rotations. one more
  *
  * While Quaternions are difficult to understand they have important mathematical properties that make them very useful in 3d engines.
  * They can be directly multiplied together in the same was as matrices.
