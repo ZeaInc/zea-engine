@@ -9,6 +9,8 @@ import { Vec3 } from './Vec3.js'
  *
  * @extends AttrValue
  */
+
+// a new comment to test if migration is working
 class Vec4 extends AttrValue {
   /**
    /**
