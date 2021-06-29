@@ -635,6 +635,8 @@ class GLBaseRenderer extends ParameterOwner {
         this.__gl.multiDrawElements = ext.multiDrawElementsWEBGL.bind(ext)
         this.__gl.multiDrawElementsInstanced = ext.multiDrawElementsInstancedWEBGL.bind(ext)
         this.__gl.multiDrawArraysInstanced = ext.multiDrawArraysInstancedWEBGL.bind(ext)
+      } else {
+        this.addShaderPreprocessorDirective('EMULATE_MULTI_DRAW')
       }
     }
 
