@@ -39,6 +39,7 @@
       const renderer = new GLRenderer(canvas, {
         hideSplash: true,
         webglContextType: urlParams.has('webgl') ? urlParams.get('webgl') : undefined,
+        disableMultiDraw: urlParams.has('disableMultiDraw'),
       })
       renderer.setScene(scene)
 

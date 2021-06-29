@@ -29,7 +29,7 @@ void main()
       'FRAGMENT_SHADER',
       `
 #ifndef ENABLE_ES3
-#extension GL_EXT_frag_depth : enable
+#extension GL_EXT_frag_depth: enable
 #endif
 precision highp float;
 
@@ -96,7 +96,9 @@ void main(void) {
     fragColor = vec4(outlineColor.rgb, sobelDepth);
 #else
     fragColor = vec4(mix(texture2D(colorTexture, v_texCoord).rgb, outlineColor.rgb, sobelDepth), 1.0);
+#ifdef  GL_EXT_frag_depth
     gl_FragDepthEXT = texture2D(depthTexture, v_texCoord).r;
+#endif
 #endif
 
     // float z = texture2D(depthTexture, v_texCoord).r;

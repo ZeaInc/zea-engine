@@ -2,7 +2,7 @@
   "name": "@zeainc/zea-engine",
   "fileName": "index",
   "libraryName": "ZeaEngine",
-  "version": "3.10.0",
+  "version": "3.10.2",
   "description": "Zea Engine",
   "browser": "dist/index.umd.js",
   "plugins": "dist/plugins.umd.js",
@@ -72,11 +72,6 @@
     "hooks": {
       "pre-commit": "npm test",
       "pre-push": "npm test"
-    }
-  },
-  "standard-version": {
-    "skip": {
-      "commit": true
     }
   }
 }

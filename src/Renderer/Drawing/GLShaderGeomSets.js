@@ -113,7 +113,11 @@ class GLShaderGeomSets extends EventEmitter {
    */
   bindShader(glShader, renderstate, key) {
     if (!glShader.isCompiledForTarget(key)) {
-      renderstate.shaderopts.directives.push('#define ENABLE_MULTI_DRAW 1\n#extension GL_ANGLE_multi_draw : enable')
+      if (this.gl.multiDrawElements) {
+        renderstate.shaderopts.directives.push('#define ENABLE_MULTI_DRAW\n#extension GL_ANGLE_multi_draw : enable')
+      } else {
+        renderstate.shaderopts.directives.push('#define ENABLE_MULTI_DRAW')
+      }
       glShader.compileForTarget(key, renderstate.shaderopts)
       renderstate.shaderopts.directives.pop()
     }

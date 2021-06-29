@@ -211,10 +211,15 @@ class GLMaterialLibrary extends EventEmitter {
 
     if (!this.materialsTexture) return
 
-    const unifs = renderstate.unifs
-    if (unifs.materialsTexture) {
-      this.materialsTexture.bindToUniform(renderstate, unifs.materialsTexture)
+    const { materialsTexture, materialsTextureSize } = renderstate.unifs
+    if (materialsTexture) {
+      this.materialsTexture.bindToUniform(renderstate, materialsTexture)
+      if (materialsTextureSize) {
+        const gl = this.renderer.gl
+        gl.uniform2i(materialsTextureSize.location, this.materialsTexture.width, this.materialsTexture.height)
+      }
     }
+
     return true
   }
 }

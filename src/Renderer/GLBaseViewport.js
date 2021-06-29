@@ -355,9 +355,9 @@ class GLBaseViewport extends ParameterOwner {
    * @private
    */
   drawSilhouettes(renderstate) {
-    if (SystemDesc.isIOSDevice) {
-      return
-    }
+    // We cannot render silhouettes in iOS because EXT_frag_depth is not supported
+    // and without it, we cannot draw lines over the top of geometries.
+    if (SystemDesc.isIOSDevice) return
     const gl = this.__renderer.gl
 
     if (gl.renderbufferStorageMultisample) {
@@ -365,6 +365,8 @@ class GLBaseViewport extends ParameterOwner {
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb[FRAMEBUFFER.DEPTHBUFFER])
       gl.clearBufferfv(gl.COLOR, 0, [1, 1, 1, 1])
 
+      // Note: in Google SwiftShader this line generates the following error later on the code path.
+      // GetShaderiv: <- error from previous GL command
       gl.blitFramebuffer(
         0,
         0,
@@ -397,12 +399,6 @@ class GLBaseViewport extends ParameterOwner {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
       gl.viewport(0, 0, this.__width, this.__height)
-
-      // gl.disable(gl.DEPTH_TEST)
-      // gl.depthMask(false)
-      // gl.screenQuad.bindShader(renderstate)
-      // this.offscreenBuffer.bindToUniform(renderstate, renderstate.unifs.image)
-      // gl.screenQuad.draw(renderstate)
     }
 
     // ////////////////////////////////////

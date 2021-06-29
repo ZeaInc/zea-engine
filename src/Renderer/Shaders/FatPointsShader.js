@@ -25,12 +25,17 @@ instancedattribute vec3 positions;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
+<%include file="GLSLUtils.glsl"/> 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="stack-gl/inverse.glsl"/>
-<%include file="drawItemId.glsl"/>
 <%include file="drawItemTexture.glsl"/>
 <%include file="modelMatrix.glsl"/>
 <%include file="utils/quadVertexFromID.glsl"/>
+
+uniform int drawItemId;
+int getDrawItemId() {
+    return drawItemId;
+}
 
 uniform float PointSize;
 uniform float Overlay;
@@ -247,6 +252,7 @@ varying vec3 v_viewPos;
 varying float v_drawItemId;
 
 
+<%include file="GLSLUtils.glsl"/> 
 <%include file="drawItemTexture.glsl"/>
 
 #ifdef ENABLE_FLOAT_TEXTURES

@@ -206,8 +206,7 @@ class GLGeomItemSetMultiDraw extends EventEmitter {
 
     if (!this.drawIdsTexture) {
       this.drawIdsTexture = new GLTexture2D(gl, {
-        format: 'RED',
-        internalFormat: 'R32F',
+        format: gl.name == 'webgl2' ? 'RED' : 'ALPHA',
         type: 'FLOAT',
         width: drawIdsTextureSize,
         height: drawIdsTextureSize,
@@ -292,8 +291,7 @@ class GLGeomItemSetMultiDraw extends EventEmitter {
 
     if (!this.highlightedIdsTexture) {
       this.highlightedIdsTexture = new GLTexture2D(gl, {
-        format: 'RED',
-        internalFormat: 'R32F',
+        format: gl.name == 'webgl2' ? 'RED' : 'ALPHA',
         type: 'FLOAT',
         width: highlightIdsTextureSize,
         height: highlightIdsTextureSize,
@@ -356,7 +354,13 @@ class GLGeomItemSetMultiDraw extends EventEmitter {
     if (this.drawIdsBufferDirty) {
       this.updateDrawIDsBuffer(renderstate)
     }
-    this.drawIdsTexture.bindToUniform(renderstate, renderstate.unifs.drawIdsTexture)
+    const { drawIdsTexture, drawIdsTextureSize } = renderstate.unifs
+    this.drawIdsTexture.bindToUniform(renderstate, drawIdsTexture)
+
+    if (drawIdsTextureSize) {
+      const gl = this.renderer.gl
+      gl.uniform2i(drawIdsTextureSize.location, this.drawIdsTexture.width, this.drawIdsTexture.height)
+    }
 
     this.__bindAndRender(renderstate, this.drawElementCounts, this.drawElementOffsets)
   }
@@ -372,7 +376,12 @@ class GLGeomItemSetMultiDraw extends EventEmitter {
     if (this.highlightedIdsBufferDirty) {
       this.updateHighlightedIDsBuffer(renderstate)
     }
-    this.highlightedIdsTexture.bindToUniform(renderstate, renderstate.unifs.drawIdsTexture)
+    const { drawIdsTexture, drawIdsTextureSize } = renderstate.unifs
+    this.highlightedIdsTexture.bindToUniform(renderstate, drawIdsTexture)
+    if (drawIdsTextureSize) {
+      const gl = this.renderer.gl
+      gl.uniform2i(drawIdsTextureSize.location, this.drawIdsTexture.width, this.drawIdsTexture.height)
+    }
 
     this.__bindAndRender(renderstate, this.highlightElementCounts, this.highlightElementOffsets)
   }

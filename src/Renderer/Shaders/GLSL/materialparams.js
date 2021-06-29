@@ -7,13 +7,13 @@ shaderLibrary.setShaderModule(
 #ifdef ENABLE_MULTI_DRAW
   
 uniform sampler2D materialsTexture;
+uniform highp ivec2 materialsTextureSize;
 
 vec4 getMaterialValue(vec2 materialCoords, int valueIndex) {
     int index = ftoi(materialCoords.x) + valueIndex;
-    ivec2 materialsTextureSize = textureSize(materialsTexture, 0);
-    ivec2 texelCoords = ivec2(index % materialsTextureSize.x, index / materialsTextureSize.x);
+    ivec2 texelCoords = ivec2(imod(index, materialsTextureSize.x), index / materialsTextureSize.x);
     
-    return texelFetch(materialsTexture, texelCoords, 0);
+    return fetchTexel(materialsTexture, materialsTextureSize, texelCoords);
 }
 
 #else // ENABLE_MULTI_DRAW

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.10.2](https://github.com/ZeaInc/zea-engine/compare/v3.10.1...v3.10.2) (2021-06-28)
+
+
+### Bug Fixes
+
+* Fix mixing multi-draw and non-multi-draw. ([49002b8](https://github.com/ZeaInc/zea-engine/commit/49002b851e28c46a40eec8972a15876601438fdd))
+* Fixed FatPointsShader multi-draw code path. ([9c3debf](https://github.com/ZeaInc/zea-engine/commit/9c3debf25d28db052d4cb1417b8c6abf358d3a21))
+* Fixed regression in PointsShader in multi-draw. ([3bb38e7](https://github.com/ZeaInc/zea-engine/commit/3bb38e78a4849a26deee59437e2d493a960a67c1))
+* Fixed regression in FatLinesShader in multi-draw. ([a796d3a](https://github.com/ZeaInc/zea-engine/commit/a796d3a04ece5bf8c96320d9f53224e262e82f01))
+* Fixed multi-draw code path for Firefox. ([ca88db3](https://github.com/ZeaInc/zea-engine/commit/ca88db3efa15d9561f616520ab64d7eaad6aee44))
+* Fixed multi-draw code path for iOS. ([54ab89a](https://github.com/ZeaInc/zea-engine/commit/54ab89aa0be7391548c150d1ad456edc2077ec49))
+
 ## [3.10.0](https://github.com/ZeaInc/zea-engine/compare/v3.9.1...v3.10.0) (2021-06-16)
 
 

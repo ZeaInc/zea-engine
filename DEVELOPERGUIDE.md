@@ -125,18 +125,26 @@ The testing framework launches chrome in headless mode, which uses an emulated s
 ```bash
 yarn run release
 ```
+This will generate a tag in the repo. This tag will be the basis of the next release.
 
 3. Regenerate the API docs
+
+Clean up te CHANGELOG.md, check for spelling issues and other inconsistencies.
+
 ```bash
 yarn docs
 ```
+Commit changes.
 
-4. Check for spelling issues and other inconsistencies.
-
-5. Push your changes and publish to NPM
+4. Push the main branch and the tags in one action like this. This will cause a publish to NPM
 ```bash
-git push --tags origin main
+git push --follow-tags origin main
 ```
+
+6. Check that the release process completes in GitHub.
+
+https://github.com/ZeaInc/zea-engine/actions
+
 
 ### Publishing a pre-release
 

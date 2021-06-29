@@ -25,6 +25,7 @@ attribute vec3 positions;
 attribute vec2 texCoords;
 #endif
 
+<%include file="GLSLUtils.glsl"/>
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="drawItemId.glsl"/>
 <%include file="drawItemTexture.glsl"/>
@@ -58,6 +59,7 @@ void main(void) {
       `
 precision highp float;
 
+<%include file="GLSLUtils.glsl"/>
 #ifdef ENABLE_MULTI_DRAW
 <%include file="math/constants.glsl"/>
 <%include file="drawItemTexture.glsl"/>

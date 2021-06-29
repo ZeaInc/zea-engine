@@ -20,6 +20,7 @@ precision highp float;
 
 attribute vec3 positions;
 
+<%include file="GLSLUtils.glsl"/>
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="stack-gl/inverse.glsl"/>
 <%include file="drawItemId.glsl"/>
@@ -93,6 +94,7 @@ uniform color BaseColor;
 
 #endif
 
+<%include file="GLSLUtils.glsl"/>
 <%include file="math/constants.glsl"/>
 <%include file="drawItemTexture.glsl"/>
 <%include file="cutaways.glsl"/>
