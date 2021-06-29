@@ -24,6 +24,7 @@ describe('hit-testing', () => {
 
     cy.window().then((win) => {
       cy.get('canvas').trigger('mousedown', 400, 250).trigger('mousemove', 400, 200).trigger('mouseup', 400, 200)
+      const variant = 'variant-02'
       cy.get('canvas').percySnapshot(`hit-testing - ${variant}`)
     })
   })
