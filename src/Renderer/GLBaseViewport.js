@@ -40,7 +40,7 @@ class GLBaseViewport extends ParameterOwner {
 
     // //////////////////////////////////
     // Setup Offscreen Render Targets
-    {
+    if (!SystemDesc.isIOSDevice) {
       this.offscreenBuffer = new GLTexture2D(gl, {
         type: 'UNSIGNED_BYTE',
         format: 'RGBA',
@@ -271,7 +271,7 @@ class GLBaseViewport extends ParameterOwner {
 
     const prevRendertarget = renderstate.boundRendertarget
 
-    if (this.renderer.outlineThickness > 0 && this.fb) {
+    if (this.fb) {
       // this.offscreenBufferFbo.bindForWriting(renderstate)
       // this.offscreenBufferFbo.clear()
       // render to our targetTexture by binding the framebuffer
@@ -312,7 +312,7 @@ class GLBaseViewport extends ParameterOwner {
 
     // //////////////////////////////////
     // Post processing.
-    if (this.renderer.outlineThickness > 0 && gl.renderbufferStorageMultisample) {
+    if (gl.renderbufferStorageMultisample) {
       // "blit" the scene into the color buffer
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb[FRAMEBUFFER.MSAA_RENDERBUFFER])
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb[FRAMEBUFFER.COLORBUFFER])
@@ -355,9 +355,9 @@ class GLBaseViewport extends ParameterOwner {
    * @private
    */
   drawSilhouettes(renderstate) {
-    if (this.renderer.outlineThickness <= 0) {
-      return
-    }
+    // We cannot render silhouettes in iOS because EXT_frag_depth is not supported
+    // and without it, we cannot draw lines over the top of geometries.
+    if (SystemDesc.isIOSDevice) return
     const gl = this.__renderer.gl
 
     if (gl.renderbufferStorageMultisample) {
