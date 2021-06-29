@@ -365,6 +365,8 @@ class GLBaseViewport extends ParameterOwner {
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb[FRAMEBUFFER.DEPTHBUFFER])
       gl.clearBufferfv(gl.COLOR, 0, [1, 1, 1, 1])
 
+      // Note: in Google SwiftShader this line generates the following error later on the code path.
+      // GetShaderiv: <- error from previous GL command
       gl.blitFramebuffer(
         0,
         0,
