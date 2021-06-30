@@ -508,6 +508,7 @@ class VRViewport extends GLBaseViewport {
         viewMatrix: this.__viewMatrices[i],
         projectionMatrix: this.__projectionMatrices[i],
         region: [vp.x, vp.y, vp.width, vp.height],
+        isOrthographic: false,
       })
     }
 
