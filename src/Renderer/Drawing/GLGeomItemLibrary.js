@@ -57,7 +57,6 @@ class GLGeomItemLibrary extends EventEmitter {
       const viewport = renderer.getViewport()
       const camera = renderer.getViewport().getCamera()
       const aspectRatio = viewport.getWidth() / viewport.getHeight()
-      console.log('viewportChanged:', camera.isOrthographic())
       if (camera.isOrthographic()) {
         const frustumHeight = camera.getFrustumHeight()
         const frustumWidth = frustumHeight * aspectRatio
@@ -82,7 +81,11 @@ class GLGeomItemLibrary extends EventEmitter {
     }
     renderer.on('resized', viewportChanged)
     const camera = renderer.getViewport().getCamera()
-    camera.on('projectionParamChanged', viewportChanged)
+    camera.on('projectionParamChanged', (event) => {
+      if (camera.isOrthographic()) {
+        viewportChanged()
+      }
+    })
     viewportChanged()
 
     renderer.once('xrViewportSetup', (event) => {
