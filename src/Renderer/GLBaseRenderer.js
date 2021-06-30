@@ -1195,7 +1195,7 @@ class GLBaseRenderer extends ParameterOwner {
     const gl = this.__gl
     if (!renderState.viewports || renderState.viewports.length == 1) {
       renderState.bindRendererUnifs = (unifs) => {
-        const { cameraMatrix, viewMatrix, projectionMatrix, eye } = unifs
+        const { cameraMatrix, viewMatrix, projectionMatrix, eye, isOrthographic } = unifs
         if (cameraMatrix) {
           gl.uniformMatrix4fv(cameraMatrix.location, false, renderState.cameraMatrix.asArray())
         }
@@ -1212,6 +1212,10 @@ class GLBaseRenderer extends ParameterOwner {
         if (eye) {
           // Left or right eye, when rendering sterio VR.
           gl.uniform1i(eye.location, index)
+        }
+        if (isOrthographic) {
+          // Left or right eye, when rendering sterio VR.
+          gl.uniform1i(isOrthographic.location, vp.isOrthographic)
         }
       }
       renderState.bindViewports = (unifs, cb) => cb()
@@ -1230,7 +1234,7 @@ class GLBaseRenderer extends ParameterOwner {
         renderState.viewports.forEach((vp, index) => {
           gl.viewport(...vp.region)
 
-          const { viewMatrix, projectionMatrix, eye } = unifs
+          const { viewMatrix, projectionMatrix, eye, isOrthographic } = unifs
           if (viewMatrix) {
             gl.uniformMatrix4fv(viewMatrix.location, false, vp.viewMatrix.asArray())
           }
@@ -1242,6 +1246,10 @@ class GLBaseRenderer extends ParameterOwner {
           if (eye) {
             // Left or right eye, when rendering sterio VR.
             gl.uniform1i(eye.location, index)
+          }
+          if (isOrthographic) {
+            // Left or right eye, when rendering sterio VR.
+            gl.uniform1i(isOrthographic.location, vp.isOrthographic)
           }
           cb()
         })

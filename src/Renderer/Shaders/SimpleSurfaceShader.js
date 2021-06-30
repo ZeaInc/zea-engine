@@ -126,6 +126,7 @@ varying vec3 v_worldPos;
 /* VS Outputs */
 
 uniform mat4 cameraMatrix;
+uniform int isOrthographic;
 
 #ifndef ENABLE_MULTI_DRAW
 
@@ -185,8 +186,12 @@ void main(void) {
       viewNormal = normalize(v_viewNormal);
     }
     vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
-    vec3 viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
-
+    vec3 viewVector;
+    if (isOrthographic == 0)
+      viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
+    else 
+      viewVector = vec3(cameraMatrix[0][2], cameraMatrix[1][2], cameraMatrix[2][2]);
+    
     //////////////////////////////////////////////
     // Material
 

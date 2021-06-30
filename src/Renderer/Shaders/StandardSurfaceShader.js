@@ -137,6 +137,7 @@ uniform float exposure;
 #endif
 
 uniform mat4 cameraMatrix;
+uniform int isOrthographic;
 
 #ifndef ENABLE_MULTI_DRAW
 
@@ -239,7 +240,10 @@ void main(void) {
       viewNormal = normalize(v_viewNormal);
     }
     vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
-    vec3 viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
+    if (isOrthographic == 0)
+      viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
+    else 
+      viewVector = vec3(cameraMatrix[0][2], cameraMatrix[1][2], cameraMatrix[2][2]);
     if(dot(normal, viewVector) < 0.0){
         normal = -normal;
         // Note: this line can be used to debug inverted meshes.
