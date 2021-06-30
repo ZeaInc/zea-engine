@@ -300,16 +300,25 @@ class CameraManipulator extends BaseTool {
     const { viewport } = event
     const camera = viewport.getCamera()
 
-    const focalDistance = camera.getFocalDistance()
-    const fovY = camera.getFov()
+    const delta = new Xfo()
     const xAxis = new Vec3(1, 0, 0)
     const yAxis = new Vec3(0, 1, 0)
 
-    const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY)
-    const cameraPlaneWidth = cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight())
-    const delta = new Xfo()
-    delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
-    delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight))
+    if (camera.isOrthographic()) {
+      const frustumHeight = camera.getFrustumHeight()
+      const frustumWidth = frustumHeight * (viewport.getWidth() / viewport.getHeight())
+
+      delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * frustumWidth)
+      delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * frustumHeight))
+    } else {
+      const focalDistance = camera.getFocalDistance()
+      const fovY = camera.getFov()
+
+      const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY)
+      const cameraPlaneWidth = cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight())
+      delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
+      delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight))
+    }
 
     const cameraXfo = camera.getParameter('GlobalXfo').getValue()
     camera.getParameter('GlobalXfo').setValue(cameraXfo.multiply(delta))
