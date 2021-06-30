@@ -864,13 +864,6 @@ class GLViewport extends GLBaseViewport {
   draw(renderstate = {}) {
     this.__initRenderState(renderstate)
 
-    // As we zoom in and out, this adapts the outline shader
-    // so that the surface gradient between 2 neighboring pixels is
-    // Roughly uniform. As we zoom out, the distance between 2 pixels
-    // increases and so does the difference in depth. Scaling up the
-    // depth multiplier keeps everything consistent.
-    renderstate.outlineDepthMultiplier = (1 / this.__camera.getFocalDistance()) * this.renderer.outlineSensitivity
-
     super.draw(renderstate)
 
     // Turn this on to debug the geom data buffer.

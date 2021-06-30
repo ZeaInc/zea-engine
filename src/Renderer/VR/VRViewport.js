@@ -494,7 +494,6 @@ class VRViewport extends GLBaseViewport {
       viewport: this,
       vrviewport: this,
       viewports: [],
-      outlineDepthMultiplier: (0.1 / this.__stageScale) * this.renderer.outlineSensitivity,
     }
     // renderstate.boundRendertarget.vrfbo = true;
 
