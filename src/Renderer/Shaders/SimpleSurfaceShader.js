@@ -186,6 +186,7 @@ void main(void) {
       viewNormal = normalize(v_viewNormal);
     }
     vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
+    
     vec3 viewVector;
     if (isOrthographic == 0)
       viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
