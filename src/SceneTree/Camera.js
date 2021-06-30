@@ -31,7 +31,7 @@ import { Points } from './Geometry'
  * ```javascript
  *   camera.adjustNearAndFarPlanesToFocalDist = true
  *   camera.nearDistFactor = 0.01
- *   camera.farDistFactor = 10000
+ *   camera.farDistFactor = 5
  * ```
  *
  * **Parameters**
@@ -80,9 +80,9 @@ class Camera extends TreeItem {
     // and far planes.
     this.adjustNearAndFarPlanesToFocalDist = true
     // The factor by which the near plane is adjusted based on the focal distance.
-    this.nearDistFactor = 0.01
+    this.nearDistFactor = 0.2
     // The factor by which the far plane is adjusted based on the focal distance.
-    this.farDistFactor = 10000
+    this.farDistFactor = 5
     this.frameOnBoundingSphere = false
   }
 
@@ -247,8 +247,14 @@ class Camera extends TreeItem {
     if (dist < 0.0001) console.error('Never set focal distance to zero')
     this.__focalDistanceParam.setValue(dist)
     if (this.adjustNearAndFarPlanesToFocalDist) {
-      this.__nearParam.setValue(dist * this.nearDistFactor)
-      this.__farParam.setValue(dist * this.farDistFactor)
+      const near = dist * this.nearDistFactor
+      if (near < this.__nearParam.getValue()) {
+        this.__nearParam.setValue(near)
+      }
+      const far = dist * this.farDistFactor
+      if (far > this.__farParam.getValue()) {
+        this.__farParam.setValue(far)
+      }
     }
   }
 
@@ -457,14 +463,17 @@ class Camera extends TreeItem {
       })
       centroid.scaleInPlace(1 / boundaryPoints.length)
 
+      let dolly = 0
       if (this.isOrthographic()) {
         const pan = new Vec3(
           (-frustumPlaneOffsets.XNeg + frustumPlaneOffsets.XPos) * 0.5,
           (-frustumPlaneOffsets.YNeg + frustumPlaneOffsets.YPos) * 0.5,
           (-frustumPlaneOffsets.ZNeg + frustumPlaneOffsets.ZPos) * 0.5
         )
+        // Move the camera back by 2x the depth range of the scene.
         const zrange = frustumPlaneOffsets.ZNeg + frustumPlaneOffsets.ZPos
-        pan.z += zrange * 2
+        dolly = zrange * 2
+        pan.z = dolly
         globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(pan))
         newFocalDistance = zrange * 2
 
@@ -493,14 +502,26 @@ class Camera extends TreeItem {
         const yP3 = yP2.add(new Vec2(-Math.sin(angleY), -Math.cos(angleY)))
         const yP = Vec2.intersectionOfLines(yP0, yP1, yP2, yP3)
 
-        const dolly = Math.max(xP.y, yP.y)
+        dolly = Math.max(xP.y, yP.y)
         const pan = new Vec3(xP.x, yP.x, dolly)
         globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(pan))
 
         newFocalDistance = centroid.distanceTo(globalXfo.tr)
 
         const frameBorder = 0.1
-        globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(new Vec3(0, 0, newFocalDistance * frameBorder)))
+        const frameBorderAdjustment = newFocalDistance * frameBorder
+        globalXfo.tr.addInPlace(globalXfo.ori.rotateVec3(new Vec3(0, 0, frameBorderAdjustment)))
+
+        dolly += frameBorderAdjustment
+      }
+
+      if (this.adjustNearAndFarPlanesToFocalDist) {
+        frustumPlaneOffsets.ZPos -= dolly
+        frustumPlaneOffsets.ZNeg += dolly
+        const near = frustumPlaneOffsets.ZNeg * this.nearDistFactor
+        const far = -frustumPlaneOffsets.ZPos * this.farDistFactor
+        this.__nearParam.setValue(near)
+        this.__farParam.setValue(far)
       }
     }
 
