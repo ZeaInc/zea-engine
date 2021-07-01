@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>engine-cad-ux-collab-potree - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
+
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@zeainc/zea-cad/dist/index.umd.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@zeainc/zea-ux/dist/index.umd.js"></script>
+    <script src="https://websocket-staging.zea.live/socket.io/socket.io.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@zeainc/zea-collab/dist/index.umd.js"></script>
+    <script src="https://www.gstatic.com/draco/v1/decoders/draco_decoder_gltf.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@zeainc/gltf-loader/dist/index.umd.js"></script>
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+    <style>
+      body {
+        height: 100vh;
+        margin: 0;
+      }
+
+      .main-wrapper {
+        grid-template-areas:
+          'header header header'
+          'nav main right'
+          'footer footer footer';
+        grid-template-columns: 20% 1fr 5px;
+        grid-template-rows: 50px 1fr 20px;
+      }
+
+      header {
+        grid-area: header;
+      }
+
+      footer {
+        grid-area: footer;
+      }
+
+      #controllers {
+        display: flex;
+        align-items: center;
+        padding: 0.5em;
+        gap: 1em;
+      }
+    </style>
+    <script type="module">
+      const urlParams = new URLSearchParams(window.location.search)
+
+      const {
+        Color,
+        Vec3,
+        Xfo,
+        TreeItem,
+        GLRenderer,
+        Scene,
+        EnvMap,
+        InstanceItem,
+        CameraManipulator,
+      } = window.zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+      renderer.outlineThickness = 1
+      renderer.outlineColor = new Color(0.2, 0.2, 0.2, 1)
+      scene.getSettings().getParameter('BackgroundColor').setValue(new Color(0.85, 0.85, 0.85, 1))
+      // renderer.getViewport().debugGeomShader = urlParams.has('debugGeomShader')
+
+      const envMap = new EnvMap()
+      envMap.load('data/StudioG.zenv')
+      scene.setEnvMap(envMap)
+
+      scene.setupGrid(1.0, 10, new Color(0.2, 0.2, 0.2))
+
+      /** UX START */
+      const { SelectionManager, UndoRedoManager, ToolManager, SelectionTool, CreateFreehandLineTool } = window.zeaUx
+
+      const appData = { scene, renderer }
+
+      const cameraManipulator = renderer.getViewport().getManipulator()
+      cameraManipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.tumbler)
+      appData.cameraManipulator = cameraManipulator
+
+      /** UNDO START */
+      const undoRedoManager = UndoRedoManager.getInstance()
+      appData.undoRedoManager = undoRedoManager
+      /** UNDO END */
+
+      /** SELECTION START */
+
+      const selectionManager = new SelectionManager(appData, {
+        enableXfoHandles: true,
+      })
+      appData.selectionManager = selectionManager
+
+      // Users can enable the handles using a menu or hotkey.
+      selectionManager.showHandles(false)
+
+      const selectionTool = new SelectionTool(appData)
+      const filterItemSelection = (item) => {
+        return item
+      }
+      selectionTool.setSelectionFilter(filterItemSelection)
+
+      // Note: the alpha value determines  the fill of the highlight.
+      const selectionColor = new Color('#F9CE03')
+      selectionColor.a = 0.1
+      const subtreeColor = selectionColor //.lerp(new Color(1, 1, 1, 0), 0.5)
+      selectionManager.selectionGroup.getParameter('HighlightColor').setValue(selectionColor)
+      selectionManager.selectionGroup.getParameter('SubtreeHighlightColor').setValue(subtreeColor)
+
+      // Color the selection rect.
+      const selectionRectColor = new Color(0, 0, 0, 1)
+      selectionTool.rectItem.getParameter('Material').getValue().getParameter('BaseColor').setValue(selectionRectColor)
+
+      /** SELECTION END */
+
+      /** FREEHAND LINES TOOL START */
+      const freeHandLineTool = new CreateFreehandLineTool(appData)
+      freeHandLineTool.getParameter('LineThickness').setValue(0.01)
+
+      /** FREEHAND LINES TOOL END */
+
+      /** TOOL MANAGER START */
+
+      /** TOOL MANAGER START */
+      const toolManager = new ToolManager()
+      toolManager.registerTool('CameraManipulator', cameraManipulator)
+      toolManager.registerTool('SelectionTool', selectionTool)
+
+      renderer.getViewport().setManipulator(toolManager)
+      toolManager.pushTool('CameraManipulator')
+      appData.toolManager = toolManager
+
+      const toolStack = ['CameraManipulator']
+      const tools = document.querySelectorAll('.tool')
+
+      const disableSelectedTools = () => {
+        tools.forEach((toolCbx) => (toolCbx.disabled = false))
+        for (let i = 0; i < toolStack.length; i++) {
+          const chkBox = document.querySelector(`input[type='checkbox'][value='${toolStack[i]}']`)
+          if (i === 0 || i < toolStack.length - 1) chkBox.disabled = true
+          chkBox.checked = true
+        }
+      }
+
+      tools.forEach((tool) => {
+        tool.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            const value = e.target.value
+            toolStack.push(value)
+            toolManager.pushTool(e.target.value)
+          } else {
+            toolStack.pop()
+            toolManager.popTool()
+          }
+
+          disableSelectedTools()
+        })
+      })
+
+      disableSelectedTools()
+
+      renderer.getViewport().on('keyDown', (event) => {
+        if (event.key == 'f') renderer.frameAll()
+      })
+      /** TOOL MANAGER END */
+
+      /** LOAD ASSETS START */
+      const { CADAsset, CADBody } = window.zeaCad
+      const { GLTFAsset } = gltfLoader
+
+      const loadZCADAsset = (url, filename) => {
+        const asset = new CADAsset()
+        asset.load(url).then(() => {
+          renderer.frameAll()
+        })
+        scene.getRoot().addChild(asset)
+        return asset
+      }
+      const loadGLTFAsset = (url, filename) => {
+        const asset = new GLTFAsset()
+        asset.load(url, filename).then(() => {
+          renderer.frameAll()
+        })
+        scene.getRoot().addChild(asset)
+        return asset
+      }
+
+      const loadAsset = (url, filename) => {
+        let res
+        if (filename.endsWith('zcad')) {
+          res = loadZCADAsset(url, filename)
+        } else if (filename.endsWith('gltf') || filename.endsWith('glb')) {
+          res = loadGLTFAsset(url, filename)
+        }
+        return res
+      }
+      let assetUrl = 'data/Dead_eye_bearing.zcad'
+      if (urlParams.has('zcad')) {
+        assetUrl = urlParams.get('zcad')
+      } else if (urlParams.has('gltf')) {
+        assetUrl = urlParams.get('gltf')
+      }
+      loadAsset(assetUrl, assetUrl)
+      /** LOAD ASSETS END */
+
+      /** COLLAB START*/
+      const { Session, SessionSync } = window.zeaCollab
+      {
+        const userData = {
+          id: Math.random(),
+        }
+        appData.userData = userData
+
+        const SOCKET_URL = 'https://websocket-staging.zea.live'
+        const roomId = window.location.href
+        const session = new Session(userData, SOCKET_URL)
+        if (roomId) session.joinRoom(roomId)
+
+        const sessionSync = new SessionSync(session, appData, userData, {
+          /* Avatars scale based on the distance to the target */
+          scaleAvatarWithFocalDistance: true,
+          /* The overal size multiplier of the avatar. */
+          avatarScale: 2.0,
+        })
+
+        appData.session = session
+        appData.sessionSync = sessionSync
+      }
+      /** COLLAB END */
+
+      const postMessage = (msg) => {
+        console.log(msg)
+        window.postMessage(msg)
+      }
+      postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </head>
+  <body class="bg-blue-100 h-full">
+    <div class="main-wrapper grid h-screen">
+      <header class="border border-blue-400 flex justify-center items-center">
+        <div id="controllers">
+          <div>
+            <label for="camera">Camera Manipulator</label>
+            <input type="checkbox" id="camera" value="CameraManipulator" class="tool" />
+          </div>
+          <div>
+            <label for="selection">Selection Tool</label>
+            <input type="checkbox" id="selection" value="SelectionTool" class="tool" />
+          </div>
+        </div>
+      </header>
+      <nav class="border border-blue-400 flex justify-center items-center">nav</nav>
+      <main>
+        <canvas class="absolute" id="renderer"></canvas>
+      </main>
+      <aside class="border border-blue-400 flex justify-center items-center"></aside>
+      <footer class="border border-blue-400 flex justify-center items-center"></footer>
+    </div>
+  </body>
+</html>
