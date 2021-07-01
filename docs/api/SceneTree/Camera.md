@@ -22,7 +22,7 @@ focal distance.
 ```javascript
   camera.adjustNearAndFarPlanesToFocalDist = true
   camera.nearDistFactor = 0.01
-  camera.farDistFactor = 10000
+  camera.farDistFactor = 5
 ```
 
 **Parameters**

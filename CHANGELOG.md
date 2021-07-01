@@ -25,6 +25,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 * Camera near and far planes are adjusted on view framing to fit the scene size. The auto near/far plane multipliers are now much more tightly fitting the scenes, which reduces moiré patterns seen on background surfaces.
     
+* Camera framing would sometimes cause a corrupt camera matrix when framing on a CADAsset before the geometries were loaded.
+
+* Silhouettes now have smoother graduations in darkness.
 
 ### [3.10.3](https://github.com/ZeaInc/zea-engine/compare/v3.10.2...v3.10.3) (2021-06-29)
 

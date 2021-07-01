@@ -16,7 +16,7 @@ Class representing a VR controller.
     * [isButtonPressed() ⇒ <code>boolean</code>](#isButtonPressed)
     * [getControllerStageLocalXfo() ⇒ <code>any</code>](#getControllerStageLocalXfo)
     * [getControllerTipStageLocalXfo() ⇒ <code>any</code>](#getControllerTipStageLocalXfo)
-    * [updatePose(refSpace, xrFrame, inputSource)](#updatePose)
+    * [updatePose(refSpace, xrFrame, inputSource, event)](#updatePose)
     * [getGeomItemAtTip() ⇒ <code>any</code>](#getGeomItemAtTip)
 
 <a name="new_VRController_new"></a>
@@ -106,6 +106,7 @@ The updatePose method.
 | refSpace | <code>any</code> | The refSpace value. |
 | xrFrame | <code>any</code> | The xrFrame value. |
 | inputSource | <code>any</code> | The inputSource value. |
+| event | <code>any</code> | The event object. |
 
 <a name="VRController+getGeomItemAtTip"></a>
 

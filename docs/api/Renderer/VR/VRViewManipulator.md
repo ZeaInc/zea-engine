@@ -12,7 +12,7 @@ Class representing a view tool
     * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
     * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
     * [onVRControllerDoubleClicked(event)](#onVRControllerDoubleClicked)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
+    * [onVRPoseChanged(event)](#onVRPoseChanged)
     * [onPointerDown(event)](#onPointerDown)
     * [onPointerMove(event)](#onPointerMove)
     * [onPointerUp(event)](#onPointerUp)
@@ -71,7 +71,6 @@ The onVRControllerDoubleClicked method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |

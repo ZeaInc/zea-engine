@@ -2,8 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [3.10.2](https://github.com/ZeaInc/zea-engine/compare/v3.10.1...v3.10.2) (2021-06-28)
+### [3.10.4](https://github.com/ZeaInc/zea-engine/compare/v3.10.2...v3.10.4) (2021-07-01)
 
+
+### Bug Fixes
+
+* 'setSelectable' now dynamically updates the rendering of GeomItems to the geom data buffer. ([fb58d36](https://github.com/ZeaInc/zea-engine/commit/fb58d36bafcdde61bfde9a0f5d163d8123b67af5))
+* Cleaned up PointerEvents emitted during VR Sessions. ([8ab20bb](https://github.com/ZeaInc/zea-engine/commit/8ab20bb56a4d629c3c03ffcecf66c402b0b0592d))
+* LinesPicking filtering no longer applied in VR. ([0ccb93f](https://github.com/ZeaInc/zea-engine/commit/0ccb93f73c97b623423c7983ee0f7aa6991fca2b))
+    
+* camera panning in orthographic mode now correctly tracks the mouse pointer.
+    
+* CameraManipulator now maintains screen space geometry position under the mouse while mouse wheel zooming of orthographic cameras.
+
+* Camera framing now uses GeomItem bounding box if the geometry has not yet been loaded.
+    
+* The frustum culling system now correctly culls items for orthographic cameras.
+    
+* Surface lighting in orthographic rendering is now consistent for geometry anywhere on screen. Shaders now use the camera zaxis as the view vector.
+
+* Outline shader now adapts sensitivity on a per-pixel basis. This reduces moiré patterns seen on some background surfaces as the camera zoomed into a foreground object.
+
+* Camera near and far planes are adjusted on view framing to fit the scene size. The auto near/far plane multipliers are now much more tightly fitting the scenes, which reduces moiré patterns seen on background surfaces.
+    
+* Camera framing would sometimes cause a corrupt camera matrix when framing on a CADAsset before the geometries were loaded.
+
+* Silhouettes now have smoother graduations in darkness.
+
+### [3.10.3](https://github.com/ZeaInc/zea-engine/compare/v3.10.2...v3.10.3) (2021-06-29)
 
 ### Bug Fixes
 

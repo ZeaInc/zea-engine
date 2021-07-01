@@ -15,7 +15,6 @@ Class representing a geometry item in a scene tree.
 * [GeomItem ⇐ <code>BaseGeomItem</code>](#GeomItem)
     * [new GeomItem(name, geometry, material, xfo)](#new-GeomItem)
     * _instance_
-        * [setSelectable(val) ⇒ <code>boolean</code>](#setSelectable)
         * [getGeometry() ⇒ <code>BaseGeom</code>](#getGeometry)
         * [setGeometry(geom)](#setGeometry)
         * ~~[.getGeom()](#GeomItem+getGeom) ⇒ <code>BaseGeom</code>~~
@@ -46,18 +45,6 @@ Creates a geometry item.
 | geometry | <code>[BaseGeom](api/SceneTree\Geometry\BaseGeom.md)</code> | The geometry value. |
 | material | <code>[Material](api/SceneTree\Material.md)</code> | The material value. |
 | xfo | <code>[Xfo](api/Math\Xfo.md)</code> | The initial Xfo of the new GeomItem. |
-
-<a name="GeomItem+setSelectable"></a>
-
-### setSelectable
-Modifies the selectability of this item.
-
-
-**Returns**: <code>boolean</code> - - Returns true if value changed.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| val | <code>boolean</code> | A boolean indicating the selectability of the item. |
 
 <a name="GeomItem+getGeometry"></a>
 

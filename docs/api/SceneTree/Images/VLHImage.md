@@ -17,6 +17,7 @@ Class representing a VLH image.
     * [new VLHImage(name, params)](#new-VLHImage)
     * [getDOMElement() ⇒ <code>HTMLElement</code>](#getDOMElement)
     * [getResourcePath() ⇒ <code>string</code>](#getResourcePath)
+    * [load(url) ⇒ <code>Promise</code>](#load)
     * [isStream() ⇒ <code>boolean</code>](#isStream)
     * [isLoaded() ⇒ <code>boolean</code>](#isLoaded)
     * [getParams() ⇒ <code>object</code>](#getParams)
@@ -49,6 +50,18 @@ Returns `FilePath` parameter's value.
 
 
 **Returns**: <code>string</code> - - The return value.  
+<a name="VLHImage+load"></a>
+
+### load
+Loads a vlh file given a URL.
+
+
+**Returns**: <code>Promise</code> - - Returns a promise that resolves once the initial load is complete  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>string</code> | The URL of the vlh file to load |
+
 <a name="VLHImage+isStream"></a>
 
 ### isStream
