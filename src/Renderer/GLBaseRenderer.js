@@ -604,8 +604,7 @@ class GLBaseRenderer extends ParameterOwner {
     // the onscreen buffer. This means we no longer need the default render target to be antialiased.
     // In webgl 1 however we render surfaces to the offscreen buffer, and then lines to the default buffer.
     // The default buffer should then be antialiased.
-    webglOptions.antialias =
-      !SystemDesc.gpuDesc.supportsWebGL2 || webglOptions.webglContextType == 'webgl' ? true : false
+    webglOptions.antialias = SystemDesc.isIOSDevice ? true : false
     webglOptions.depth = true
     webglOptions.stencil = false
     webglOptions.alpha = webglOptions.alpha ? webglOptions.alpha : false
