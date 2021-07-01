@@ -415,7 +415,7 @@ class GLViewport extends GLBaseViewport {
       const geomItemAndDist = pass.getGeomItemAndDist(geomData)
 
       if (geomItemAndDist) {
-        if (!geomItemAndDist.geomItem.visibleInGeomDataBuffer) return
+        if (!geomItemAndDist.geomItem.getSelectable()) return
 
         if (!pointerRay) pointerRay = this.calcRayFromScreenPos(screenPos)
         const intersectionPos = pointerRay.start.add(pointerRay.dir.scale(geomItemAndDist.dist))
@@ -489,14 +489,14 @@ class GLViewport extends GLBaseViewport {
 
         const geomItemAndDist = this.__renderer.getPass(passId).getGeomItemAndDist(geomData)
         if (geomItemAndDist) {
-          if (!geomItemAndDist.geomItem.visibleInGeomDataBuffer) continue
+          if (!geomItemAndDist.geomItem.getSelectable()) continue
 
           geomItems.add(geomItemAndDist.geomItem)
         }
       }
 
       return [...geomItems].filter((geomItem) => {
-        if (!geomItem.visibleInGeomDataBuffer) return false
+        if (!geomItem.getSelectable()) return false
 
         return true
       })
@@ -863,13 +863,6 @@ class GLViewport extends GLBaseViewport {
    */
   draw(renderstate = {}) {
     this.__initRenderState(renderstate)
-
-    // As we zoom in and out, this adapts the outline shader
-    // so that the surface gradient between 2 neighboring pixels is
-    // Roughly uniform. As we zoom out, the distance between 2 pixels
-    // increases and so does the difference in depth. Scaling up the
-    // depth multiplier keeps everything consistent.
-    renderstate.outlineDepthMultiplier = (1 / this.__camera.getFocalDistance()) * this.renderer.outlineSensitivity
 
     super.draw(renderstate)
 

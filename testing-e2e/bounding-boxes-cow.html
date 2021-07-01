@@ -29,7 +29,10 @@
 
       // objAsset.getParameter('splitObjects').setValue(true)
       objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
-      objAsset.getParameter('FilePath').setUrl('data/cow.obj')
+      objAsset.load('data/cow.obj').then(() => {
+        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
+        renderer.frameAll()
+      })
       scene.getRoot().addChild(objAsset)
 
       const xfo = new Xfo()
@@ -48,11 +51,6 @@
       // }, 50)
 
       boundingBoxPass.addTreeItem(objAsset, true)
-
-      objAsset.on('loaded', () => {
-        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
-        renderer.frameAll()
-      })
 
       Promise.all([new Promise((resolve) => objAsset.once('loaded', resolve))]).then(() => {
         window.postMessage('done-loading')

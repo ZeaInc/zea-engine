@@ -36,7 +36,7 @@ class VRViewManipulator extends BaseTool {
   addIconToController(event) {
     const { controller } = event
     const geomItem = new GeomItem('HandleToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
-    geomItem.visibleInGeomDataBuffer = false
+    geomItem.setSelectable(false)
     controller.getTipItem().removeAllChildren()
     controller.getTipItem().addChild(geomItem, false)
   }
@@ -59,7 +59,7 @@ class VRViewManipulator extends BaseTool {
   deactivateTool() {
     super.deactivateTool()
 
-    for (let controller of xrvp.getControllers()) {
+    for (const controller of this.xrvp.getControllers()) {
       controller.getTipItem().removeAllChildren()
     }
     this.xrvp.off('controllerAdded', this.addIconToController)
@@ -127,7 +127,6 @@ class VRViewManipulator extends BaseTool {
   /**
    * The onVRPoseChanged method.
    * @param {any} event - The event param.
-   * @return {any} The return value.
    */
   onVRPoseChanged(event) {
     if (this.__controllerTriggersHeld.length == 1) {

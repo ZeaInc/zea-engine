@@ -80,11 +80,6 @@ class GeomItem extends BaseGeomItem {
     this.geomIndex = -1
     this.assetItem = null
 
-    // Setting this value to false will mean that this item is not selectable
-    // and will not response to any pointer events. This is useful for geometry
-    // that might occlude pointer events intended for other geometry.
-    this.visibleInGeomDataBuffer = true
-
     this.calcGeomMatOperator = new CalcGeomMatOperator(
       this.__globalXfoParam,
       this.__geomOffsetXfoParam,
@@ -94,18 +89,6 @@ class GeomItem extends BaseGeomItem {
     if (geometry) this.getParameter('Geometry').loadValue(geometry)
     if (material) this.getParameter('Material').loadValue(material)
     if (xfo) this.getParameter('LocalXfo').setValue(xfo)
-  }
-
-  /**
-   * Modifies the selectability of this item.
-   *
-   * @param {boolean} val - A boolean indicating the selectability of the item.
-   * @return {boolean} - Returns true if value changed.
-   */
-  setSelectable(val) {
-    const res = super.setSelectable(val)
-    this.visibleInGeomDataBuffer = !res
-    return res
   }
 
   // ////////////////////////////////////////

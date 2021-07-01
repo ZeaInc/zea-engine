@@ -98,7 +98,7 @@ class VRController {
             const controllerTree = srcControllerTree.clone({ assetItem })
             controllerTree.getParameter('LocalXfo').setValue(
               new Xfo(
-                new Vec3(0, -0.035, -0.085),
+                new Vec3(0, 0.0, 0.0),
                 new Quat({ setFromAxisAndAngle: [new Vec3(0, 1, 0), Math.PI] }),
                 new Vec3(0.001, 0.001, 0.001) // VRAsset units are in mm.
               )
@@ -191,6 +191,7 @@ class VRController {
    * @param {any} refSpace - The refSpace value.
    * @param {any} xrFrame - The xrFrame value.
    * @param {any} inputSource - The inputSource value.
+   * @param {any} event - The event object.
    */
   updatePose(refSpace, xrFrame, inputSource, event) {
     const inputPose = xrFrame.getPose(inputSource.gripSpace, refSpace)

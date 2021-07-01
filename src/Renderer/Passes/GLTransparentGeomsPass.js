@@ -332,8 +332,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
         // Adapt the sort tolerance to the focal distance.
         // In a tiny scene, we want to sort more frequently.
         this.sortCameraMovementDistance = renderstate.viewScale * 0.2
-      }
-      else if (renderstate.viewport) {
+      } else if (renderstate.viewport) {
         // Adapt the sort tolerance to the focal distance.
         // In a tiny scene, we want to sort more frequently.
         const camera = renderstate.viewport.getCamera()
@@ -440,7 +439,7 @@ class GLTransparentGeomsPass extends GLStandardGeomsPass {
       currentGLGeom: null,
     }
     for (const transparentItem of this.visibleItems) {
-      if (!transparentItem.glGeomItem.geomItem.visibleInGeomDataBuffer) continue
+      if (!transparentItem.glGeomItem.geomItem.getSelectable()) continue
 
       const shaders = transparentItem.shaders
       if (!shaders.glgeomdatashader) {

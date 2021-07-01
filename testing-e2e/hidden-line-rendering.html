@@ -23,6 +23,7 @@
         webglContextType: urlParams.has('webgl') ? urlParams.get('webgl') : undefined,
       })
       renderer.setScene(scene)
+      renderer.getViewport().debugGeomShader = urlParams.has('debugGeomShader')
       scene.setupGrid(10.0, 10)
 
       // const backgroundColor = new Color(0.5, 0.5, 0.5)

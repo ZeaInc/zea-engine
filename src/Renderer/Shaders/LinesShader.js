@@ -251,7 +251,9 @@ void main(void) {
   if(floatGeomBuffer != 0) {
     fragColor.r = float(passId); 
     fragColor.g = float(v_drawItemId);
-    fragColor.b = 0.0;// TODO: store poly-id or something.
+    // Note: to make lines visually stand out from triangles
+    // this value is 0.0 in the surface shaders.
+    fragColor.b = 1.0;// TODO: store segment-id or something.
     fragColor.a = viewDist;
   } else {
     ///////////////////////////////////

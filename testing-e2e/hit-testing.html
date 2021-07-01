@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>hit-testing - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
+
+    <style>
+      .main-wrapper {
+        grid-template-areas:
+          'header header header'
+          'nav main right'
+          'footer footer footer';
+        grid-template-columns: 5% 1fr 5%;
+        grid-template-rows: 50px 1fr 50px;
+      }
+
+      header {
+        grid-area: header;
+      }
+
+      footer {
+        grid-area: footer;
+      }
+    </style>
+    <script type="module">
+      const {
+        GLRenderer,
+        Scene,
+        Vec3,
+        Xfo,
+        Color,
+        ObjAsset,
+        Sphere,
+        Material,
+        GeomItem,
+        TreeItem,
+        BaseTool,
+      } = window.zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, { hideSplash: true, webglOptions: { antialias: false } })
+      renderer.setScene(scene)
+
+      scene.setupGrid(10.0, 10)
+
+      const objAsset = new ObjAsset('cow')
+      objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
+      objAsset.load('data/cow.obj').then(() => {
+        postMessage('done-loading')
+      })
+      scene.getRoot().addChild(objAsset)
+
+      const xfo = new Xfo()
+      xfo.tr.set(0, 0, 3.55)
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+      objAsset.getParameter('GlobalXfo').setValue(xfo)
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(8, 8, 6), new Vec3(2, 0, 3))
+
+      const postMessage = (msg) => {
+        console.log(msg)
+        window.postMessage(msg)
+      }
+
+      const sphere = new Sphere(0.1)
+      const material = new Material('foo', 'SimpleSurfaceShader')
+      material.getParameter('BaseColor').setValue(new Color(1, 0, 0))
+
+      class MovePointTool extends BaseTool {
+        constructor(viewport) {
+          super()
+          this.viewport = viewport
+        }
+        startMove(event) {
+          this.point = event.intersectionData.geomItem
+          // When we click on a point, we disable its rendering to the geom data buffer.
+          // This allows the subsequent pointe events to 'see' through the point we are
+          // dragging, and so we can slide the point over the surface of the cow.
+          this.point.setSelectable(false)
+          event.setCapture(this, event.intersectionData)
+        }
+        onPointerMove(event) {
+          // Now: when a
+          const intersectionData = this.viewport.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+          if (intersectionData) {
+            const pos = event.pointerRay.start.add(event.pointerRay.dir.scale(intersectionData.dist))
+            this.point.getParameter('GlobalXfo').setValue(new Xfo(pos))
+          }
+        }
+        onPointerUp(event) {
+          // Now put the moved point back to selectable so that we can click on it again
+          // or move a another point over the surface of this one.
+          this.point.setSelectable(true)
+          this.viewport.releaseCapture(this)
+        }
+      }
+      const movePointTool = new MovePointTool(renderer.getViewport())
+
+      class MakeStrokeTool extends BaseTool {
+        constructor(viewport) {
+          super()
+          this.viewport = viewport
+        }
+        startStroke(event) {
+          this.stroke = new TreeItem('stroke')
+          scene.getRoot().addChild(this.stroke)
+          this.addPoint(event, event.intersectionData)
+          event.setCapture(this, event.intersectionData)
+        }
+        addPoint(event, intersectionData) {
+          const pos = event.pointerRay.start.add(event.pointerRay.dir.scale(intersectionData.dist))
+          const geomItem = new GeomItem('hit', sphere, material, new Xfo(pos))
+          // Make the ball invisible so subsequent pointer events don't see it.
+          geomItem.setSelectable(false)
+          this.stroke.addChild(geomItem)
+        }
+        onPointerMove(event) {
+          const intersectionData = this.viewport.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+          if (intersectionData) {
+            this.addPoint(event, intersectionData)
+          }
+        }
+        onPointerUp(event) {
+          this.stroke.traverse((item) => {
+            item.setSelectable(true)
+          })
+          this.viewport.releaseCapture(this)
+        }
+      }
+      const makeStrokeTool = new MakeStrokeTool(renderer.getViewport())
+
+      renderer.getViewport().on('pointerDown', (event) => {
+        if (event.intersectionData) {
+          if (event.intersectionData.geomItem.getParameter('Geometry').getValue() == sphere) {
+            movePointTool.startMove(event)
+          } else {
+            makeStrokeTool.startStroke(event)
+          }
+        }
+      })
+      // renderer.getViewport().debugGeomShader = true
+    </script>
+  </head>
+  <body class="bg-blue-100 h-full">
+    <div class="main-wrapper grid h-screen">
+      <header class="border border-blue-400 flex justify-center items-center">header</header>
+      <nav class="border border-blue-400 flex justify-center items-center">nav</nav>
+      <main>
+        <canvas class="absolute" id="renderer"></canvas>
+      </main>
+      <aside class="border border-blue-400 flex justify-center items-center">aside</aside>
+      <footer class="border border-blue-400 flex justify-center items-center">footer</footer>
+    </div>
+  </body>
+</html>

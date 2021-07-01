@@ -14,7 +14,7 @@
     <script src="../dist/plugins.umd.js"></script>
 
     <script type="module">
-      const { GLRenderer, Scene, Vec3, Cuboid, GeomItem, Material } = window.zeaEngine
+      const { GLRenderer, Scene, Vec3, Cuboid, GeomItem, Material, ObjAsset } = window.zeaEngine
 
       const canvas = document.querySelector('#renderer')
 
@@ -26,37 +26,21 @@
 
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
 
-      const cuboid = new Cuboid(1.5, 2.0, 1.1)
-      const geomItem = new GeomItem('Cuboid', cuboid, standardMaterial)
-      scene.getRoot().addChild(geomItem)
+      const objAsset = new ObjAsset('cow')
+      objAsset.load('data/cow.obj').then(() => {
+        renderer.frameAll()
+        window.postMessage('done-loading')
+      })
+      scene.getRoot().addChild(objAsset)
+
       const camera = renderer.getViewport().getCamera()
-      camera.setPositionAndTarget(new Vec3(2, 2, 2), new Vec3(0, 0, 0))
+      camera.setPositionAndTarget(new Vec3(2, 2, 2.7), new Vec3(0, 0, 0.4))
+      camera.setIsOrthographic(1, 0)
 
       const postMessage = (msg) => {
         console.log(msg)
         window.postMessage(msg)
       }
-      postMessage('done-loading')
-
-      // {{{ Messages handler.
-      const handleMessage = (event) => {
-        const { data } = event
-
-        if (data === 'variant-01') {
-          camera.setIsOrthographic(1, 400)
-          camera.once('movementFinished', () => {
-            postMessage(`done-${data}`)
-          })
-        } else if (data === 'variant-02') {
-          camera.setIsOrthographic(0, 400)
-          camera.once('movementFinished', () => {
-            postMessage(`done-${data}`)
-          })
-        }
-      }
-
-      window.addEventListener('message', handleMessage, false)
-      // }}}
     </script>
   </head>
   <body class="bg-blue-100">

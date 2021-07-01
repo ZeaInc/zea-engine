@@ -228,6 +228,7 @@ class GLGeomItemLibrary extends EventEmitter {
     geomItem.getParameter('GeomMat').on('valueChanged', geomItemChanged)
     geomItem.on('cutAwayChanged', geomItemChanged)
     geomItem.on('highlightChanged', geomItemChanged)
+    geomItem.on('selectabilityChanged', geomItemChanged)
 
     this.glGeomItems[index] = glGeomItem
     this.glGeomItemEventHandlers[index] = {
@@ -343,7 +344,7 @@ class GLGeomItemLibrary extends EventEmitter {
     if (geomItem.isCutawayEnabled()) {
       flags |= GLGeomItemFlags.GEOMITEM_FLAG_CUTAWAY
     }
-    if (geomItem.visibleInGeomDataBuffer == false) {
+    if (geomItem.getSelectable() == false) {
       flags |= GLGeomItemFlags.GEOMITEM_INVISIBLE_IN_GEOMDATA
     }
 

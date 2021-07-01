@@ -176,6 +176,7 @@ class BaseItem extends ParameterOwner {
   setSelectable(val) {
     if (this.__selectable != val) {
       this.__selectable = val
+      this.emit('selectabilityChanged', { value: this.__selectable })
       return true
     }
     return false

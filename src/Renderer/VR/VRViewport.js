@@ -39,7 +39,6 @@ class VRViewport extends GLBaseViewport {
     // Tree
 
     this.__stageTreeItem = new TreeItem('VRStage')
-    this.__stageTreeItem.setSelectable(false)
     this.__stageTreeItem.setVisible(false)
     this.__renderer.addTreeItem(this.__stageTreeItem)
 
@@ -222,7 +221,9 @@ class VRViewport extends GLBaseViewport {
             }
           }
           this.__vrAsset.traverse((item) => {
-            if (item instanceof GeomItem) item.visibleInGeomDataBuffer = false
+            this.stroke.traverse((item) => {
+              item.setSelectable(false)
+            })
           })
           resolve(this.__vrAsset)
         }
@@ -267,7 +268,7 @@ class VRViewport extends GLBaseViewport {
             const dir = cameraXfo.ori.getZaxis()
             dir.z = 0
             dir.normalizeInPlace()
-            stageXfo.ori.setFromDirectionAndUpvector(dir.negate(), new Vec3(0, 0, 1))
+            stageXfo.ori.setFromDirectionAndUpvector(dir, new Vec3(0, 0, 1))
             this.setXfo(stageXfo)
 
             session.addEventListener('end', (event) => {
@@ -450,9 +451,10 @@ class VRViewport extends GLBaseViewport {
     }
 
     this.__vrhead.update(pose)
+    const viewXfo = this.__vrhead.getTreeItem().getParameter('GlobalXfo').getValue()
 
     // Prepare the pointerMove event.
-    const event = {}
+    const event = { controllers: this.controllers, viewXfo }
     this.preparePointerEvent(event)
     this.updateControllers(xrFrame, event)
     if (this.capturedElement && event.propagating) {
@@ -493,7 +495,6 @@ class VRViewport extends GLBaseViewport {
       viewport: this,
       vrviewport: this,
       viewports: [],
-      outlineDepthMultiplier: (0.1 / this.__stageScale) * this.renderer.outlineSensitivity,
     }
     // renderstate.boundRendertarget.vrfbo = true;
 
@@ -512,7 +513,7 @@ class VRViewport extends GLBaseViewport {
       })
     }
 
-    renderstate.viewXfo = this.__vrhead.getTreeItem().getParameter('GlobalXfo').getValue()
+    renderstate.viewXfo = viewXfo
     renderstate.viewScale = 1.0 / this.__stageScale
     renderstate.cameraMatrix = renderstate.viewXfo.toMat4()
     renderstate.region = this.__region

@@ -26,17 +26,6 @@ class GLLinesPass extends GLOpaqueGeomsPass {
    */
   init(renderer, passIndex) {
     super.init(renderer, passIndex)
-
-    const gl = this.__gl
-    this.linesGeomDataBuffer = new GLTexture2D(gl, {
-      type: renderer.__floatGeomBuffer ? 'FLOAT' : 'UNSIGNED_BYTE',
-      format: 'RGBA',
-      filter: 'NEAREST',
-      width: 1,
-      height: 2,
-    })
-    this.fattenLinesShader = new FattenLinesShader(gl)
-    this.quad = new GLMesh(gl, new Plane(1, 1))
   }
   /**
    * The filterGeomItem method.
@@ -110,7 +99,20 @@ class GLLinesPass extends GLOpaqueGeomsPass {
    */
   drawGeomData(renderstate) {
     const gl = this.__gl
-    if (this.linesGeomDataBuffer) {
+    //  Note: lines in VR are not fattened...
+    if (renderstate.geomDataFbo) {
+      if (!this.linesGeomDataBuffer) {
+        this.linesGeomDataBuffer = new GLTexture2D(gl, {
+          type: 'FLOAT',
+          format: 'RGBA',
+          filter: 'NEAREST',
+          width: 1,
+          height: 2,
+        })
+        this.fattenLinesShader = new FattenLinesShader(gl)
+        this.quad = new GLMesh(gl, new Plane(1, 1))
+      }
+
       const geomDataFbo = renderstate.geomDataFbo
       const width = geomDataFbo.width
       const height = geomDataFbo.height
@@ -148,7 +150,7 @@ class GLLinesPass extends GLOpaqueGeomsPass {
     }
     super.drawGeomData(renderstate)
 
-    if (this.linesGeomDataBuffer) {
+    if (renderstate.geomDataFbo) {
       renderstate.geomDataFbo.bindForWriting(renderstate)
 
       this.fattenLinesShader.bind(renderstate)

@@ -50,3 +50,15 @@ describe('hidden-line-rendering-webgl1', () => {
     })
   })
 })
+describe('hidden-line-rendering-debugGeomShader', () => {
+  it('Capture snapshots', () => {
+    cy.visit('testing-e2e/hidden-line-rendering.html?debugGeomShader', {
+      onBeforeLoad(win) {
+        cy.spy(win, 'postMessage').as('postMessage')
+      },
+    })
+
+    cy.get('@postMessage').its('lastCall.args.0').should('equal', 'done-loading')
+    cy.get('canvas').percySnapshot('hidden-line-rendering')
+  })
+})

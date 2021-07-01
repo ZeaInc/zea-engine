@@ -35,6 +35,7 @@ class GridTreeItem extends TreeItem {
 
     const grid = new Grid(gridSize, gridSize, resolution, resolution, true)
     const gridItem = new GeomItem('GridItem', grid, gridMaterial)
+    gridItem.setSelectable(false)
     this.addChild(gridItem, false)
     const axisLine = new Lines()
     axisLine.setNumVertices(2)
@@ -50,6 +51,7 @@ class GridTreeItem extends TreeItem {
     gridXAxisMaterial.getParameter('StippleValue').setValue(0)
     gridXAxisMaterial.getParameter('OccludedStippleValue').setValue(1)
     const gridXAxis = new GeomItem('xAxisLine', axisLine, gridXAxisMaterial)
+    gridXAxis.setSelectable(false)
     this.addChild(gridXAxis, false)
 
     const gridYAxisMaterial = new Material('gridYAxisMaterial', 'LinesShader')
@@ -57,14 +59,16 @@ class GridTreeItem extends TreeItem {
     gridYAxisMaterial.getParameter('Overlay').setValue(0.0)
     gridYAxisMaterial.getParameter('StippleValue').setValue(0)
     gridYAxisMaterial.getParameter('OccludedStippleValue').setValue(1)
+    gridYAxisMaterial.setSelectable(false)
+
     const zAxisLineItem = new GeomItem('yAxisLine', axisLine, gridYAxisMaterial)
+    zAxisLineItem.setSelectable(false)
 
     const geomOffset = new Xfo()
     geomOffset.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), Math.PI * 0.5)
     zAxisLineItem.setGeomOffsetXfo(geomOffset)
     this.addChild(zAxisLineItem, false)
 
-    this.setSelectable(false)
     const bBox = this._cleanBoundingBox(this.__boundingBoxParam.getValue())
     this.__boundingBoxParam.setValue(bBox)
   }
