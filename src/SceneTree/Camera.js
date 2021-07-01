@@ -406,9 +406,9 @@ class Camera extends TreeItem {
             if (childItem instanceof GeomItem) {
               const geom = childItem.getParameter('Geometry').getValue()
               if (geom) {
-                const mat4 = childItem.getGeomMat4()
                 const box3 = geom.getBoundingBox()
                 if (box3.isValid()) {
+                  const mat4 = childItem.getGeomMat4()
                   boundaryPoints.push(mat4.transformVec3(box3.p0))
                   boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p0.x, box3.p0.y, box3.p1.z)))
                   boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p0.x, box3.p1.y, box3.p0.z)))
