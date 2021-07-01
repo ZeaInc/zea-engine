@@ -40,7 +40,7 @@ uniform vec2 depthRange;
 
 uniform float outlineThickness;
 uniform color outlineColor;
-uniform float outlineDepthMultiplier;
+uniform float outlineSensitivity;
 uniform float outlineDepthBias;
 
 varying vec2 v_texCoord;
@@ -76,9 +76,9 @@ float SobelSampleDepth(vec2 uv, vec3 offset)
     float pixelUp     = LinearEyeDepth(texture2D(depthTexture, uv + offset.zy).r);
     float pixelDown   = LinearEyeDepth(texture2D(depthTexture, uv - offset.zy).r);
 
-    float outlineSensitivity =  (1.0 / pixelCenter) * outlineDepthMultiplier;
+    float  outlineDepthMultiplier = (1.0 / pixelCenter) * outlineSensitivity;
 
-    return SobelDepth(pixelCenter, pixelLeft, pixelRight, pixelUp, pixelDown) * outlineSensitivity;
+    return SobelDepth(pixelCenter, pixelLeft, pixelRight, pixelUp, pixelDown) * outlineDepthMultiplier;
 }
 
 
@@ -94,8 +94,9 @@ void main(void) {
     float sobelDepth = SobelSampleDepth(v_texCoord, offset);
     float sobelValue = pow(sobelDepth, outlineDepthBias);
 
-    float minEdgeValue = 0.35;
-    sobelDepth = clamp(sobelValue > minEdgeValue ? sobelValue : 0.0, 0.0, 1.0);
+    float minEdgeValue = 0.25;
+    float maxEdgeValue = 0.55;
+    sobelDepth = smoothstep(minEdgeValue, maxEdgeValue, sobelValue);
 
 #ifdef ENABLE_ES3
     fragColor = vec4(outlineColor.rgb, sobelDepth);

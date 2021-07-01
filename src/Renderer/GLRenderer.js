@@ -48,7 +48,7 @@ class GLRenderer extends GLBaseRenderer {
     this.highlightOutlineThickness = 1.5
     this.outlineThickness = 0
     this.outlineColor = new Color(0.15, 0.15, 0.15, 1)
-    this.outlineSensitivity = 1
+    this.outlineSensitivity = 2
     this.outlineDepthBias = 0.7
 
     this.__debugTextures = [undefined]
