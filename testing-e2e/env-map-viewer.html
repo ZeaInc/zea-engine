@@ -64,7 +64,7 @@
       // scene.setupGrid(10.0, 10)
 
       const envMap = new EnvMap()
-      envMap.getParameter('FilePath').setValue('data/HDR_041_Path_Ref-webp.zenv')
+      envMap.load('data/HDR_041_Path_Ref-webp.zenv')
       scene.setEnvMap(envMap)
       scene.getSettings().getParameter('Display EnvMap').setValue(true)
 

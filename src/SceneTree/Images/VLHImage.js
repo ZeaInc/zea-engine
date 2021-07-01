@@ -40,23 +40,8 @@ class VLHImage extends BaseImage {
     const fileParam = this.addParameter(new FilePathParameter('FilePath'))
     fileParam.on('valueChanged', () => {
       this.loaded = false
-
-      if (this.getName() == '') {
-        // Generate a name from the file path.
-        const stem = fileParam.getStem()
-        const decorator = stem.substring(stem.length - 1)
-        if (!isNaN(decorator)) {
-          // Note: ALL image names have an LOD specifier at the end.
-          // remove that off when retrieving the name.
-          this.setName(stem.substring(0, stem.length - 1))
-        } else {
-          this.setName(stem)
-        }
-      }
-
-      const fileId = fileParam.getValue()
-      const file = fileParam.getFile()
-      this.__loadVLH(fileId, file)
+      const url = fileParam.getUrl()
+      this.load(url)
     })
 
     if (filepath) {
@@ -114,27 +99,33 @@ class VLHImage extends BaseImage {
   }
 
   /**
-   * The __loadVLH method.
-   * @param {string} fileId - The fileId value.
-   * @param {object} file - The file value.
-   * @private
+   * Loads a vlh file given a URL.
+   * @param {string} url - The URL of the vlh file to load
+   * @return {Promise} - Returns a promise that resolves once the initial load is complete
    */
-  __loadVLH(fileId, file) {
-    this.type = 'FLOAT'
+  load(url) {
+    return new Promise((resolve, reject) => {
+      const filename = url.lastIndexOf('/') > -1 ? url.substring(url.lastIndexOf('/') + 1) : ''
+      const stem = filename.substring(0, filename.lastIndexOf('.'))
+      if (this.getName() == '') {
+        this.setName(stem)
+      }
+      this.type = 'FLOAT'
 
-    resourceLoader.loadFile('archive', file.url).then((entries) => {
-      if (!entries.ldr || !entries.cdm) {
-        for (const name in entries) {
-          if (name.endsWith('.jpg')) {
-            entries.ldr = entries[name]
-            delete entries[name]
-          } else if (name.endsWith('.bin')) {
-            entries.cdm = entries[name]
-            delete entries[name]
+      resourceLoader.loadFile('archive', url).then((entries) => {
+        if (!entries.ldr || !entries.cdm) {
+          for (const name in entries) {
+            if (name.endsWith('.jpg')) {
+              entries.ldr = entries[name]
+              delete entries[name]
+            } else if (name.endsWith('.bin')) {
+              entries.cdm = entries[name]
+              delete entries[name]
+            }
           }
         }
-      }
-      this.__decodeData(entries)
+        this.__decodeData(entries)
+      })
     })
   }
 
