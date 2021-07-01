@@ -300,16 +300,25 @@ class CameraManipulator extends BaseTool {
     const { viewport } = event
     const camera = viewport.getCamera()
 
-    const focalDistance = camera.getFocalDistance()
-    const fovY = camera.getFov()
+    const delta = new Xfo()
     const xAxis = new Vec3(1, 0, 0)
     const yAxis = new Vec3(0, 1, 0)
 
-    const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY)
-    const cameraPlaneWidth = cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight())
-    const delta = new Xfo()
-    delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
-    delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight))
+    if (camera.isOrthographic()) {
+      const frustumHeight = camera.getFrustumHeight()
+      const frustumWidth = frustumHeight * (viewport.getWidth() / viewport.getHeight())
+
+      delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * frustumWidth)
+      delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * frustumHeight))
+    } else {
+      const focalDistance = camera.getFocalDistance()
+      const fovY = camera.getFov()
+
+      const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY)
+      const cameraPlaneWidth = cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight())
+      delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
+      delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight))
+    }
 
     const cameraXfo = camera.getParameter('GlobalXfo').getValue()
     camera.getParameter('GlobalXfo').setValue(cameraXfo.multiply(delta))
@@ -834,14 +843,15 @@ class CameraManipulator extends BaseTool {
     const xfo = camera.getParameter('GlobalXfo').getValue()
 
     let dir
-    if (event.intersectionData != undefined) {
-      const vec = xfo.tr.subtract(event.intersectionData.intersectionPos)
-      dir = vec.normalize()
-
-      const viewVec = xfo.inverse().transformVec3(event.intersectionData.intersectionPos)
-      setCameraFocalDistance(camera, -viewVec.z)
-    } else {
-      dir = xfo.ori.getZaxis()
+    if (!camera.isOrthographic()) {
+      if (event.intersectionData != undefined) {
+        dir = xfo.tr.subtract(event.intersectionData.intersectionPos)
+        dir.normalizeInPlace()
+        const viewVec = xfo.inverse().transformVec3(event.intersectionData.intersectionPos)
+        setCameraFocalDistance(camera, -viewVec.z)
+      } else {
+        dir = xfo.ori.getZaxis()
+      }
     }
 
     // To normalize mouse wheel speed across vendors and OSs, it is recommended to simply convert scroll value to -1 or 1
@@ -866,9 +876,18 @@ class CameraManipulator extends BaseTool {
       }
     }
     const applyViewScale = () => {
-      const viewHeight = camera.getFrustumHeight()
-      const zoomDist = viewHeight * this.__mouseWheelMovementDist
-      camera.setFrustumHeight(viewHeight + zoomDist)
+      const frustumHeight = camera.getFrustumHeight()
+      const zoomDist = frustumHeight * this.__mouseWheelMovementDist
+      camera.setFrustumHeight(frustumHeight + zoomDist)
+
+      if (event.intersectionData) {
+        const dir = xfo.tr.subtract(event.intersectionData.intersectionPos)
+        const zAxis = xfo.ori.getZaxis()
+        dir.subtractInPlace(zAxis.scale(dir.dot(zAxis)))
+
+        xfo.tr.addInPlace(dir.scale(zoomDist / (frustumHeight + zoomDist)))
+        camera.getParameter('GlobalXfo').setValue(xfo)
+      }
 
       this.__mouseWheelZoomCount++
       if (this.__mouseWheelZoomCount < steps) {

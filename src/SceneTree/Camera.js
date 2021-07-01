@@ -416,8 +416,10 @@ class Camera extends TreeItem {
                 boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p1.x, box3.p0.y, box3.p1.z)))
                 boundaryPoints.push(mat4.transformVec3(new Vec3(box3.p1.x, box3.p1.y, box3.p0.z)))
                 boundaryPoints.push(mat4.transformVec3(box3.p1))
+                return false
               }
-            } else if (childItem.getNumChildren() == 0) {
+            }
+            if (childItem.getNumChildren() == 0) {
               const box3 = childItem.getParameter('BoundingBox').getValue()
               if (!box3.isValid()) return
               boundaryPoints.push(box3.p0)

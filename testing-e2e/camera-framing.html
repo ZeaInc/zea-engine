@@ -59,26 +59,28 @@
       }
       postMessage('done-loading')
 
+      const camera = renderer.getViewport().getCamera()
+
       // {{{ Messages handler.
       const handleMessage = (event) => {
         const { data } = event
 
         if (data === 'variant-01') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 0), new Vec3(0, 0, 0))
+          camera.setPositionAndTarget(new Vec3(2, 2, 0), new Vec3(0, 0, 0))
           renderer.frameAll()
           postMessage(`done-${data}`)
         } else if (data === 'variant-02') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-6, 6, 3), new Vec3(0, 0, 0))
+          camera.setPositionAndTarget(new Vec3(-6, 6, 3), new Vec3(0, 0, 0))
           renderer.frameAll()
           postMessage(`done-${data}`)
         } else if (data === 'variant-03') {
-          renderer.getViewport().getCamera().setIsOrthographic(1, 0)
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 2), new Vec3(0, 0, 0))
+          camera.setIsOrthographic(1, 0)
+          camera.setPositionAndTarget(new Vec3(2, 2, 2), new Vec3(0, 0, 0))
           renderer.frameAll()
           postMessage(`done-${data}`)
         } else if (data === 'variant-04') {
-          renderer.getViewport().getCamera().setIsOrthographic(1, 0)
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-6, 6, 5), new Vec3(0, 0, 0))
+          camera.setIsOrthographic(1, 0)
+          camera.setPositionAndTarget(new Vec3(-6, 6, 5), new Vec3(0, 0, 0))
           renderer.frameAll()
           postMessage(`done-${data}`)
         }
