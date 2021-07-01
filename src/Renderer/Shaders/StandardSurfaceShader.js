@@ -245,7 +245,7 @@ void main(void) {
     if (isOrthographic == 0)
       viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
     else 
-      viewVector = vec3(cameraMatrix[0][2], cameraMatrix[1][2], cameraMatrix[2][2]);
+      viewVector = vec3(-cameraMatrix[2][0], -cameraMatrix[2][1], -cameraMatrix[2][2]);
       
     if(dot(normal, viewVector) < 0.0){
         normal = -normal;
