@@ -72,14 +72,14 @@
       document.querySelector('#back').addEventListener('click', () => {
         renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.01, -0.02, 0.005), new Vec3(0.01, 0, 0))
         renderer.once('CullingUpdated', () => {
-          postMessage(`done-back`)
+          window.postMessage(`done-back`)
         })
       })
 
       document.querySelector('#front').addEventListener('click', () => {
         renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.035, 0.02, 0.005), new Vec3(0.01, 0, 0))
         renderer.once('CullingUpdated', () => {
-          postMessage(`done-front`)
+          window.postMessage(`done-front`)
         })
       })
     </script>
