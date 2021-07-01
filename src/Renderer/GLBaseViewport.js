@@ -181,7 +181,7 @@ class GLBaseViewport extends ParameterOwner {
    * @param {number} height - The height  used by this viewport.
    */
   resizeRenderTargets(width, height) {
-    if (this.offscreenBuffer) {
+    if (!SystemDesc.isIOSDevice) {
       const gl = this.__renderer.gl
 
       if (this.fb) {
@@ -312,7 +312,7 @@ class GLBaseViewport extends ParameterOwner {
 
     // //////////////////////////////////
     // Post processing.
-    if (gl.renderbufferStorageMultisample) {
+    if (this.fb && gl.renderbufferStorageMultisample) {
       // "blit" the scene into the color buffer
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb[FRAMEBUFFER.MSAA_RENDERBUFFER])
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb[FRAMEBUFFER.COLORBUFFER])
