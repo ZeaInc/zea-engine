@@ -71,6 +71,13 @@ class ShaderLibrary {
     // console.log("parseShader:" + shaderName);
     const shaderNameHash = StringFunctions.hashStr(shaderName)
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
+
+    const PREFIX = '#define GLSLIFY 1\n'
+    // this just removes the #define if it's there
+    if (glsl.indexOf(PREFIX) == 0) {
+      glsl = glsl.slice(PREFIX.length)
+    }
+
     const lines = glsl.split('\n')
 
     const result = {
@@ -95,6 +102,7 @@ class ShaderLibrary {
         trimmedline = trimmedline.slice(0, trimmedline.indexOf('//')).trim()
       }
 
+      // TODO: Deprecated
       if (trimmedline.startsWith('<%') || trimmedline.startsWith('</%')) {
         const parseTag = function (line) {
           if (line.startsWith('</%')) line = line.slice(3)
