@@ -6,6 +6,9 @@ import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
+import frag from './GLSLFiles/FatLines.frag.glsl'
+import vert from './GLSLFiles/FatLines.vert.glsl'
+// TODO: refactor snippet to external glsl file
 shaderLibrary.setShaderModule(
   'calcFatLinesViewPos.glsl',
   `
@@ -114,103 +117,9 @@ class FatLinesShader extends GLShader {
    */
   constructor(gl) {
     super(gl)
-    this.setShaderStage(
-      'VERTEX_SHADER',
-      `
-precision highp float;
+    this.setShaderStage('VERTEX_SHADER', vert)
 
-instancedattribute vec2 segmentIndices;
-attribute float vertexIDs;
-
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-
-<%include file="GLSLUtils.glsl"/>
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
-
-uniform int drawItemId;
-int getDrawItemId() {
-    return drawItemId;
-}
-
-
-uniform sampler2D positionsTexture;
-uniform int positionsTextureSize;
-
-uniform float LineThickness;
-uniform float Overlay;
-
-<%include file="calcFatLinesViewPos.glsl"/>
-
-/* VS Outputs */
-varying vec3 v_viewPos;
-varying vec3 v_viewNormal;
-varying vec2 v_texCoord;
-
-void main(void) {
-  int drawItemId = getDrawItemId();
-  int vertexID = int(vertexIDs);
-
-  mat4 modelMatrix = getModelMatrix(drawItemId);
-  mat4 modelViewMatrix = viewMatrix * modelMatrix;
-
-  vec3 pos;
-  v_viewPos       = calcFatLinesViewPos(vertexID, modelViewMatrix, v_viewNormal, v_texCoord, pos);
-  gl_Position     = projectionMatrix * vec4(v_viewPos, 1.0);
-  
-  if(Overlay > 0.0){
-    gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
-  }
-}
-`
-    )
-
-    this.setShaderStage(
-      'FRAGMENT_SHADER',
-      `
-precision highp float;
-
-/* VS Outputs */
-varying vec3 v_viewPos;
-varying vec3 v_viewNormal;
-varying vec2 v_texCoord;
-
-uniform color BaseColor;
-uniform mat4 cameraMatrix;
-
-#ifdef ENABLE_ES3
-  out vec4 fragColor;
-#endif
-void main(void) {
-#ifndef ENABLE_ES3
-  vec4 fragColor;
-#endif
-
-  int debugLevel = 0;
-  if(debugLevel == 0){
-
-    vec3 viewVector = mat3(cameraMatrix) * normalize(-v_viewPos);
-    vec3 normal = mat3(cameraMatrix) * v_viewNormal;
-    float NdotV = dot(normalize(normal), normalize(viewVector));
-
-    // Modulate the lighting using the texture coord so the line looks round.
-    NdotV *= cos((v_texCoord.x - 0.5) * 2.0);
-
-    vec4 color = BaseColor * NdotV;
-    fragColor = vec4(color.rgb, BaseColor.a);
-  }
-  else{
-    fragColor = vec4(v_texCoord.x, 0.0, 0.0, 1.0);
-  }
-
-#ifndef ENABLE_ES3
-  gl_FragColor = fragColor;
-#endif
-}
-`
-    )
+    this.setShaderStage('FRAGMENT_SHADER', frag)
     this.finalize()
   }
 
