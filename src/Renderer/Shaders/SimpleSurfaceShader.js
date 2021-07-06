@@ -3,10 +3,8 @@ import { Registry } from '../../Registry'
 // import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
-import frag from './GLSLFiles/SimpleShader.frag.glsl'
-import vert from './GLSLFiles/SimpleShader.vert.glsl'
-// const vert = require('./GLSLFiles/SimpleShader.vert.glsl')
-// const frag = require('./GLSLFiles/SimpleShader.frag.glsl')
+import frag from './GLSLFiles/SimpleSurface.frag.glsl'
+import vert from './GLSLFiles/SimpleSurface.vert.glsl'
 
 import './GLSL/stack-gl/transpose.js'
 import './GLSL/stack-gl/gamma.js'
