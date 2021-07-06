@@ -7,6 +7,6 @@ module.exports = {
   coverageReporters: ['json-summary', 'json', 'text', 'lcov', 'clover'],
   // modulePathIgnorePatterns: ['<rootDir>/src/Renderer/Shaders/GLSLFiles/'],
   moduleNameMapper: {
-    '\\.(frag.glsl|vert.glsl|glsl|vert|frag)$': '<rootDir>/__mocks__/fileMock.js',
+    '\\.(glsl|vert|frag|vs|fs|geom|comp)$': '<rootDir>/__mocks__/fileMock.js',
   },
 }
