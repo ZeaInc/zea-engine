@@ -10,6 +10,10 @@ import './GLSL/envmap-octahedral.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
+import vert from './GLSLFiles/EnvProjection.vert.glsl'
+import LatLongEnvProjectionFrag from './GLSLFiles/LatLongEnvProjection.frag.glsl'
+import OctahedralEnvProjectionFrag from './GLSLFiles/OctahedralEnvProjection.frag.glsl'
+
 class EnvProjectionShader extends GLShader {
   /**
    * Create a GL shader.
@@ -17,40 +21,7 @@ class EnvProjectionShader extends GLShader {
    */
   constructor(gl) {
     super(gl)
-    this.setShaderStage(
-      'VERTEX_SHADER',
-      `
-precision highp float;
-
-attribute vec3 positions;    //(location = 0)
-
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-uniform vec3 projectionCenter;
-
-<%include file="stack-gl/inverse.glsl"/>
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
-
-/* VS Outputs */
-varying vec3 v_worldDir;
- 
-void main()
-{
-  int drawItemId = getDrawItemId();
-  vec4 pos = vec4(positions, 1.);
-  mat4 modelMatrix = getModelMatrix(drawItemId);
-  mat4 modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
-
-  gl_Position = modelViewProjectionMatrix * pos;
-
-  vec4 worldPos = modelMatrix * pos;
-  v_worldDir = worldPos.xyz - projectionCenter;
-}
-
-`
-    )
+    this.setShaderStage('VERTEX_SHADER', vert)
 
     this.finalize()
   }
@@ -72,51 +43,7 @@ class OctahedralEnvProjectionShader extends EnvProjectionShader {
    */
   constructor(gl) {
     super(gl)
-    this.setShaderStage(
-      'FRAGMENT_SHADER',
-      `
-precision highp float;
-
-<%include file="math/constants.glsl"/>
-<%include file="GLSLUtils.glsl"/>
-<%include file="envmap-octahedral.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
-
-
-uniform color envMap;
-uniform sampler2D envMapTex;
-uniform int envMapTexType;
-
-
-uniform float exposure;
-
-/* VS Outputs */
-varying vec3 v_worldDir;
-
-#ifdef ENABLE_ES3
-  out vec4 fragColor;
-#endif
-void main(void) {
-#ifndef ENABLE_ES3
-  vec4 fragColor;
-#endif
-
-  vec2 texCoord = dirToSphOctUv(normalize(v_worldDir));
-  vec4 env = getColorParamValue(envMap, envMapTex, envMapTexType, texCoord);
-
-  fragColor = vec4(env.rgb/env.a, 1.0);
-
-#ifdef ENABLE_INLINE_GAMMACORRECTION
-  fragColor.rgb = toGamma(fragColor.rgb * exposure);
-#endif
-
-#ifndef ENABLE_ES3
-  gl_FragColor = fragColor;
-#endif
-}
-`
-    )
+    this.setShaderStage('FRAGMENT_SHADER', OctahedralEnvProjectionFrag)
     this.finalize()
   }
 }
@@ -130,49 +57,7 @@ class LatLongEnvProjectionShader extends EnvProjectionShader {
    */
   constructor(gl) {
     super(gl)
-    this.setShaderStage(
-      'FRAGMENT_SHADER',
-      `
-precision highp float;
-
-<%include file="math/constants.glsl"/>
-<%include file="GLSLUtils.glsl"/>
-<%include file="pragmatic-pbr/envmap-equirect.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
-
-uniform color envMap;
-uniform sampler2D envMapTex;
-uniform int envMapTexType;
-
-uniform float exposure;
-
-/* VS Outputs */
-varying vec3 v_worldDir;
-
-#ifdef ENABLE_ES3
-  out vec4 fragColor;
-#endif
-void main(void) {
-#ifndef ENABLE_ES3
-  vec4 fragColor;
-#endif
-
-  vec2 texCoord = latLongUVsFromDir(normalize(v_worldDir));
-  vec4 env = getColorParamValue(envMap, envMapTex, envMapTexType, texCoord);
-  fragColor = vec4(env.rgb/env.a, 1.0);
-
-#ifdef ENABLE_INLINE_GAMMACORRECTION
-  fragColor.rgb = toGamma(fragColor.rgb * exposure);
-#endif
-
-
-#ifndef ENABLE_ES3
-  gl_FragColor = fragColor;
-#endif
-}
-`
-    )
+    this.setShaderStage('FRAGMENT_SHADER', LatLongEnvProjectionFrag)
     this.finalize()
   }
 }
