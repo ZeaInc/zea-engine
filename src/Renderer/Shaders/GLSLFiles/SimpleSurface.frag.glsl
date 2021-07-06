@@ -10,12 +10,7 @@ import 'drawItemTexture.glsl'
 import 'cutaways.glsl'
 import 'stack-gl/gamma.glsl'
 import 'materialparams.glsl'
-// <%include file="GLSLUtils.glsl"/>
-// <%include file="math/constants.glsl"/>
-// <%include file="drawItemTexture.glsl"/>
-// <%include file="cutaways.glsl"/>
-// <%include file="stack-gl/gamma.glsl"/>
-// <%include file="materialparams.glsl"/>
+
 
 #ifdef DEBUG_GEOM_ID
 <%include file="debugColors.glsl"/>
