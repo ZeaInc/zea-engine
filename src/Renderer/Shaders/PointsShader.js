@@ -18,6 +18,7 @@ class PointsShader extends GLShader {
     this.setShaderStage('VERTEX_SHADER', vert)
 
     this.setShaderStage('FRAGMENT_SHADER', frag)
+    //TODO: finalize needed here?
   }
 
   static getParamDeclarations() {
