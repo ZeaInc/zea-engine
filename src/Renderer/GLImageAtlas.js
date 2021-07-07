@@ -11,7 +11,7 @@ import { generateShaderGeomBinding } from './Drawing/GeomShaderBinding.js'
 import { MathFunctions } from '../Utilities/MathFunctions'
 
 import vert from './Shaders/GLSLFiles/AtlasLayout.vertex.glsl'
-import frag from './Shaders/GLSLFiles/AtlasLayout.vertex.glsl'
+import frag from './Shaders/GLSLFiles/AtlasLayout.frag.glsl'
 // eslint-disable-next-line require-jsdoc
 class AtlasLayoutShader extends GLShader {
   /**
