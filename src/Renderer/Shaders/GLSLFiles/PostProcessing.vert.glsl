@@ -1,8 +1,8 @@
 
 precision highp float;
 
-<%include file="utils/quadVertexFromID.glsl"/>
-<%include file="mattdesl/fxaa-texcoords.glsl"/>
+import 'utils/quadVertexFromID'
+import 'mattdesl/fxaa-texcoords'
 
 uniform vec2 textureSize;
 

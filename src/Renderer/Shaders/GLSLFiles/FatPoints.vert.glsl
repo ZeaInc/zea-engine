@@ -6,12 +6,12 @@ instancedattribute vec3 positions;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-<%include file="GLSLUtils.glsl"/> 
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="stack-gl/inverse.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
-<%include file="utils/quadVertexFromID.glsl"/>
+import 'GLSLUtils' 
+import 'stack-gl/transpose'
+import 'stack-gl/inverse'
+import 'drawItemTexture'
+import 'modelMatrix'
+import 'utils/quadVertexFromID'
 
 uniform int drawItemId;
 int getDrawItemId() {

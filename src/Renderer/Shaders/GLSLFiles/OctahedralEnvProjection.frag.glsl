@@ -1,11 +1,11 @@
 
 precision highp float;
 
-<%include file="math/constants.glsl"/>
-<%include file="GLSLUtils.glsl"/>
-<%include file="envmap-octahedral.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
+import 'math/constants'
+import 'GLSLUtils'
+import 'envmap-octahedral'
+import 'stack-gl/gamma'
+import 'materialparams'
 
 
 uniform color envMap;

@@ -1,11 +1,11 @@
 
 precision highp float;
 
-<%include file="math/constants.glsl"/>
-<%include file="GLSLUtils.glsl"/>
-<%include file="pragmatic-pbr/envmap-equirect.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
+import 'math/constants'
+import 'GLSLUtils'
+import 'pragmatic-pbr/envmap-equirect'
+import 'stack-gl/gamma'
+import 'materialparams'
 
 uniform color envMap;
 uniform sampler2D envMapTex;

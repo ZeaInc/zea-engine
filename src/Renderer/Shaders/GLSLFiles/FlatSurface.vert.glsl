@@ -9,11 +9,11 @@ attribute vec2 texCoords;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="drawItemId.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
+import 'GLSLUtils'
+import 'stack-gl/transpose'
+import 'drawItemId'
+import 'drawItemTexture'
+import 'modelMatrix'
 
 /* VS Outputs */
 varying float v_drawItemId;

@@ -3,16 +3,16 @@ precision highp float;
 // #define DEBUG_GEOM_ID
 #endif
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="math/constants.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="cutaways.glsl"/>
+import 'GLSLUtils'
+import 'math/constants'
+import 'drawItemTexture'
+import 'cutaways'
 
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
+import 'stack-gl/gamma'
+import 'materialparams'
 
 #ifdef DEBUG_GEOM_ID
-<%include file="debugColors.glsl"/>
+import 'debugColors'
 #endif
 
 /* VS Outputs */
@@ -88,7 +88,7 @@ uniform int EmissiveStrengthTexType;
 #endif // ENABLE_TEXTURES
 #endif // ENABLE_MULTI_DRAW
 
-<%include file="PBRSurfaceRadiance.glsl"/>
+import 'PBRSurfaceRadiance'
 
 #ifdef ENABLE_PBR
 mat3 cotangentFrame( in vec3 normal, in vec3 pos, in vec2 texCoord ) {
@@ -113,7 +113,7 @@ mat3 cotangentFrame( in vec3 normal, in vec3 pos, in vec2 texCoord ) {
 }
 #endif
 
-<%include file="computeViewNormal.glsl"/>
+import 'computeViewNormal'
 
 
 #ifdef ENABLE_ES3

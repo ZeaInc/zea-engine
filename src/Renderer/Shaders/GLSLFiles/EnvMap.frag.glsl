@@ -1,9 +1,9 @@
 
 precision highp float;
 
-<%include file="math/constants.glsl"/>
-<%include file="GLSLUtils.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
+import 'math/constants'
+import 'GLSLUtils'
+import 'stack-gl/gamma'
 
 uniform float focus;
 uniform float exposure;
@@ -29,7 +29,7 @@ varying vec2 v_texCoord;
 
 #if (ENV_MAPTYPE == ENV_MAP_LATLONG)  
 
-<%include file="pragmatic-pbr/envmap-equirect.glsl"/>
+import 'pragmatic-pbr/envmap-equirect'
 
 uniform sampler2D backgroundImage;
 
@@ -41,7 +41,7 @@ vec4 sampleEnvMap(vec3 dir) {
 
 #elif (ENV_MAPTYPE == ENV_MAP_OCT)  
 
-<%include file="envmap-octahedral.glsl"/>
+import 'envmap-octahedral'
 
 uniform sampler2D   envMap;
 
@@ -83,7 +83,7 @@ vec4 sampleEnvMap(vec3 dir) {
 
 #elif (ENV_MAPTYPE == ENV_MAP_STEREO_LATLONG)  
 
-<%include file="pragmatic-pbr/envmap-equirect.glsl"/>
+import 'pragmatic-pbr/envmap-equirect'
 uniform int eye;// L = 0, R = 1;
 uniform sampler2D backgroundImage;
 
@@ -99,7 +99,7 @@ vec4 sampleEnvMap(vec3 dir) {
 
 #elif (ENV_MAPTYPE == ENV_MAP_DUALFISHEYE)
 
-<%include file="pragmatic-pbr/envmap-dualfisheye.glsl"/>
+import 'pragmatic-pbr/envmap-dualfisheye'
 
 vec4 sampleEnvMap(vec3 dir) {
   vec2 uv = dualfisheyeUVsFromDir(dir);
@@ -108,7 +108,7 @@ vec4 sampleEnvMap(vec3 dir) {
 
 #elif (ENV_MAPTYPE == ENV_MAP_SH)
 
-<%include file="SHCoeffs.glsl"/>
+import 'SHCoeffs'
 
 vec4 sampleEnvMap(vec3 dir) {
 	return vec4(sampleSHCoeffs(dir) * exposure, 1.0);

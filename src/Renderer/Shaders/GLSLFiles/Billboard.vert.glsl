@@ -1,21 +1,21 @@
 
 precision highp float;
 
-<%include file="utils/quadVertexFromID.glsl"/>
+import 'utils/quadVertexFromID'
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 cameraMatrix;
 
-<%include file="GLSLUtils.glsl"/>
+import 'GLSLUtils'
 
 #ifdef ENABLE_FLOAT_TEXTURES
 
 // A sorted attribute of instance Ids so we draw from back to front.
 instancedattribute float instanceIds;
 
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="utils/imageAtlas.glsl"/>
+import 'stack-gl/transpose'
+import 'utils/imageAtlas'
 
 uniform sampler2D atlasBillboards_layout;
 uniform vec4 atlasBillboards_desc;

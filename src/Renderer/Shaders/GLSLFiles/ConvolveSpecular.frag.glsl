@@ -1,9 +1,9 @@
 precision highp float;
 
-<%include file="math/constants.glsl"/>
-<%include file="GLSLUtils.glsl"/>
-<%include file="ImportanceSampleGGX.glsl"/>
-<%include file="convolve-helpers.glsl"/>
+import 'math/constants'
+import 'GLSLUtils'
+import 'ImportanceSampleGGX'
+import 'convolve-helpers'
 
 uniform float roughness;
 uniform int faceId;

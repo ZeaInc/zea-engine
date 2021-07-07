@@ -1,8 +1,8 @@
 
 precision highp float;
 
-<%include file="math/constants.glsl"/>
-<%include file="GLSLBits.glsl"/>
+import 'math/constants'
+import 'GLSLBits'
 
 uniform int floatGeomBuffer;
 uniform int passId;

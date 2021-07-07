@@ -7,10 +7,10 @@ attribute float vertexIDs;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
+import 'GLSLUtils'
+import 'stack-gl/transpose'
+import 'drawItemTexture'
+import 'modelMatrix'
 
 uniform int drawItemId;
 int getDrawItemId() {
@@ -24,7 +24,7 @@ uniform int positionsTextureSize;
 uniform float LineThickness;
 uniform float Overlay;
 
-<%include file="calcFatLinesViewPos.glsl"/>
+import 'calcFatLinesViewPos'
 
 /* VS Outputs */
 varying vec3 v_viewPos;

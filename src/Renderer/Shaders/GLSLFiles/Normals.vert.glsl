@@ -10,9 +10,9 @@ uniform mat4 projectionMatrix;
 
 uniform float normalLength;
 
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
+import 'stack-gl/transpose'
+import 'drawItemTexture'
+import 'modelMatrix'
 
 
 /* VS Outputs */

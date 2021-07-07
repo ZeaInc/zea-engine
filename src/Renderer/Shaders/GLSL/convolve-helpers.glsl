@@ -1,5 +1,5 @@
 
-  <%include file="Hammersley.glsl"/>
+  import 'Hammersley'
   
   
   #ifdef ENVMAP_CUBE
@@ -14,7 +14,7 @@
   
   uniform sampler2D   envMap;
   
-  <%include file="envmap-octahedral.glsl"/>
+  import 'envmap-octahedral'
   
   vec4 sampleEnvMap(vec3 dir) {
     vec2 uv = dirToSphOctUv(dir);

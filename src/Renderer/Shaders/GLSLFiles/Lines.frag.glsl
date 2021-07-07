@@ -1,12 +1,12 @@
 
 precision highp float;
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="math/constants.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="cutaways.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
+import 'GLSLUtils'
+import 'math/constants'
+import 'drawItemTexture'
+import 'cutaways'
+import 'stack-gl/gamma'
+import 'materialparams'
 
 
 uniform int occluded;
@@ -27,7 +27,7 @@ uniform float OccludedStippleValue;
 uniform int floatGeomBuffer;
 uniform int passId;
 
-<%include file="GLSLBits.glsl"/>
+import 'GLSLBits'
 
 #elif defined(DRAW_HIGHLIGHT)
 

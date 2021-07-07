@@ -1,9 +1,9 @@
 
 precision highp float;
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
+import 'GLSLUtils'
+import 'stack-gl/gamma'
+import 'materialparams'
 
 #ifndef ENABLE_MULTI_DRAW
 
