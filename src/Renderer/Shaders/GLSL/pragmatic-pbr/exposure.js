@@ -1,5 +1,5 @@
 import { shaderLibrary } from '../../../ShaderLibrary'
 
-import exposure from './exposure.glsl'
+import exposure from './snippets/exposure.glsl'
 
 shaderLibrary.setShaderModule('pragmatic-pbr/exposure.glsl', exposure)
