@@ -1,6 +1,7 @@
 import { StringFunctions } from '../Utilities/StringFunctions'
 import { glslTypes } from './GLSLConstants.js'
 
+const WHITESPACE_RE = /\s+/
 /** Class representing a shader library.
  * @private
  */
@@ -69,7 +70,6 @@ class ShaderLibrary {
 
   // eslint-disable-next-line require-jsdoc
   parseTag(line) {
-    const WHITESPACE_RE = /\s+/
     if (line.startsWith('</%')) line = line.slice(3)
     else line = line.slice(2)
     if (line.endsWith('/>')) line = line.slice(0, line.length - 2)
@@ -98,8 +98,8 @@ class ShaderLibrary {
     const shaderNameHash = StringFunctions.hashStr(shaderName)
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
 
+    // GLSLify adds this to every file. This just removes the #define if it's there
     const PREFIX = '#define GLSLIFY 1\n'
-    // this just removes the #define if it's there
     if (glsl.indexOf(PREFIX) == 0) {
       glsl = glsl.slice(PREFIX.length)
     }
@@ -115,7 +115,6 @@ class ShaderLibrary {
       attributes: {},
     }
 
-    const WHITESPACE_RE = /\s+/
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i]
       let trimmedline = line.trim()
