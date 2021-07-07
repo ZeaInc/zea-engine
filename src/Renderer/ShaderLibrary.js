@@ -93,6 +93,7 @@ class ShaderLibrary {
    * @return {any} - The return value.
    */
   parseShader(shaderName, glsl) {
+    glsl = glsl.toString() // TODO: this cast is here just to make jest pass
     // console.log("parseShader:" + shaderName);
     const shaderNameHash = StringFunctions.hashStr(shaderName)
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
