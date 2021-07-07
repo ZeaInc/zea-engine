@@ -127,8 +127,72 @@ class ShaderLibrary {
         trimmedline = trimmedline.slice(0, trimmedline.indexOf('//')).trim()
       }
 
-      // TODO: ANY line that starts with 'import ' -- this could be improved so we don't parse variables named import, etc.
-      if (trimmedline.startsWith('import ')) {
+      // TODO: Deprecated
+      if (trimmedline.startsWith('<%') || trimmedline.startsWith('</%')) {
+        const elements = this.parseTag(lines[i].trim())
+        switch (elements.tag) {
+          case 'include': {
+            const includeFile = this.parsePath(elements.attributes.file, fileFolder)
+            if (!this.hasShaderModule(includeFile)) {
+              throw new Error(
+                'Error while parsing :' +
+                  shaderName +
+                  ' \nShader module not found:' +
+                  includeFile +
+                  '\n in:' +
+                  this.getShaderModuleNames()
+              )
+            }
+
+            const shaderModule = this.getShaderModule(includeFile)
+
+            const includedModuleHash = StringFunctions.hashStr(elements.attributes.file)
+            let includedGLSL = shaderModule.glsl
+
+            // Remove the first line of GLSL, and replace it with the line tag.
+            includedGLSL = includedGLSL.substring(includedGLSL.indexOf('\n') + 1)
+            result.glsl = result.glsl + ' //including:' + elements.attributes.file + '\n'
+
+            const repl = {}
+            for (const key in elements.attributes) {
+              if (key == 'file') continue
+              const value = elements.attributes[key]
+              includedGLSL = StringFunctions.replaceAll(includedGLSL, key, value)
+              repl[key] = value
+            }
+
+            result.glsl = result.glsl + includedGLSL
+            result.includeMetaData.push({
+              src: result.numLines,
+              tgt: i,
+              length: shaderModule.numLines,
+              key: includeFile,
+            })
+
+            // Add line number tag to GLSL so that the GLSL error messages have the correct file name and line number.
+            result.glsl = result.glsl + ' //continuing:' + shaderName + '\n'
+            result.numLines += shaderModule.numLines + 1
+
+            for (const name in shaderModule.attributes) {
+              let newname = name
+              for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
+              result.attributes[newname] = shaderModule.attributes[name]
+            }
+            for (const name in shaderModule.uniforms) {
+              let newname = name
+              for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
+              result.uniforms[newname] = shaderModule.uniforms[name]
+            }
+
+            break
+          }
+          default: {
+            console.warn('Error while parsing :' + shaderName + ' \nUnhandled line:' + line)
+            continue
+          }
+        }
+      } // TODO: ANY line that starts with 'import ' -- this could be improved so we don't parse variables named import, etc.
+      else if (trimmedline.startsWith('import ')) {
         console.log('importing file...')
         const relativeFileLoc = this.getImport(trimmedline)
         const includeFile = this.parsePath(relativeFileLoc, fileFolder)
