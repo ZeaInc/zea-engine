@@ -13,7 +13,7 @@ import 'materialparams.glsl'
 
 
 #ifdef DEBUG_GEOM_ID
-import 'debugColors'
+<%include file="debugColors.glsl"/>
 #endif
 
 uniform color cutColor;
@@ -64,7 +64,7 @@ uniform int EmissiveStrengthTexType;
 
 #endif // ENABLE_MULTI_DRAW
 
-import 'computeViewNormal'
+<%include file="computeViewNormal.glsl"/>
   
 
 #ifdef ENABLE_ES3

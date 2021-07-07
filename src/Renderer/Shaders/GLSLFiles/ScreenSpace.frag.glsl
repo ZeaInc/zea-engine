@@ -1,14 +1,14 @@
 
 precision highp float;
 
-import 'GLSLUtils'
+<%include file="GLSLUtils.glsl"/>
 #ifdef ENABLE_MULTI_DRAW
-import 'math/constants'
-import 'drawItemTexture'
+<%include file="math/constants.glsl"/>
+<%include file="drawItemTexture.glsl"/>
 #endif // ENABLE_MULTI_DRAW
 
-import 'stack-gl/gamma'
-import 'materialparams'
+<%include file="stack-gl/gamma.glsl"/>
+<%include file="materialparams.glsl"/>
 
 
 #if defined(DRAW_COLOR)

@@ -1,7 +1,7 @@
 
 precision highp float;
 
-import 'utils/quadVertexFromID'
+<%include file="utils/quadVertexFromID.glsl"/>
 
 /* VS Outputs */
 varying vec2 v_texCoord;

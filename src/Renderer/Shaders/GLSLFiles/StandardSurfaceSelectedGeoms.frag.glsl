@@ -4,8 +4,8 @@ precision highp float;
 varying float v_drawItemId;
 
 
-import 'GLSLUtils'
-import 'drawItemTexture'
+<%include file="GLSLUtils.glsl"/>
+<%include file="drawItemTexture.glsl"/>
 
 #ifdef ENABLE_FLOAT_TEXTURES
 vec4 getHighlightColor(int id) {

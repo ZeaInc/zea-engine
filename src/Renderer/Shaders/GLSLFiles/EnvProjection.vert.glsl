@@ -7,10 +7,10 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec3 projectionCenter;
 
-import 'stack-gl/inverse'
-import 'stack-gl/transpose'
-import 'drawItemTexture'
-import 'modelMatrix'
+<%include file="stack-gl/inverse.glsl"/>
+<%include file="stack-gl/transpose.glsl"/>
+<%include file="drawItemTexture.glsl"/>
+<%include file="modelMatrix.glsl"/>
 
 /* VS Outputs */
 varying vec3 v_worldDir;

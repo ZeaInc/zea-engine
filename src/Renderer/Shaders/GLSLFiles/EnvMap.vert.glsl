@@ -1,13 +1,13 @@
 
 precision highp float;
 
-import 'utils/quadVertexFromID'
+<%include file="utils/quadVertexFromID.glsl"/>
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
-import 'stack-gl/inverse'
-import 'stack-gl/transpose'
+<%include file="stack-gl/inverse.glsl"/>
+<%include file="stack-gl/transpose.glsl"/>
 
 /* VS Outputs */
 varying vec3 v_worldDir;

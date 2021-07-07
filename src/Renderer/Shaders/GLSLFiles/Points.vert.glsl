@@ -3,18 +3,18 @@ precision highp float;
 
 attribute vec3 positions;
 
-import 'GLSLUtils'
-import 'stack-gl/transpose'
-import 'stack-gl/inverse'
-import 'drawItemId'
-import 'drawItemTexture'
-import 'modelMatrix'
+<%include file="GLSLUtils.glsl"/>
+<%include file="stack-gl/transpose.glsl"/>
+<%include file="stack-gl/inverse.glsl"/>
+<%include file="drawItemId.glsl"/>
+<%include file="drawItemTexture.glsl"/>
+<%include file="modelMatrix.glsl"/>
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
 #ifdef ENABLE_MULTI_DRAW
-import 'materialparams'
+<%include file="materialparams.glsl"/>
 #else
 uniform float PointSize;
 uniform float Overlay;
