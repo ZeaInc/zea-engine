@@ -1,7 +1,7 @@
 
 precision highp float;
 
-<%include file="math/constants.glsl"/>
+import 'math/constants.glsl'
 
 uniform color BaseColor;
 uniform float Rounded;

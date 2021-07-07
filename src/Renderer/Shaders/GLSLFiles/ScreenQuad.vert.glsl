@@ -1,7 +1,7 @@
 
 precision highp float;
 
-<%include file="utils/quadVertexFromID.glsl"/>
+import 'utils/quadVertexFromID.glsl'
 
 uniform vec2 pos;
 uniform vec2 size;

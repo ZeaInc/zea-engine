@@ -1,8 +1,8 @@
 
 precision highp float;
 
-<%include file="math/constants.glsl"/>
-<%include file="GLSLBits.glsl"/>
+import 'math/constants.glsl'
+import 'GLSLBits.glsl'
 
 uniform int floatGeomBuffer;
 uniform int passId;
@@ -13,8 +13,8 @@ varying vec3 v_viewPos;
 varying float v_drawItemId;
 
 
-<%include file="GLSLUtils.glsl"/> 
-<%include file="drawItemTexture.glsl"/>
+import 'GLSLUtils.glsl' 
+import 'drawItemTexture.glsl'
 
 #ifdef ENABLE_FLOAT_TEXTURES
 vec4 getHighlightColor(int id) {

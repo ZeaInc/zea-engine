@@ -7,19 +7,19 @@ uniform color BaseColor;
 
 #endif
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="math/constants.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="cutaways.glsl"/>
-<%include file="stack-gl/gamma.glsl"/>
-<%include file="materialparams.glsl"/>
+import 'GLSLUtils.glsl'
+import 'math/constants.glsl'
+import 'drawItemTexture.glsl'
+import 'cutaways.glsl'
+import 'stack-gl/gamma.glsl'
+import 'materialparams.glsl'
 
 #if defined(DRAW_GEOMDATA)
 
 uniform int floatGeomBuffer;
 uniform int passId;
 
-<%include file="GLSLBits.glsl"/>
+import 'GLSLBits.glsl'
 
 #elif defined(DRAW_HIGHLIGHT)
 

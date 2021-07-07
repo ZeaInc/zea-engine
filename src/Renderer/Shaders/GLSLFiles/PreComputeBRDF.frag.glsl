@@ -3,9 +3,9 @@ precision highp float;
 
 varying vec2 v_texCoord;
 
-<%include file="math/constants.glsl"/>
-<%include file="Hammersley.glsl"/>
-<%include file="ImportanceSampleGGX.glsl"/>
+import 'math/constants.glsl'
+import 'Hammersley.glsl'
+import 'ImportanceSampleGGX.glsl'
 
 float GeometrySchlickGGX(float NdotV, float roughness)
 {

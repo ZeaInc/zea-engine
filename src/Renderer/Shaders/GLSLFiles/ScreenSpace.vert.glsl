@@ -6,11 +6,11 @@ attribute vec3 positions;
 attribute vec2 texCoords;
 #endif
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="stack-gl/transpose.glsl"/>
-<%include file="drawItemId.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="modelMatrix.glsl"/>
+import 'GLSLUtils.glsl'
+import 'stack-gl/transpose.glsl'
+import 'drawItemId.glsl'
+import 'drawItemTexture.glsl'
+import 'modelMatrix.glsl'
 
 /* VS Outputs */
 varying float v_drawItemId;

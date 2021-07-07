@@ -1,5 +1,5 @@
 
-<%include file="GLSLUtils.glsl"/>
+import 'GLSLUtils.glsl'
 
 struct Xfo {
     vec3 tr;

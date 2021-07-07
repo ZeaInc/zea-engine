@@ -1,10 +1,10 @@
 
 precision highp float;
 
-<%include file="GLSLUtils.glsl"/>
-<%include file="drawItemTexture.glsl"/>
-<%include file="cutaways.glsl"/>
-<%include file="GLSLBits.glsl"/>
+import 'GLSLUtils.glsl'
+import 'drawItemTexture.glsl'
+import 'cutaways.glsl'
+import 'GLSLBits.glsl'
 
 uniform int floatGeomBuffer;
 uniform int passId;

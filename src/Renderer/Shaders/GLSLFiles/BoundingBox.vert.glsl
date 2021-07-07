@@ -8,12 +8,12 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 cameraMatrix;
 
-<%include file="GLSLUtils.glsl"/>
+import 'GLSLUtils.glsl'
 
 #ifdef ENABLE_FLOAT_TEXTURES
 
 
-<%include file="stack-gl/transpose.glsl"/>
+import 'stack-gl/transpose.glsl'
 
 uniform sampler2D instancesTexture;
 uniform int instancesTextureSize;
