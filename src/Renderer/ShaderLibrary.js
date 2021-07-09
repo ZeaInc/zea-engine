@@ -16,6 +16,7 @@ class ShaderLibrary {
    */
   constructor() {
     this.__shaderModules = {}
+    this.__shaderSnippet = {}
   }
 
   /**
@@ -34,10 +35,13 @@ class ShaderLibrary {
    * @return {boolean} - The return value.
    */
   setShaderModule(shaderName, shader) {
-    // console.log("setShaderModule:" + shaderName);
     return this.parseShader(shaderName, shader)
   }
-
+  // eslint-disable-next-line require-jsdoc
+  setShaderSnippet(shaderName, shader) {
+    // TODO: just add
+    this.__shaderSnippet[shaderName] = shader
+  }
   /**
    * The getShaderModule method.
    * @param {string} shaderName - The shader name.
@@ -54,7 +58,7 @@ class ShaderLibrary {
   getShaderModuleNames() {
     const shaderNames = []
     // eslint-disable-next-line guard-for-in
-    for (const shaderName in this.__shaderModules) shaderNames.push(shaderName) // TODO: add check
+    for (const shaderName in this.__shaderModules) shaderNames.push(shaderName)
     return shaderNames
   }
 
@@ -77,15 +81,15 @@ class ShaderLibrary {
   /**
    * The handleImport method.
    * @param {string} shaderName - The shader name.
-   * @param {string} trimmedLine - line with the import statement
    * @param {string} fileFolder - The glsl param.
+   * @param {string} trimmedLine - line with the import statement
    * @param {object} result - result object to modify
    * @param {int} i - The loop iteration variable i
    */
-  handleImport(shaderName, trimmedLine, fileFolder, result, i) {
-    // console.log('importing file...')
+  handleImport(shaderName, fileFolder, trimmedLine, result, i) {
     const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
     const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+    // this method adds an existing shader module's code to the current glsl.
     if (!this.hasShaderModule(includeFile)) {
       throw new Error(
         'Error while parsing :' +
@@ -130,6 +134,7 @@ class ShaderLibrary {
       result.uniforms[newname] = shaderModule.uniforms[name]
     }
   }
+
   // eslint-disable-next-line require-jsdoc
   parseTag(line) {
     if (line.startsWith('</%')) line = line.slice(3)
@@ -180,26 +185,21 @@ class ShaderLibrary {
    * @return {any} - The return value.
    */
   parseShader(shaderName, glsl) {
-    glsl = glsl.toString() // TODO: this cast is here just to make jest pass
     // console.log("parseShader:" + shaderName);
+    glsl = glsl.toString() // TODO: this cast is here just to make jest pass
+
     // const shaderNameHash = StringFunctions.hashStr(shaderName)
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
-
-    // GLSLify adds '#define GLSLIFY 1\n' to every file.
-    const PREFIX = '#define GLSLIFY 1\n'
-    if (glsl.indexOf(PREFIX) == 0) {
-      glsl = glsl.slice(PREFIX.length)
-    }
-
     const lines = glsl.split('\n') // break up code by /n
 
     const result = {
-      glsl: ' //starting:' + shaderName + '\n',
+      glsl: '', //' //starting:' + shaderName + '\n',
       lines: lines,
       numLines: 0,
       includeMetaData: [],
       uniforms: {},
       attributes: {},
+      imported: [],
     }
 
     // loop through each line of a GLSL file
@@ -284,9 +284,45 @@ class ShaderLibrary {
         }
         continue
       }
+
       // handle import statements
       if (regexImport.test(trimmedLine)) {
-        this.handleImport(shaderName, trimmedLine, fileFolder, result, i)
+        this.handleImport(shaderName, fileFolder, trimmedLine, result, i)
+        continue
+      }
+      // handle import statements
+      if (false && regexImport.test(trimmedLine)) {
+        const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
+        const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+
+        if (includeFile in this.__shaderSnippet) {
+          const includedGLSL = this.__shaderSnippet[includeFile] // glsl code to add
+          const reursiveResult = this.parseShader(shaderName, includedGLSL)
+          result.imported = result.imported.concat(reursiveResult.imported)
+          // update result/shaderModule
+          console.log('includeFile: ' + includeFile)
+          console.log('imported list: ' + result.imported)
+          console.log('imported test: ' + result.imported.includes(includeFile))
+          if (!result.imported.includes(includeFile)) {
+            result.imported.push(includeFile)
+            result.glsl =
+              result.glsl +
+              '\n//INJECTED: ' +
+              includeFile +
+              '\n' +
+              reursiveResult.glsl +
+              '\n//INECTED END: ' +
+              includeFile +
+              '\n'
+          }
+
+          // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
+        } else {
+          // throw new Error('SNIPPET NOT FOUND')
+          console.log('shaderName: ' + shaderName)
+          console.log('SNIPPET NOT FOUND: ' + includeFile)
+        }
+
         continue
       }
 
@@ -368,11 +404,9 @@ class ShaderLibrary {
       result.numLines++
     }
 
+    console.log('IMPORTS: ' + shaderName + ' ' + result.imported)
     this.__shaderModules[shaderName] = result
-
     return result
   }
 }
-const shaderLibrary = new ShaderLibrary()
-
-export { shaderLibrary }
+export const shaderLibrary = new ShaderLibrary()
