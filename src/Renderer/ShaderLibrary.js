@@ -39,7 +39,6 @@ class ShaderLibrary {
   }
   // eslint-disable-next-line require-jsdoc
   setShaderSnippet(shaderName, shader) {
-    // TODO: just add
     this.__shaderSnippet[shaderName] = shader
   }
   /**
@@ -185,15 +184,25 @@ class ShaderLibrary {
    * @return {any} - The return value.
    */
   parseShader(shaderName, glsl) {
+    return this.parseShaderHelper(shaderName, glsl, [], 0)
+  }
+
+  /**
+   * The parseShader method.
+   * @param {string} shaderName - The shader name.
+   * @param {any} glsl - The glsl param.
+   * @param {array} includes - keep track of what was included
+   * @param {int} lineNumber - keep track of what line we're on
+   * @return {any} - The return value.
+   */
+  parseShaderHelper(shaderName, glsl, includes, lineNumber) {
     // console.log("parseShader:" + shaderName);
     glsl = glsl.toString() // TODO: this cast is here just to make jest pass
-
-    // const shaderNameHash = StringFunctions.hashStr(shaderName)
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
     const lines = glsl.split('\n') // break up code by /n
 
     const result = {
-      glsl: '', //' //starting:' + shaderName + '\n',
+      glsl: '',
       lines: lines,
       numLines: 0,
       includeMetaData: [],
@@ -297,7 +306,7 @@ class ShaderLibrary {
 
         if (includeFile in this.__shaderSnippet) {
           const includedGLSL = this.__shaderSnippet[includeFile] // glsl code to add
-          const reursiveResult = this.parseShader(shaderName, includedGLSL)
+          const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes)
           result.imported = result.imported.concat(reursiveResult.imported)
           // update result/shaderModule
           console.log('includeFile: ' + includeFile)
