@@ -1,4 +1,4 @@
-
+// seiji
 precision highp float;
 out vec4 fragColor;
 
@@ -7,8 +7,8 @@ out vec4 fragColor;
 // import 'materialparams.glsl'
 
 
-// import 'testSnippet/snippet.glsl'
-// import 'testSnippet/snippet2.glsl'
+import 'testSnippet/snippet.glsl'
+import 'testSnippet/snippet2.glsl'
 
 void main(void) {
   fragColor = vec4(0.1,0.1,0.6,1.0);
