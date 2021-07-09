@@ -17,6 +17,7 @@ class ShaderLibrary {
   constructor() {
     this.__shaderModules = {}
     this.__shaderSnippet = {}
+    this.__cachedShaderSnippetInfo = {}
   }
 
   /**
@@ -208,7 +209,6 @@ class ShaderLibrary {
       includeMetaData: [],
       uniforms: {},
       attributes: {},
-      imported: [],
     }
 
     // loop through each line of a GLSL file
@@ -294,35 +294,42 @@ class ShaderLibrary {
         continue
       }
 
+      // TODO: Deprecatedhandle import statements
+      // if (regexImport.test(trimmedLine)) {
+      //   this.handleImport(shaderName, fileFolder, trimmedLine, result, i)
+      //   continue
+      // }
+
       // handle import statements
       if (regexImport.test(trimmedLine)) {
-        this.handleImport(shaderName, fileFolder, trimmedLine, result, i)
-        continue
-      }
-      // handle import statements
-      if (false && regexImport.test(trimmedLine)) {
         const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
         const includeFile = this.parsePath(relativeFileLoc, fileFolder)
 
         if (includeFile in this.__shaderSnippet) {
           const includedGLSL = this.__shaderSnippet[includeFile] // glsl code to add
-          const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes)
-          result.imported = result.imported.concat(reursiveResult.imported)
-          // update result/shaderModule
-          console.log('includeFile: ' + includeFile)
-          console.log('imported list: ' + result.imported)
-          console.log('imported test: ' + result.imported.includes(includeFile))
-          if (!result.imported.includes(includeFile)) {
-            result.imported.push(includeFile)
-            result.glsl =
-              result.glsl +
-              '\n//INJECTED: ' +
-              includeFile +
-              '\n' +
-              reursiveResult.glsl +
-              '\n//INECTED END: ' +
-              includeFile +
-              '\n'
+          const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
+          // adding code
+          if (!includes.includes(includeFile)) {
+            includes.push(includeFile) // keep track of imports
+            const start = '' // '\n//INJECTED: ' + includeFile + '\n'
+            const end = '' // '\n//INECTED END: ' + includeFile + '\n'
+            result.glsl = result.glsl + start + reursiveResult.glsl + end
+            result.numLines += reursiveResult.numLines
+            result.uniforms = {
+              ...result.uniforms,
+              ...reursiveResult.uniforms,
+            }
+            result.attributes = {
+              ...result.attributes,
+              ...reursiveResult.attributes,
+            }
+            result.includeMetaData = {
+              ...result.includeMetaData,
+              ...reursiveResult.includeMetaData,
+            }
+          } else {
+            console.log('includes: ' + includes)
+            console.log('already included: ' + includeFile)
           }
 
           // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
@@ -374,14 +381,15 @@ class ShaderLibrary {
         const parts = trimmedLine.split(WHITESPACE_RE)
         this.parseAttr(parts, false, result)
       }
-
       // handle instanced attributes
       if (trimmedLine.startsWith('instancedattribute')) {
         const parts = trimmedLine.split(WHITESPACE_RE)
         this.parseAttr(parts, true, result)
         parts[0] = 'attribute'
         line = parts.join(' ')
-      } else if (trimmedLine.startsWith('uniform')) {
+      }
+      // handle uniform
+      if (trimmedLine.startsWith('uniform')) {
         const parts = trimmedLine.split(WHITESPACE_RE)
 
         // When a precision qualifier exists in the uniform definition.
@@ -413,7 +421,8 @@ class ShaderLibrary {
       result.numLines++
     }
 
-    console.log('IMPORTS: ' + shaderName + ' ' + result.imported)
+    // console.log('length of shader: ' + result.numLines)
+    // console.log(result.glsl)
     this.__shaderModules[shaderName] = result
     return result
   }
