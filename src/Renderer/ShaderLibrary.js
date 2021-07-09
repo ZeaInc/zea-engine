@@ -214,218 +214,217 @@ class ShaderLibrary {
     // loop through each line of a GLSL file
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i]
-      let trimmedLine = line.trim()
+      const trimmedLine = line.trim()
 
-      // handle comment lines
-      if (trimmedLine.startsWith('//') || trimmedLine.startsWith('*')) {
-        result.glsl = result.glsl + line + '\n'
-        result.numLines++
-        continue
-      }
-
-      // TODO: Deprecated
-      if (trimmedLine.startsWith('<%') || trimmedLine.startsWith('</%')) {
-        const elements = this.parseTag(lines[i].trim())
-        switch (elements.tag) {
-          case 'include': {
-            const includeFile = this.parsePath(elements.attributes.file, fileFolder)
-            if (!this.hasShaderModule(includeFile)) {
-              throw new Error(
-                'Error while parsing :' +
-                  shaderName +
-                  ' \nShader module not found:' +
-                  includeFile +
-                  '\n in:' +
-                  this.getShaderModuleNames()
-              )
-            }
-
-            const shaderModule = this.getShaderModule(includeFile)
-
-            const includedModuleHash = StringFunctions.hashStr(elements.attributes.file)
-            let includedGLSL = shaderModule.glsl
-
-            // Remove the first line of GLSL, and replace it with the line tag.
-            includedGLSL = includedGLSL.substring(includedGLSL.indexOf('\n') + 1)
-            result.glsl = result.glsl + ' //including:' + elements.attributes.file + '\n'
-
-            const repl = {}
-            for (const key in elements.attributes) {
-              if (key == 'file') continue
-              const value = elements.attributes[key]
-              includedGLSL = StringFunctions.replaceAll(includedGLSL, key, value)
-              repl[key] = value
-            }
-
-            result.glsl = result.glsl + includedGLSL
-            result.includeMetaData.push({
-              src: result.numLines,
-              tgt: i,
-              length: shaderModule.numLines,
-              key: includeFile,
-            })
-
-            // Add line number tag to GLSL so that the GLSL error messages have the correct file name and line number.
-            result.glsl = result.glsl + ' //continuing:' + shaderName + '\n'
-            result.numLines += shaderModule.numLines + 1
-
-            // eslint-disable-next-line guard-for-in
-            for (const name in shaderModule.attributes) {
-              let newname = name
-              // eslint-disable-next-line guard-for-in
-              for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
-              result.attributes[newname] = shaderModule.attributes[name]
-            }
-            // eslint-disable-next-line guard-for-in
-            for (const name in shaderModule.uniforms) {
-              let newname = name
-              // eslint-disable-next-line guard-for-in
-              for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
-              result.uniforms[newname] = shaderModule.uniforms[name]
-            }
-
-            break
-          }
-          default: {
-            console.warn('Error while parsing :' + shaderName + ' \nUnhandled line:' + line)
-            continue
-          }
-        }
-        continue
-      }
-
-      // TODO: Deprecatedhandle import statements
-      // if (regexImport.test(trimmedLine)) {
-      //   this.handleImport(shaderName, fileFolder, trimmedLine, result, i)
-      //   continue
+      // should handle no space after '//' case and '//' after statement
+      // if (trimmedLine.includes('//')) {
+      //   trimmedLine = trimmedLine.slice(0, trimmedLine.indexOf('//')).trim()
       // }
 
-      // handle import statements
-      if (regexImport.test(trimmedLine)) {
-        const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
-        const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+      // Get first word and switch. Can be 10-100x faster and is easier to read.
+      const firstToken = trimmedLine.split(' ')[0]
+      switch (firstToken) {
+        // handle comment lines -- if they aren't going to be removed, no need for the below code.
+        // case '/*':
+        // case '*':
+        // case '//': {
+        //   result.glsl = result.glsl + line + '\n'
+        //   result.numLines++
+        //   continue
+        // }
 
-        if (includeFile in this.__shaderSnippet) {
-          const includedGLSL = this.__shaderSnippet[includeFile] // glsl code to add
-          const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
-          // adding code
-          if (!includes.includes(includeFile)) {
-            includes.push(includeFile) // keep track of imports
-            const start = ''
-            const end = ''
-            result.glsl = result.glsl + start + reursiveResult.glsl + end
-            result.numLines += reursiveResult.numLines
+        // TODO: remove
+        case '<%include': {
+          const elements = this.parseTag(lines[i].trim())
+          switch (elements.tag) {
+            case 'include': {
+              const includeFile = this.parsePath(elements.attributes.file, fileFolder)
+              if (!this.hasShaderModule(includeFile)) {
+                throw new Error(
+                  'Error while parsing :' +
+                    shaderName +
+                    ' \nShader module not found:' +
+                    includeFile +
+                    '\n in:' +
+                    this.getShaderModuleNames()
+                )
+              }
 
-            // TODO: find a cleaner way to combine objects
-            result.uniforms = {
-              ...result.uniforms,
-              ...reursiveResult.uniforms,
+              const shaderModule = this.getShaderModule(includeFile)
+
+              // const includedModuleHash = StringFunctions.hashStr(elements.attributes.file)
+              let includedGLSL = shaderModule.glsl
+
+              // Remove the first line of GLSL, and replace it with the line tag.
+              includedGLSL = includedGLSL.substring(includedGLSL.indexOf('\n') + 1)
+              result.glsl = result.glsl + ' //including:' + elements.attributes.file + '\n'
+
+              const repl = {}
+              for (const key in elements.attributes) {
+                if (key == 'file') continue
+                const value = elements.attributes[key]
+                includedGLSL = StringFunctions.replaceAll(includedGLSL, key, value)
+                repl[key] = value
+              }
+
+              result.glsl = result.glsl + includedGLSL
+              result.includeMetaData.push({
+                src: result.numLines,
+                tgt: i,
+                length: shaderModule.numLines,
+                key: includeFile,
+              })
+
+              // Add line number tag to GLSL so that the GLSL error messages have the correct file name and line number.
+              result.glsl = result.glsl + ' //continuing:' + shaderName + '\n'
+              result.numLines += shaderModule.numLines + 1
+
+              // eslint-disable-next-line guard-for-in
+              for (const name in shaderModule.attributes) {
+                let newname = name
+                // eslint-disable-next-line guard-for-in
+                for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
+                result.attributes[newname] = shaderModule.attributes[name]
+              }
+              // eslint-disable-next-line guard-for-in
+              for (const name in shaderModule.uniforms) {
+                let newname = name
+                // eslint-disable-next-line guard-for-in
+                for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
+                result.uniforms[newname] = shaderModule.uniforms[name]
+              }
+
+              break
             }
-            result.attributes = {
-              ...result.attributes,
-              ...reursiveResult.attributes,
+            default: {
+              console.warn('Error while parsing :' + shaderName + ' \nUnhandled line:' + line)
+              continue
             }
-            result.includeMetaData = {
-              ...result.includeMetaData,
-              ...reursiveResult.includeMetaData,
+          }
+          continue
+          break
+        }
+        case 'import': {
+          const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
+          const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+
+          if (includeFile in this.__shaderSnippet) {
+            const includedGLSL = this.__shaderSnippet[includeFile] // glsl code to add
+            const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
+
+            // adding code + snippet info, if not already added
+            if (!includes.includes(includeFile)) {
+              includes.push(includeFile) // keep track of imports
+              const start = ''
+              const end = ''
+              result.glsl = result.glsl + start + reursiveResult.glsl + end
+              result.numLines += reursiveResult.numLines
+
+              // TODO: find a cleaner way to combine objects
+              // should have accumulator obj to combine here. result can be cached then combined with accumulator
+              result.uniforms = {
+                ...result.uniforms,
+                ...reursiveResult.uniforms,
+              }
+              result.attributes = {
+                ...result.attributes,
+                ...reursiveResult.attributes,
+              }
+              result.includeMetaData = {
+                ...result.includeMetaData,
+                ...reursiveResult.includeMetaData,
+              }
+            } else {
+              // console.log('includes: ' + includes)
+              console.log('already included: ' + includeFile)
             }
+
+            // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
           } else {
-            // console.log('includes: ' + includes)
-            console.log('already included: ' + includeFile)
+            // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
+            console.log('shaderName: ' + shaderName)
+            console.log('SNIPPET NOT FOUND: ' + includeFile)
           }
 
-          // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
-        } else {
-          // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
-          console.log('shaderName: ' + shaderName)
-          console.log('SNIPPET NOT FOUND: ' + includeFile)
+          continue
+          break
         }
-
-        continue
-      }
-
-      // handle comments after statements
-      if (trimmedLine.includes('//')) {
-        trimmedLine = trimmedLine.slice(0, trimmedLine.indexOf('//')).trim()
-      }
-
-      // handle structs
-      if (trimmedLine.startsWith('struct')) {
-        let membersStr = ''
-        if (trimmedLine.includes('}')) {
-          membersStr = trimmedLine.substring(trimmedLine.indexOf('{') + 1, trimmedLine.indexOf('}') - 1)
-        } else {
-          i++
-          while (true) {
-            line += lines[i] + '\n'
-            membersStr += line.trim()
+        case 'struct': {
+          let membersStr = ''
+          if (trimmedLine.includes('}')) {
+            membersStr = trimmedLine.substring(trimmedLine.indexOf('{') + 1, trimmedLine.indexOf('}') - 1)
+          } else {
             i++
-            if (membersStr.includes('}')) break
+            while (true) {
+              line += lines[i] + '\n'
+              membersStr += line.trim()
+              i++
+              if (membersStr.includes('}')) break
+            }
           }
+          const structMembers = membersStr.substring(membersStr.indexOf('{') + 1, membersStr.indexOf('}') - 1)
+          const members = structMembers.split(';')
+          const structDesc = []
+          for (const member of members) {
+            if (member.length == 0) continue
+            const memberparts = member.trim().split(WHITESPACE_RE)
+            structDesc.push({
+              name: memberparts[1],
+              type: glslTypes[memberparts[0]],
+            })
+          }
+          const parts = trimmedLine.split(WHITESPACE_RE)
+          glslTypes[parts[1]] = structDesc
+          break
         }
-        const structMembers = membersStr.substring(membersStr.indexOf('{') + 1, membersStr.indexOf('}') - 1)
-        const members = structMembers.split(';')
-        const structDesc = []
-        for (const member of members) {
-          if (member.length == 0) continue
-          const memberparts = member.trim().split(WHITESPACE_RE)
-          structDesc.push({
-            name: memberparts[1],
-            type: glslTypes[memberparts[0]],
-          })
-        }
-        const parts = trimmedLine.split(WHITESPACE_RE)
-        glslTypes[parts[1]] = structDesc
-      }
-
-      // handle attributes
-      if (trimmedLine.startsWith('attribute')) {
-        const parts = trimmedLine.split(WHITESPACE_RE)
-        this.parseAttr(parts, false, result)
-      }
-      // handle instanced attributes
-      if (trimmedLine.startsWith('instancedattribute')) {
-        const parts = trimmedLine.split(WHITESPACE_RE)
-        this.parseAttr(parts, true, result)
-        parts[0] = 'attribute'
-        line = parts.join(' ')
-      }
-      // handle uniform
-      if (trimmedLine.startsWith('uniform')) {
-        const parts = trimmedLine.split(WHITESPACE_RE)
-
-        // When a precision qualifier exists in the uniform definition.
-        // e.g. uniform highp int instancesTextureSize;
-        let typeIndex = 1
-        if (parts.length == 4) typeIndex = 2
-        const typeName = parts[typeIndex]
-        if (!(typeName in glslTypes))
-          throw new Error('Error while parsing :' + shaderName + ' \nType not recognized:' + parts[1])
-        const name = parts[typeIndex + 1].slice(0, parts[typeIndex + 1].length - 1)
-
-        if (name.includes('[')) {
-          // Strip off the square brackets.
-          result.uniforms[name.substring(0, name.indexOf('['))] = glslTypes[typeName]
-        } else {
-          result.uniforms[name] = glslTypes[typeName]
-        }
-
-        if (result.uniforms[name] == 'struct') {
-          console.log(parts)
-        }
-        if (parts[1] == 'color') {
-          parts[1] = 'vec4'
+        case 'instancedattribute': {
+          const parts = trimmedLine.split(WHITESPACE_RE)
+          this.parseAttr(parts, true, result)
+          parts[0] = 'attribute'
           line = parts.join(' ')
+          break
+        }
+        case 'uniform': {
+          const parts = trimmedLine.split(WHITESPACE_RE)
+
+          // When a precision qualifier exists in the uniform definition.
+          // e.g. uniform highp int instancesTextureSize;
+          let typeIndex = 1
+          if (parts.length == 4) typeIndex = 2
+          const typeName = parts[typeIndex]
+          if (!(typeName in glslTypes))
+            throw new Error('Error while parsing :' + shaderName + ' \nType not recognized:' + parts[1])
+          const name = parts[typeIndex + 1].slice(0, parts[typeIndex + 1].length - 1)
+
+          if (name.includes('[')) {
+            // Strip off the square brackets.
+            result.uniforms[name.substring(0, name.indexOf('['))] = glslTypes[typeName]
+          } else {
+            result.uniforms[name] = glslTypes[typeName]
+          }
+
+          if (result.uniforms[name] == 'struct') {
+            console.log(parts)
+          }
+          if (parts[1] == 'color') {
+            parts[1] = 'vec4'
+            line = parts.join(' ')
+          }
+          break
+        }
+        case 'attribute': {
+          const parts = trimmedLine.split(WHITESPACE_RE)
+          this.parseAttr(parts, false, result)
+          break
         }
       }
-
       result.glsl = result.glsl + line + '\n'
       result.numLines++
     }
 
     // console.log('length of shader: ' + result.numLines)
     // console.log(result.glsl)
-    this.__shaderModules[shaderName] = result
+    // this.__shaderModules[shaderName] = result
     return result
   }
 }
