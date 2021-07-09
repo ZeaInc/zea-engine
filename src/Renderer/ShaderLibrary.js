@@ -311,10 +311,12 @@ class ShaderLibrary {
           // adding code
           if (!includes.includes(includeFile)) {
             includes.push(includeFile) // keep track of imports
-            const start = '' // '\n//INJECTED: ' + includeFile + '\n'
-            const end = '' // '\n//INECTED END: ' + includeFile + '\n'
+            const start = ''
+            const end = ''
             result.glsl = result.glsl + start + reursiveResult.glsl + end
             result.numLines += reursiveResult.numLines
+
+            // TODO: find a cleaner way to combine objects
             result.uniforms = {
               ...result.uniforms,
               ...reursiveResult.uniforms,
@@ -328,13 +330,13 @@ class ShaderLibrary {
               ...reursiveResult.includeMetaData,
             }
           } else {
-            console.log('includes: ' + includes)
+            // console.log('includes: ' + includes)
             console.log('already included: ' + includeFile)
           }
 
           // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
         } else {
-          // throw new Error('SNIPPET NOT FOUND')
+          // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
           console.log('shaderName: ' + shaderName)
           console.log('SNIPPET NOT FOUND: ' + includeFile)
         }
