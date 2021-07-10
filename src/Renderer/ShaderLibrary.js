@@ -120,6 +120,65 @@ class ShaderLibrary {
     result.glsl = result.glsl + line + '\n'
     result.numLines++
   }
+
+  // eslint-disable-next-line require-jsdoc
+  parseTag(line) {
+    if (line.startsWith('</%')) line = line.slice(3)
+    else line = line.slice(2)
+    if (line.endsWith('/>')) line = line.slice(0, line.length - 2)
+    else line = line.slice(0, line.length - 1)
+    const parts = line.split(WHITESPACE_RE)
+    const tag = parts.shift()
+    const result = {
+      tag: tag,
+      attributes: {},
+    }
+    for (const attr of parts) {
+      const pairs = attr.split('=')
+      result.attributes[pairs[0]] = pairs[1].replace(/['"]+/g, '')
+    }
+    return result
+  }
+
+  // eslint-disable-next-line require-jsdoc
+  handleImport(shaderName, includeFile, result, includes, lineNumber) {
+    if (includeFile in this.__shaderSnippet) {
+      const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
+      // recursively includes glsl snippets
+      const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
+
+      // adding code + snippet glsl, if not already added.
+      if (!includes.includes(includeFile)) {
+        includes.push(includeFile) // keep track of imports
+        result.glsl = result.glsl + reursiveResult.glsl
+        result.numLines += reursiveResult.numLines
+
+        // TODO: find a cleaner way to combine objects
+        // should have accumulator obj to combine here. result can be cached then combined with accumulator
+        result.uniforms = {
+          ...result.uniforms,
+          ...reursiveResult.uniforms,
+        }
+        result.attributes = {
+          ...result.attributes,
+          ...reursiveResult.attributes,
+        }
+        result.includeMetaData = {
+          ...result.includeMetaData,
+          ...reursiveResult.includeMetaData,
+        }
+        // console.log('includes: ' + includes)
+      } else {
+        console.log('already included: ' + includeFile)
+      }
+
+      // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
+    } else {
+      // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
+      console.log('shaderName: ' + shaderName)
+      console.log('SNIPPET NOT FOUND: ' + includeFile)
+    }
+  }
   /**
    * The parseShader recursive helper method
    * @param {string} shaderName - The shader name.
@@ -162,48 +221,17 @@ class ShaderLibrary {
         // case '//': {
         //   continue
         // }
+        // TODO: deprecated - remove eventually
+        case '<%include': {
+          const elements = this.parseTag(lines[i].trim())
+          const includeFile = this.parsePath(elements.attributes.file, fileFolder)
+          this.handleImport(shaderName, includeFile, result, includes, lineNumber)
+          break
+        }
         case 'import': {
           const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
           const includeFile = this.parsePath(relativeFileLoc, fileFolder)
-
-          if (includeFile in this.__shaderSnippet) {
-            const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
-            // recursively includes glsl snippets
-            const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
-
-            // adding code + snippet glsl, if not already added.
-            if (!includes.includes(includeFile)) {
-              includes.push(includeFile) // keep track of imports
-              result.glsl = result.glsl + reursiveResult.glsl
-              result.numLines += reursiveResult.numLines
-
-              // TODO: find a cleaner way to combine objects
-              // should have accumulator obj to combine here. result can be cached then combined with accumulator
-              result.uniforms = {
-                ...result.uniforms,
-                ...reursiveResult.uniforms,
-              }
-              result.attributes = {
-                ...result.attributes,
-                ...reursiveResult.attributes,
-              }
-              result.includeMetaData = {
-                ...result.includeMetaData,
-                ...reursiveResult.includeMetaData,
-              }
-              // console.log('includes: ' + includes)
-            } else {
-              console.log('already included: ' + includeFile)
-            }
-
-            // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
-          } else {
-            // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
-            console.log('shaderName: ' + shaderName)
-            console.log('SNIPPET NOT FOUND: ' + includeFile)
-          }
-
-          // continue // avoid adding lines
+          this.handleImport(shaderName, includeFile, result, includes, lineNumber)
           break
         }
         case 'attribute': {
