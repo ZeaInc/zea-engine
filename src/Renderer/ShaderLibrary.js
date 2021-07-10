@@ -19,7 +19,7 @@ class ShaderLibrary {
   }
 
   /**
-   * The setShaderModule method.
+   * The setShaderModule method. alias for setShaderSnippet.
    * @param {string} shaderName - The shader name.
    * @param {string} shader - The shader GLSL.
    */
@@ -28,10 +28,11 @@ class ShaderLibrary {
   }
   // eslint-disable-next-line require-jsdoc
   setShaderSnippet(shaderName, shader) {
-    if (shaderName in this.__shaderSnippet) {
-      console.log('parser would be called')
+    if (!(shaderName in this.__shaderSnippet)) {
+      this.__shaderSnippet[shaderName] = shader
+      return
     }
-    this.__shaderSnippet[shaderName] = shader
+    console.log('parser would be called')
   }
 
   /**
@@ -79,37 +80,20 @@ class ShaderLibrary {
     }
   }
 
-  // eslint-disable-next-line require-jsdoc
-  parseTag(line) {
-    if (line.startsWith('</%')) line = line.slice(3)
-    else line = line.slice(2)
-    if (line.endsWith('/>')) line = line.slice(0, line.length - 2)
-    else line = line.slice(0, line.length - 1)
-    const parts = line.split(WHITESPACE_RE)
-    const tag = parts.shift()
-    const result = {
-      tag: tag,
-      attributes: {},
-    }
-    for (const attr of parts) {
-      const pairs = attr.split('=')
-      result.attributes[pairs[0]] = pairs[1].replace(/['"]+/g, '')
-    }
-    return result
-  }
-
   /**
    * The addLine method - adds parsed glsl lines into the returned result object
-   * @param {string} shaderName - result object that has the glsl to add to
-   * @param {string} includeFile- result object that has the glsl to add to
+   * @param {string} shaderName - shaderName
+   * @param {string} relativeFileLoc - relative path to file
    * @param {object} result - result object that has the glsl to add to
    * @param {array} includes - result object that has the glsl to add to
    * @param {number} lineNumber - the current line that is to be added.
    */
-  handleImport(shaderName, includeFile, result, includes, lineNumber) {
+  handleImport(shaderName, relativeFileLoc, result, includes, lineNumber) {
+    const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
+    const includeFile = this.parsePath(relativeFileLoc, fileFolder)
     if (includeFile in this.__shaderSnippet) {
       const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
-      if (!includedGLSL) throw error('snippet not loaded!')
+      if (!includedGLSL) throw error('snippet not loaded or does not exists!')
       // recursively includes glsl snippets
       const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
 
@@ -138,9 +122,9 @@ class ShaderLibrary {
 
       // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
     } else {
-      // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
-      console.log('shaderName: ' + shaderName)
-      console.log('SNIPPET NOT FOUND: ' + includeFile)
+      throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
+      // console.log('shaderName: ' + shaderName)
+      // console.log('SNIPPET NOT FOUND: ' + includeFile)
     }
   }
 
@@ -177,13 +161,11 @@ class ShaderLibrary {
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
     // console.log("parseShader:" + shaderName);
     glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
-    const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
     const lines = glsl.split('\n') // break up code by newlines
 
     const result = {
       glsl: '',
       numLines: 0,
-      // includeMetaData: [],
       uniforms: {},
       attributes: {},
     }
@@ -209,16 +191,10 @@ class ShaderLibrary {
         //   continue
         // }
         // TODO: deprecated - remove eventually
-        case '<%include': {
-          const elements = this.parseTag(lines[i].trim())
-          const includeFile = this.parsePath(elements.attributes.file, fileFolder)
-          this.handleImport(shaderName, includeFile, result, includes, lineNumber)
-          break
-        }
+        case '<%include':
         case 'import': {
           const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
-          const includeFile = this.parsePath(relativeFileLoc, fileFolder) // move this into handle import!
-          this.handleImport(shaderName, includeFile, result, includes, lineNumber)
+          this.handleImport(shaderName, relativeFileLoc, result, includes, lineNumber)
           break
         }
         case 'attribute': {
