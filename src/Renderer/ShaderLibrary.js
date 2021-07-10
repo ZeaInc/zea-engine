@@ -13,51 +13,25 @@ class ShaderLibrary {
    * Create a shader library.
    */
   constructor() {
-    this.__shaderModules = {}
     this.__shaderSnippet = {}
-    this.__cachedShaderSnippetInfo = {}
-  }
-
-  /**
-   * The hasShaderModule method.
-   * @param {string} shaderName - The shader name.
-   * @return {boolean} - The return value.
-   */
-  hasShaderModule(shaderName) {
-    return shaderName in this.__shaderModules
+    this.__cachedShaderData = {}
+    this.__numberShadersLoaded = 0
   }
 
   /**
    * The setShaderModule method.
    * @param {string} shaderName - The shader name.
    * @param {string} shader - The shader GLSL.
-   * @return {boolean} - The return value.
    */
   setShaderModule(shaderName, shader) {
-    return this.parseShader(shaderName, shader)
+    this.setShaderSnippet(shaderName, shader)
   }
   // eslint-disable-next-line require-jsdoc
   setShaderSnippet(shaderName, shader) {
+    if (shaderName in this.__shaderSnippet) {
+      console.log('parser would be called')
+    }
     this.__shaderSnippet[shaderName] = shader
-  }
-  /**
-   * The getShaderModule method.
-   * @param {string} shaderName - The shader name.
-   * @return {any} - The return value.
-   */
-  getShaderModule(shaderName) {
-    return this.__shaderModules[shaderName]
-  }
-
-  /**
-   * The getShaderModuleNames method.
-   * @return {array} - The return value.
-   */
-  getShaderModuleNames() {
-    const shaderNames = []
-    // eslint-disable-next-line guard-for-in
-    for (const shaderName in this.__shaderModules) shaderNames.push(shaderName)
-    return shaderNames
   }
 
   /**
@@ -71,9 +45,13 @@ class ShaderLibrary {
     if (path.startsWith('..')) {
       const parentFolder = fileFolder.substring(0, fileFolder.lastIndexOf('/'))
       return parentFolder + path.substring(2)
-    } else if (path.startsWith('.')) return fileFolder + path.substring(1)
-    else if (path.startsWith('/')) return path.substring(1)
-    else return path
+    } else if (path.startsWith('.')) {
+      return fileFolder + path.substring(1)
+    } else if (path.startsWith('/')) {
+      return path.substring(1)
+    } else {
+      return path
+    }
   }
 
   /**
@@ -101,26 +79,6 @@ class ShaderLibrary {
     }
   }
 
-  /**
-   * The parseShader method.
-   * @param {string} shaderName - The shader name.
-   * @param {string} glsl - The glsl param.
-   * @return {object} - returns the 'result' object
-   */
-  parseShader(shaderName, glsl) {
-    return this.parseShaderHelper(shaderName, glsl, [], 0)
-  }
-
-  /**
-   * The addLine method - adds parsed glsl lines into the returned result object
-   * @param {string} result - result object that has the glsl to add to
-   * @param {string} line - the current line that is to be added.
-   */
-  addLine(result, line) {
-    result.glsl = result.glsl + line + '\n'
-    result.numLines++
-  }
-
   // eslint-disable-next-line require-jsdoc
   parseTag(line) {
     if (line.startsWith('</%')) line = line.slice(3)
@@ -140,10 +98,18 @@ class ShaderLibrary {
     return result
   }
 
-  // eslint-disable-next-line require-jsdoc
+  /**
+   * The addLine method - adds parsed glsl lines into the returned result object
+   * @param {string} shaderName - result object that has the glsl to add to
+   * @param {string} includeFile- result object that has the glsl to add to
+   * @param {object} result - result object that has the glsl to add to
+   * @param {array} includes - result object that has the glsl to add to
+   * @param {number} lineNumber - the current line that is to be added.
+   */
   handleImport(shaderName, includeFile, result, includes, lineNumber) {
     if (includeFile in this.__shaderSnippet) {
       const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
+      if (!includedGLSL) throw error('snippet not loaded!')
       // recursively includes glsl snippets
       const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
 
@@ -153,8 +119,11 @@ class ShaderLibrary {
         result.glsl = result.glsl + reursiveResult.glsl
         result.numLines += reursiveResult.numLines
 
-        // TODO: find a cleaner way to combine objects
+        // TODO: cache shader info
+        // cache current shaderInfo then build result to return at the end.
+        // just need uniforms, attr for shader info.
         // should have accumulator obj to combine here. result can be cached then combined with accumulator
+        // result -> shaderData
         result.uniforms = {
           ...result.uniforms,
           ...reursiveResult.uniforms,
@@ -163,11 +132,6 @@ class ShaderLibrary {
           ...result.attributes,
           ...reursiveResult.attributes,
         }
-        result.includeMetaData = {
-          ...result.includeMetaData,
-          ...reursiveResult.includeMetaData,
-        }
-        // console.log('includes: ' + includes)
       } else {
         console.log('already included: ' + includeFile)
       }
@@ -179,6 +143,29 @@ class ShaderLibrary {
       console.log('SNIPPET NOT FOUND: ' + includeFile)
     }
   }
+
+  /**
+   * The addLine method - adds parsed glsl lines into the returned result object
+   * and increments line count
+   * @param {string} result - result object that has the glsl to add to
+   * @param {string} line - the current line that is to be added.
+   */
+  addLine(result, line) {
+    // change to glsl and lineNumber
+    result.glsl = result.glsl + line + '\n'
+    result.numLines++
+  }
+
+  /**
+   * The parseShader method.
+   * @param {string} shaderName - The shader name.
+   * @param {string} glsl - The glsl param.
+   * @return {object} - returns the 'result' object
+   */
+  parseShader(shaderName, glsl) {
+    return this.parseShaderHelper(shaderName, glsl, [], 0)
+  }
+
   /**
    * The parseShader recursive helper method
    * @param {string} shaderName - The shader name.
@@ -196,7 +183,7 @@ class ShaderLibrary {
     const result = {
       glsl: '',
       numLines: 0,
-      includeMetaData: [],
+      // includeMetaData: [],
       uniforms: {},
       attributes: {},
     }
@@ -215,7 +202,7 @@ class ShaderLibrary {
       const parts = trimmedLine.split(WHITESPACE_RE)
       const firstToken = parts[0]
       switch (firstToken) {
-        // handle comment lines -- if they aren't going to be removed, no need for the below code.
+        // TODO: handle comment lines -- if they aren't going to be removed, no need for the below code.
         // case '/*':
         // case '*':
         // case '//': {
@@ -230,7 +217,7 @@ class ShaderLibrary {
         }
         case 'import': {
           const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
-          const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+          const includeFile = this.parsePath(relativeFileLoc, fileFolder) // move this into handle import!
           this.handleImport(shaderName, includeFile, result, includes, lineNumber)
           break
         }
@@ -304,6 +291,7 @@ class ShaderLibrary {
         default: {
           // all other statements
           this.addLine(result, line)
+          break
         }
       } // end of switch
     } // end of forloop

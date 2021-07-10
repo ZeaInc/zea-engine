@@ -1,5 +1,7 @@
 import { shaderLibrary } from '../../ShaderLibrary.js'
 
+// should not have shaderLibrary calls here. Just do it in the parser
+
 import snip2 from './testSnippet/snippet2.glsl' // where to find the file
 shaderLibrary.setShaderSnippet('testSnippet/snippet2.glsl', snip2) // name of import used in glsl
 import snip from './testSnippet/snippet.glsl' // where to find the file
