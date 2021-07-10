@@ -1,4 +1,3 @@
-import { StringFunctions } from '../Utilities/StringFunctions'
 import { glslTypes } from './GLSLConstants.js'
 
 /*
@@ -78,63 +77,6 @@ class ShaderLibrary {
   }
 
   /**
-   * The handleImport method.
-   * @param {string} shaderName - The shader name.
-   * @param {string} fileFolder - The glsl param.
-   * @param {string} trimmedLine - line with the import statement
-   * @param {object} result - result object to modify
-   * @param {int} i - The loop iteration variable i
-   */
-  handleImport(shaderName, fileFolder, trimmedLine, result, i) {
-    const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
-    const includeFile = this.parsePath(relativeFileLoc, fileFolder)
-    // this method adds an existing shader module's code to the current glsl.
-    if (!this.hasShaderModule(includeFile)) {
-      throw new Error(
-        'Error while parsing :' +
-          shaderName +
-          ' \nShader module not found:' +
-          includeFile +
-          '\n in:' +
-          this.getShaderModuleNames()
-      )
-    }
-
-    const shaderModule = this.getShaderModule(includeFile)
-    let includedGLSL = shaderModule.glsl
-    includedGLSL = includedGLSL.substring(includedGLSL.indexOf('\n') + 1)
-    const repl = {}
-    repl['file'] = relativeFileLoc
-
-    result.glsl = result.glsl + includedGLSL
-    result.includeMetaData.push({
-      src: result.numLines,
-      tgt: i,
-      length: shaderModule.numLines,
-      key: includeFile,
-    })
-
-    // Add line number tag to GLSL so that the GLSL error messages have the correct file name and line number.
-    result.glsl = result.glsl + ' //continuing:' + shaderName + '\n'
-    result.numLines += shaderModule.numLines + 1
-
-    // eslint-disable-next-line guard-for-in
-    for (const name in shaderModule.attributes) {
-      let newname = name
-      // eslint-disable-next-line guard-for-in
-      for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
-      result.attributes[newname] = shaderModule.attributes[name]
-    }
-    // eslint-disable-next-line guard-for-in
-    for (const name in shaderModule.uniforms) {
-      let newname = name
-      // eslint-disable-next-line guard-for-in
-      for (const key in repl) newname = StringFunctions.replaceAll(newname, key, repl[key])
-      result.uniforms[newname] = shaderModule.uniforms[name]
-    }
-  }
-
-  /**
    * The parseAttr
    * @param {string} parts - parts
    * @param {bool} instanced - instanced
@@ -170,7 +112,16 @@ class ShaderLibrary {
   }
 
   /**
-   * The parseShader method.
+   * The addLine method - adds parsed glsl lines into the returned result object
+   * @param {string} result - result object that has the glsl to add to
+   * @param {string} line - the current line that is to be added.
+   */
+  addLine(result, line) {
+    result.glsl = result.glsl + line + '\n'
+    result.numLines++
+  }
+  /**
+   * The parseShader recursive helper method
    * @param {string} shaderName - The shader name.
    * @param {string} glsl - The glsl param.
    * @param {array} includes - keep track of what was included
@@ -179,9 +130,9 @@ class ShaderLibrary {
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
     // console.log("parseShader:" + shaderName);
-    glsl = glsl.toString() // TODO: this cast is here just to make jest pass
+    glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
-    const lines = glsl.split('\n') // break up code by /n
+    const lines = glsl.split('\n') // break up code by newlines
 
     const result = {
       glsl: '',
@@ -191,12 +142,12 @@ class ShaderLibrary {
       attributes: {},
     }
 
-    // loop through each line of a GLSL file
+    // go through each line of a GLSL file
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i]
       const trimmedLine = line.trim()
 
-      // TODO: should handle no space after '//' case and '//' after statement
+      // TODO: should handle no space after '//' case and '//' after statement IF you want to remove comments
       // if (trimmedLine.includes('//')) {
       //   trimmedLine = trimmedLine.slice(0, trimmedLine.indexOf('//')).trim()
       // }
@@ -216,15 +167,14 @@ class ShaderLibrary {
           const includeFile = this.parsePath(relativeFileLoc, fileFolder)
 
           if (includeFile in this.__shaderSnippet) {
-            const includedGLSL = this.__shaderSnippet[includeFile] // glsl code to add
+            const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
+            // recursively includes glsl snippets
             const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
 
-            // adding code + snippet info, if not already added
+            // adding code + snippet glsl, if not already added.
             if (!includes.includes(includeFile)) {
               includes.push(includeFile) // keep track of imports
-              const start = ''
-              const end = ''
-              result.glsl = result.glsl + start + reursiveResult.glsl + end
+              result.glsl = result.glsl + reursiveResult.glsl
               result.numLines += reursiveResult.numLines
 
               // TODO: find a cleaner way to combine objects
@@ -241,8 +191,8 @@ class ShaderLibrary {
                 ...result.includeMetaData,
                 ...reursiveResult.includeMetaData,
               }
-            } else {
               // console.log('includes: ' + includes)
+            } else {
               console.log('already included: ' + includeFile)
             }
 
@@ -253,17 +203,19 @@ class ShaderLibrary {
             console.log('SNIPPET NOT FOUND: ' + includeFile)
           }
 
-          continue // avoid adding lines
+          // continue // avoid adding lines
           break
         }
         case 'attribute': {
           this.parseAttr(parts, false, result)
+          this.addLine(result, line)
           break
         }
         case 'instancedattribute': {
           this.parseAttr(parts, true, result)
           parts[0] = 'attribute'
           line = parts.join(' ')
+          this.addLine(result, line)
           break
         }
         case 'uniform': {
@@ -290,6 +242,7 @@ class ShaderLibrary {
             parts[1] = 'vec4'
             line = parts.join(' ')
           }
+          this.addLine(result, line)
           break
         }
         case 'struct': {
@@ -317,12 +270,15 @@ class ShaderLibrary {
             })
           }
           glslTypes[parts[1]] = structDesc
+          this.addLine(result, line)
           break
         }
+        default: {
+          // all other statements
+          this.addLine(result, line)
+        }
       } // end of switch
-      result.glsl = result.glsl + line + '\n'
-      result.numLines++
-    }
+    } // end of forloop
 
     // console.log('length of shader: ' + result.numLines)
     // console.log(result.glsl)
