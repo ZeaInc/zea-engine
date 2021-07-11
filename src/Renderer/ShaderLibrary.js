@@ -16,8 +16,14 @@ class ShaderLibrary {
     this.__shaderSnippet = {}
     this.__cachedShaderData = {}
     this.__numberShadersLoaded = 0
+    this.__parserCalls = 0
+    this.__savedParserCalls = 0
   }
 
+  // eslint-disable-next-line require-jsdoc
+  setLibrary(lib) {
+    this.__shaderSnippet = lib
+  }
   /**
    * The setShaderModule method. alias for setShaderSnippet.
    * @param {string} shaderName - The shader name.
@@ -26,13 +32,14 @@ class ShaderLibrary {
   setShaderModule(shaderName, shader) {
     this.setShaderSnippet(shaderName, shader)
   }
+
   // eslint-disable-next-line require-jsdoc
   setShaderSnippet(shaderName, shader) {
     if (!(shaderName in this.__shaderSnippet)) {
       this.__shaderSnippet[shaderName] = shader
       return
     }
-    console.log('parser would be called')
+    this.__savedParserCalls++
   }
 
   /**
@@ -159,6 +166,8 @@ class ShaderLibrary {
    * @return {object} - The return value.
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
+    this.__parserCalls++
+    // console.log('calls: ' + this.__parserCalls + ' saved calls: ' + this.__savedParserCalls)
     // console.log("parseShader:" + shaderName);
     glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
     const lines = glsl.split('\n') // break up code by newlines
@@ -278,4 +287,8 @@ class ShaderLibrary {
     return result
   }
 }
-export const shaderLibrary = new ShaderLibrary()
+
+const shaderLibrary = new ShaderLibrary()
+import { lib } from './Shaders/GLSLSnippets/snippetExports' // imports all snippets at once
+shaderLibrary.setLibrary(lib._lib)
+export { shaderLibrary }

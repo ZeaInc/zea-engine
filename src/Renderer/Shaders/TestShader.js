@@ -4,12 +4,7 @@ import { Color } from '../../Math/Color'
 import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/stack-gl/gamma.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
-
-import './GLSLSnippets/snippets' // this initializes shaderLibrary with all of the snippets -- can be removed + made more selective in parser.
+// import './GLSLSnippets/snippets' // this initializes shaderLibrary with all of the snippets -- can be removed + made more selective in parser.
 
 import vert from './GLSLFiles/TestSurface.vert.glsl'
 import frag from './GLSLFiles/TestSurface.frag.glsl'
