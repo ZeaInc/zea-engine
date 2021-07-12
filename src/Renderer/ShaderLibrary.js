@@ -112,7 +112,7 @@ class ShaderLibrary {
    * @param {array} includes - result object that has the glsl to add to
    * @param {number} lineNumber - the current line that is to be added.
    */
-  handleImport(shaderName, relativeFileLoc, result, includes, lineNumber) {
+  handleImport(result, shaderName, relativeFileLoc, includes, lineNumber) {
     const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
     const includeFile = this.parsePath(relativeFileLoc, fileFolder)
     if (includeFile in this.__shaderSnippet) {
@@ -126,12 +126,6 @@ class ShaderLibrary {
         includes.push(includeFile) // keep track of imports
         result.glsl = result.glsl + reursiveResult.glsl
         result.numLines += reursiveResult.numLines
-
-        // TODO: cache shader info
-        // cache current shaderInfo then build result to return at the end.
-        // just need uniforms, attr for shader info.
-        // should have accumulator obj to combine here. result can be cached then combined with accumulator
-        // result -> shaderData
         result.uniforms = {
           ...result.uniforms,
           ...reursiveResult.uniforms,
@@ -159,7 +153,6 @@ class ShaderLibrary {
    * @param {string} line - the current line that is to be added.
    */
   addLine(result, line) {
-    // change to glsl and lineNumber
     result.glsl = result.glsl + line + '\n'
     result.numLines++
   }
@@ -184,9 +177,8 @@ class ShaderLibrary {
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
     // console.log("parseShader:" + shaderName);
-    glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
-    const lines = glsl.split('\n') // break up code by newlines
 
+    // result that is returned
     const result = {
       glsl: '',
       numLines: 0,
@@ -194,12 +186,16 @@ class ShaderLibrary {
       attributes: {},
     }
 
+    // used for storing uniforms/attributes specific to this module and not it's dependencies
     const moduleInfo = {
       uniforms: {},
       attributes: {},
     }
 
     // go through each line of a GLSL file
+    glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
+    const lines = glsl.split('\n') // break up code by newlines
+
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i]
       const trimmedLine = line.trim()
@@ -224,16 +220,16 @@ class ShaderLibrary {
         case 'import': {
           const relativeFileLoc = trimmedLine.split(/'|"|`/)[1] // TODO: relative file location not needed
           // if (includeDependencies)
-          this.handleImport(shaderName, relativeFileLoc, result, includes, lineNumber)
+          this.handleImport(result, shaderName, relativeFileLoc, includes, lineNumber)
           break
         }
         case 'attribute': {
-          this.parseAttr(parts, false, result)
+          this.parseAttr(parts, false, moduleInfo)
           this.addLine(result, line)
           break
         }
         case 'instancedattribute': {
-          this.parseAttr(parts, true, result)
+          this.parseAttr(parts, true, moduleInfo)
           parts[0] = 'attribute'
           line = parts.join(' ')
           this.addLine(result, line)
@@ -251,12 +247,12 @@ class ShaderLibrary {
 
           if (name.includes('[')) {
             // Strip off the square brackets.
-            result.uniforms[name.substring(0, name.indexOf('['))] = glslTypes[typeName]
+            moduleInfo.uniforms[name.substring(0, name.indexOf('['))] = glslTypes[typeName]
           } else {
-            result.uniforms[name] = glslTypes[typeName]
+            moduleInfo.uniforms[name] = glslTypes[typeName]
           }
 
-          if (result.uniforms[name] == 'struct') {
+          if (moduleInfo.uniforms[name] == 'struct') {
             console.log(parts)
           }
           if (parts[1] == 'color') {
@@ -302,9 +298,20 @@ class ShaderLibrary {
       } // end of switch
     } // end of forloop
 
+    // prepare result to return and cache module
+    result.uniforms = {
+      ...result.uniforms,
+      ...moduleInfo.uniforms,
+    }
+    result.attributes = {
+      ...result.attributes,
+      ...moduleInfo.attributes,
+    }
+    // cache module specific info to shaderModules
+    this.__shaderModules[shaderName] = moduleInfo
+
     // console.log('length of shader: ' + result.numLines)
     // console.log(result.glsl)
-    // this.__shaderModules[shaderName] = result
     return result
   }
 }
