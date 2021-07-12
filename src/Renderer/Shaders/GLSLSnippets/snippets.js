@@ -84,9 +84,10 @@ import glslAtmosphere from './wwwtyro/glsl-atmosphere.glsl'
 
 import skyFragment from './zz85/skyFragment.glsl'
 
-shaderLibrary.setShaderSnippet('testSnippet/snippet2.glsl', snip2) // name of import used in glsl
-shaderLibrary.setShaderSnippet('testSnippet/snippet.glsl', snip) // name of import used in glsl
-shaderLibrary.setShaderSnippet('testSnippet/rsnip.glsl', rsnip) // name of import used in glsl
+shaderLibrary.setShaderSnippet('testSnippet/snippet2.glsl', snip2)
+shaderLibrary.setShaderSnippet('testSnippet/snippet.glsl', snip)
+shaderLibrary.setShaderSnippet('testSnippet/rsnip.glsl', rsnip)
+
 shaderLibrary.setShaderSnippet('computeViewNormal.glsl', computeViewNormal)
 shaderLibrary.setShaderSnippet('calcFatLinesViewPos.glsl', calcFatLinesViewPos)
 shaderLibrary.setShaderSnippet('math/constants.glsl', constants)

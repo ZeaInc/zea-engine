@@ -4,3 +4,6 @@ export * from './drawItemTexture.js'
 export * from './modelMatrix.js'
 export * from './materialparams.js'
 export * from './debugColors.js'
+
+// set everything
+// shaderLibrary.setShaderModule('utils/ImageStream.glsl', ImageStream)

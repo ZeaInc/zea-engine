@@ -13,34 +13,51 @@ class ShaderLibrary {
    * Create a shader library.
    */
   constructor() {
-    this.__shaderSnippet = {}
-    this.__cachedShaderData = {}
-    this.__numberShadersLoaded = 0
-    this.__parserCalls = 0
-    this.__savedParserCalls = 0
+    this.__shaderModules = {}
+    this.__shaderSnippet = {} // TODO: remove when setShaderModule works properly
   }
 
-  // eslint-disable-next-line require-jsdoc
-  setLibrary(lib) {
-    this.__shaderSnippet = lib
-  }
+  // TODO: can't bake dependency info into shaderModule, since two shaderModules can have the same dependency.
   /**
-   * The setShaderModule method. alias for setShaderSnippet.
+   * The setShaderModule method.
    * @param {string} shaderName - The shader name.
    * @param {string} shader - The shader GLSL.
    */
   setShaderModule(shaderName, shader) {
-    this.setShaderSnippet(shaderName, shader)
+    // don't parse if we have the result already.
+    if (!(shaderName in this.__shaderModules)) {
+      this.parseShader(shaderName, shader)
+    }
   }
 
+  // TODO: remove setShaderSnippet functions when setModule works.
   // eslint-disable-next-line require-jsdoc
   setShaderSnippet(shaderName, shader) {
     if (!(shaderName in this.__shaderSnippet)) {
       this.__shaderSnippet[shaderName] = shader
       return
     }
-    this.__savedParserCalls++
   }
+
+  /**
+   * The getShaderModule method.
+   * @param {string} shaderName - The shader name.
+   * @return {any} - The return value.
+   */
+  getShaderModule(shaderName) {
+    return this.__shaderModules[shaderName]
+  }
+
+  /**
+   * The getShaderModuleNames method.
+   * @return {array} - The return value.
+   */
+  // getShaderModuleNames() {
+  //   const shaderNames = []
+  //   // eslint-disable-next-line guard-for-in
+  //   for (const shaderName in this.__shaderModules) shaderNames.push(shaderName)
+  //   return shaderNames
+  // }
 
   /**
    * The parsePath method.
@@ -129,9 +146,9 @@ class ShaderLibrary {
 
       // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
     } else {
-      throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
-      // console.log('shaderName: ' + shaderName)
-      // console.log('SNIPPET NOT FOUND: ' + includeFile)
+      // throw new Error(shaderName + ': SNIPPET NOT FOUND: ' + includeFile)
+      console.log('shaderName: ' + shaderName)
+      console.log('SNIPPET NOT FOUND: ' + includeFile)
     }
   }
 
@@ -166,8 +183,6 @@ class ShaderLibrary {
    * @return {object} - The return value.
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
-    this.__parserCalls++
-    // console.log('calls: ' + this.__parserCalls + ' saved calls: ' + this.__savedParserCalls)
     // console.log("parseShader:" + shaderName);
     glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
     const lines = glsl.split('\n') // break up code by newlines
@@ -175,6 +190,11 @@ class ShaderLibrary {
     const result = {
       glsl: '',
       numLines: 0,
+      uniforms: {},
+      attributes: {},
+    }
+
+    const moduleInfo = {
       uniforms: {},
       attributes: {},
     }
@@ -202,7 +222,8 @@ class ShaderLibrary {
         // TODO: deprecated - remove eventually
         case '<%include':
         case 'import': {
-          const relativeFileLoc = trimmedLine.split(/'|"|`/)[1]
+          const relativeFileLoc = trimmedLine.split(/'|"|`/)[1] // TODO: relative file location not needed
+          // if (includeDependencies)
           this.handleImport(shaderName, relativeFileLoc, result, includes, lineNumber)
           break
         }
@@ -289,6 +310,4 @@ class ShaderLibrary {
 }
 
 const shaderLibrary = new ShaderLibrary()
-import { lib } from './Shaders/GLSLSnippets/snippetExports' // imports all snippets at once
-shaderLibrary.setLibrary(lib._lib)
 export { shaderLibrary }

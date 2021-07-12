@@ -33,10 +33,6 @@ class GLShader extends BaseItem {
     this.__gltextures = {}
 
     this.__id = shaderInstanceId++
-
-    shaderLibrary.__numberShadersLoaded++
-    // console.log('name: ', name)
-    // onsole.log('number of shaders loaded: ' + shaderLibrary.__numberShadersLoaded)
   }
 
   /**
