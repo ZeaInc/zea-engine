@@ -6,8 +6,8 @@ import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import vert from './GLSLFiles/Lines.vert.glsl'
-import frag from './GLSLFiles/Lines.frag.glsl'
+import vert from './Lines.vert.glsl'
+import frag from './Lines.frag.glsl'
 class LinesShader extends GLShader {
   /**
    * Create a GL shader.

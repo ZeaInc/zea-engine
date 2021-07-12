@@ -7,8 +7,8 @@ import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import frag from './GLSLFiles/StandardSurfaceSelectedGeoms.frag.glsl'
-import vert from './GLSLFiles/StandardSurfaceSelectedGeoms.vert.glsl'
+import frag from './StandardSurfaceSelectedGeoms.frag.glsl'
+import vert from './StandardSurfaceSelectedGeoms.vert.glsl'
 class StandardSurfaceSelectedGeomsShader extends GLShader {
   constructor(gl, floatGeomBuffer) {
     super(gl)

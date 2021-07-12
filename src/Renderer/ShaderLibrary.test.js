@@ -5,7 +5,7 @@ describe('ShaderLibrary', () => {
   //   shaderLibrary.setShaderModule('foo', `int var = 10;`)
   //   expect(shaderLibrary.getShaderModule('foo')).toBe(`int var = 10;`)
   // })
-  it('test importing snippet', () => {
+  it('test importing duplicate snippets', () => {
     const foo = `
     int foo = 3;
     `
@@ -36,4 +36,21 @@ describe('ShaderLibrary', () => {
     console.log(JSON.stringify(correctResult.trim()))
     expect(JSON.stringify(result.glsl.trim())).toBe(JSON.stringify(correctResult.trim()))
   })
+
+  // it('import self', () => {
+  //   const bat = `
+  //   // bat importing itself
+  //   import 'bat.glsl'
+  //   int bat = 21;
+  //   `
+  //   const correctResult = bat
+
+  //   shaderLibrary.setShaderSnippet('bat.glsl', bat)
+  //   const result = shaderLibrary.parseShader('bat.glsl', bat)
+
+  //   console.log(JSON.stringify(result.glsl.trim()))
+  //   console.log(JSON.stringify(correctResult.trim()))
+
+  //   expect(JSON.stringify(result.glsl.trim())).toBe(JSON.stringify(correctResult.trim()))
+  // })
 })

@@ -6,8 +6,8 @@ import { GLShader } from '../GLShader.js'
 import './GLSL/stack-gl/inverse.js'
 import './GLSL/stack-gl/transpose.js'
 
-import frag from './GLSLFiles/Points.frag.glsl'
-import vert from './GLSLFiles/Points.vert.glsl'
+import frag from './Points.frag.glsl'
+import vert from './Points.vert.glsl'
 class PointsShader extends GLShader {
   /**
    * Create a GL shader.

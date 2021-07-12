@@ -2,8 +2,8 @@ import { GLShader } from '../GLShader.js'
 
 import './GLSL/utils/quadVertexFromID.js'
 
-import frag from './GLSLFiles/Silhouette.frag.glsl'
-import vert from './GLSLFiles/Silhouette.vert.glsl'
+import frag from './Silhouette.frag.glsl'
+import vert from './Silhouette.vert.glsl'
 class SilhouetteShader extends GLShader {
   /**
    * Create a GL shader.

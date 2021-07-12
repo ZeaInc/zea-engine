@@ -2,8 +2,8 @@ import { GLShader } from '../GLShader.js'
 
 import './GLSL/utils/quadVertexFromID.js'
 
-import vert from './GLSLFiles/FattenLines.vert.glsl'
-import frag from './GLSLFiles/FattenLines.frag.glsl'
+import vert from './FattenLines.vert.glsl'
+import frag from './FattenLines.frag.glsl'
 
 class FattenLinesShader extends GLShader {
   /**

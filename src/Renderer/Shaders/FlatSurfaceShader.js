@@ -7,8 +7,8 @@ import './GLSL/stack-gl/gamma.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import vert from './GLSLFiles/FlatSurface.vert.glsl'
-import frag from './GLSLFiles/FlatSurface.frag.glsl'
+import vert from './FlatSurface.vert.glsl'
+import frag from './FlatSurface.frag.glsl'
 
 class FlatSurfaceShader extends GLShader {
   /**

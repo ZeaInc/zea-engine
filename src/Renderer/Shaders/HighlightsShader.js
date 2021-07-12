@@ -1,8 +1,8 @@
 import { GLShader } from '../GLShader.js'
 // import { shaderLibrary } from '../ShaderLibrary.js'
 
-import frag from './GLSLFiles/Highlights.frag.glsl'
-import vert from './GLSLFiles/Highlights.vert.glsl'
+import frag from './Highlights.frag.glsl'
+import vert from './Highlights.vert.glsl'
 class HighlightsShader extends GLShader {
   /**
    * Create a GL shader.

@@ -7,8 +7,8 @@ import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 import './GLSL/glsl-bits.js'
 
-import frag from './GLSLFiles/StandardSurfaceGeomData.frag.glsl'
-import vert from './GLSLFiles/StandardSurfaceGeomData.vert.glsl'
+import frag from './StandardSurfaceGeomData.frag.glsl'
+import vert from './StandardSurfaceGeomData.vert.glsl'
 class StandardSurfaceGeomDataShader extends GLShader {
   constructor(gl, floatGeomBuffer) {
     super(gl)

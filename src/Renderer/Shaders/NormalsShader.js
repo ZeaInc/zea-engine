@@ -4,8 +4,8 @@ import { GLShader } from '../GLShader.js'
 import './GLSL/stack-gl/inverse.js'
 import './GLSL/stack-gl/transpose.js'
 
-import frag from './GLSLFiles/Normals.frag.glsl'
-import vert from './GLSLFiles/Normals.vert.glsl'
+import frag from './Normals.frag.glsl'
+import vert from './Normals.vert.glsl'
 
 class NormalsShader extends GLShader {
   /**

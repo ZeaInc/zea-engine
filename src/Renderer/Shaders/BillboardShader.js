@@ -1,8 +1,8 @@
 // import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
-import frag from './GLSLFiles/Billboard.frag.glsl'
-import vert from './GLSLFiles/Billboard.vert.glsl'
+import frag from './Billboard.frag.glsl'
+import vert from './Billboard.vert.glsl'
 
 import './GLSL/stack-gl/inverse.js'
 import './GLSL/stack-gl/transpose.js'

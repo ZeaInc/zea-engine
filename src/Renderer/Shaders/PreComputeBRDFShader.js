@@ -2,8 +2,8 @@ import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
 import './GLSL/utils/quadVertexFromID.js'
 
-import frag from './GLSLFiles/PreComputeBRDF.frag.glsl'
-import vert from './GLSLFiles/PreComputeBRDF.vert.glsl'
+import frag from './PreComputeBRDF.frag.glsl'
+import vert from './PreComputeBRDF.vert.glsl'
 
 /** Shader for convolving Environment maps.
  * @extends GLShader

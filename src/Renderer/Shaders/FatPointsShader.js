@@ -8,10 +8,10 @@ import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import vert from './GLSLFiles/FatPoints.vert.glsl'
-import frag from './GLSLFiles/FatPoints.frag.glsl'
-import GeomDataFrag from './GLSLFiles/FatPointsGeomData.frag.glsl'
-import SelectedFrag from './GLSLFiles/FatPointsSelected.frag.glsl'
+import vert from './FatPoints.vert.glsl'
+import frag from './FatPoints.frag.glsl'
+import GeomDataFrag from './FatPointsGeomData.frag.glsl'
+import SelectedFrag from './FatPointsSelected.frag.glsl'
 class FatPointsShader extends GLShader {
   /**
    * Create a GL shader.

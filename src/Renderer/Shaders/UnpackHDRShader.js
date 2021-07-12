@@ -5,8 +5,8 @@ import { GLShader } from '../GLShader.js'
 import './GLSL/utils/quadVertexFromID.js'
 import './GLSL/utils/unpackHDR.js'
 
-import frag from './GLSLFiles/UnpackHDR.frag.glsl'
-import vert from './GLSLFiles/UnpackHDR.vert.glsl'
+import frag from './UnpackHDR.frag.glsl'
+import vert from './UnpackHDR.vert.glsl'
 
 /** Shader for unpacking HDR images using Boost HDR algorithm.
  * @extends GLShader

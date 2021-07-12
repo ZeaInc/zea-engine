@@ -6,8 +6,8 @@ import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import frag from './GLSLFiles/FatLines.frag.glsl'
-import vert from './GLSLFiles/FatLines.vert.glsl'
+import frag from './FatLines.frag.glsl'
+import vert from './FatLines.vert.glsl'
 import calcFatLinesViewPos from './GLSLSnippets/calcFatLinesViewPos.glsl'
 
 shaderLibrary.setShaderModule('calcFatLinesViewPos.glsl', calcFatLinesViewPos)

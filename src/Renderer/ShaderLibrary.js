@@ -176,6 +176,7 @@ class ShaderLibrary {
    * @return {object} - The return value.
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
+    // includes.push(shaderName)
     // console.log("parseShader:" + shaderName);
 
     // result that is returned

@@ -3,8 +3,8 @@ import { Registry } from '../../Registry'
 // import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
-import vert from './GLSLFiles/StandardSurface.vert.glsl'
-import frag from './GLSLFiles/StandardSurface.frag.glsl'
+import vert from './StandardSurface.vert.glsl'
+import frag from './StandardSurface.frag.glsl'
 
 import './GLSL/constants.js'
 import './GLSL/stack-gl/transpose.js'

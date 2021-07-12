@@ -2,8 +2,8 @@ import { GLShader } from '../GLShader.js'
 import './GLSL/utils/quadVertexFromID.js'
 import './GLSL/convolve-helpers.js'
 
-import vert from './GLSLFiles/ConvolveSpecular.vert.glsl'
-import frag from './GLSLFiles/ConvolveSpecular.frag.glsl'
+import vert from './ConvolveSpecular.vert.glsl'
+import frag from './ConvolveSpecular.frag.glsl'
 
 /** Shader for convolving Environment maps.
  * @extends GLShader

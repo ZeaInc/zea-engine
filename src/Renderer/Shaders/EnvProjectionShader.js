@@ -10,9 +10,9 @@ import './GLSL/envmap-octahedral.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import vert from './GLSLFiles/EnvProjection.vert.glsl'
-import LatLongEnvProjectionFrag from './GLSLFiles/LatLongEnvProjection.frag.glsl'
-import OctahedralEnvProjectionFrag from './GLSLFiles/OctahedralEnvProjection.frag.glsl'
+import vert from './EnvProjection.vert.glsl'
+import LatLongEnvProjectionFrag from './LatLongEnvProjection.frag.glsl'
+import OctahedralEnvProjectionFrag from './OctahedralEnvProjection.frag.glsl'
 
 class EnvProjectionShader extends GLShader {
   /**

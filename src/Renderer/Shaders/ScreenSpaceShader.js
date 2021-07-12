@@ -7,8 +7,8 @@ import './GLSL/stack-gl/gamma.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import frag from './GLSLFiles/ScreenSpace.frag.glsl'
-import vert from './GLSLFiles/ScreenSpace.vert.glsl'
+import frag from './ScreenSpace.frag.glsl'
+import vert from './ScreenSpace.vert.glsl'
 
 class ScreenSpaceShader extends GLShader {
   /**

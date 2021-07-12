@@ -6,8 +6,8 @@ import './GLSL/stack-gl/transpose.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 
-import vert from './GLSLFiles/FatLinesGeomData.vert.glsl'
-import frag from './GLSLFiles/FatLinesGeomData.frag.glsl'
+import vert from './FatLinesGeomData.vert.glsl'
+import frag from './FatLinesGeomData.frag.glsl'
 
 import { FatLinesShader } from './FatLinesShader.js'
 /** Shader for drawing Fat lines

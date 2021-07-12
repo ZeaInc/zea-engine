@@ -7,8 +7,8 @@ import './GLSL/mattdesl/fxaa.js'
 import './GLSL/utils/quadVertexFromID.js'
 import './GLSL/stack-gl/gamma.js'
 
-import frag from './GLSLFiles/PostProcessing.frag.glsl'
-import vert from './GLSLFiles/PostProcessing.vert.glsl'
+import frag from './PostProcessing.frag.glsl'
+import vert from './PostProcessing.vert.glsl'
 class PostProcessing extends GLShader {
   /**
    * Create a GL shader.

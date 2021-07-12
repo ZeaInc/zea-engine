@@ -9,8 +9,8 @@ import './GLSL/envmap-equirect.js'
 import './GLSL/envmap-dualfisheye.js'
 import './GLSL/utils/quadVertexFromID.js'
 
-import frag from './GLSLFiles/EnvMap.frag.glsl'
-import vert from './GLSLFiles/EnvMap.vert.glsl'
+import frag from './EnvMap.frag.glsl'
+import vert from './EnvMap.vert.glsl'
 class EnvMapShader extends GLShader {
   /**
    * Create a GL shader.

@@ -3,8 +3,8 @@ import { GLShader } from '../GLShader.js'
 
 import './GLSL/utils/quadVertexFromID.js'
 
-import frag from './GLSLFiles/ScreenQuad.frag.glsl'
-import vert from './GLSLFiles/ScreenQuad.vert.glsl'
+import frag from './ScreenQuad.frag.glsl'
+import vert from './ScreenQuad.vert.glsl'
 
 class ScreenQuadShader extends GLShader {
   /**
