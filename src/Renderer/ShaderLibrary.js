@@ -135,7 +135,7 @@ class ShaderLibrary {
           ...reursiveResult.attributes,
         }
       } else {
-        console.log('already included: ' + includeFile)
+        // console.log('already included: ' + includeFile)
       }
 
       // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
@@ -298,7 +298,9 @@ class ShaderLibrary {
       } // end of switch
     } // end of forloop
 
-    // prepare result to return and cache module
+    // cache module specific info to shaderModules - TODO: doesn't have glsl code
+    this.__shaderModules[shaderName] = moduleInfo
+    // prepare result to return
     result.uniforms = {
       ...result.uniforms,
       ...moduleInfo.uniforms,
@@ -307,8 +309,6 @@ class ShaderLibrary {
       ...result.attributes,
       ...moduleInfo.attributes,
     }
-    // cache module specific info to shaderModules
-    this.__shaderModules[shaderName] = moduleInfo
 
     // console.log('length of shader: ' + result.numLines)
     // console.log(result.glsl)
