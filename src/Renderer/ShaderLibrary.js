@@ -191,6 +191,7 @@ class ShaderLibrary {
     }
 
     // used for storing uniforms/attributes specific to this module and not it's dependencies
+    // later add glsl + import line points, for fast stitching together.
     const moduleInfo = {
       uniforms: {},
       attributes: {},
@@ -307,7 +308,8 @@ class ShaderLibrary {
       } // end of switch
     } // end of forloop
 
-    // cache module specific info to shaderModules - TODO: doesn't have glsl code
+    // cache module specific info to shaderModules
+    // TODO: doesn't have glsl code. must also store 'import points', -- must check before adding
     this.__shaderModules[shaderName] = moduleInfo
     // prepare result to return
     result.uniforms = {
