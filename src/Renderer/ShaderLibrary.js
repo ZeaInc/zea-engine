@@ -30,6 +30,15 @@ class ShaderLibrary {
     }
   }
 
+  /**
+   * The getShaderSnippet method.
+   * @param {string} shaderName - The shader name.
+   * @return {any} - The return value.
+   */
+  getShaderSnippet(shaderName) {
+    return this.__shaderModules[shaderName]
+  }
+
   // TODO: remove setShaderSnippet functions when setModule works.
   // eslint-disable-next-line require-jsdoc
   setShaderSnippet(shaderName, shader) {
@@ -112,9 +121,7 @@ class ShaderLibrary {
    * @param {array} includes - result object that has the glsl to add to
    * @param {number} lineNumber - the current line that is to be added.
    */
-  handleImport(result, shaderName, relativeFileLoc, includes, lineNumber) {
-    const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
-    const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+  handleImport(result, shaderName, includeFile, includes, lineNumber) {
     if (includeFile in this.__shaderSnippet) {
       const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
       if (!includedGLSL) throw error('snippet not loaded or does not exists!')
@@ -122,20 +129,17 @@ class ShaderLibrary {
       const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
 
       // adding code + snippet glsl, if not already added.
-      if (!includes.includes(includeFile)) {
-        includes.push(includeFile) // keep track of imports
-        result.glsl = result.glsl + reursiveResult.glsl
-        result.numLines += reursiveResult.numLines
-        result.uniforms = {
-          ...result.uniforms,
-          ...reursiveResult.uniforms,
-        }
-        result.attributes = {
-          ...result.attributes,
-          ...reursiveResult.attributes,
-        }
-      } else {
-        // console.log('already included: ' + includeFile)
+
+      includes.push(includeFile) // keep track of imports
+      result.glsl = result.glsl + reursiveResult.glsl
+      result.numLines += reursiveResult.numLines
+      result.uniforms = {
+        ...result.uniforms,
+        ...reursiveResult.uniforms,
+      }
+      result.attributes = {
+        ...result.attributes,
+        ...reursiveResult.attributes,
       }
 
       // console.log('\n glsl snippet: ' + reursiveResult.glsl) // print out snippets
@@ -176,9 +180,8 @@ class ShaderLibrary {
    * @return {object} - The return value.
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
-    // includes.push(shaderName)
-    // console.log("parseShader:" + shaderName);
-
+    // console.log('parseShader:' + shaderName)
+    includes.push(shaderName)
     // result that is returned
     const result = {
       glsl: '',
@@ -220,8 +223,13 @@ class ShaderLibrary {
         case '<%include':
         case 'import': {
           const relativeFileLoc = trimmedLine.split(/'|"|`/)[1] // TODO: relative file location not needed
-          // if (includeDependencies)
-          this.handleImport(result, shaderName, relativeFileLoc, includes, lineNumber)
+          const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
+          const includeFile = this.parsePath(relativeFileLoc, fileFolder)
+
+          if (!includes.includes(includeFile)) {
+            this.handleImport(result, shaderName, includeFile, includes, lineNumber)
+          }
+
           break
         }
         case 'attribute': {
