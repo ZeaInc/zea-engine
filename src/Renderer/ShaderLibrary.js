@@ -115,9 +115,9 @@ class ShaderLibrary {
 
   /**
    * The addLine method - adds parsed glsl lines into the returned result object
-   * @param {string} shaderName - shaderName
-   * @param {string} relativeFileLoc - relative path to file
    * @param {object} result - result object that has the glsl to add to
+   * @param {string} shaderName - shaderName
+   * @param {string} includeFile - relative path to file
    * @param {array} includes - result object that has the glsl to add to
    * @param {number} lineNumber - the current line that is to be added.
    */
@@ -308,9 +308,11 @@ class ShaderLibrary {
       } // end of switch
     } // end of forloop
 
-    // cache module specific info to shaderModules
-    // TODO: doesn't have glsl code. must also store 'import points', -- must check before adding
+    // TODO: moduleInfo doesn't have glsl code yet.
+    // must also store 'import points' and which file to include, -- must check before adding
+    // then have a function that can 'stitch' together modules.
     this.__shaderModules[shaderName] = moduleInfo
+
     // prepare result to return
     result.uniforms = {
       ...result.uniforms,

@@ -1,10 +1,25 @@
 import { shaderLibrary } from './ShaderLibrary'
 
 describe('ShaderLibrary', () => {
-  // it('register shader snippet', () => {
-  //   shaderLibrary.setShaderModule('foo', `int var = 10;`)
-  //   expect(shaderLibrary.getShaderModule('foo')).toBe(`int var = 10;`)
-  // })
+  it('test simple import', () => {
+    const foo = `
+    int foo = 3;
+    `
+
+    const shader = `
+    import 'foo.glsl'
+    `
+    const correctResult = `
+
+    int foo = 3;
+    
+
+    `
+    shaderLibrary.setShaderSnippet('foo.glsl', foo)
+    const result = shaderLibrary.parseShader('shader.glsl', shader)
+
+    expect(JSON.stringify(result.glsl.trim())).toBe(JSON.stringify(correctResult.trim()))
+  })
 
   it('test importing duplicate snippets', () => {
     const foo = `
