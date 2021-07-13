@@ -1,11 +1,5 @@
 import { shaderLibrary } from '../../ShaderLibrary.js'
 
-import snip2 from './testSnippet/snippet2.glsl' // where to find the file
-
-import snip from './testSnippet/snippet.glsl' // where to find the file
-
-import rsnip from './testSnippet/rsnip.glsl' // where to find the file
-
 import computeViewNormal from './computeViewNormal.glsl'
 import calcFatLinesViewPos from './calcFatLinesViewPos.glsl'
 import constants from './math/constants.glsl'
@@ -46,10 +40,6 @@ import unpackHDR from './utils/unpackHDR.glsl'
 import glslAtmosphere from './wwwtyro/glsl-atmosphere.glsl'
 import skyFragment from './zz85/skyFragment.glsl'
 import GLSLBinReader from './GLSLBinReader.glsl'
-
-shaderLibrary.setShaderModule('testSnippet/snippet2.glsl', snip2)
-shaderLibrary.setShaderModule('testSnippet/snippet.glsl', snip)
-shaderLibrary.setShaderModule('testSnippet/rsnip.glsl', rsnip)
 
 shaderLibrary.setShaderModule('GLSLBinReader.glsl', GLSLBinReader)
 shaderLibrary.setShaderModule('computeViewNormal.glsl', computeViewNormal)
