@@ -1,6 +1,6 @@
-import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
 
+import './GLSL/index'
 import frag from './DepthMapShader.frag.glsl'
 import vert from './DepthMapShader.vert.glsl'
 

@@ -1,11 +1,9 @@
+/* eslint-disable require-jsdoc */
 import { Color } from '../../Math/Color'
 import { Registry } from '../../Registry'
-// import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
 
+import './GLSL/index'
 import vert from './Lines.vert.glsl'
 import frag from './Lines.frag.glsl'
 class LinesShader extends GLShader {
@@ -16,7 +14,6 @@ class LinesShader extends GLShader {
   constructor(gl) {
     super(gl, 'LinesShader')
     this.setShaderStage('VERTEX_SHADER', vert)
-
     this.setShaderStage('FRAGMENT_SHADER', frag)
     this.finalize()
   }

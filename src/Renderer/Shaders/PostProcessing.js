@@ -1,12 +1,6 @@
-// import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/pragmatic-pbr/exposure.js'
-import './GLSL/pragmatic-pbr/tonemap-filmic.js'
-import './GLSL/mattdesl/fxaa.js'
-import './GLSL/utils/quadVertexFromID.js'
-import './GLSL/stack-gl/gamma.js'
-
+import './GLSL/index'
 import frag from './PostProcessing.frag.glsl'
 import vert from './PostProcessing.vert.glsl'
 class PostProcessing extends GLShader {
@@ -18,7 +12,6 @@ class PostProcessing extends GLShader {
     super(gl)
     this.setShaderStage('VERTEX_SHADER', vert)
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 }
 

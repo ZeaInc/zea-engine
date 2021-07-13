@@ -1,9 +1,10 @@
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/utils/quadVertexFromID.js'
+import './GLSL/index'
 
 import frag from './Silhouette.frag.glsl'
 import vert from './Silhouette.vert.glsl'
+
 class SilhouetteShader extends GLShader {
   /**
    * Create a GL shader.
@@ -13,7 +14,6 @@ class SilhouetteShader extends GLShader {
     super(gl)
     this.setShaderStage('VERTEX_SHADER', vert)
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 }
 

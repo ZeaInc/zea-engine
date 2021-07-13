@@ -4,7 +4,7 @@ import { Color } from '../../Math/Color'
 import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
-import './GLSLSnippets/snippets' // this initializes shaderLibrary with all of the snippets -- can be removed + made more selective in parser.
+import './GLSL/index' // this initializes shaderLibrary with all of the snippets -- can be removed + made more selective in parser.
 
 import vert from './TestSurface.vert.glsl'
 import frag from './TestSurface.frag.glsl'
@@ -20,8 +20,6 @@ class TestShader extends GLShader {
     this.setShaderStage('VERTEX_SHADER', vert)
 
     this.setShaderStage('FRAGMENT_SHADER', frag)
-
-    this.finalize()
   }
 
   static getParamDeclarations() {

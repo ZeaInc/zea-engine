@@ -1,7 +1,6 @@
-import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
-import './GLSL/utils/quadVertexFromID.js'
 
+import './GLSL/index'
 import frag from './PreComputeBRDF.frag.glsl'
 import vert from './PreComputeBRDF.vert.glsl'
 

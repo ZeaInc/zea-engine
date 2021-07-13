@@ -1,7 +1,6 @@
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/utils/quadVertexFromID.js'
-
+import './GLSL/index'
 import vert from './FattenLines.vert.glsl'
 import frag from './FattenLines.frag.glsl'
 
@@ -14,7 +13,6 @@ class FattenLinesShader extends GLShader {
     super(gl)
     this.setShaderStage('VERTEX_SHADER', vert)
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 }
 

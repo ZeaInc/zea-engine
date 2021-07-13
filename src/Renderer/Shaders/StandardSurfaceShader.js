@@ -1,22 +1,10 @@
 import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-// import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
+import './GLSL/index'
 import vert from './StandardSurface.vert.glsl'
 import frag from './StandardSurface.frag.glsl'
-
-import './GLSL/constants.js'
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/stack-gl/gamma.js'
-import './GLSL/materialparams.js'
-import './GLSL/PBRSurface.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
-import './GLSL/debugColors.js'
-import './GLSL/ImagePyramid.js'
-import './GLSL/cutaways.js'
-import './GLSL/computeViewNormal.js'
 
 /** A standard shader handling Opaque and transparent items and PBR rendering.
  * @extends GLShader
@@ -32,8 +20,6 @@ class StandardSurfaceShader extends GLShader {
     this.setShaderStage('VERTEX_SHADER', vert)
 
     this.setShaderStage('FRAGMENT_SHADER', frag)
-
-    this.finalize()
   }
 
   /**

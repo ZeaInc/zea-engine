@@ -1,11 +1,9 @@
+/* eslint-disable require-jsdoc */
+
 import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-// import { shaderLibrary } from '../ShaderLibrary.js'
-// import { GLShader } from '../GLShader.js'
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
 
+import './GLSL/index'
 import vert from './FatLinesGeomData.vert.glsl'
 import frag from './FatLinesGeomData.frag.glsl'
 
@@ -21,11 +19,8 @@ class FatLinesGeomDataShader extends FatLinesShader {
    */
   constructor(gl) {
     super(gl)
-
     this.setShaderStage('VERTEX_SHADER', vert)
-
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 
   bind(renderstate) {

@@ -1,7 +1,6 @@
 import { GLShader } from '../GLShader.js'
-import './GLSL/utils/quadVertexFromID.js'
-import './GLSL/convolve-helpers.js'
 
+import './GLSL/index'
 import vert from './ConvolveSpecular.vert.glsl'
 import frag from './ConvolveSpecular.frag.glsl'
 

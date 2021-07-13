@@ -1,16 +1,10 @@
 import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
 
+import './GLSL/index'
 import frag from './FatLines.frag.glsl'
 import vert from './FatLines.vert.glsl'
-import calcFatLinesViewPos from './GLSLSnippets/calcFatLinesViewPos.glsl'
-
-shaderLibrary.setShaderModule('calcFatLinesViewPos.glsl', calcFatLinesViewPos)
 
 /** Shader for drawing Fat lines
  * @extends GLShader
@@ -26,7 +20,6 @@ class FatLinesShader extends GLShader {
     this.setShaderStage('VERTEX_SHADER', vert)
 
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 
   bind(renderstate) {

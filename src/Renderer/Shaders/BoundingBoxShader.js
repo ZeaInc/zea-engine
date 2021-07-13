@@ -1,12 +1,8 @@
-// import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
+import './GLSL/index'
 import frag from './BoundingBox.frag.glsl'
 import vert from './BoundingBox.vert.glsl'
-
-import './GLSL/stack-gl/inverse.js'
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/materialparams.js'
 
 class BoundingBoxShader extends GLShader {
   /**

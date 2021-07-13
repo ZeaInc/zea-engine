@@ -3,15 +3,9 @@ import { Registry } from '../../Registry'
 // import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
+import './GLSL/index'
 import frag from './SimpleSurface.frag.glsl'
 import vert from './SimpleSurface.vert.glsl'
-
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/stack-gl/gamma.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
-import './GLSL/materialparams.js'
-import './GLSL/computeViewNormal.js'
 
 /** A simple shader with no support for PBR or textures
  * @ignore
@@ -24,7 +18,6 @@ class SimpleSurfaceShader extends GLShader {
     super(gl)
     this.setShaderStage('VERTEX_SHADER', vert)
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 
   static getParamDeclarations() {

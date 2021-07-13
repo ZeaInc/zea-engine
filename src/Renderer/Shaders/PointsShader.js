@@ -1,11 +1,8 @@
 import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/stack-gl/inverse.js'
-import './GLSL/stack-gl/transpose.js'
-
+import './GLSL/index'
 import frag from './Points.frag.glsl'
 import vert from './Points.vert.glsl'
 class PointsShader extends GLShader {

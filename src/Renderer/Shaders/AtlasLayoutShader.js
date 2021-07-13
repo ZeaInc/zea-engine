@@ -1,6 +1,6 @@
 import { GLShader } from '../GLShader.js'
 
-import './GLSLSnippets/snippets.js'
+import './GLSL/index'
 import vert from './AtlasLayout.vertex.glsl'
 import frag from './AtlasLayout.frag.glsl'
 // eslint-disable-next-line require-jsdoc

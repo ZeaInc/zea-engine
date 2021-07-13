@@ -1,13 +1,8 @@
 import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/stack-gl/inverse.js'
-import './GLSL/stack-gl/transpose.js'
-import './GLSL/drawItemTexture.js'
-import './GLSL/modelMatrix.js'
-
+import './GLSL/index'
 import vert from './FatPoints.vert.glsl'
 import frag from './FatPoints.frag.glsl'
 import GeomDataFrag from './FatPointsGeomData.frag.glsl'

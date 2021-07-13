@@ -1,5 +1,4 @@
 import { GLShader } from '../GLShader.js'
-// import { shaderLibrary } from '../ShaderLibrary.js'
 
 import frag from './Highlights.frag.glsl'
 import vert from './Highlights.vert.glsl'

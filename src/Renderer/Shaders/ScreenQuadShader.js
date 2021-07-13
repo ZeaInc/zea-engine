@@ -1,8 +1,6 @@
-import { shaderLibrary } from '../ShaderLibrary'
 import { GLShader } from '../GLShader.js'
 
-import './GLSL/utils/quadVertexFromID.js'
-
+import './GLSL/index'
 import frag from './ScreenQuad.frag.glsl'
 import vert from './ScreenQuad.vert.glsl'
 
@@ -15,7 +13,6 @@ class ScreenQuadShader extends GLShader {
     super(gl)
     this.setShaderStage('VERTEX_SHADER', vert)
     this.setShaderStage('FRAGMENT_SHADER', frag)
-    this.finalize()
   }
 }
 
