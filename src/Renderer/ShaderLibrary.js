@@ -43,12 +43,12 @@ class ShaderLibrary {
    * The getShaderModuleNames method.
    * @return {array} - The return value.
    */
-  // getShaderModuleNames() {
-  //   const shaderNames = []
-  //   // eslint-disable-next-line guard-for-in
-  //   for (const shaderName in this.__shaderModules) shaderNames.push(shaderName)
-  //   return shaderNames
-  // }
+  getShaderModuleNames() {
+    const shaderNames = []
+    // eslint-disable-next-line guard-for-in
+    for (const shaderName in this.__shaderModules) shaderNames.push(shaderName)
+    return shaderNames
+  }
 
   /**
    * The parsePath method.
@@ -175,6 +175,7 @@ class ShaderLibrary {
     // used for storing uniforms/attributes specific to this module and not it's dependencies
     // later add glsl + import line points, for fast stitching together.
     const moduleInfo = {
+      shaderName: shaderName,
       uniforms: {},
       attributes: {},
     }
@@ -304,7 +305,6 @@ class ShaderLibrary {
       ...result.attributes,
       ...moduleInfo.attributes,
     }
-
     // console.log('length of shader: ' + result.numLines)
     // console.log(result.glsl)
     return result
