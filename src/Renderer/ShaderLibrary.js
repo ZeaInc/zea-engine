@@ -14,7 +14,6 @@ class ShaderLibrary {
    */
   constructor() {
     this.__shaderModules = {}
-    this.__shaderSnippet = {} // TODO: remove when setShaderModule works properly
   }
 
   // TODO: can't bake dependency info into shaderModule, since two shaderModules can have the same dependency.
@@ -24,23 +23,8 @@ class ShaderLibrary {
    * @param {string} shader - The shader GLSL.
    */
   setShaderModule(shaderName, shader) {
-    this.setShaderSnippet(shaderName, shader)
-  }
-
-  /**
-   * The getShaderSnippet method.
-   * @param {string} shaderName - The shader name.
-   * @return {any} - The return value.
-   */
-  getShaderSnippet(shaderName) {
-    return this.__shaderModules[shaderName]
-  }
-
-  // TODO: remove setShaderSnippet functions when setModule works.
-  // eslint-disable-next-line require-jsdoc
-  setShaderSnippet(shaderName, shader) {
-    if (!(shaderName in this.__shaderSnippet)) {
-      this.__shaderSnippet[shaderName] = shader
+    if (!(shaderName in this.__shaderModules)) {
+      this.__shaderModules[shaderName] = shader
       return
     }
   }
@@ -54,6 +38,7 @@ class ShaderLibrary {
     return this.__shaderModules[shaderName]
   }
 
+  // TODO: currently doesn't store shaderName
   /**
    * The getShaderModuleNames method.
    * @return {array} - The return value.
@@ -119,8 +104,8 @@ class ShaderLibrary {
    * @param {number} lineNumber - the current line that is to be added.
    */
   handleImport(result, shaderName, includeFile, includes, lineNumber) {
-    if (includeFile in this.__shaderSnippet) {
-      const includedGLSL = this.__shaderSnippet[includeFile] // get glsl snippet code to add
+    if (includeFile in this.__shaderModules) {
+      const includedGLSL = this.__shaderModules[includeFile] // get glsl snippet code to add
       if (!includedGLSL) throw error('snippet not loaded or does not exists!')
       // recursively includes glsl snippets
       const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)

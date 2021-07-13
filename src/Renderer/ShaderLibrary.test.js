@@ -15,7 +15,7 @@ describe('ShaderLibrary', () => {
     
 
     `
-    shaderLibrary.setShaderSnippet('foo.glsl', foo)
+    shaderLibrary.setShaderModule('foo.glsl', foo)
     const result = shaderLibrary.parseShader('shader.glsl', shader)
 
     expect(JSON.stringify(result.glsl.trim())).toBe(JSON.stringify(correctResult.trim()))
@@ -43,8 +43,8 @@ describe('ShaderLibrary', () => {
     int bar = 21;
 
     `
-    shaderLibrary.setShaderSnippet('foo.glsl', foo)
-    shaderLibrary.setShaderSnippet('bar.glsl', bar)
+    shaderLibrary.setShaderModule('foo.glsl', foo)
+    shaderLibrary.setShaderModule('bar.glsl', bar)
     const result = shaderLibrary.parseShader('shader.glsl', shader)
 
     expect(JSON.stringify(result.glsl.trim())).toBe(JSON.stringify(correctResult.trim()))
@@ -60,7 +60,7 @@ describe('ShaderLibrary', () => {
     // bat importing itself
     int bat = 21;
     `
-    shaderLibrary.setShaderSnippet('bat.glsl', bat)
+    shaderLibrary.setShaderModule('bat.glsl', bat)
     const result = shaderLibrary.parseShader('bat.glsl', bat)
 
     expect(JSON.stringify(result.glsl.trim())).toBe(JSON.stringify(correctResult.trim()))
