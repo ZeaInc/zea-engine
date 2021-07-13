@@ -1,9 +1,9 @@
 
 precision highp float;
 
-import 'math/constants.glsl'
+import 'constants.glsl'
 import 'GLSLUtils.glsl'
-import 'stack-gl/gamma.glsl'
+import 'gamma.glsl'
 
 uniform float focus;
 uniform float exposure;
@@ -29,7 +29,7 @@ varying vec2 v_texCoord;
 
 #if (ENV_MAPTYPE == ENV_MAP_LATLONG)  
 
-import 'pragmatic-pbr/envmap-equirect.glsl'
+import 'envmap-equirect.glsl'
 
 uniform sampler2D backgroundImage;
 
@@ -83,7 +83,7 @@ vec4 sampleEnvMap(vec3 dir) {
 
 #elif (ENV_MAPTYPE == ENV_MAP_STEREO_LATLONG)  
 
-import 'pragmatic-pbr/envmap-equirect.glsl'
+import 'envmap-equirect.glsl'
 uniform int eye;// L = 0, R = 1;
 uniform sampler2D backgroundImage;
 
@@ -99,7 +99,7 @@ vec4 sampleEnvMap(vec3 dir) {
 
 #elif (ENV_MAPTYPE == ENV_MAP_DUALFISHEYE)
 
-import 'pragmatic-pbr/envmap-dualfisheye.glsl'
+import 'envmap-dualfisheye.glsl'
 
 vec4 sampleEnvMap(vec3 dir) {
   vec2 uv = dualfisheyeUVsFromDir(dir);

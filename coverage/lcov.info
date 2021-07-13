@@ -4459,7 +4459,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/Renderer/Shaders/GLSL/stack-gl/gamma.js
+SF:src/Renderer/Shaders/GLSL/gamma.js
 FNF:0
 FNH:0
 DA:3,2
@@ -4469,7 +4469,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/Renderer/Shaders/GLSL/stack-gl/transpose.js
+SF:src/Renderer/Shaders/GLSL/transpose.js
 FNF:0
 FNH:0
 DA:3,3

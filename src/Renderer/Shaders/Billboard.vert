@@ -1,7 +1,7 @@
 
 precision highp float;
 
-import 'utils/quadVertexFromID.glsl'
+import 'quadVertexFromID.glsl'
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
@@ -14,8 +14,8 @@ import 'GLSLUtils.glsl'
 // A sorted attribute of instance Ids so we draw from back to front.
 instancedattribute float instanceIds;
 
-import 'stack-gl/transpose.glsl'
-import 'utils/imageAtlas.glsl'
+import 'transpose.glsl'
+import 'imageAtlas.glsl'
 
 uniform sampler2D atlasBillboards_layout;
 uniform vec4 atlasBillboards_desc;

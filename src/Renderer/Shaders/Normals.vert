@@ -10,7 +10,7 @@ uniform mat4 projectionMatrix;
 
 uniform float normalLength;
 
-import 'stack-gl/transpose.glsl'
+import 'transpose.glsl'
 import 'drawItemTexture.glsl'
 import 'modelMatrix.glsl'
 
