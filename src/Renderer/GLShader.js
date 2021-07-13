@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 /* eslint-disable guard-for-in */
 import { BaseItem } from '../SceneTree/BaseItem'
 import { StringFunctions } from '../Utilities/StringFunctions'
@@ -241,9 +242,9 @@ class GLShader extends BaseItem {
 
       if (info.includes('D3D shader compilation failed')) {
         // Usefull for debugging very nasty compiler errors generated only in the ANGL layer.
-        const debug_ext = gl.getExtension('WEBGL_debug_shaders')
-        if (debug_ext) {
-          const hlsl = debug_ext.getTranslatedShaderSource(shaderHdls[gl.VERTEX_SHADER])
+        const debugExt = gl.getExtension('WEBGL_debug_shaders')
+        if (debugExt) {
+          const hlsl = debugExt.getTranslatedShaderSource(shaderHdls[gl.VERTEX_SHADER])
           console.log(hlsl)
         }
       }

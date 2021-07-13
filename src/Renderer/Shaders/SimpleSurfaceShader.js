@@ -1,6 +1,6 @@
+/* eslint-disable require-jsdoc */
 import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
-// import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
@@ -13,6 +13,7 @@ import vert from './SimpleSurface.vert.glsl'
 class SimpleSurfaceShader extends GLShader {
   /**
    * Create a SimpleSurfaceShader
+   * @param {any} gl - gl context
    */
   constructor(gl) {
     super(gl)
