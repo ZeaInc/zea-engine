@@ -1,8 +1,8 @@
-import { GLShader } from './GLShader.js'
+import { GLShader } from '../GLShader.js'
 
 import './GLSLSnippets/snippets.js'
-import vert from './Shaders/AtlasLayout.vertex.glsl'
-import frag from './Shaders/AtlasLayout.frag.glsl'
+import vert from './AtlasLayout.vertex.glsl'
+import frag from './AtlasLayout.frag.glsl'
 // eslint-disable-next-line require-jsdoc
 class AtlasLayoutShader extends GLShader {
   /**
@@ -15,4 +15,6 @@ class AtlasLayoutShader extends GLShader {
     this.setShaderStage('FRAGMENT_SHADER', frag)
   }
 }
+
+// Registry.register('AtlasLayoutShader', AtlasLayoutShader)
 export { AtlasLayoutShader }

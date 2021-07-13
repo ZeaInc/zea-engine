@@ -8,9 +8,7 @@ import { GLTexture2D } from './GLTexture2D.js'
 import { GLRenderTarget } from './GLRenderTarget.js'
 import { generateShaderGeomBinding } from './Drawing/GeomShaderBinding.js'
 import { MathFunctions } from '../Utilities/MathFunctions'
-import './Shaders/GLSL/ImageAtlas.js'
-
-// eslint-disable-next-line require-jsdoc
+import { AtlasLayoutShader } from './Shaders/AtlasLayoutShader'
 
 /**
  * An Image Atlas lays out multiple smaller images within a larger image atlas, and tracks their positions.
@@ -173,7 +171,7 @@ class GLImageAtlas extends GLRenderTarget {
 
     this.__layout = []
     blocks.forEach((block, index) => {
-      const subImage = this.__subImages[block.index]
+      // const subImage = this.__subImages[block.index]
       if (block.fit) {
         this.__layout[block.index] = {
           pos: new Vec2(block.fit.x + border, block.fit.y + border),
