@@ -6,8 +6,8 @@ import { GLShader } from '../GLShader.js'
 
 import './GLSL/index' // this initializes shaderLibrary with all of the snippets -- can be removed + made more selective in parser.
 
-import vert from './TestSurface.vert.glsl'
-import frag from './TestSurface.frag.glsl'
+import vert from './TestSurface.vert'
+import frag from './TestSurface.frag'
 
 class TestShader extends GLShader {
   /**

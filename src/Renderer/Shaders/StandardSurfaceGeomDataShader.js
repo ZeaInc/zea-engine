@@ -3,8 +3,8 @@ import { GLShader } from '../GLShader.js'
 import { Registry } from '../../Registry'
 
 import './GLSL/index'
-import frag from './StandardSurfaceGeomData.frag.glsl'
-import vert from './StandardSurfaceGeomData.vert.glsl'
+import frag from './StandardSurfaceGeomData.frag'
+import vert from './StandardSurfaceGeomData.vert'
 class StandardSurfaceGeomDataShader extends GLShader {
   constructor(gl, floatGeomBuffer) {
     super(gl)

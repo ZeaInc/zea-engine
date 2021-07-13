@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './PreComputeBRDF.frag.glsl'
-import vert from './PreComputeBRDF.vert.glsl'
+import frag from './PreComputeBRDF.frag'
+import vert from './PreComputeBRDF.vert'
 
 /** Shader for convolving Environment maps.
  * @extends GLShader

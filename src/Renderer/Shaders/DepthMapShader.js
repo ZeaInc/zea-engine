@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './DepthMapShader.frag.glsl'
-import vert from './DepthMapShader.vert.glsl'
+import frag from './DepthMapShader.frag'
+import vert from './DepthMapShader.vert'
 
 class DepthMapShader extends GLShader {
   /**

@@ -4,8 +4,8 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './SimpleSurface.frag.glsl'
-import vert from './SimpleSurface.vert.glsl'
+import frag from './SimpleSurface.frag'
+import vert from './SimpleSurface.vert'
 
 /** A simple shader with no support for PBR or textures
  * @ignore

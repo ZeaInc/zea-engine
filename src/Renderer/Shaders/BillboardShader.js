@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './Billboard.frag.glsl'
-import vert from './Billboard.vert.glsl'
+import frag from './Billboard.frag'
+import vert from './Billboard.vert'
 
 class BillboardShader extends GLShader {
   /**

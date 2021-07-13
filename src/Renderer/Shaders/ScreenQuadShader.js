@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './ScreenQuad.frag.glsl'
-import vert from './ScreenQuad.vert.glsl'
+import frag from './ScreenQuad.frag'
+import vert from './ScreenQuad.vert'
 
 class ScreenQuadShader extends GLShader {
   /**

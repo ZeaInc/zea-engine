@@ -3,8 +3,8 @@ import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
 
-import frag from './UnpackHDR.frag.glsl'
-import vert from './UnpackHDR.vert.glsl'
+import frag from './UnpackHDR.frag'
+import vert from './UnpackHDR.vert'
 
 /** Shader for unpacking HDR images using Boost HDR algorithm.
  * @extends GLShader

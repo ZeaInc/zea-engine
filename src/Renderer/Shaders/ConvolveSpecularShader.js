@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import vert from './ConvolveSpecular.vert.glsl'
-import frag from './ConvolveSpecular.frag.glsl'
+import vert from './ConvolveSpecular.vert'
+import frag from './ConvolveSpecular.frag'
 
 /** Shader for convolving Environment maps.
  * @extends GLShader

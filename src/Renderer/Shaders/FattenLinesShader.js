@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import vert from './FattenLines.vert.glsl'
-import frag from './FattenLines.frag.glsl'
+import vert from './FattenLines.vert'
+import frag from './FattenLines.frag'
 
 class FattenLinesShader extends GLShader {
   /**

@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './BoundingBox.frag.glsl'
-import vert from './BoundingBox.vert.glsl'
+import frag from './BoundingBox.frag'
+import vert from './BoundingBox.vert'
 
 class BoundingBoxShader extends GLShader {
   /**

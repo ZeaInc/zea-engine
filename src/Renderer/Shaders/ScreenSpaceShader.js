@@ -4,8 +4,8 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './ScreenSpace.frag.glsl'
-import vert from './ScreenSpace.vert.glsl'
+import frag from './ScreenSpace.frag'
+import vert from './ScreenSpace.vert'
 
 class ScreenSpaceShader extends GLShader {
   /**

@@ -4,8 +4,8 @@ import { Color } from '../../Math/index'
 import { Registry } from '../../Registry'
 
 import './GLSL/index'
-import vert from './FatLinesGeomData.vert.glsl'
-import frag from './FatLinesGeomData.frag.glsl'
+import vert from './FatLinesGeomData.vert'
+import frag from './FatLinesGeomData.frag'
 
 import { FatLinesShader } from './FatLinesShader.js'
 /** Shader for drawing Fat lines

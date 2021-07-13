@@ -1,7 +1,7 @@
  
 //To save 9 dependent texture reads, you can compute
 //these in the vertex shader and use the optimized
-//frag.glsl function in your frag shader. 
+//frag function in your frag shader. 
 
 //This is best suited for mobile devices, like iOS.
 

@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
 import { GLShader } from '../GLShader.js'
 
-import frag from './Highlights.frag.glsl'
-import vert from './Highlights.vert.glsl'
+import frag from './Highlights.frag'
+import vert from './Highlights.vert'
 class HighlightsShader extends GLShader {
   /**
    * Create a GL shader.

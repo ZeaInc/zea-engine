@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './Normals.frag.glsl'
-import vert from './Normals.vert.glsl'
+import frag from './Normals.frag'
+import vert from './Normals.vert'
 
 class NormalsShader extends GLShader {
   /**

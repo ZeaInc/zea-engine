@@ -3,8 +3,8 @@ import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
 
-import frag from './Silhouette.frag.glsl'
-import vert from './Silhouette.vert.glsl'
+import frag from './Silhouette.frag'
+import vert from './Silhouette.vert'
 
 class SilhouetteShader extends GLShader {
   /**

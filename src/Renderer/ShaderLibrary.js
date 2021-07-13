@@ -24,10 +24,7 @@ class ShaderLibrary {
    * @param {string} shader - The shader GLSL.
    */
   setShaderModule(shaderName, shader) {
-    // don't parse if we have the result already.
-    if (!(shaderName in this.__shaderModules)) {
-      this.parseShader(shaderName, shader)
-    }
+    this.setShaderSnippet(shaderName, shader)
   }
 
   /**

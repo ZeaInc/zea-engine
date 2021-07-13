@@ -4,8 +4,8 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import vert from './Lines.vert.glsl'
-import frag from './Lines.frag.glsl'
+import vert from './Lines.vert'
+import frag from './Lines.frag'
 class LinesShader extends GLShader {
   /**
    * Create a GL shader.

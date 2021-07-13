@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './PostProcessing.frag.glsl'
-import vert from './PostProcessing.vert.glsl'
+import frag from './PostProcessing.frag'
+import vert from './PostProcessing.vert'
 class PostProcessing extends GLShader {
   /**
    * Create a GL shader.

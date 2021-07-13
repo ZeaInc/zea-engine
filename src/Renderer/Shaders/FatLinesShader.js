@@ -3,8 +3,8 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './FatLines.frag.glsl'
-import vert from './FatLines.vert.glsl'
+import frag from './FatLines.frag'
+import vert from './FatLines.vert'
 
 /** Shader for drawing Fat lines
  * @extends GLShader

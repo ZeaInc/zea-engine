@@ -4,8 +4,8 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './Points.frag.glsl'
-import vert from './Points.vert.glsl'
+import frag from './Points.frag'
+import vert from './Points.vert'
 class PointsShader extends GLShader {
   /**
    * Create a GL shader.

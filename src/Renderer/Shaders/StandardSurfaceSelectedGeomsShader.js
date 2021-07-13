@@ -3,8 +3,8 @@ import { GLShader } from '../GLShader.js'
 import { Registry } from '../../Registry'
 
 import './GLSL/index'
-import frag from './StandardSurfaceSelectedGeoms.frag.glsl'
-import vert from './StandardSurfaceSelectedGeoms.vert.glsl'
+import frag from './StandardSurfaceSelectedGeoms.frag'
+import vert from './StandardSurfaceSelectedGeoms.vert'
 class StandardSurfaceSelectedGeomsShader extends GLShader {
   constructor(gl, floatGeomBuffer) {
     super(gl)

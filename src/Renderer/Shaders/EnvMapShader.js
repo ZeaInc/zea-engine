@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import frag from './EnvMap.frag.glsl'
-import vert from './EnvMap.vert.glsl'
+import frag from './EnvMap.frag'
+import vert from './EnvMap.vert'
 class EnvMapShader extends GLShader {
   /**
    * Create a GL shader.

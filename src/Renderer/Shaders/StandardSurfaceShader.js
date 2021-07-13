@@ -4,8 +4,8 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import vert from './StandardSurface.vert.glsl'
-import frag from './StandardSurface.frag.glsl'
+import vert from './StandardSurface.vert'
+import frag from './StandardSurface.frag'
 
 /** A standard shader handling Opaque and transparent items and PBR rendering.
  * @extends GLShader

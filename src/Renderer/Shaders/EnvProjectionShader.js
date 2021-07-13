@@ -4,9 +4,9 @@ import { Registry } from '../../Registry'
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import vert from './EnvProjection.vert.glsl'
-import LatLongEnvProjectionFrag from './LatLongEnvProjection.frag.glsl'
-import OctahedralEnvProjectionFrag from './OctahedralEnvProjection.frag.glsl'
+import vert from './EnvProjection.vert'
+import LatLongEnvProjectionFrag from './LatLongEnvProjection.frag'
+import OctahedralEnvProjectionFrag from './OctahedralEnvProjection.frag'
 
 class EnvProjectionShader extends GLShader {
   /**

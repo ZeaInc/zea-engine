@@ -2,8 +2,8 @@
 import { GLShader } from '../GLShader.js'
 
 import './GLSL/index'
-import vert from './AtlasLayout.vertex.glsl'
-import frag from './AtlasLayout.frag.glsl'
+import vert from './AtlasLayout.vert'
+import frag from './AtlasLayout.frag'
 // eslint-disable-next-line require-jsdoc
 class AtlasLayoutShader extends GLShader {
   /**

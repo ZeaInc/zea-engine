@@ -14,8 +14,8 @@ import cutaways from './cutaways.glsl'
 import debugColors from './debugColors.glsl'
 import drawItemId from './drawItemId.glsl'
 import drawItemTexture from './drawItemTexture.glsl'
-import envmapDualfisheye from './envmap-dualfisheye.glsl'
-import envmapEquirect from './envmap-equirect.glsl'
+import envmapDualfisheye from './pragmatic-pbr/envmap-dualfisheye.glsl'
+import envmapEquirect from './pragmatic-pbr/envmap-equirect.glsl'
 import envmapOctahedral from './envmap-octahedral.glsl'
 import GLSLBits from './GLSLBits.glsl'
 import GLSLUtils from './GLSLUtils.glsl'
@@ -45,11 +45,13 @@ import quadVertexFromID from './utils/quadVertexFromID.glsl'
 import unpackHDR from './utils/unpackHDR.glsl'
 import glslAtmosphere from './wwwtyro/glsl-atmosphere.glsl'
 import skyFragment from './zz85/skyFragment.glsl'
+import GLSLBinReader from './GLSLBinReader.glsl'
 
 shaderLibrary.setShaderSnippet('testSnippet/snippet2.glsl', snip2)
 shaderLibrary.setShaderSnippet('testSnippet/snippet.glsl', snip)
 shaderLibrary.setShaderSnippet('testSnippet/rsnip.glsl', rsnip)
 
+shaderLibrary.setShaderSnippet('GLSLBinReader.glsl', GLSLBinReader)
 shaderLibrary.setShaderSnippet('computeViewNormal.glsl', computeViewNormal)
 shaderLibrary.setShaderSnippet('calcFatLinesViewPos.glsl', calcFatLinesViewPos)
 shaderLibrary.setShaderSnippet('math/constants.glsl', constants)
@@ -58,8 +60,8 @@ shaderLibrary.setShaderSnippet('cutaways.glsl', cutaways)
 shaderLibrary.setShaderSnippet('debugColors.glsl', debugColors)
 shaderLibrary.setShaderSnippet('drawItemId.glsl', drawItemId)
 shaderLibrary.setShaderSnippet('drawItemTexture.glsl', drawItemTexture)
-shaderLibrary.setShaderSnippet('envmap-dualfisheye.glsl', envmapDualfisheye)
-shaderLibrary.setShaderSnippet('envmap-equirect.glsl', envmapEquirect)
+shaderLibrary.setShaderSnippet('pragmatic-pbr/envmap-dualfisheye.glsl', envmapDualfisheye)
+shaderLibrary.setShaderSnippet('pragmatic-pbr/envmap-equirect.glsl', envmapEquirect)
 shaderLibrary.setShaderSnippet('envmap-octahedral.glsl', envmapOctahedral)
 shaderLibrary.setShaderSnippet('GLSLBits.glsl', GLSLBits)
 shaderLibrary.setShaderSnippet('GLSLUtils.glsl', GLSLUtils)
