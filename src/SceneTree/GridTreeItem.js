@@ -28,7 +28,7 @@ class GridTreeItem extends TreeItem {
     this.setSelectable(false)
 
     const gridMaterial = new Material('gridMaterial', 'LinesShader')
-    gridMaterial.getParameter('BaseColor').setValue(gridColor)
+    gridMaterial.getParameter('BaseColor').setValue(gridColor.toLinear())
     gridMaterial.getParameter('Overlay').setValue(0.0)
     gridMaterial.getParameter('StippleValue').setValue(0)
     gridMaterial.getParameter('OccludedStippleValue').setValue(1)
@@ -46,7 +46,7 @@ class GridTreeItem extends TreeItem {
     positions.getValueRef(1).set(gridSize * 0.5, 0.0, 0.0)
 
     const gridXAxisMaterial = new Material('gridXAxisMaterial', 'LinesShader')
-    gridXAxisMaterial.getParameter('BaseColor').setValue(new Color(gridColor.luminance(), 0, 0))
+    gridXAxisMaterial.getParameter('BaseColor').setValue(new Color(1, 0, 0))
     gridXAxisMaterial.getParameter('Overlay').setValue(0.0)
     gridXAxisMaterial.getParameter('StippleValue').setValue(0)
     gridXAxisMaterial.getParameter('OccludedStippleValue').setValue(1)
@@ -55,7 +55,7 @@ class GridTreeItem extends TreeItem {
     this.addChild(gridXAxis, false)
 
     const gridYAxisMaterial = new Material('gridYAxisMaterial', 'LinesShader')
-    gridYAxisMaterial.getParameter('BaseColor').setValue(new Color(0, gridColor.luminance(), 0))
+    gridYAxisMaterial.getParameter('BaseColor').setValue(new Color(0, 1, 0))
     gridYAxisMaterial.getParameter('Overlay').setValue(0.0)
     gridYAxisMaterial.getParameter('StippleValue').setValue(0)
     gridYAxisMaterial.getParameter('OccludedStippleValue').setValue(1)

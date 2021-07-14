@@ -264,7 +264,7 @@ void main(void) {
     vec4 matValue1      = getMaterialValue(materialCoords, 1);
     vec4 matValue2      = getMaterialValue(materialCoords, 2);
 
-    material.baseColor     = toLinear(matValue0.rgb);
+    material.baseColor     = matValue0.rgb;
     material.ambientOcclusion      = matValue1.r;
     material.metallic      = matValue1.g;
     material.roughness     = matValue1.b;
@@ -276,7 +276,7 @@ void main(void) {
 #else // ENABLE_MULTI_DRAW
 
 #ifndef ENABLE_TEXTURES
-    material.baseColor     = toLinear(BaseColor.rgb);
+    material.baseColor     = BaseColor.rgb;
     material.emission      = EmissiveStrength;
 
 #ifdef ENABLE_PBR
@@ -368,7 +368,7 @@ void main(void) {
     const paramDescs = super.getParamDeclarations()
     paramDescs.push({
       name: 'BaseColor',
-      defaultValue: new Color(1.0, 1.0, 0.5),
+      defaultValue: (new Color(1.0, 1.0, 0.5)).toLinear(),
     })
     paramDescs.push({ name: 'AmbientOcclusion', defaultValue: 1, range: [0, 1] })
     paramDescs.push({ name: 'Metallic', defaultValue: 0.05, range: [0, 1] })

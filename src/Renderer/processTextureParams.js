@@ -42,7 +42,7 @@ const processTextureParams = function (gl, params) {
   processParam('depthType')
 
   // https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glTexImage2D.xhtml
-  if (result.format == gl.FLOAT) {
+  if (result.type == gl.FLOAT) {
     if (gl.name == 'webgl2') {
       if (result.filter == gl.LINEAR && !gl.__ext_float_linear) {
         console.warn('Floating point texture filtering not supported on result device')
@@ -56,7 +56,7 @@ const processTextureParams = function (gl, params) {
         }
       } else {
         if (gl.__ext_half_float) {
-          result.format = gl.HALF_FLOAT
+          result.type = gl.HALF_FLOAT
           if (result.filter == gl.LINEAR && !gl.__ext_texture_half_float_linear) {
             console.warn('Half Float texture filtering not supported on result device')
             result.filter = gl.NEAREST
@@ -66,7 +66,7 @@ const processTextureParams = function (gl, params) {
         }
       }
     }
-  } else if (result.format == gl.HALF_FLOAT) {
+  } else if (result.type == gl.HALF_FLOAT) {
     if (gl.name == 'webgl2') {
       // Half load linear filtering appears to be supported even without the extension.
       // if (result.filter == gl.LINEAR && !gl.__ext_texture_half_float_linear) {

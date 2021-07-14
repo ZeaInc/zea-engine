@@ -21,7 +21,8 @@ class VRViewManipulator extends BaseTool {
     this.xrvp = xrvp
     this.vrControllerToolTip = new Sphere(0.02 * 0.75)
     this.vrControllerToolTipMat = new Material('Cross', 'FlatSurfaceShader')
-    this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Color('#03E3AC'))
+    const color = new Color('#03E3AC')
+    this.vrControllerToolTipMat.getParameter('BaseColor').setValue(color.toLinear())
     this.addIconToController = this.addIconToController.bind(this)
   }
 
