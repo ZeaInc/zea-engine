@@ -1,10 +1,10 @@
 
 precision highp float;
 
-import 'constants.glsl'
+import 'math/constants.glsl'
 import 'GLSLUtils.glsl'
 import 'envmap-octahedral.glsl'
-import 'gamma.glsl'
+import 'stack-gl/gamma.glsl'
 import 'materialparams.glsl'
 
 

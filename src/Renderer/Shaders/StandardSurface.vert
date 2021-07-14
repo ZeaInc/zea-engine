@@ -12,8 +12,8 @@ uniform mat4 projectionMatrix;
 
 // should be imported by bottom 3
 import 'GLSLUtils.glsl'
-import 'transpose.glsl'
-import 'inverse.glsl'
+import 'stack-gl/transpose.glsl'
+import 'stack-gl/inverse.glsl'
 
 import 'drawItemId.glsl'
 import 'drawItemTexture.glsl'

@@ -1,11 +1,11 @@
 
 precision highp float;
 
-import 'exposure.glsl'
-import 'tonemap-filmic.glsl'
-import 'gamma.glsl'
+import 'pragmatic-pbr/exposure.glsl'
+import 'pragmatic-pbr/tonemap-filmic.glsl'
+import 'stack-gl/gamma.glsl'
 
-import 'fxaa.glsl'
+import 'mattdesl/fxaa.glsl'
 
 //texcoords computed in vertex step
 //to avoid dependent texture reads

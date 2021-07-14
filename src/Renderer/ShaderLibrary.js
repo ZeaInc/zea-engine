@@ -209,9 +209,10 @@ class ShaderLibrary {
         case '<%include':
         case 'import': {
           const relativeFileLoc = trimmedLine.split(/'|"|`/)[1] // TODO: relative file location not needed
-          // const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
+          const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
+          const includeFile = this.parsePath(relativeFileLoc, fileFolder)
 
-          const includeFile = relativeFileLoc.split('/').pop()
+          // const includeFile = relativeFileLoc.split('/').pop()
           if (!includes.includes(includeFile)) {
             this.handleImport(result, shaderName, includeFile, includes, lineNumber)
           }

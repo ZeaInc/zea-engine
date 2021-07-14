@@ -2,7 +2,7 @@
 precision highp float;
 
 import 'GLSLUtils.glsl'
-import 'gamma.glsl'
+import 'stack-gl/gamma.glsl'
 import 'materialparams.glsl'
 
 #ifndef ENABLE_MULTI_DRAW

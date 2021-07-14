@@ -1,10 +1,10 @@
 
 precision highp float;
 
-import 'constants.glsl'
+import 'math/constants.glsl'
 import 'GLSLUtils.glsl'
-import 'envmap-equirect.glsl'
-import 'gamma.glsl'
+import 'pragmatic-pbr/envmap-equirect.glsl'
+import 'stack-gl/gamma.glsl'
 import 'materialparams.glsl'
 
 uniform color envMap;

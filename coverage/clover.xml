@@ -2436,11 +2436,11 @@
     </package>
     <package name="src.Renderer.Shaders.GLSL.stack-gl">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="gamma.js" path="/Users/mauro/workspace/zea/engine/src/Renderer/Shaders/GLSL/gamma.js">
+      <file name="gamma.js" path="/Users/mauro/workspace/zea/engine/src/Renderer/Shaders/GLSL/stack-gl/gamma.js">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="2" type="stmt"/>
       </file>
-      <file name="transpose.js" path="/Users/mauro/workspace/zea/engine/src/Renderer/Shaders/GLSL/transpose.js">
+      <file name="transpose.js" path="/Users/mauro/workspace/zea/engine/src/Renderer/Shaders/GLSL/stack-gl/transpose.js">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="3" type="stmt"/>
       </file>

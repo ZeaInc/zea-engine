@@ -7,8 +7,8 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec3 projectionCenter;
 
-import 'inverse.glsl'
-import 'transpose.glsl'
+import 'stack-gl/inverse.glsl'
+import 'stack-gl/transpose.glsl'
 import 'drawItemTexture.glsl'
 import 'modelMatrix.glsl'
 

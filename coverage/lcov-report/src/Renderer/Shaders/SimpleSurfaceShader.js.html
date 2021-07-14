@@ -478,8 +478,8 @@ import { Registry } from '../../Registry'
 import { shaderLibrary } from '../ShaderLibrary.js'
 import { GLShader } from '../GLShader.js'
 &nbsp;
-import './GLSL/transpose.js'
-import './GLSL/gamma.js'
+import './GLSL/stack-gl/transpose.js'
+import './GLSL/stack-gl/gamma.js'
 import './GLSL/drawItemTexture.js'
 import './GLSL/modelMatrix.js'
 import './GLSL/materialparams.js'
@@ -502,8 +502,8 @@ attribute vec2 texCoords;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 &nbsp;
-&lt;%include file="transpose.glsl"/&gt;
-&lt;%include file="inverse.glsl"/&gt;
+&lt;%include file="stack-gl/transpose.glsl"/&gt;
+&lt;%include file="stack-gl/inverse.glsl"/&gt;
 &lt;%include file="drawItemId.glsl"/&gt;
 &lt;%include file="drawItemTexture.glsl"/&gt;
 &lt;%include file="modelMatrix.glsl"/&gt;
@@ -550,7 +550,7 @@ precision highp float;
 &nbsp;
 &lt;%include file="drawItemTexture.glsl"/&gt;
 &lt;%include file="cutaways.glsl"/&gt;
-&lt;%include file="gamma.glsl"/&gt;
+&lt;%include file="stack-gl/gamma.glsl"/&gt;
 &lt;%include file="materialparams.glsl"/&gt;
 &nbsp;
 uniform color cutColor;

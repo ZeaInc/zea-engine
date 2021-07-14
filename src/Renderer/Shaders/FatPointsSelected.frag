@@ -1,7 +1,7 @@
 
 precision highp float;
 
-import 'constants.glsl'
+import 'math/constants.glsl'
 import 'GLSLBits.glsl'
 
 uniform int floatGeomBuffer;

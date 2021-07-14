@@ -8,10 +8,10 @@ uniform color BaseColor;
 #endif
 
 import 'GLSLUtils.glsl'
-import 'constants.glsl'
+import 'math/constants.glsl'
 import 'drawItemTexture.glsl'
 import 'cutaways.glsl'
-import 'gamma.glsl'
+import 'stack-gl/gamma.glsl'
 import 'materialparams.glsl'
 
 #if defined(DRAW_GEOMDATA)

@@ -13,7 +13,7 @@ import 'GLSLUtils.glsl'
 #ifdef ENABLE_FLOAT_TEXTURES
 
 
-import 'transpose.glsl'
+import 'stack-gl/transpose.glsl'
 
 uniform sampler2D instancesTexture;
 uniform int instancesTextureSize;

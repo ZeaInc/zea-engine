@@ -4,13 +4,13 @@ precision highp float;
 #endif
 
 import 'GLSLUtils.glsl'
-import 'constants.glsl'
+import 'math/constants.glsl'
 
 
 import 'drawItemTexture.glsl' // should import utils
 import 'cutaways.glsl'
 
-import 'gamma.glsl'
+import 'stack-gl/gamma.glsl'
 import 'materialparams.glsl' // should import utils
 
 #ifdef DEBUG_GEOM_ID
