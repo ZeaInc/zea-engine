@@ -162,7 +162,7 @@ class ShaderLibrary {
    * @return {object} - The return value.
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
-    console.log('parseShader:' + shaderName)
+    // console.log('parseShader:' + shaderName)
 
     // const includeFile = shaderName.split(/'|"|`/)[1].split('/').pop()
     includes.push(shaderName)
@@ -212,7 +212,6 @@ class ShaderLibrary {
           // const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
 
           const includeFile = relativeFileLoc.split('/').pop()
-          console.log(includeFile)
           if (!includes.includes(includeFile)) {
             this.handleImport(result, shaderName, includeFile, includes, lineNumber)
           }
