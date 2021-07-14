@@ -1,7 +1,7 @@
 
 precision highp float;
 
-import 'math/constants.glsl'
+import 'constants.glsl'
 import 'GLSLUtils.glsl'
 import 'convolve-helpers.glsl'
 

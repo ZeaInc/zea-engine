@@ -6,7 +6,7 @@ uniform sampler2D ldrSampler;
 uniform sampler2D cdmSampler;
 uniform vec4 srcRegion; // pos, and size of the source region
 
-import 'utils/unpackHDR.glsl'
+import 'unpackHDR.glsl'
 
 #ifdef ENABLE_ES3
     out vec4 fragColor;

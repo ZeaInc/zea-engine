@@ -1,10 +1,10 @@
 
 precision highp float;
 
-import 'stack-gl/gamma.glsl'
+import 'gamma.glsl'
 import 'GLSLUtils.glsl'
 import 'materialparams.glsl'
-import 'utils/imageAtlas.glsl'
+import 'imageAtlas.glsl'
 
 uniform sampler2D atlasBillboards;
 

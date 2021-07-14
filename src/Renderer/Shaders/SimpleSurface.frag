@@ -5,10 +5,10 @@ precision highp float;
 
 
 import 'GLSLUtils.glsl'
-import 'math/constants.glsl'
+import 'constants.glsl'
 import 'drawItemTexture.glsl'
 import 'cutaways.glsl'
-import 'stack-gl/gamma.glsl'
+import 'gamma.glsl'
 import 'materialparams.glsl'
 
 

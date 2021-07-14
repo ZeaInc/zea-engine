@@ -1,6 +1,6 @@
 
 
-import 'utils/imageAtlas.glsl'
+import 'imageAtlas.glsl'
 
 vec4 sampleImagePyramid(vec2 uv, float lod, in sampler2D atlasLayout, in sampler2D atlasImage, in vec4 atlasDesc){
   if (lod < 0.00001 || lod > 0.9999) {

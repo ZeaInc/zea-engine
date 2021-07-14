@@ -7,11 +7,11 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
 import 'GLSLUtils.glsl' 
-import 'stack-gl/transpose.glsl'
-import 'stack-gl/inverse.glsl'
+import 'transpose.glsl'
+import 'inverse.glsl'
 import 'drawItemTexture.glsl'
 import 'modelMatrix.glsl'
-import 'utils/quadVertexFromID.glsl'
+import 'quadVertexFromID.glsl'
 
 uniform int drawItemId;
 int getDrawItemId() {

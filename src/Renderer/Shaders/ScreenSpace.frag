@@ -3,11 +3,11 @@ precision highp float;
 
 import 'GLSLUtils.glsl'
 #ifdef ENABLE_MULTI_DRAW
-import 'math/constants.glsl'
+import 'constants.glsl'
 import 'drawItemTexture.glsl'
 #endif // ENABLE_MULTI_DRAW
 
-import 'stack-gl/gamma.glsl'
+import 'gamma.glsl'
 import 'materialparams.glsl'
 
 

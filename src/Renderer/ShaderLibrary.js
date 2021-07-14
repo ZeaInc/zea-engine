@@ -16,11 +16,10 @@ class ShaderLibrary {
     this.__shaderModules = {}
   }
 
-  // TODO: can't bake dependency info into shaderModule, since two shaderModules can have the same dependency.
   /**
    * The setShaderModule method.
    * @param {string} shaderName - The shader name.
-   * @param {string} shader - The shader GLSL.
+   * @param {string} shader - The unparsed shader GLSL.
    */
   setShaderModule(shaderName, shader) {
     if (!(shaderName in this.__shaderModules)) {
@@ -38,7 +37,6 @@ class ShaderLibrary {
     return this.__shaderModules[shaderName]
   }
 
-  // TODO: currently doesn't store shaderName
   /**
    * The getShaderModuleNames method.
    * @return {array} - The return value.
@@ -48,26 +46,6 @@ class ShaderLibrary {
     // eslint-disable-next-line guard-for-in
     for (const shaderName in this.__shaderModules) shaderNames.push(shaderName)
     return shaderNames
-  }
-
-  /**
-   * The parsePath method.
-   * @param {string} path - path of import
-   * @param {string} fileFolder - absolute path
-   * @return {string} - The return value.
-   */
-  parsePath(path, fileFolder) {
-    // An absolute path
-    if (path.startsWith('..')) {
-      const parentFolder = fileFolder.substring(0, fileFolder.lastIndexOf('/'))
-      return parentFolder + path.substring(2)
-    } else if (path.startsWith('.')) {
-      return fileFolder + path.substring(1)
-    } else if (path.startsWith('/')) {
-      return path.substring(1)
-    } else {
-      return path
-    }
   }
 
   /**
@@ -111,7 +89,6 @@ class ShaderLibrary {
       const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
 
       // adding code + snippet glsl, if not already added.
-
       includes.push(includeFile) // keep track of imports
       result.glsl = result.glsl + reursiveResult.glsl
       result.numLines += reursiveResult.numLines
@@ -164,7 +141,6 @@ class ShaderLibrary {
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
     // console.log('parseShader:' + shaderName)
 
-    // const includeFile = shaderName.split(/'|"|`/)[1].split('/').pop()
     includes.push(shaderName)
     // result that is returned
     const result = {
@@ -208,11 +184,8 @@ class ShaderLibrary {
         // TODO: deprecated - remove eventually
         case '<%include':
         case 'import': {
-          const relativeFileLoc = trimmedLine.split(/'|"|`/)[1] // TODO: relative file location not needed
-          const fileFolder = shaderName.substring(0, shaderName.lastIndexOf('/'))
-          const includeFile = this.parsePath(relativeFileLoc, fileFolder)
-
-          // const includeFile = relativeFileLoc.split('/').pop()
+          // get the contents between quotes and then if there are '/' get the filename
+          const includeFile = trimmedLine.split(/'|"|`/)[1].split('/').pop()
           if (!includes.includes(includeFile)) {
             this.handleImport(result, shaderName, includeFile, includes, lineNumber)
           }
@@ -294,9 +267,7 @@ class ShaderLibrary {
       } // end of switch
     } // end of forloop
 
-    // TODO: moduleInfo doesn't have glsl code yet.
-    // must also store 'import points' and which file to include, -- must check before adding
-    // then have a function that can 'stitch' together modules.
+    // cache module specific info -- this is not used yet
     this.__shaderModules[shaderName] = moduleInfo
 
     // prepare result to return
