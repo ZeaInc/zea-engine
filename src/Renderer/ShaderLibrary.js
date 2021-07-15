@@ -26,6 +26,7 @@ class ShaderLibrary {
       this.__shaderModules[shaderName] = shader
       return
     }
+    // note: this code does not update shader snippets, whatever is first, stays.
   }
 
   /**
@@ -110,17 +111,6 @@ class ShaderLibrary {
   }
 
   /**
-   * The addLine method - adds parsed glsl lines into the returned result object
-   * and increments line count
-   * @param {string} result - result object that has the glsl to add to
-   * @param {string} line - the current line that is to be added.
-   */
-  addLine(result, line) {
-    result.glsl = result.glsl + line + '\n'
-    result.numLines++
-  }
-
-  /**
    * The parseShader method.
    * @param {string} shaderName - The shader name.
    * @param {string} glsl - The glsl param.
@@ -140,6 +130,10 @@ class ShaderLibrary {
    */
   parseShaderHelper(shaderName, glsl, includes, lineNumber) {
     // console.log('parseShader:' + shaderName)
+    const addLine = (result, line) => {
+      result.glsl = result.glsl + line + '\n'
+      result.numLines++
+    }
 
     includes.push(shaderName)
     // result that is returned
@@ -194,14 +188,14 @@ class ShaderLibrary {
         }
         case 'attribute': {
           this.parseAttr(parts, false, moduleInfo)
-          this.addLine(result, line)
+          addLine(result, line)
           break
         }
         case 'instancedattribute': {
           this.parseAttr(parts, true, moduleInfo)
           parts[0] = 'attribute'
           line = parts.join(' ')
-          this.addLine(result, line)
+          addLine(result, line)
           break
         }
         case 'uniform': {
@@ -228,7 +222,7 @@ class ShaderLibrary {
             parts[1] = 'vec4'
             line = parts.join(' ')
           }
-          this.addLine(result, line)
+          addLine(result, line)
           break
         }
         case 'struct': {
@@ -256,12 +250,12 @@ class ShaderLibrary {
             })
           }
           glslTypes[parts[1]] = structDesc
-          this.addLine(result, line)
+          addLine(result, line)
           break
         }
         default: {
           // all other statements
-          this.addLine(result, line)
+          addLine(result, line)
           break
         }
       } // end of switch
