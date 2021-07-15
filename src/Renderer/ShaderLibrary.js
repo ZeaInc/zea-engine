@@ -17,7 +17,7 @@ class ShaderLibrary {
   }
 
   /**
-   * The setShaderModule method.
+   * The setShaderModule method. Shader must be set before parsing.
    * @param {string} shaderName - The shader name.
    * @param {string} shader - The unparsed shader GLSL.
    */
@@ -27,10 +27,11 @@ class ShaderLibrary {
       return
     }
     // note: this code does not update shader snippets, whatever is first, stays.
+    // important for creating tests, since shaderLibrary is global.
   }
 
   /**
-   * The getShaderModule method.
+   * The getShaderModule method. Access specific uniforms, attributes of a particular module.
    * @param {string} shaderName - The shader name.
    * @return {any} - The return value.
    */
@@ -75,17 +76,18 @@ class ShaderLibrary {
   }
 
   /**
-   * The addLine method - adds parsed glsl lines into the returned result object
-   * @param {object} result - result object that has the glsl to add to
+   * The handleImport method -- takes the includeFile and if it exists, adds the parsed glsl, uniforms, and attributes to the result, recursively.
+   * @param {object} result - result object that stores the glsl, attribute, uniform
    * @param {string} shaderName - shaderName
-   * @param {string} includeFile - relative path to file
-   * @param {array} includes - result object that has the glsl to add to
-   * @param {number} lineNumber - the current line that is to be added.
+   * @param {string} includeFile - file name of the shader snippet/module
+   * @param {array} includes - keep track of what was included
+   * @param {number} lineNumber - keep track of what line we're on
    */
   handleImport(result, shaderName, includeFile, includes, lineNumber) {
     if (includeFile in this.__shaderModules) {
       const includedGLSL = this.__shaderModules[includeFile] // get glsl snippet code to add
       if (!includedGLSL) throw error('snippet not loaded or does not exists!')
+
       // recursively includes glsl snippets
       const reursiveResult = this.parseShaderHelper(shaderName, includedGLSL, includes, lineNumber)
 
@@ -145,7 +147,7 @@ class ShaderLibrary {
     }
 
     // used for storing uniforms/attributes specific to this module and not it's dependencies
-    // later add glsl + import line points, for fast stitching together.
+    // later add glsl + import line points, for fast stitching together. Not yet useful.
     const moduleInfo = {
       shaderName: shaderName,
       uniforms: {},
