@@ -1,5 +1,4 @@
 import { shaderLibrary } from './ShaderLibrary'
-import Vec4 from '../Math/Vec4'
 
 describe('ShaderLibrary', () => {
   it('test simple import', () => {
@@ -69,9 +68,7 @@ describe('ShaderLibrary', () => {
 
   // TODO: test cycle with two files.. bar calls bat, bat calls bar, etc.
 
-  // TODO: check uniform/attribute extraction
-
-  it('checks attribute extraction', () => {
+  it('checks attribute extraction -- simple', () => {
     const too = `
     attribute bool check;
     uniform float oneUniform;
@@ -88,7 +85,7 @@ describe('ShaderLibrary', () => {
 
     expect(JSON.stringify(result.attributes)).toBe(correctResult)
   })
-  it('checks uniforms extraction', () => {
+  it('checks uniforms extraction -- simple', () => {
     const too = `
     attribute bool check;
     uniform float oneUniform;
@@ -104,5 +101,22 @@ describe('ShaderLibrary', () => {
     const result = shaderLibrary.parseShader('shader.glsl', shader)
 
     expect(JSON.stringify(result.uniforms)).toBe(correctResult)
+  })
+  it('checks uniforms instancedattribute -- simple', () => {
+    const boo = `
+    instancedattribute bool check;
+    uniform float oneUniform;
+    int foo = 3;
+    `
+
+    const shader = `
+    import 'boo.glsl'
+    `
+
+    const correctResult = '{"check":{"instanced":true}}'
+    shaderLibrary.setShaderModule('boo.glsl', boo)
+    const result = shaderLibrary.parseShader('shader.glsl', shader)
+
+    expect(JSON.stringify(result.attributes)).toBe(correctResult)
   })
 })
