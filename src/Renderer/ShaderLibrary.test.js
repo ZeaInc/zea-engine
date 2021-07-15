@@ -1,4 +1,5 @@
 import { shaderLibrary } from './ShaderLibrary'
+import Vec4 from '../Math/Vec4'
 
 describe('ShaderLibrary', () => {
   it('test simple import', () => {
@@ -67,4 +68,41 @@ describe('ShaderLibrary', () => {
   })
 
   // TODO: test cycle with two files.. bar calls bat, bat calls bar, etc.
+
+  // TODO: check uniform/attribute extraction
+
+  it('checks attribute extraction', () => {
+    const too = `
+    attribute bool check;
+    uniform float oneUniform;
+    int foo = 3;
+    `
+
+    const shader = `
+    import 'too.glsl'
+    `
+
+    const correctResult = '{"check":{"instanced":false}}'
+    shaderLibrary.setShaderModule('too.glsl', too)
+    const result = shaderLibrary.parseShader('shader.glsl', shader)
+
+    expect(JSON.stringify(result.attributes)).toBe(correctResult)
+  })
+  it('checks uniforms extraction', () => {
+    const too = `
+    attribute bool check;
+    uniform float oneUniform;
+    int foo = 3;
+    `
+
+    const shader = `
+    import 'too.glsl'
+    `
+
+    const correctResult = '{"oneUniform":6}'
+    shaderLibrary.setShaderModule('too.glsl', too)
+    const result = shaderLibrary.parseShader('shader.glsl', shader)
+
+    expect(JSON.stringify(result.uniforms)).toBe(correctResult)
+  })
 })
