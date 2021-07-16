@@ -146,14 +146,6 @@ class ShaderLibrary {
       attributes: {},
     }
 
-    // used for storing uniforms/attributes specific to this module and not it's dependencies
-    // later add glsl + import line points, for fast stitching together. Not yet useful.
-    const moduleInfo = {
-      shaderName: shaderName,
-      uniforms: {},
-      attributes: {},
-    }
-
     // go through each line of a GLSL file
     glsl = glsl.toString() // TODO: remove ideally, this cast is here just to make jest pass
     const lines = glsl.split('\n') // break up code by newlines
@@ -162,21 +154,10 @@ class ShaderLibrary {
       let line = lines[i]
       const trimmedLine = line.trim()
 
-      // TODO: should handle no space after '//' case and '//' after statement IF you want to remove comments
-      // if (trimmedLine.includes('//')) {
-      //   trimmedLine = trimmedLine.slice(0, trimmedLine.indexOf('//')).trim()
-      // }
-
       // Get first token of a statement and switch
       const parts = trimmedLine.split(WHITESPACE_RE)
       const firstToken = parts[0]
       switch (firstToken) {
-        // TODO: handle comment lines -- if they aren't going to be removed, no need for the below code.
-        // case '/*':
-        // case '*':
-        // case '//': {
-        //   continue
-        // }
         // TODO: deprecated - remove eventually
         case '<%include':
         case 'import': {
@@ -189,12 +170,12 @@ class ShaderLibrary {
           break
         }
         case 'attribute': {
-          this.parseAttr(parts, false, moduleInfo)
+          this.parseAttr(parts, false, result)
           addLine(result, line)
           break
         }
         case 'instancedattribute': {
-          this.parseAttr(parts, true, moduleInfo)
+          this.parseAttr(parts, true, result)
           parts[0] = 'attribute'
           line = parts.join(' ')
           addLine(result, line)
@@ -206,24 +187,26 @@ class ShaderLibrary {
           let typeIndex = 1
           if (parts.length == 4) typeIndex = 2
           const typeName = parts[typeIndex]
+
           if (!(typeName in glslTypes))
             throw new Error('Error while parsing :' + shaderName + ' \nType not recognized:' + parts[1])
           const name = parts[typeIndex + 1].slice(0, parts[typeIndex + 1].length - 1)
 
           if (name.includes('[')) {
             // Strip off the square brackets.
-            moduleInfo.uniforms[name.substring(0, name.indexOf('['))] = glslTypes[typeName]
+            result.uniforms[name.substring(0, name.indexOf('['))] = glslTypes[typeName]
           } else {
-            moduleInfo.uniforms[name] = glslTypes[typeName]
+            result.uniforms[name] = glslTypes[typeName]
           }
 
-          if (moduleInfo.uniforms[name] == 'struct') {
+          if (result.uniforms[name] == 'struct') {
             console.log(parts)
           }
           if (parts[1] == 'color') {
             parts[1] = 'vec4'
             line = parts.join(' ')
           }
+
           addLine(result, line)
           break
         }
@@ -263,18 +246,6 @@ class ShaderLibrary {
       } // end of switch
     } // end of forloop
 
-    // cache module specific info -- this is not used yet
-    this.__shaderModules[shaderName] = moduleInfo
-
-    // prepare result to return
-    result.uniforms = {
-      ...result.uniforms,
-      ...moduleInfo.uniforms,
-    }
-    result.attributes = {
-      ...result.attributes,
-      ...moduleInfo.attributes,
-    }
     // console.log('length of shader: ' + result.numLines)
     // console.log(result.glsl)
     return result
