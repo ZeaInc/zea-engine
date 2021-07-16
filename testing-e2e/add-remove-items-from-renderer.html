@@ -25,27 +25,37 @@
 
       const promises = []
 
-      const texturedMaterial = new Material('Material', 'FlatSurfaceShader')
-      texturedMaterial.getParameter('BaseColor').setValue(new Color(0.6, 0, 1))
-      const image = new LDRImage('LDRImage')
-      image.setImageURL('data/zea-logo.png', 'RGBA')
-      texturedMaterial.getParameter('BaseColor').setImage(image)
-      promises.push(new Promise((resolve) => image.on('loaded', resolve)))
+      const texturedMaterial0 = new Material('Material', 'FlatSurfaceShader')
+      texturedMaterial0.getParameter('BaseColor').setValue(new Color(0.6, 0, 1))
+      const image0 = new LDRImage('LDRImage')
+      image0.setImageURL('data/zea-logo.png', 'RGBA')
+      texturedMaterial0.getParameter('BaseColor').setImage(image0)
+      promises.push(new Promise((resolve) => image0.on('loaded', resolve)))
+
+      const texturedMaterial1 = new Material('Material', 'FlatSurfaceShader')
+      texturedMaterial1.getParameter('BaseColor').setValue(new Color(0.6, 0, 1))
+      const image1 = new LDRImage('LDRImage')
+      image1.setImageURL('data/avatar1.jpg')
+      texturedMaterial1.getParameter('BaseColor').setImage(image1)
+      promises.push(new Promise((resolve) => image1.on('loaded', resolve)))
 
       const material = new Material('surfaces', 'SimpleSurfaceShader')
       material.getParameter('BaseColor').setValue(new Color(1, 0, 1, 1))
 
-      const sphere0 = new Sphere(1.5, 46)
-      const sphere1 = new Sphere(1.5, 46)
+      const sphere0 = new Sphere(1, 46)
+      const sphere1 = new Sphere(1, 46)
 
-      const geomItem0 = new GeomItem('Sphere', sphere0, texturedMaterial, new Xfo(new Vec3(4, 0, 0)))
+      const geomItem0 = new GeomItem('Sphere0', sphere0, texturedMaterial0, new Xfo(new Vec3(4, 0, 0)))
       scene.getRoot().addChild(geomItem0)
 
-      const geomItem1 = new GeomItem('Sphere', sphere1, material, new Xfo(new Vec3(0, 0, 0)))
+      const geomItem1 = new GeomItem('Sphere1', sphere0, texturedMaterial1, new Xfo(new Vec3(1.5, 0, 0)))
       scene.getRoot().addChild(geomItem1)
 
-      const geomItem2 = new GeomItem('Sphere', sphere1, material, new Xfo(new Vec3(-4, 0, 0)))
+      const geomItem2 = new GeomItem('Sphere2', sphere1, material, new Xfo(new Vec3(-1.5, 0, 0)))
       scene.getRoot().addChild(geomItem2)
+
+      const geomItem3 = new GeomItem('Sphere3', sphere1, material, new Xfo(new Vec3(-4, 0, 0)))
+      scene.getRoot().addChild(geomItem3)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(10, 10, 2.7), new Vec3(0, 0, 0.4))
 
@@ -57,9 +67,10 @@
 
         if (data === 'variant-01') {
           scene.getRoot().removeChild(scene.getRoot().getChildIndex(geomItem0))
+          scene.getRoot().removeChild(scene.getRoot().getChildIndex(geomItem1))
           // Modify the item that is not being removed.
           // Note: this used to cause a crash because indices were confused in the multi-draw class.
-          geomItem1.getParameter('Geometry').getValue().getParameter('Loops').setValue(100)
+          sphere1.getParameter('Loops').setValue(100)
           window.postMessage(`done-${data}`)
         } else if (data === 'variant-02') {
           // Now look away, so that the scene gets frustum culled.
@@ -70,15 +81,16 @@
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(10, 10, 2.7), new Vec3(0, 0, 0.4))
           window.postMessage(`done-${data}`)
         } else if (data === 'variant-04') {
-          scene.getRoot().removeChild(scene.getRoot().getChildIndex(geomItem1))
+          scene.getRoot().removeChild(scene.getRoot().getChildIndex(geomItem2))
           // Modify the class again, after it has been removed from the renderer.
           // Note: Our GLGeomLibrary still updates the buffers. It doesn't know that
           // no GeomItems track this geom. We need to add ref counting...
-          geomItem1.getParameter('Geometry').getValue().getParameter('Loops').setValue(12)
+          sphere1.getParameter('Loops').setValue(12)
           window.postMessage(`done-${data}`)
         } else if (data === 'variant-05') {
           scene.getRoot().addChild(geomItem0)
           scene.getRoot().addChild(geomItem1)
+          scene.getRoot().addChild(geomItem2)
           window.postMessage(`done-${data}`)
         } else if (data === 'variant-06') {
           // Now we remove and add items from the renderer by re-attaching them to a different
@@ -89,14 +101,15 @@
           treeItem.addChild(geomItem0)
           treeItem.addChild(geomItem1)
           treeItem.addChild(geomItem2)
+          treeItem.addChild(geomItem3)
 
           const material = new Material('surfaces', 'SimpleSurfaceShader')
           material.getParameter('BaseColor').setValue(new Color(1, 1, 0, 0.2))
-          geomItem1.getParameter('Material').setValue(material)
+          geomItem2.getParameter('Material').setValue(material)
 
           const material2 = new Material('surfaces', 'SimpleSurfaceShader')
           material2.getParameter('BaseColor').setValue(new Color(1, 1, 0, 1))
-          geomItem2.getParameter('Material').setValue(material2)
+          geomItem3.getParameter('Material').setValue(material2)
 
           window.postMessage(`done-${data}`)
         }

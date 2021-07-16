@@ -23,7 +23,7 @@ class Cuboid extends ProceduralMesh {
    * @param {number} z - The length of the cuboid along the Z axis.
    * @param {boolean} baseZAtZero - The baseZAtZero value.
    */
-  constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero = false) {
+  constructor(x = 1.0, y = 1.0, z = 1.0, baseZAtZero = false, texCoords = true, normals = true) {
     super()
 
     if (isNaN(x) || isNaN(y) || isNaN(z)) throw new Error('Invalid geom args')
@@ -43,8 +43,8 @@ class Cuboid extends ProceduralMesh {
     this.setFaceVertexIndices(4, [0, 3, 7, 4])
     this.setFaceVertexIndices(5, [2, 1, 5, 6])
     this.setNumVertices(8)
-    this.addVertexAttribute('texCoords', Vec2)
-    this.addVertexAttribute('normals', Vec3)
+    if (texCoords) this.addVertexAttribute('texCoords', Vec2)
+    if (normals) this.addVertexAttribute('normals', Vec3)
   }
 
   /**
@@ -77,39 +77,43 @@ class Cuboid extends ProceduralMesh {
    */
   rebuild() {
     const normals = this.getVertexAttribute('normals')
-    for (let i = 0; i < 6; i++) {
-      let normal
-      switch (i) {
-        case 0:
-          normal = new Vec3(0, 0, 1)
-          break
-        case 1:
-          normal = new Vec3(0, 0, -1)
-          break
-        case 2:
-          normal = new Vec3(1, 0, 0)
-          break
-        case 3:
-          normal = new Vec3(-1, 0, 0)
-          break
-        case 4:
-          normal = new Vec3(0, -1, 0)
-          break
-        case 5:
-          normal = new Vec3(0, 1, 0)
-          break
+    if (normals) {
+      for (let i = 0; i < 6; i++) {
+        let normal
+        switch (i) {
+          case 0:
+            normal = new Vec3(0, 0, 1)
+            break
+          case 1:
+            normal = new Vec3(0, 0, -1)
+            break
+          case 2:
+            normal = new Vec3(1, 0, 0)
+            break
+          case 3:
+            normal = new Vec3(-1, 0, 0)
+            break
+          case 4:
+            normal = new Vec3(0, -1, 0)
+            break
+          case 5:
+            normal = new Vec3(0, 1, 0)
+            break
+        }
+        normals.setFaceVertexValue(i, 0, normal)
+        normals.setFaceVertexValue(i, 1, normal)
+        normals.setFaceVertexValue(i, 2, normal)
+        normals.setFaceVertexValue(i, 3, normal)
       }
-      normals.setFaceVertexValue(i, 0, normal)
-      normals.setFaceVertexValue(i, 1, normal)
-      normals.setFaceVertexValue(i, 2, normal)
-      normals.setFaceVertexValue(i, 3, normal)
     }
     const texCoords = this.getVertexAttribute('texCoords')
-    for (let i = 0; i < 6; i++) {
-      texCoords.setFaceVertexValue(i, 0, new Vec2(0, 0))
-      texCoords.setFaceVertexValue(i, 1, new Vec2(1, 0))
-      texCoords.setFaceVertexValue(i, 2, new Vec2(1, 1))
-      texCoords.setFaceVertexValue(i, 3, new Vec2(0, 1))
+    if (texCoords) {
+      for (let i = 0; i < 6; i++) {
+        texCoords.setFaceVertexValue(i, 0, new Vec2(0, 0))
+        texCoords.setFaceVertexValue(i, 1, new Vec2(1, 0))
+        texCoords.setFaceVertexValue(i, 2, new Vec2(1, 1))
+        texCoords.setFaceVertexValue(i, 3, new Vec2(0, 1))
+      }
     }
     this.resize()
   }

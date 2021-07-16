@@ -104,6 +104,8 @@ class GLGeomItemSet extends EventEmitter {
     this.glgeomItemEventHandlers[index] = eventHandlers
 
     this.drawIdsBufferDirty = true
+
+    glGeomItem.GLGeomItemSet = this
   }
 
   /**
@@ -118,6 +120,7 @@ class GLGeomItemSet extends EventEmitter {
 
     this.glGeomItems[index] = null
     this.glgeomItemEventHandlers[index] = null
+    glGeomItem.GLGeomItemSet = null
 
     this.glgeomItems_freeIndices.push(index)
 

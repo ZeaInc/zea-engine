@@ -165,6 +165,13 @@ class GLOpaqueGeomsPass extends GLStandardGeomsPass {
       glGeomItem.materialChanged = null
     }
 
+    if (glGeomItem.GLGeomItemSet) {
+      const glGeomItemSet = glGeomItem.GLGeomItemSet
+      glGeomItemSet.removeGLGeomItem(glGeomItem)
+      glGeomItem.GLGeomItemSet = null
+      return true
+    }
+
     return true
   }
 
