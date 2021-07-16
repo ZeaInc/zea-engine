@@ -184,6 +184,8 @@
         const asset = new CADAsset()
         asset.load(url).then(() => {
           renderer.frameAll()
+        })
+        asset.getGeometryLibrary().on('loaded', () => {
           postMessage('done-loading')
         })
         scene.getRoot().addChild(asset)
