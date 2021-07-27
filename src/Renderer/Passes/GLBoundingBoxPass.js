@@ -6,7 +6,7 @@ import { GLPass, PassType } from './GLPass.js'
 import { GLTexture2D } from '../GLTexture2D.js'
 import { MathFunctions } from '../../Utilities/MathFunctions'
 
-const pixelsPerItem = 6 // The number of pixels per draw item.
+const pixelsPerItem = 8 // The number of pixels per draw item.
 
 /** Class representing a GL treeitems pass.
  * @extends GLPass
@@ -212,19 +212,24 @@ class GLBoundingBoxPass extends GLPass {
     const bbox = treeitem.getParameter('BoundingBox').getValue()
 
     const offset = index * pixelsPerItem * 4
-    const pixel0 = Vec4.createFromBuffer(dataArray.buffer, offset * 4)
-    const pixel1 = Vec4.createFromBuffer(dataArray.buffer, (offset + 4) * 4)
-    const pixel2 = Vec4.createFromBuffer(dataArray.buffer, (offset + 8) * 4)
-    const pixel3 = Vec4.createFromBuffer(dataArray.buffer, (offset + 12) * 4)
-    const pixel4 = Vec4.createFromBuffer(dataArray.buffer, (offset + 16) * 4)
-    const pixel5 = Vec4.createFromBuffer(dataArray.buffer, (offset + 20) * 4)
 
-    pixel0.set(mat4.xAxis.x, mat4.yAxis.x, mat4.zAxis.x, mat4.translation.x)
-    pixel1.set(mat4.xAxis.y, mat4.yAxis.y, mat4.zAxis.y, mat4.translation.y)
-    pixel2.set(mat4.xAxis.z, mat4.yAxis.z, mat4.zAxis.z, mat4.translation.z)
-    pixel3.set(bbox.p0.x, bbox.p0.y, bbox.p0.z, 0.0)
-    pixel4.set(bbox.p1.x, bbox.p1.y, bbox.p1.z, 0.0)
-    pixel5.set(color.r, color.g, color.b, color.a)
+    const pixel1 = Vec4.createFromBuffer(dataArray.buffer, (offset + 1 * 4) * 4)
+    const pixel2 = Vec4.createFromBuffer(dataArray.buffer, (offset + 2 * 4) * 4)
+    const pixel3 = Vec4.createFromBuffer(dataArray.buffer, (offset + 3 * 4) * 4)
+
+    const pixel4 = Vec4.createFromBuffer(dataArray.buffer, (offset + 4 * 4) * 4)
+
+    const pixel6 = Vec4.createFromBuffer(dataArray.buffer, (offset + 6 * 4) * 4)
+    const pixel7 = Vec4.createFromBuffer(dataArray.buffer, (offset + 7 * 4) * 4)
+
+    pixel1.set(mat4.xAxis.x, mat4.yAxis.x, mat4.zAxis.x, mat4.translation.x)
+    pixel2.set(mat4.xAxis.y, mat4.yAxis.y, mat4.zAxis.y, mat4.translation.y)
+    pixel3.set(mat4.xAxis.z, mat4.yAxis.z, mat4.zAxis.z, mat4.translation.z)
+
+    pixel4.set(color.r, color.g, color.b, color.a)
+
+    pixel6.set(bbox.p0.x, bbox.p0.y, bbox.p0.z, 0.0)
+    pixel7.set(bbox.p1.x, bbox.p1.y, bbox.p1.z, 0.0)
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -232,8 +237,8 @@ class GLBoundingBoxPass extends GLPass {
     const gl = this.__gl
     // Note: When the camera moves, this array is sorted and re-upload.
     if (this.__indexArray && this.__indexArray.length != this.drawCount) {
-      gl.deleteBuffer(this.__instanceIdsBuffer)
-      this.__instanceIdsBuffer = null
+      gl.deleteBuffer(this.__instancedIdsBuffer)
+      this.__instancedIdsBuffer = null
     }
 
     this.__indexArray = new Float32Array(this.drawCount)
@@ -244,9 +249,9 @@ class GLBoundingBoxPass extends GLPass {
         offset++
       }
     }
-    if (!this.__instanceIdsBuffer) this.__instanceIdsBuffer = gl.createBuffer()
+    if (!this.__instancedIdsBuffer) this.__instancedIdsBuffer = gl.createBuffer()
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.__instanceIdsBuffer)
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.__instancedIdsBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, this.__indexArray, gl.STATIC_DRAW)
     this.indexArrayUpdateNeeded = false
   }
@@ -382,23 +387,16 @@ class GLBoundingBoxPass extends GLPass {
 
     const gl = this.__gl
 
-    // gl.disable(gl.CULL_FACE)
-    // gl.enable(gl.BLEND)
-    // gl.blendEquation(gl.FUNC_ADD)
-    // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-
     this.glshader.bind(renderstate)
     this.glgeom.bind(renderstate)
 
     const unifs = renderstate.unifs
 
+    gl.uniform1i(unifs.occlusionCulling.location, 0)
+
     if (!gl.floatTexturesSupported || !gl.drawElementsInstanced) {
       const len = this.__indexArray.length
       for (let i = 0; i < len; i++) {
-        // gl.uniformMatrix4fv(unifs.modelMatrix.location, false, this.__modelMatrixArray[i])
-        // gl.uniform4fv(unifs.treeitemData.location, this.__treeitemDataArray[i])
-        // gl.uniform4fv(unifs.tintColor.location, this.__tintColorArray[i])
-
         renderstate.bindViewports(unifs, () => {
           gl.drawQuad()
         })
@@ -409,12 +407,14 @@ class GLBoundingBoxPass extends GLPass {
 
       {
         // The instance transform ids are bound as an instanced attribute.
-        const location = renderstate.attrs.instanceIds.location
+        const location = renderstate.attrs.instancedIds.location
         gl.enableVertexAttribArray(location)
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.__instanceIdsBuffer)
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.__instancedIdsBuffer)
         gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 4, 0)
         gl.vertexAttribDivisor(location, 1) // This makes it instanced
       }
+
+      gl.uniform1i(unifs.instancedDraw.location, 1)
 
       renderstate.bindViewports(unifs, () => {
         this.glgeom.drawInstanced(renderstate, this.drawCount)

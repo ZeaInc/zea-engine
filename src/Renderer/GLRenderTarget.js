@@ -2,7 +2,24 @@ import { Color } from '../Math/Color.js'
 import { EventEmitter } from '../Utilities/index'
 import { processTextureParams } from './processTextureParams.js'
 
-/** Class representing a GL render target. */
+/** The GLRenderTarget is used to generate a WebGL Framebuffer and its associated textures.
+ * It can be used to create a FrameBuffer, several color textures and an optional depth texture, all bound to the Framebuffer.
+ *
+ *
+ * ```javascript
+ *  const renderTarget = new GLRenderTarget(gl, {
+ *    type: gl.FLOAT,
+ *    format: gl.RGBA,
+ *    minFilter: gl.NEAREST,
+ *    magFilter: gl.NEAREST,
+ *    width: 128,
+ *    height: 64,
+ *    depthType: gl.FLOAT,
+ *    depthFormat: gl.DEPTH_COMPONENT,
+ *    depthInternalFormat: gl.DEPTH_COMPONENT32F,
+ *  })
+ * ```
+ */
 class GLRenderTarget extends EventEmitter {
   /**
    * Create a GL render target.
@@ -46,7 +63,8 @@ class GLRenderTarget extends EventEmitter {
     this.type = p.type
     this.format = p.format
     this.internalFormat = p.internalFormat
-    this.filter = p.filter
+    this.minFilter = p.minFilter ? p.minFilter : p.filter
+    this.minFilter = p.magFilter ? p.magFilter : p.filter
     this.wrap = p.wrap
     this.flipY = p.flipY
     this.width = p.width

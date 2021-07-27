@@ -54,7 +54,8 @@ class GLViewport extends GLBaseViewport {
     this.__geomDataBuffer = undefined
     this.__geomDataBufferSizeFactor = 1
     this.__geomDataBufferFbo = undefined
-    this.debugGeomShader = false
+    this.debugGeomBuffer = true
+    this.debugOcclusionBuffer = false
 
     const gl = this.__renderer.gl
     this.__geomDataBuffer = new GLTexture2D(gl, {
@@ -317,7 +318,7 @@ class GLViewport extends GLBaseViewport {
   renderGeomDataFbo() {
     if (this.__geomDataBufferFbo) {
       const renderstate = {}
-      this.__initRenderState(renderstate)
+      this.initRenderState(renderstate)
 
       // Note: GLLinesPass binds a new Fbo, but shares this ones depth buffer.
       renderstate.geomDataFbo = this.__geomDataBufferFbo
@@ -834,11 +835,11 @@ class GLViewport extends GLBaseViewport {
   // Rendering
 
   /**
-   * The __initRenderState method.
+   * The initRenderState method.
    * @param {object} renderstate - The object tracking the current state of the renderer
    * @private
    */
-  __initRenderState(renderstate) {
+  initRenderState(renderstate) {
     // console.log(this.__viewMat.toString())
     renderstate.viewXfo = this.__cameraXfo
     renderstate.viewScale = 1.0
@@ -860,9 +861,10 @@ class GLViewport extends GLBaseViewport {
 
   /**
    * The draw method.
+   * @param {object} renderstate - The object tracking the current state of the renderer
    */
   draw(renderstate = {}) {
-    this.__initRenderState(renderstate)
+    this.initRenderState(renderstate)
 
     super.draw(renderstate)
 
@@ -870,11 +872,6 @@ class GLViewport extends GLBaseViewport {
     if (this.debugGeomShader) {
       this.renderGeomDataFbo()
       const gl = this.__renderer.gl
-      // gl.disable(gl.DEPTH_TEST)
-      // gl.screenQuad.bindShader(renderstate)
-      // console.log('here')
-      // gl.screenQuad.draw(renderstate, this.__geomDataBuffer, new Vec2(0.5, 0.5), new Vec2(2, 2))
-
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null)
       this.__geomDataBufferFbo.bindForReading(renderstate)
       gl.clearBufferfv(gl.COLOR, 0, [0.0, 0.0, 0.0, 0.0])
@@ -890,6 +887,27 @@ class GLViewport extends GLBaseViewport {
         gl.COLOR_BUFFER_BIT,
         gl.NEAREST
       )
+    }
+    if (this.debugOcclusionBuffer) {
+      const gl = this.__renderer.gl
+      const occlusionDataBuffer = this.__renderer.glGeomItemLibrary.occlusionDataBuffer
+      if (occlusionDataBuffer) {
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null)
+        occlusionDataBuffer.bindForReading(renderstate)
+        gl.clearBufferfv(gl.COLOR, 0, [0.0, 0.0, 0.0, 0.0])
+        gl.blitFramebuffer(
+          0,
+          0,
+          occlusionDataBuffer.width,
+          occlusionDataBuffer.height,
+          0,
+          0,
+          this.__width,
+          this.__height,
+          gl.COLOR_BUFFER_BIT,
+          gl.NEAREST
+        )
+      }
     }
   }
 }

@@ -7,8 +7,6 @@ import { GLPoints, GLLines, GLMesh, GLMaterial, GLGeomItemChangeType, GLGeomItem
 import { GLTexture2D } from '../GLTexture2D.js'
 import { MathFunctions } from '../../Utilities/MathFunctions'
 
-const pixelsPerItem = 6 // The number of RGBA pixels per draw item.
-
 /** This class abstracts the rendering of a collection of geometries to screen.
  * @extends GLPass
  */

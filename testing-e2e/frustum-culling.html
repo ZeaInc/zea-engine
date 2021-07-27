@@ -25,7 +25,7 @@
       renderer.outlineThickness = 1.5
       renderer.outlineSensitivity = 0.02
 
-      scene.setupGrid(10.0, 10)
+      // scene.setupGrid(10.0, 10)
 
       const standardMaterial = new Material('surfaces', 'SimpleSurfaceShader')
       const sphere = new Sphere(1.5, 20, 10)
@@ -67,6 +67,9 @@
         })
       })
       // renderer.frameAll()
+      // renderer.getViewport().on('pointerOverGeom', (event) => {
+      //   console.log(event.intersectionData.geomItem.getName())
+      // })
 
       const postMessage = (msg) => {
         console.log(msg)

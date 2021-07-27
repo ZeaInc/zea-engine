@@ -21,7 +21,11 @@
       const scene = new Scene()
       scene.setupGrid(10.0, 10)
 
-      const renderer = new GLRenderer(domElement, { hideSplash: true, antialias: false })
+      const renderer = new GLRenderer(domElement, {
+        antialias: false,
+        debugGeomIds: false,
+        debugOcclusionBuffer: false,
+      })
       renderer.setScene(scene)
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(12, 12, 10), new Vec3(0, 0, 1.5))
 
@@ -31,6 +35,7 @@
       scene.getSettings().getParameter('Display EnvMap').setValue(true)
 
       const objAsset = new ObjAsset('cow')
+      objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
       objAsset.load('data/cow.obj')
       scene.getRoot().addChild(objAsset)
 

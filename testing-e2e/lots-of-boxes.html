@@ -21,7 +21,8 @@
       // scene.setupGrid(10, 10)
 
       const renderer = new GLRenderer(domElement, {
-        webglContextType: 'webgl',
+        enableFrustumCulling: true,
+        enableOcclusionCulling: true,
       })
       renderer.setScene(scene)
       renderer.solidAngleLimit = 0.0
@@ -77,6 +78,9 @@
         }
       })
 
+      // //////////////////////////////
+      // Fps counter
+
       let frameCounter = 0
       let fps = 0
       renderer.on('redrawOccurred', () => {
@@ -91,6 +95,10 @@
         }
         frameCounter = 0
       }, 500)
+
+      renderer.on('CullingUpdated', (event) => {
+        console.log(`visible: ${event.visible} / total: ${event.total}`)
+      })
 
       // renderer.startContinuousDrawing()
     </script>

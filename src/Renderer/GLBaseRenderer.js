@@ -63,7 +63,9 @@ class GLBaseRenderer extends ParameterOwner {
 
     this.setupWebGL($canvas, options.webglOptions ? { ...options, ...options.webglOptions } : options)
     this.bindEventHandlers()
-    this.addViewport('main')
+    const mainViewport = this.addViewport('main')
+    mainViewport.debugGeomBuffer = options.debugGeomBuffer
+    mainViewport.debugOcclusionBuffer = options.debugOcclusionBuffer
 
     this.glMaterialLibrary = new GLMaterialLibrary(this)
     this.glMaterialLibrary.on('updated', () => {
@@ -1211,11 +1213,11 @@ class GLBaseRenderer extends ParameterOwner {
         }
 
         if (eye) {
-          // Left or right eye, when rendering sterio VR.
+          // Left or right eye, when rendering stereo VR.
           gl.uniform1i(eye.location, index)
         }
         if (isOrthographic) {
-          // Left or right eye, when rendering sterio VR.
+          // Left or right eye, when rendering stereo VR.
           gl.uniform1i(isOrthographic.location, vp.isOrthographic)
         }
       }

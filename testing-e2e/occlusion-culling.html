@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>occlusion-culling - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../dist/index.umd.js"></script>
+    <script src="../dist/plugins.umd.js"></script>
+
+    <script type="module">
+      const { Vec3, Xfo, Color, Sphere, Material, GeomItem, Scene, GLRenderer, TreeItem } = window.zeaEngine
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas, {
+        hideSplash: true,
+        enableOcclusionCulling: true,
+        debugOcclusionBuffer: false,
+      })
+      renderer.setScene(scene)
+
+      scene.setupGrid(10.0, 10)
+
+      const urlParams = new URLSearchParams(window.location.search)
+
+      const count = urlParams.has('count') ? urlParams.get('count') : 10000
+      const dim = Math.round(Math.cbrt(count))
+      console.log('Will render GeomItem count:', Math.pow(dim, 3))
+
+      const detail = 20
+      const geom = new Sphere(0.5, 2 * detail, detail)
+      const simpleMaterial = new Material('mat', 'SimpleSurfaceShader')
+
+      let geomItemCount = 0
+      const addLayers = (layerId, treeItem) => {
+        for (let j = 0; j < dim; j += 1) {
+          const material = simpleMaterial
+          const treeItemJ = new TreeItem('TreeItem' + j)
+          treeItem.addChild(treeItemJ)
+
+          for (let k = 0; k < dim; k += 1) {
+            const geomItem = new GeomItem('Geom' + k, geom, material)
+            treeItemJ.addChild(geomItem)
+
+            const xfo = new Xfo()
+            xfo.tr.set(j, k, layerId)
+            geomItem.getParameter('GlobalXfo').setValue(xfo)
+            geomItemCount++
+          }
+        }
+      }
+
+      for (let i = 0; i < dim; i += 1) {
+        const treeItem = new TreeItem('TreeItem' + i)
+        scene.getRoot().addChild(treeItem)
+
+        addLayers(i, treeItem)
+      }
+      renderer.frameAll()
+      renderer.getViewport().on('keyDown', (event) => {
+        if (event.key == 'f') {
+          renderer.frameAll()
+        }
+      })
+
+      const postMessage = (msg) => {
+        console.log(msg)
+        window.postMessage(msg)
+      }
+      postMessage('done-loading')
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'variant-01') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          postMessage(`done-${data}`)
+        } else if (data === 'variant-02') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))
+          renderer.frameAll()
+          postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+
+      // //////////////////////////////
+      // XR Setup
+      const h = document.querySelector('#buttonHolder')
+      const b = document.querySelector('#button')
+
+      renderer.getXRViewport().then((xrvp) => {
+        h.textContent = 'XR Device Detected'
+        b.textContent = 'Launch VR'
+
+        xrvp.on('presentingChanged', (event) => {
+          const { state } = event
+          if (state) {
+            h.textContent = 'Session In Progress'
+            b.textContent = 'Exit VR'
+          } else {
+            h.textContent = 'XR Device Detected'
+            b.textContent = 'Launch VR'
+          }
+        })
+
+        b.addEventListener('click', function (event) {
+          xrvp.togglePresenting()
+        })
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key == ' ') {
+            xrvp.togglePresenting()
+          }
+        })
+      })
+      // //////////////////////////////
+      // Fps counter
+
+      let frameCounter = 0
+      let fps = 0
+      renderer.on('redrawOccurred', () => {
+        frameCounter++
+      })
+
+      const fpsElement = document.getElementById('fps-display')
+      setInterval(() => {
+        if (fps != frameCounter * 2) {
+          fps = frameCounter * 2
+          fpsElement.textContent = `FPS: ${fps}`
+        }
+        frameCounter = 0
+      }, 500)
+
+      if (urlParams.has('profile')) renderer.startContinuousDrawing()
+
+      const cullElement = document.getElementById('cull-stats')
+      renderer.on('CullingUpdated', (event) => {
+        cullElement.textContent = `visible: ${event.visible} / total: ${event.total} triangles: ${
+          geomItemCount * geom.getNumTriangles()
+        } visible triangles: ${event.visible * geom.getNumTriangles()}`
+      })
+    </script>
+    <style>
+      .hud {
+        color: #333333;
+        font-size: 16px;
+      }
+      #fps-display {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+      }
+      #cull-stats {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+      }
+
+      .label {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        margin: 0px;
+        font-family: 'arial';
+        user-select: none;
+      }
+
+      .button {
+        position: absolute;
+        left: 10px;
+        bottom: 30px;
+        margin: 10px;
+
+        font-family: 'arial';
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        user-select: none;
+      }
+      .button:hover {
+        background-color: #78b87a; /* Green */
+      }
+      .button:focus {
+        background-color: #78b87a;
+      }
+    </style>
+  </head>
+  <body class="bg-blue-100">
+    <div class="h-screen">
+      <canvas class="absolute" id="renderer"></canvas>
+      <div class="label" id="buttonHolder"></div>
+      <div class="button" id="button">XR Device Not Detected</div>
+      <div id="fps-display" class="hud"></div>
+      <div id="cull-stats" class="hud"></div>
+    </div>
+  </body>
+</html>

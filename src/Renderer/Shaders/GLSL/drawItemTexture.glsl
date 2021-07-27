@@ -4,7 +4,9 @@
 uniform sampler2D instancesTexture;
 uniform highp int instancesTextureSize;
 
-const int pixelsPerItem = 6;
+// See also: src\Renderer\GLSLConstants.js
+// const pixelsPerGLGeomItem = 8
+const int pixelsPerItem = 8;
 
 vec4 getInstanceData(int id) {
     return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 0);

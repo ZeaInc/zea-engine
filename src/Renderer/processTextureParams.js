@@ -98,10 +98,10 @@ const processTextureParams = function (gl, params) {
     if (result.type == gl.FLOAT) {
       if (result.format == gl.RED) {
         result.internalFormat = gl.R32F
-      } else if (result.format == gl.RED) {
-        result.internalFormat = gl.R32F
       } else if (result.format == gl.RG) {
         result.internalFormat = gl.RG32F
+      } else if (result.format == gl.RGB) {
+        result.internalFormat = gl.RGB32F
       } else if (result.format == gl.RGBA) {
         result.internalFormat = gl.RGBA32F
       }

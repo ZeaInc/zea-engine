@@ -20,4 +20,8 @@ const glslTypes = {
   samplerCube: BaseImage,
 }
 
-export { glslTypes }
+// See also: src\Renderer\Shaders\GLSL\drawItemId.glsl
+// const int pixelsPerItem = 8;
+const pixelsPerGLGeomItem = 8
+
+export { glslTypes, pixelsPerGLGeomItem }

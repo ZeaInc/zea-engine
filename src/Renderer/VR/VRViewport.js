@@ -340,6 +340,7 @@ class VRViewport extends GLBaseViewport {
             const onRefSpaceCreated = (refSpace) => {
               this.__refSpace = refSpace
               this.__stageTreeItem.setVisible(true)
+              this.depthRange = [session.renderState.depthNear, session.renderState.depthFar]
               this.emit('presentingChanged', { state: true })
 
               this.loadHMDResources().then(() => {
@@ -368,10 +369,6 @@ class VRViewport extends GLBaseViewport {
               })
               .then((refSpace) => {
                 onRefSpaceCreated(refSpace)
-              })
-              .catch((e) => {
-                console.warn(e.message)
-                reject(new Error('Unable to start XR Session:' + e.message))
               })
           })
           .catch((e) => {
@@ -452,6 +449,7 @@ class VRViewport extends GLBaseViewport {
 
     this.__vrhead.update(pose)
     const viewXfo = this.__vrhead.getTreeItem().getParameter('GlobalXfo').getValue()
+    this.viewXfo = viewXfo
 
     // Prepare the pointerMove event.
     const event = { controllers: this.controllers, viewXfo }
@@ -490,7 +488,7 @@ class VRViewport extends GLBaseViewport {
 
     const renderstate = {
       boundRendertarget: layer.framebuffer,
-      depthRange: [session.renderState.depthNear, session.renderState.depthFar],
+      depthRange: this.depthRange,
       region: this.__region,
       viewport: this,
       vrviewport: this,
