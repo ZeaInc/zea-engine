@@ -86,6 +86,7 @@ const unCull = (index) => {
 
 const checkGeomItem = (geomItemData) => {
   if (!geomItemData || !cameraPos) return
+  if (!geomItemData.visible) return
 
   // Some items, like Handles that
   if (!geomItemData.cullable) {

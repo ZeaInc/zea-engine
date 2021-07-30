@@ -66,7 +66,10 @@
       const canvas = document.querySelector('#renderer')
 
       const scene = new Scene()
-      const renderer = new GLRenderer(canvas)
+      const renderer = new GLRenderer(canvas, {
+        enableFrustumCulling: true,
+        debugOcclusionBuffer: false,
+      })
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(5, -5, 2), new Vec3(0, 1, 0.75))
       renderer.setScene(scene)
       renderer.outlineThickness = 1.5
@@ -149,10 +152,6 @@
 
       renderer.getXRViewport().then((xrvp) => {
         h.textContent = 'XR Device Detected'
-
-        // Enable Spectator mode that causes the scene to be rendered again for the spectator view.
-        // this might be too expensive on big scenes.
-        // xrvp.spectatorMode = true
         b.textContent = 'Launch VR'
 
         xrvp.on('presentingChanged', (event) => {

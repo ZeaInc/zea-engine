@@ -46,7 +46,7 @@ class VRViewport extends GLBaseViewport {
 
     this.controllersMap = {}
     this.controllers = []
-    this.prevControllerDownTime = []
+    this.controllerPointerDownTime = []
     this.spectatorMode = false
     this.tick = 0
 
@@ -280,6 +280,7 @@ class VRViewport extends GLBaseViewport {
             const onSelectStart = (ev) => {
               const controller = this.controllersMap[ev.inputSource.handedness]
               if (controller) {
+                controller.buttonPressed = true
                 this.onPointerDown({
                   button: 1,
                   controller,
@@ -289,6 +290,7 @@ class VRViewport extends GLBaseViewport {
             const onSelectEnd = (ev) => {
               const controller = this.controllersMap[ev.inputSource.handedness]
               if (controller) {
+                controller.buttonPressed = false
                 this.onPointerUp({
                   button: 1,
                   controller,
@@ -591,7 +593,7 @@ class VRViewport extends GLBaseViewport {
     // If the manipulator or the viewport handle that
     // then skip the 'pointerDown' event.
     const downTime = Date.now()
-    if (downTime - this.prevControllerDownTime[event.controller.id] < this.__doubleClickTimeMSParam.getValue()) {
+    if (downTime - this.controllerPointerDownTime[event.controller.id] < this.__doubleClickTimeMSParam.getValue()) {
       this.emit('pointerDoublePressed', event)
       if (!event.propagating) return
 
@@ -600,7 +602,7 @@ class VRViewport extends GLBaseViewport {
         if (!event.propagating) return
       }
     }
-    this.prevControllerDownTime[event.controller.id] = downTime
+    this.controllerPointerDownTime[event.controller.id] = downTime
 
     // //////////////////////////////////////
 
@@ -629,6 +631,7 @@ class VRViewport extends GLBaseViewport {
    */
   onPointerUp(event) {
     this.preparePointerEvent(event)
+    this.controllerPointerDownTime[event.controller.id] = 0
 
     if (this.capturedItem) {
       this.capturedItem.onPointerUp(event)

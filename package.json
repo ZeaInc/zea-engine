@@ -2,7 +2,7 @@
   "name": "@zeainc/zea-engine",
   "fileName": "index",
   "libraryName": "ZeaEngine",
-  "version": "3.10.7-orthographic-framing.2",
+  "version": "3.10.7-xr.0",
   "description": "Zea Engine",
   "browser": "dist/index.umd.js",
   "plugins": "dist/plugins.umd.js",
