@@ -18,7 +18,7 @@ void main(void) {
 #endif
 
   int debugLevel = 0;
-  if(debugLevel == 0){
+  if (debugLevel == 0) {
 
     vec3 viewVector = mat3(cameraMatrix) * normalize(-v_viewPos);
     vec3 normal = mat3(cameraMatrix) * v_viewNormal;
@@ -30,7 +30,7 @@ void main(void) {
     vec4 color = BaseColor * NdotV;
     fragColor = vec4(color.rgb, BaseColor.a);
   }
-  else{
+  else {
     fragColor = vec4(v_texCoord.x, 0.0, 0.0, 1.0);
   }
 

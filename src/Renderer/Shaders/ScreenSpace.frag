@@ -72,7 +72,7 @@ void main(void) {
   // GeomData
 #elif defined(DRAW_GEOMDATA)
 
-  if(true) {
+  if (true) {
     discard;
     return;
   }

@@ -23,9 +23,9 @@ void main(void) {
 #endif
 
   float dist = length(v_texCoord - 0.5);
-  if(dist > 0.5)
+  if (dist > 0.5)
     discard;
-  if(dist > 0.5 - (BorderWidth * 0.5))
+  if (dist > 0.5 - (BorderWidth * 0.5))
     fragColor = vec4(0.,0.,0.,1.);
   else {
     // Modulate the lighting using the texture coord so the point looks round.

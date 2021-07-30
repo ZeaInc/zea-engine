@@ -13,7 +13,7 @@ import 'modelMatrix.glsl'
 
 uniform int drawItemId;
 int getDrawItemId() {
-    return drawItemId;
+  return drawItemId;
 }
 
 
@@ -41,7 +41,7 @@ void main(void) {
   v_viewPos       = calcFatLinesViewPos(vertexID, modelViewMatrix, v_viewNormal, v_texCoord, pos);
   gl_Position     = projectionMatrix * vec4(v_viewPos, 1.0);
   
-  if(Overlay > 0.0){
+  if (Overlay > 0.0) {
     gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
   }
 }

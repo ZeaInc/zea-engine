@@ -38,7 +38,7 @@ vec4 getHighlightColor(int id) {
 uniform vec4 highlightColor;
 
 vec4 getHighlightColor() {
-    return highlightColor;
+  return highlightColor;
 }
 
 #endif // ENABLE_FLOAT_TEXTURES
@@ -48,7 +48,7 @@ vec4 getHighlightColor() {
 
 #ifdef ENABLE_FLOAT_TEXTURES
 vec4 getCutaway(int id) {
-    return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 5);
+  return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 5);
 }
 
 #else
@@ -56,7 +56,7 @@ vec4 getCutaway(int id) {
 uniform vec4 cutawayData;
 
 vec4 getCutaway(int id) {
-    return cutawayData;
+  return cutawayData;
 }
 
 #endif
@@ -81,15 +81,15 @@ void main(void) {
   int flags = int(v_geomItemData.r + 0.5);
 
   // Cutaways
-  if(testFlag(flags, GEOMITEM_FLAG_CUTAWAY)) 
+  if (testFlag(flags, GEOMITEM_FLAG_CUTAWAY)) 
   {
-      vec4 cutAwayData   = getCutaway(drawItemId);
-      vec3 planeNormal = cutAwayData.xyz;
-      float planeDist = cutAwayData.w;
-      if(cutaway(v_worldPos, planeNormal, planeDist)){
-          discard;
-          return;
-      }
+    vec4 cutAwayData   = getCutaway(drawItemId);
+    vec3 planeNormal = cutAwayData.xyz;
+    float planeDist = cutAwayData.w;
+    if (cutaway(v_worldPos, planeNormal, planeDist)) {
+      discard;
+      return;
+    }
   }
 
   //////////////////////////////////////////////
@@ -139,14 +139,14 @@ void main(void) {
   // GeomData
 #elif defined(DRAW_GEOMDATA)
 
-  if(testFlag(flags, GEOMITEM_INVISIBLE_IN_GEOMDATA)) {
+  if (testFlag(flags, GEOMITEM_INVISIBLE_IN_GEOMDATA)) {
     discard;
     return;
   }
   
   float viewDist = length(v_viewPos);
 
-  if(floatGeomBuffer != 0) {
+  if (floatGeomBuffer != 0) {
     fragColor.r = float(passId); 
     fragColor.g = float(v_drawItemId);
     // Note: to make lines visually stand out from triangles

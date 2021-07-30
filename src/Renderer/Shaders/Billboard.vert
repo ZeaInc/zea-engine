@@ -122,13 +122,13 @@ void main(void) {
 
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
   float sc = 1.0;
-  if(fixedSizeOnscreen) {
+  if (fixedSizeOnscreen) {
     float dist = modelViewMatrix[3][2];
     sc = abs(dist); // Note: items in front of the camera will have a negative value here.
   }
   
   mat4 modelViewProjectionMatrix;
-  if(alignedToCamera){
+  if (alignedToCamera) {
     if (inVR == 0) {
       gl_Position = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
       gl_Position += vec4(pos.x * width * sc, (pos.y + 0.5) * height * sc, 0.0, 0.0);
@@ -141,13 +141,13 @@ void main(void) {
       gl_Position = modelViewProjectionMatrix * vec4(pos.x * width * sc, (pos.y + 0.5) * height * sc, 0.0, 1.0);
     }
   }
-  else{
+  else {
     modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
     gl_Position = modelViewProjectionMatrix * vec4(pos.x * width, (pos.y + 0.5) * height, 0.0, 1.0);
   }
 
   // Use cross platform bit flags methods
-  if(drawOnTop){
+  if (drawOnTop) {
     gl_Position.z = mix(gl_Position.z, -gl_Position.w, 0.5);
   }
 }

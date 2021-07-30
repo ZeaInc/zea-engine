@@ -29,15 +29,15 @@ void main(void) {
   v_drawItemId = float(drawItemId);
   v_geomItemData  = getInstanceData(drawItemId);
 
-    mat4 modelMatrix = getModelMatrix(drawItemId);
-    mat4 modelViewMatrix = viewMatrix * modelMatrix;
+  mat4 modelMatrix = getModelMatrix(drawItemId);
+  mat4 modelViewMatrix = viewMatrix * modelMatrix;
 
-    vec4 viewPos = (modelViewMatrix * vec4(positions, 1.0));
-    gl_Position = projectionMatrix * viewPos;
+  vec4 viewPos = (modelViewMatrix * vec4(positions, 1.0));
+  gl_Position = projectionMatrix * viewPos;
 
-    v_viewPos = viewPos.xyz;
+  v_viewPos = viewPos.xyz;
 #ifdef ENABLE_TEXTURES
-    v_textureCoord = texCoords;
-    v_textureCoord.y = 1.0 - v_textureCoord.y;// Flip y
+  v_textureCoord = texCoords;
+  v_textureCoord.y = 1.0 - v_textureCoord.y;// Flip y
 #endif
 }

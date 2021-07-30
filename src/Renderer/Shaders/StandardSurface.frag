@@ -30,7 +30,7 @@ uniform color cutColor;
 
 #ifdef ENABLE_FLOAT_TEXTURES
 vec4 getCutaway(int id) {
-    return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 5);
+  return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 5);
 }
 
 #else
@@ -38,7 +38,7 @@ vec4 getCutaway(int id) {
 uniform vec4 cutawayData;
 
 vec4 getCutaway(int id) {
-    return cutawayData;
+  return cutawayData;
 }
 
 #endif
@@ -120,146 +120,146 @@ out vec4 fragColor;
 #endif
 
 void main(void) {
-    int drawItemId = int(v_drawItemId + 0.5);
+  int drawItemId = int(v_drawItemId + 0.5);
 
-    int flags = int(v_geomItemData.r + 0.5);
-    // Cutaways
-    if(testFlag(flags, GEOMITEM_FLAG_CUTAWAY)) {
-        vec4 cutAwayData   = getCutaway(drawItemId);
-        vec3 planeNormal = cutAwayData.xyz;
-        float planeDist = cutAwayData.w;
-        if(cutaway(v_worldPos, planeNormal, planeDist)){
-            discard;
-            return;
-        }
-        else if(!gl_FrontFacing){
+  int flags = int(v_geomItemData.r + 0.5);
+  // Cutaways
+  if (testFlag(flags, GEOMITEM_FLAG_CUTAWAY)) {
+    vec4 cutAwayData   = getCutaway(drawItemId);
+    vec3 planeNormal = cutAwayData.xyz;
+    float planeDist = cutAwayData.w;
+    if (cutaway(v_worldPos, planeNormal, planeDist)) {
+      discard;
+      return;
+    }
+    else if (!gl_FrontFacing) {
 #ifdef ENABLE_ES3
-            fragColor = cutColor;
+      fragColor = cutColor;
 #else
-            gl_FragColor = cutColor;
+      gl_FragColor = cutColor;
 #endif
-            return;
-        }
+      return;
     }
+  }
 
-    //////////////////////////////////////////////
-    // Normals
-    vec3 viewNormal;
-    if (length(v_viewNormal) < 0.1) {
-      viewNormal = computeViewNormal(v_viewPos);
-    } else {
-      viewNormal = normalize(v_viewNormal);
-    }
-    vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
+  //////////////////////////////////////////////
+  // Normals
+  vec3 viewNormal;
+  if (length(v_viewNormal) < 0.1) {
+    viewNormal = computeViewNormal(v_viewPos);
+  } else {
+    viewNormal = normalize(v_viewNormal);
+  }
+  vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
+  
+  vec3 viewVector;
+  if (isOrthographic == 0)
+    viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
+  else 
+    viewVector = vec3(-cameraMatrix[2][0], -cameraMatrix[2][1], -cameraMatrix[2][2]);
     
-    vec3 viewVector;
-    if (isOrthographic == 0)
-      viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
-    else 
-      viewVector = vec3(-cameraMatrix[2][0], -cameraMatrix[2][1], -cameraMatrix[2][2]);
-      
-    if(dot(normal, viewVector) < 0.0){
-        normal = -normal;
-        // Note: this line can be used to debug inverted meshes.
-        //material.baseColor = vec3(1.0, 0.0, 0.0);
-    }
+  if (dot(normal, viewVector) < 0.0) {
+      normal = -normal;
+      // Note: this line can be used to debug inverted meshes.
+      //material.baseColor = vec3(1.0, 0.0, 0.0);
+  }
 
-    //////////////////////////////////////////////
-    // Material
+  //////////////////////////////////////////////
+  // Material
 
-    MaterialParams material;
+  MaterialParams material;
 
 #ifdef ENABLE_MULTI_DRAW
-    vec2 materialCoords = v_geomItemData.zw;
-    vec4 matValue0      = getMaterialValue(materialCoords, 0);
-    vec4 matValue1      = getMaterialValue(materialCoords, 1);
-    vec4 matValue2      = getMaterialValue(materialCoords, 2);
+  vec2 materialCoords = v_geomItemData.zw;
+  vec4 matValue0      = getMaterialValue(materialCoords, 0);
+  vec4 matValue1      = getMaterialValue(materialCoords, 1);
+  vec4 matValue2      = getMaterialValue(materialCoords, 2);
 
-    material.baseColor     = toLinear(matValue0.rgb);
-    material.ambientOcclusion      = matValue1.r;
-    material.metallic      = matValue1.g;
-    material.roughness     = matValue1.b;
-    material.reflectance   = matValue1.a;
+  material.baseColor     = toLinear(matValue0.rgb);
+  material.ambientOcclusion      = matValue1.r;
+  material.metallic      = matValue1.g;
+  material.roughness     = matValue1.b;
+  material.reflectance   = matValue1.a;
 
-    material.emission         = matValue2.r;
-    material.opacity          = matValue2.g * matValue0.a;
+  material.emission         = matValue2.r;
+  material.opacity          = matValue2.g * matValue0.a;
 
 #else // ENABLE_MULTI_DRAW
 
 #ifndef ENABLE_TEXTURES
-    material.baseColor     = toLinear(BaseColor.rgb);
-    material.emission      = EmissiveStrength;
+  material.baseColor     = toLinear(BaseColor.rgb);
+  material.emission      = EmissiveStrength;
 
 #ifdef ENABLE_PBR
-    material.roughness     = Roughness;
-    material.metallic      = Metallic;
-    material.reflectance   = Reflectance;
+  material.roughness     = Roughness;
+  material.metallic      = Metallic;
+  material.reflectance   = Reflectance;
 #endif
 
 #else
-    // Planar YZ projection for texturing, repeating every meter.
-    // vec2 texCoord       = v_worldPos.xz * 0.2;
-    vec2 texCoord          = v_textureCoord;
+  // Planar YZ projection for texturing, repeating every meter.
+  // vec2 texCoord       = v_worldPos.xz * 0.2;
+  vec2 texCoord          = v_textureCoord;
 
-    vec4 baseColor         = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, texCoord);
-    material.ambientOcclusion = getLuminanceParamValue(AmbientOcclusion, AmbientOcclusionTex, AmbientOcclusionTexType, texCoord);
-    material.baseColor     = baseColor.rgb;
-    
+  vec4 baseColor         = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, texCoord);
+  material.ambientOcclusion = getLuminanceParamValue(AmbientOcclusion, AmbientOcclusionTex, AmbientOcclusionTexType, texCoord);
+  material.baseColor     = baseColor.rgb;
+  
 #ifdef ENABLE_PBR
 
-    material.metallic      = getLuminanceParamValue(Metallic, MetallicTex, MetallicTexType, texCoord);
-    material.roughness     = getLuminanceParamValue(Roughness, RoughnessTex, RoughnessTexType, texCoord);
+  material.metallic      = getLuminanceParamValue(Metallic, MetallicTex, MetallicTexType, texCoord);
+  material.roughness     = getLuminanceParamValue(Roughness, RoughnessTex, RoughnessTexType, texCoord);
 
-    // TODO: Communicate that this tex contains the roughness as well.
-    if (MetallicTexType != 0) {
-      vec4 metallicRoughness = vec4(Metallic, Roughness, 0.0, 1.0);
-      metallicRoughness     = texture2D(MetallicTex, texCoord);
-      material.roughness     = metallicRoughness.g;
-      material.metallic     = metallicRoughness.b;
-    }
+  // TODO: Communicate that this tex contains the roughness as well.
+  if (MetallicTexType != 0) {
+    vec4 metallicRoughness = vec4(Metallic, Roughness, 0.0, 1.0);
+    metallicRoughness     = texture2D(MetallicTex, texCoord);
+    material.roughness     = metallicRoughness.g;
+    material.metallic     = metallicRoughness.b;
+  }
 
-    material.reflectance   = getLuminanceParamValue(Reflectance, ReflectanceTex, ReflectanceTexType, texCoord);
+  material.reflectance   = getLuminanceParamValue(Reflectance, ReflectanceTex, ReflectanceTexType, texCoord);
 #endif // ENABLE_PBR
-    material.emission         = getLuminanceParamValue(EmissiveStrength, EmissiveStrengthTex, EmissiveStrengthTexType, texCoord);
+  material.emission         = getLuminanceParamValue(EmissiveStrength, EmissiveStrengthTex, EmissiveStrengthTexType, texCoord);
 #endif // ENABLE_TEXTURES
-    material.opacity       = Opacity * baseColor.a;
+  material.opacity       = Opacity * baseColor.a;
 
 #ifdef ENABLE_TEXTURES
 #ifdef ENABLE_PBR
-    if(NormalTexType != 0) {
-        mat3 tbn = cotangentFrame(normal, viewVector, texCoord);
-        normal = normalize(tbn * (texture2D(NormalTex, texCoord).rgb * 2.0 - 1.0));
-    }
+  if (NormalTexType != 0) {
+      mat3 tbn = cotangentFrame(normal, viewVector, texCoord);
+      normal = normalize(tbn * (texture2D(NormalTex, texCoord).rgb * 2.0 - 1.0));
+  }
 #endif // ENABLE_PBR
 #endif // ENABLE_TEXTURES
 #endif // ENABLE_MULTI_DRAW
 
 #ifndef ENABLE_ES3
-    vec4 fragColor;
+  vec4 fragColor;
 #endif
 
-    fragColor = pbrSurfaceRadiance(material, normal, viewVector);
-    // fragColor = vec4(texture2D(NormalTex, texCoord).rgb, 1.0);
-    // fragColor = metallicRoughness;
-    // fragColor = vec4(material.baseColor, 1.0);;
-    // fragColor = vec4(vec3(material.metallic), 1.0);;
-    // fragColor = vec4(vec3(material.roughness), 1.0);;
-    // fragColor = vec4(vec3(material.ambientOcclusion), 1.0);
-    
+  fragColor = pbrSurfaceRadiance(material, normal, viewVector);
+  // fragColor = vec4(texture2D(NormalTex, texCoord).rgb, 1.0);
+  // fragColor = metallicRoughness;
+  // fragColor = vec4(material.baseColor, 1.0);;
+  // fragColor = vec4(vec3(material.metallic), 1.0);;
+  // fragColor = vec4(vec3(material.roughness), 1.0);;
+  // fragColor = vec4(vec3(material.ambientOcclusion), 1.0);
+  
 #ifdef DEBUG_GEOM_ID
-    // ///////////////////////
-    // Debug Draw ID (this correlates to GeomID within a GLGeomSet)
-    float geomId = v_geomItemData.w;
-    fragColor.rgb = getDebugColor(geomId);
-    // ///////////////////////
+  // ///////////////////////
+  // Debug Draw ID (this correlates to GeomID within a GLGeomSet)
+  float geomId = v_geomItemData.w;
+  fragColor.rgb = getDebugColor(geomId);
+  // ///////////////////////
 #endif
 
 
 #ifdef ENABLE_INLINE_GAMMACORRECTION
-    fragColor.rgb = toGamma(fragColor.rgb * exposure);
+  fragColor.rgb = toGamma(fragColor.rgb * exposure);
 #endif
 
 #ifndef ENABLE_ES3
-    gl_FragColor = fragColor;
+  gl_FragColor = fragColor;
 #endif
 }

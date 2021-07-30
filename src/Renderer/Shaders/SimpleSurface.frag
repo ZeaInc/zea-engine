@@ -19,7 +19,7 @@ uniform color cutColor;
 
 #ifdef ENABLE_FLOAT_TEXTURES
 vec4 getCutaway(int id) {
-    return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 5);
+  return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 5);
 }
 
 #else
@@ -27,7 +27,7 @@ vec4 getCutaway(int id) {
 uniform vec4 cutawayData;
 
 vec4 getCutaway(int id) {
-    return cutawayData;
+  return cutawayData;
 }
 
 #endif
@@ -71,105 +71,105 @@ import 'computeViewNormal.glsl'
 #endif
 
 void main(void) {
-    int drawItemId = int(v_drawItemId + 0.5);
+  int drawItemId = int(v_drawItemId + 0.5);
 
-    int flags = int(v_geomItemData.r + 0.5);
-    // Cutaways
-    if(testFlag(flags, GEOMITEM_FLAG_CUTAWAY)) 
-    {
-        vec4 cutAwayData   = getCutaway(drawItemId);
-        vec3 planeNormal = cutAwayData.xyz;
-        float planeDist = cutAwayData.w;
-        if(cutaway(v_worldPos, planeNormal, planeDist)){
-            discard;
-            return;
-        }
-        else if(!gl_FrontFacing){
+  int flags = int(v_geomItemData.r + 0.5);
+  // Cutaways
+  if (testFlag(flags, GEOMITEM_FLAG_CUTAWAY)) 
+  {
+    vec4 cutAwayData   = getCutaway(drawItemId);
+    vec3 planeNormal = cutAwayData.xyz;
+    float planeDist = cutAwayData.w;
+    if (cutaway(v_worldPos, planeNormal, planeDist)) {
+      discard;
+      return;
+    }
+    else if (!gl_FrontFacing) {
 #ifdef ENABLE_ES3
-            fragColor = cutColor;
+  fragColor = cutColor;
 #else
-            gl_FragColor = cutColor;
+  gl_FragColor = cutColor;
 #endif
-            return;
-        }
+      return;
     }
+  }
 
-    //////////////////////////////////////////////
-    // Normals
-    
-    vec3 viewNormal;
-    if (length(v_viewNormal) < 0.1) {
-      viewNormal = computeViewNormal(v_viewPos);
-    } else {
-      viewNormal = normalize(v_viewNormal);
-    }
-    vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
-    
-    vec3 viewVector;
-    if (isOrthographic == 0)
-      viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
-    else 
-      viewVector = vec3(-cameraMatrix[2][0], -cameraMatrix[2][1], -cameraMatrix[2][2]);
-    
-    //////////////////////////////////////////////
-    // Material
+  //////////////////////////////////////////////
+  // Normals
+  
+  vec3 viewNormal;
+  if (length(v_viewNormal) < 0.1) {
+    viewNormal = computeViewNormal(v_viewPos);
+  } else {
+    viewNormal = normalize(v_viewNormal);
+  }
+  vec3 normal = normalize(mat3(cameraMatrix) * viewNormal);
+  
+  vec3 viewVector;
+  if (isOrthographic == 0)
+    viewVector = normalize(mat3(cameraMatrix) * normalize(v_viewPos));
+  else 
+    viewVector = vec3(-cameraMatrix[2][0], -cameraMatrix[2][1], -cameraMatrix[2][2]);
+  
+  //////////////////////////////////////////////
+  // Material
 
 #ifdef ENABLE_MULTI_DRAW
 
-    vec2 materialCoords = v_geomItemData.zw;
-    vec4 baseColor = toLinear(getMaterialValue(materialCoords, 0));
-    vec4 matValue1 = getMaterialValue(materialCoords, 1);
-    float opacity       = baseColor.a * matValue1.r;
-    float emission      = matValue1.g;
+  vec2 materialCoords = v_geomItemData.zw;
+  vec4 baseColor = toLinear(getMaterialValue(materialCoords, 0));
+  vec4 matValue1 = getMaterialValue(materialCoords, 1);
+  float opacity       = baseColor.a * matValue1.r;
+  float emission      = matValue1.g;
 
 #else // ENABLE_MULTI_DRAW
 
 #ifndef ENABLE_TEXTURES
-    vec4 baseColor      = toLinear(BaseColor);
-    float emission      = EmissiveStrength;
-    float opacity       = baseColor.a * Opacity;
+  vec4 baseColor      = toLinear(BaseColor);
+  float emission      = EmissiveStrength;
+  float opacity       = baseColor.a * Opacity;
 #else
-    vec4 baseColor      = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, v_textureCoord);
-    float opacity       = baseColor.a * getLuminanceParamValue(Opacity, OpacityTex, OpacityTexType, v_textureCoord);
-    float emission      = getLuminanceParamValue(EmissiveStrength, EmissiveStrengthTex, EmissiveStrengthTexType, v_textureCoord);
+  vec4 baseColor      = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, v_textureCoord);
+  float opacity       = baseColor.a * getLuminanceParamValue(Opacity, OpacityTex, OpacityTexType, v_textureCoord);
+  float emission      = getLuminanceParamValue(EmissiveStrength, EmissiveStrengthTex, EmissiveStrengthTexType, v_textureCoord);
 #endif
 
 #endif // ENABLE_MULTI_DRAW
 
-    // Hacky simple irradiance. 
-    float ndotv = dot(normal, viewVector);
-    if(ndotv < 0.0){
-        normal = -normal;
-        ndotv = dot(normal, viewVector);
+  // Hacky simple irradiance. 
+  float ndotv = dot(normal, viewVector);
+  if (ndotv < 0.0) {
+    normal = -normal;
+    ndotv = dot(normal, viewVector);
 
-        // Note: these 2 lines can be used to debug inverted meshes.
-        //baseColor = vec4(1.0, 0.0, 0.0, 1.0);
-        //ndotv = 1.0;
-    }
+    // Note: these 2 lines can be used to debug inverted meshes.
+    //baseColor = vec4(1.0, 0.0, 0.0, 1.0);
+    //ndotv = 1.0;
+  }
 
 #ifndef ENABLE_ES3
-    vec4 fragColor;
+  vec4 fragColor;
 #endif
-    fragColor = vec4((ndotv * baseColor.rgb) + (emission * baseColor.rgb), opacity);
+  fragColor = vec4((ndotv * baseColor.rgb) + (emission * baseColor.rgb), opacity);
 
 #ifdef DEBUG_GEOM_ID
-  if(testFlag(flags, GEOMITEM_INVISIBLE_IN_GEOMDATA)) {
+  if (testFlag(flags, GEOMITEM_INVISIBLE_IN_GEOMDATA)) {
     discard;
     return;
   }
 
-    // ///////////////////////
-    // Debug Draw ID (this correlates to GeomID within a GLGeomSet)
-    float geomId = v_geomItemData.w;
-    fragColor.rgb = getDebugColor(geomId);
-    // ///////////////////////
+  // ///////////////////////
+  // Debug Draw ID (this correlates to GeomID within a GLGeomSet)
+  float geomId = v_geomItemData.w;
+  fragColor.rgb = getDebugColor(geomId);
+  // ///////////////////////
 #endif
 
 #ifdef ENABLE_INLINE_GAMMACORRECTION
-    fragColor.rgb = toGamma(fragColor.rgb);
+  fragColor.rgb = toGamma(fragColor.rgb);
 #endif
 
 #ifndef ENABLE_ES3
-    gl_FragColor = fragColor;
+  gl_FragColor = fragColor;
 #endif
 }

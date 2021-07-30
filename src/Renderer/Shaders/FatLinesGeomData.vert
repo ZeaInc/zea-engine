@@ -13,7 +13,7 @@ import 'modelMatrix.glsl'
 
 uniform int drawItemId;
 int getDrawItemId() {
-    return drawItemId;
+  return drawItemId;
 }
 
 uniform sampler2D positionsTexture;
@@ -52,7 +52,7 @@ void main(void) {
   
   v_worldPos      = (modelMatrix * vec4(pos, 1.0)).xyz;
 
-  if(Overlay > 0.0){
+  if (Overlay > 0.0) {
     gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
   }
 

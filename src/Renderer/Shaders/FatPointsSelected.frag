@@ -39,7 +39,7 @@ void main(void) {
 #endif
 
   float dist = length(v_texCoord - 0.5);
-  if(dist > 0.5)
+  if (dist > 0.5)
     discard;
   
   int drawItemId = int(v_drawItemId + 0.5);

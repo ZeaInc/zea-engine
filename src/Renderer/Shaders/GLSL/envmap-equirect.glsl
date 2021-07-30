@@ -12,15 +12,15 @@ vec2 latLongUVsFromDir(vec3 dir) {
 
 // Note: when u == 0.5 z = 1.0
 vec3 dirFromLatLongUVs(float u, float v) {
-    // http://gl.ict.usc.edu/Data/HighResProbes/
-    float theta = PI*((u * 2.0) - 1.0);
-    float phi = PI*v;
-    return vec3(sin(phi)*sin(theta), sin(phi)*cos(theta), cos(phi));
+  // http://gl.ict.usc.edu/Data/HighResProbes/
+  float theta = PI*((u * 2.0) - 1.0);
+  float phi = PI*v;
+  return vec3(sin(phi)*sin(theta), sin(phi)*cos(theta), cos(phi));
 }
 
 vec3 dirFromPolar(vec2 polar) {
-    float u = polar.x / (PI * 2.0);
-    float v = polar.y / PI;
-    return dirFromLatLongUVs(u, v);
+  float u = polar.x / (PI * 2.0);
+  float v = polar.y / PI;
+  return dirFromLatLongUVs(u, v);
 }
 

@@ -84,7 +84,7 @@ void main(void) {
   gl_Position = modelViewProjectionMatrix * pos;
 
   // Use cross platform bit flags methods
-  if(drawOnTop){
+  if (drawOnTop) {
     gl_Position.z = mix(gl_Position.z, -gl_Position.w, 0.5);
   }
 }

@@ -28,25 +28,25 @@ varying vec2 v_textureCoord;
 varying vec3 v_worldPos;
 
 void main(void) {
-    int drawItemId = getDrawItemId();
-    v_drawItemId = float(drawItemId);
-    v_geomItemData  = getInstanceData(drawItemId);
+  int drawItemId = getDrawItemId();
+  v_drawItemId = float(drawItemId);
+  v_geomItemData  = getInstanceData(drawItemId);
 
-    mat4 modelMatrix = getModelMatrix(drawItemId);
-    mat4 modelViewMatrix = viewMatrix * modelMatrix;
+  mat4 modelMatrix = getModelMatrix(drawItemId);
+  mat4 modelViewMatrix = viewMatrix * modelMatrix;
 
-    vec4 pos = vec4(positions, 1.);
-    vec4 viewPos    = modelViewMatrix * pos;
-    gl_Position     = projectionMatrix * viewPos;
+  vec4 pos = vec4(positions, 1.);
+  vec4 viewPos    = modelViewMatrix * pos;
+  gl_Position     = projectionMatrix * viewPos;
 
-    mat3 normalMatrix = mat3(transpose(inverse(modelViewMatrix)));
-    v_viewPos       = -viewPos.xyz;
-    v_viewNormal    = normalMatrix * normals;
+  mat3 normalMatrix = mat3(transpose(inverse(modelViewMatrix)));
+  v_viewPos       = -viewPos.xyz;
+  v_viewNormal    = normalMatrix * normals;
 
 #ifdef ENABLE_TEXTURES
-    v_textureCoord  = texCoords;
-    // v_textureCoord.y = 1.0 - v_textureCoord.y;// Flip y
+  v_textureCoord  = texCoords;
+  // v_textureCoord.y = 1.0 - v_textureCoord.y;// Flip y
 #endif
 
-    v_worldPos      = (modelMatrix * pos).xyz;
+  v_worldPos      = (modelMatrix * pos).xyz;
 }

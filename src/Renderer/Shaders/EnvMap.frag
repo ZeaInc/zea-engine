@@ -47,11 +47,11 @@ uniform sampler2D   envMap;
 
 vec4 sampleEnvMap(vec3 dir) {
   vec2 uv = dirToSphOctUv(normalize(dir));
-  if(false){
+  if (false) {
     vec4 texel = texture2D(envMap, uv);
     return vec4(texel.rgb/texel.a, 1.0);
   }
-  else{
+  else {
     return texture2D(envMap, uv) * exposure;
   }
 }
@@ -90,7 +90,7 @@ uniform sampler2D backgroundImage;
 vec4 sampleEnvMap(vec3 dir) {
   vec2 uv = latLongUVsFromDir(normalize(v_worldDir));
   uv.y *= 0.5;
-  if(eye == 1){
+  if (eye == 1) {
     uv.y += 0.5;
   }
   vec4 texel = texture2D(backgroundImage, uv) * exposure;
