@@ -13,7 +13,6 @@ void main(void) {
   vec4 fragColor;
 #endif
   fragColor = texture2D(image, v_texCoord);
-  fragColor = vec4(fragColor.rgb/fragColor.a, 1.0);
 
 #ifndef ENABLE_ES3
   gl_FragColor = fragColor;
