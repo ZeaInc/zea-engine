@@ -251,8 +251,9 @@
       /** LOAD ASSETS END */
 
       /** COLLAB START*/
-      const { Session, SessionSync } = window.zeaCollab
-      {
+
+      if (urlParams.has('collab')) {
+        const { Session, SessionSync } = window.zeaCollab
         const userData = {
           id: Math.random(),
         }
