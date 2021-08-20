@@ -35,7 +35,13 @@ void main(void) {
   
   vec4 viewPos = modelViewMatrix * vec4(positions, 1.);
 
-  viewPos += vec4(vec3(quadPointPos, 0.0) * PointSize, 0.);
+  // During XR sessions, there is a scaling applied to the view matrix
+  // which causes a distortion to the line width. We extract that scale here
+  // and use to correct the distortion.
+  // See also: FatLinesShader
+  vec3 viewZ = modelViewMatrix[2].xyz;
+  float viewScale = length(viewZ);
+  viewPos += vec4(vec3(quadPointPos, 0.0) * PointSize * viewScale, 0.);
 
   // Generate a quad which is 0.5 * PointSize closer towards
   // us. This allows points to be visualized even if snug on 

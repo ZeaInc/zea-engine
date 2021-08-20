@@ -11,11 +11,19 @@ vec3 calcFatLinesViewPos(int vertexID, mat4 modelViewMatrix, inout vec3 viewNorm
   vec4 data_0 = fetchTexel(positionsTexture, positionsTextureSize, index_0);
   vec4 data_1 = fetchTexel(positionsTexture, positionsTextureSize, index_1);
 
+
+  // During XR sessions, there is a scaling applied to the view matrix
+  // which causes a distortion to the line width. We extract that scale here
+  // and use to correct the distortion.
+  // See also: FatPointsShader
+  vec3 viewZ = modelViewMatrix[2].xyz;
+  float viewScale = length(viewZ);
+
   vec4 pos_0 = modelViewMatrix * vec4(data_0.xyz, 1.0);
   vec4 pos_1 = modelViewMatrix * vec4(data_1.xyz, 1.0);
   // Note: multiply the per-vertex line thickness with the line thickness uniform value;
-  float lineThickness_0 = LineThickness * data_0.w;
-  float lineThickness_1 = LineThickness * data_1.w;
+  float lineThickness_0 = LineThickness * data_0.w * viewScale;
+  float lineThickness_1 = LineThickness * data_1.w * viewScale;
 
   if (vertexID < 2) {
     pos = data_0.xyz;

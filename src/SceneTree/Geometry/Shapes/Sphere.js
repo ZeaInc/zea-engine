@@ -167,7 +167,7 @@ class Sphere extends ProceduralMesh {
     for (let i = 0; i < nbLoops; i++) {
       const theta = ((i + 1) / (nbLoops + 1)) * Math.PI
       for (let j = 0; j < nbSides; j++) {
-        const phi = (j / nbSides) * 2.0 * Math.PI
+        const phi = -((j / nbSides) * 2.0 * Math.PI)
         normal.set(Math.sin(theta) * Math.cos(phi), Math.sin(theta) * Math.sin(phi), Math.cos(theta))
 
         // Set positions and normals at the same time.

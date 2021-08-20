@@ -1,4 +1,5 @@
 /* eslint-disable guard-for-in */
+import { Vec3, Color } from '../Math/index'
 import { TreeItem, GeomItem, ParameterOwner } from '../SceneTree/index'
 import { SystemDesc } from '../SystemDesc'
 import { create3DContext } from './GLContext'
@@ -10,6 +11,8 @@ import { POINTER_TYPES } from '../Utilities/EnumUtils'
 import { GLMaterialLibrary } from './Drawing/GLMaterialLibrary.js'
 import { GLGeomLibrary } from './Drawing/GLGeomLibrary.js'
 import { GLGeomItemLibrary } from './Drawing/GLGeomItemLibrary.js'
+import { HighlightsShader } from './Shaders/HighlightsShader.js'
+import { SilhouetteShader } from './Shaders/SilhouetteShader.js'
 
 let activeGLRenderer = undefined
 let pointerIsDown = false
@@ -57,12 +60,53 @@ class GLBaseRenderer extends ParameterOwner {
 
     this.__xrViewportPresenting = false
 
+    this.__exposure = 1.0
+    this.__tonemap = true
+    this.__gamma = 2.2
+
+    this.__glEnvMap = undefined
+    this.__glBackgroundMap = undefined
+
+    this.__displayEnvironment = true
+    this.__debugMode = 0
+    this._planeDist = 0.0
+    this.__cutPlaneNormal = new Vec3(1, 0, 0)
+    this.rayCastDist = 0
+    this.rayCastArea = 0
+
+    this.highlightOutlineThickness = 1.5
+
+    // We cannot render silhouettes in iOS because EXT_frag_depth is not supported
+    // and without it, we cannot draw lines over the top of geometries.
+    this.outlineThickness =
+      options.outlineThickness != undefined && SystemDesc.browserName != 'Safari' ? options.outlineThickness : 0
+
+    this.outlineColor = options.outlineColor || new Color(0.15, 0.15, 0.15, 1)
+    this.outlineSensitivity = options.outlineSensitivity || 2
+    this.outlineDepthBias = options.outlineDepthBias || 0.7
+
+    // ///////////////////////
+    // Renderer Setup
+    this.setupWebGL($canvas, options.webglOptions ? { ...options, ...options.webglOptions } : options)
+    this.bindEventHandlers()
+
+    const gl = this.__gl
+    this.highlightsShader = new HighlightsShader(gl)
+    this.silhouetteShader = new SilhouetteShader(gl)
+
+    this.addShaderPreprocessorDirective('ENABLE_INLINE_GAMMACORRECTION')
+    if (!options.disableTextures) {
+      this.addShaderPreprocessorDirective('ENABLE_TEXTURES')
+    }
+
+    if (options.debugGeomIds) {
+      this.addShaderPreprocessorDirective('DEBUG_GEOM_ID')
+    }
+
     // Function Bindings.
     this.renderGeomDataFbos = this.renderGeomDataFbos.bind(this)
     this.requestRedraw = this.requestRedraw.bind(this)
 
-    this.setupWebGL($canvas, options.webglOptions ? { ...options, ...options.webglOptions } : options)
-    this.bindEventHandlers()
     this.addViewport('main')
 
     this.glMaterialLibrary = new GLMaterialLibrary(this)
@@ -600,13 +644,10 @@ class GLBaseRenderer extends ParameterOwner {
     this.resizeObserver.observe(this.__glcanvas.parentElement)
 
     webglOptions.preserveDrawingBuffer = true
-    // In webgl 2, we now render to a multi-sampled offscreen buffer, that we then resolve and blit to
+    // In webgl 2, we now render to a multi-sampled offscreen buffer, that we then resolve and draw to
     // the onscreen buffer. This means we no longer need the default render target to be antialiased.
-    // In webgl 1 however we render surfaces to the offscreen buffer, and then lines to the default buffer.
-    // The default buffer should then be antialiased.
-    // Note: On low end devices, such as Oculus, blitting the multi-sampled depth buffer is throwing errors,
-    // and so we are simply disabling silhouettes on all low end devices now.
-    webglOptions.antialias = SystemDesc.isIOSDevice || webglOptions.webglContextType == 'webgl' ? true : false
+    // We can now dynamically turn on an off outline rendering, so we just have antialias on all the time.
+    webglOptions.antialias = webglOptions.antialias ? webglOptions.antialias : false
     webglOptions.depth = true
     webglOptions.stencil = false
     webglOptions.alpha = webglOptions.alpha ? webglOptions.alpha : false

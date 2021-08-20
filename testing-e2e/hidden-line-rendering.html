@@ -91,7 +91,7 @@
       let prevColor
       renderer.getViewport().on('pointerOverGeom', (event) => {
         const pointerOverItem = event.intersectionData.geomItem
-        pointerOverItem.addHighlight('pointerOverGeom', new Color(1, 1, 1, 0.1), true)
+        pointerOverItem.addHighlight('pointerOverGeom', new Color(1, 0, 0, 0.1), true)
       })
       renderer.getViewport().on('pointerLeaveGeom', (event) => {
         event.leftGeometry.removeHighlight('pointerOverGeom', true)
@@ -116,8 +116,8 @@
         const { data } = event
 
         if (data === 'variant-01') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, -2.7), new Vec3(0, 0, 0.4))
-          renderer.frameAll()
+          renderer.outlineThickness = 0
+          renderer.requestRedraw()
           postMessage(`done-${data}`)
         } else if (data === 'variant-02') {
           renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-2, -2, 2.7), new Vec3(0, 0, 0.4))

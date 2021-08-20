@@ -35,6 +35,7 @@ class GLLinesItemSet extends GLGeomItemSetMultiDraw {
    * @param {Int32Array} drawIds - the draw id for each element drawn in by this draw call.
    * @param {Int32Array} counts - the geom element count for each element drawn in by this draw call.
    * @param {Int32Array} offsets - the geom element offset for each element drawn in by this draw call.
+   * @param {number} drawCount - the number of active draw calls in the counts and offsets arrays.
    */
   multiDraw(renderstate, drawIds, counts, offsets, drawCount) {
     // console.log('GLLinesItemSet:', counts.length)

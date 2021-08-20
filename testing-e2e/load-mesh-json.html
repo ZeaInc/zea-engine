@@ -29,7 +29,7 @@
       scene.getRoot().addChild(geomItem)
       mesh.fromJSON({
         faceCounts: [2],
-        faceVertexIndices: [0, 1, 2, 0, 2, 3],
+        faceVertexIndices: [2, 1, 0, 3, 2, 0],
         numVertices: 4,
         vertexAttributes: {
           positions: {
@@ -76,7 +76,7 @@
         if (data === 'variant-01') {
           mesh.fromJSON({
             faceCounts: [4],
-            faceVertexIndices: [0, 1, 2, 0, 2, 3, 3, 2, 4, 2, 1, 4],
+            faceVertexIndices: [2, 1, 0, 3, 2, 0, 4, 2, 3, 4, 1, 2],
             numVertices: 5,
             vertexAttributes: {
               positions: {
@@ -101,7 +101,7 @@
         } else if (data === 'variant-02') {
           mesh.fromJSON({
             faceCounts: [2],
-            faceVertexIndices: [0, 1, 2, 0, 2, 3],
+            faceVertexIndices: [2, 1, 0, 3, 2, 0],
             numVertices: 4,
             vertexAttributes: {
               positions: {

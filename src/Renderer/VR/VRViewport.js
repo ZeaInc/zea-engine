@@ -455,17 +455,6 @@ class VRViewport extends GLBaseViewport {
     this.__vrhead.update(pose)
     const viewXfo = this.__vrhead.getTreeItem().getParameter('GlobalXfo').getValue()
 
-    // Prepare the pointerMove event.
-    const event = { controllers: this.controllers, viewXfo }
-    this.preparePointerEvent(event)
-    this.updateControllers(xrFrame, event)
-    if (this.capturedElement && event.propagating) {
-      this.capturedElement.onPointerMove(event)
-    }
-    if (this.manipulator && event.propagating) {
-      this.manipulator.onPointerMove(event)
-    }
-
     const views = pose.views
 
     if (!this.__projectionMatricesUpdated) {
@@ -522,6 +511,18 @@ class VRViewport extends GLBaseViewport {
     renderstate.vrPresenting = true // Some rendering is adjusted slightly in VR. e.g. Billboards
 
     this.draw(renderstate)
+
+    // ///////////////////////
+    // Prepare the pointerMove event.
+    const event = { controllers: this.controllers, viewXfo }
+    this.preparePointerEvent(event)
+    this.updateControllers(xrFrame, event)
+    if (this.capturedElement && event.propagating) {
+      this.capturedElement.onPointerMove(event)
+    }
+    if (this.manipulator && event.propagating) {
+      this.manipulator.onPointerMove(event)
+    }
 
     // ///////////////////////
     // Emit a signal for the shared session.

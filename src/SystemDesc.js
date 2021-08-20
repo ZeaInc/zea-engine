@@ -269,7 +269,7 @@ const SystemDesc = (function () {
 
   let hardwareConcurrency = globalThis.navigator.hardwareConcurrency
   if (!hardwareConcurrency) {
-    if (SystemDesc.isMobileDevice) hardwareConcurrency = 4
+    if (isMobile) hardwareConcurrency = 4
     else hardwareConcurrency = 6
   }
 

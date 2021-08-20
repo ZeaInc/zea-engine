@@ -69,6 +69,13 @@ let frustumHalfAngleX = 0
 let frustumHalfAngleY = 0
 let solidAngleLimit = 0.004
 
+let cullReason = {
+  solidAngle: 0,
+  frustum: 0,
+  tooClose: 0,
+  behind: 0,
+}
+
 const cull = (index) => {
   if (!frustumCulled[index]) {
     frustumCulled[index] = true
@@ -126,6 +133,7 @@ const checkGeomItem = (geomItemData) => {
     const dist = vec3_length(vec)
     // unCull items close to the view.
     if (dist < boundingRadius) {
+      cullReason.tooClose++
       unCull(geomItemData.id)
       return
     }
@@ -135,6 +143,7 @@ const checkGeomItem = (geomItemData) => {
     // which is resolution invariant.
     const solidAngle = Math.asin(boundingRadius / dist)
     if (solidAngleLimit > 0 && solidAngle < solidAngleLimit) {
+      cullReason.solidAngle++
       cull(geomItemData.id)
       return
     }
@@ -158,6 +167,7 @@ const checkGeomItem = (geomItemData) => {
     let viewAngle
     // If an item is behind the viewer
     if (viewPos[2] > 0) {
+      cullReason.behind++
       viewAngle = [
         Math.PI - Math.abs(Math.asin(viewVecNormXZ[0])) - solidAngleXZ,
         Math.PI - Math.abs(Math.asin(viewVecNormYZ[0])) - solidAngleYZ,
@@ -170,6 +180,7 @@ const checkGeomItem = (geomItemData) => {
     }
     // console.log(geomItemData.id, 'angle To Item:', frustumHalfAngleX, viewAngle[0], frustumHalfAngleY, viewAngle[1])
     if (viewAngle[0] > frustumHalfAngleX || viewAngle[1] > frustumHalfAngleY) {
+      cullReason.frustum++
       cull(geomItemData.id)
       return
     }
@@ -207,12 +218,19 @@ const onViewChanged = (data, postMessage) => {
 const onDone = (postMessage) => {
   // console.log('onDone newlyCulled:', newlyCulled.length, 'newlyUnCulled:', newlyUnCulled.length)
   if (newlyCulled.length > 0 || newlyUnCulled.length > 0) {
+    // console.log('CullResults culled:', culledCount, 'visible:', geomItemsData.length - 1 - culledCount, cullReason)
     // console.log('CullResults culled:', culledCount, 'visible:', geomItemsData.length - 1 - culledCount)
     postMessage({ type: 'CullResults', newlyCulled, newlyUnCulled })
     newlyCulled = []
     newlyUnCulled = []
   } else {
     postMessage({ type: 'Done' })
+  }
+  cullReason = {
+    solidAngle: 0,
+    frustum: 0,
+    tooClose: 0,
+    behind: 0,
   }
 }
 

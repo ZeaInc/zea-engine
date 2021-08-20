@@ -80,6 +80,15 @@
       /** HIGHLIGHT END */
       window.addEventListener('message', handleMessage, false)
       // }}}
+
+      renderer.getXRViewport().then((xrvp) => {
+        console.log('XR Device Detected')
+        document.addEventListener('keydown', (event) => {
+          if (event.key == ' ') {
+            xrvp.togglePresenting()
+          }
+        })
+      })
     </script>
   </head>
   <body class="bg-blue-100 h-full">

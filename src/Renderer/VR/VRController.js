@@ -88,9 +88,13 @@ class VRController {
             switch (inputSource.handedness) {
               case 'left':
                 srcControllerTree = assetItem.getChildByName('LeftController')
+                localXfo.tr.set(0, -0.035, -0.085)
+                localXfo.sc.scaleInPlace(0.85)
                 break
               case 'right':
                 srcControllerTree = assetItem.getChildByName('RightController')
+                localXfo.tr.set(0, -0.035, -0.085)
+                localXfo.sc.scaleInPlace(0.85)
                 break
               case 'none':
               case 'left-right':

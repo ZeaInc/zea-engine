@@ -372,6 +372,7 @@ class GLGeomLibrary extends EventEmitter {
       const attrSpec = this.shaderAttrSpec[attrName]
       const attrData = geomBuffers.attrBuffers[attrName]
       const glattrbuffer = this.glattrbuffers[attrName]
+
       // Some geoms might not have all the attributes.
       // and some geoms have more attributes than others.
       if (!attrData || !glattrbuffer) continue
